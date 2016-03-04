@@ -129,8 +129,9 @@ public class PowerupMechanics implements Listener {
 				int i = new Random().nextInt((int) loot_chest_count);
 				Location l = keys.get(i);
 				
-				boolean chunk_loaded = false;
-				for(Location ploc : MonsterMechanics.player_locations.values()) {
+				boolean chunk_loaded = l.getChunk().isLoaded();
+				
+				/*for(Location ploc : MonsterMechanics.player_locations.values()) {
 					if(!ploc.getWorld().getName().equalsIgnoreCase(l.getWorld().getName())) {
 						continue;
 					}
@@ -141,7 +142,7 @@ public class PowerupMechanics implements Listener {
 						break;
 						// Somewhat near.
 					}
-				}
+				}*/
 				
 				if(!chunk_loaded) {
 					continue;
@@ -211,7 +212,7 @@ public class PowerupMechanics implements Listener {
 		List<Player> effected_players = new ArrayList<Player>();
 		effected_players.add(p);
 		
-		p.getWorld().playSound(p.getLocation(), Sound.ENDERDRAGON_HIT, 5F, 1.5F);
+		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDERDRAGON_HURT, 5F, 1.5F);
 		
 		for(Entity e : p.getNearbyEntities(8.0D, 8.0D, 8.0D)) {
 			if((e instanceof Player)) {
