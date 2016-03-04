@@ -168,13 +168,12 @@ public class PowerupMechanics implements Listener {
 				final Location final_l = l;
 				
 				Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
-					@SuppressWarnings("deprecation")
 					public void run() {
 						
 						Location location = final_l;
 						location.setY(location.getY());
 						Block bedrock = location.getBlock();
-						bedrock.setTypeId(7);
+						bedrock.setType(Material.BEDROCK);
 						location = bedrock.getLocation();
 						location.setX(location.getX() + 0.5D);
 						location.setZ(location.getZ() + 0.5D);

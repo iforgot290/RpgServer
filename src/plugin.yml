@@ -136,20 +136,8 @@ commands:
   givebeta:
     description: Give beta to the user.
     usage: /<command>
-  givesub:
-    description: Give sub to the user.
-    usage: /<command>
-  givesubplus:
-    description: Give sub+ to the user.
-    usage: /<command>
   addec:
     description: Add specified amount of ECASH to player.
-    usage: /<command>
-  removesubplus:
-    description: Removes any sub/sub+ status.
-    usage: /<command>
-  removesub:
-    description: Removes any sub/sub+ status.
     usage: /<command>
   addsubdaystoall:
     description: Adds specified number of days to all subscribers.
@@ -162,9 +150,6 @@ commands:
     usage: /<command>
   addpet:
     description: Console command to add pet to player.
-    usage: /<command>
-  givesublife:
-    description: Console command to give lifetime sub to a player.
     usage: /<command>
   rewardsublife:
     description: Gives 999 to all sub++

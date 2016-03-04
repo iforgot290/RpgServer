@@ -22,11 +22,6 @@ import minecade.dungeonrealms.DonationMechanics.commands.CommandAddPet;
 import minecade.dungeonrealms.DonationMechanics.commands.CommandAddShards;
 import minecade.dungeonrealms.DonationMechanics.commands.CommandAddSubDaysToAll;
 import minecade.dungeonrealms.DonationMechanics.commands.CommandBank;
-import minecade.dungeonrealms.DonationMechanics.commands.CommandGiveSub;
-import minecade.dungeonrealms.DonationMechanics.commands.CommandGiveSubLife;
-import minecade.dungeonrealms.DonationMechanics.commands.CommandGiveSubPlus;
-import minecade.dungeonrealms.DonationMechanics.commands.CommandRemoveSub;
-import minecade.dungeonrealms.DonationMechanics.commands.CommandRemoveSubPlus;
 import minecade.dungeonrealms.DonationMechanics.commands.CommandRewardSubLife;
 import minecade.dungeonrealms.database.ConnectionPool;
 
@@ -49,11 +44,6 @@ public class DonationMechanics implements Listener {
 		Main.plugin.getCommand("addshards").setExecutor(new CommandAddShards());
 		Main.plugin.getCommand("addec").setExecutor(new CommandAddEC());
 		Main.plugin.getCommand("addpet").setExecutor(new CommandAddPet());
-		Main.plugin.getCommand("givesub").setExecutor(new CommandGiveSub());
-		Main.plugin.getCommand("givesublife").setExecutor(new CommandGiveSubLife());
-		Main.plugin.getCommand("givesubplus").setExecutor(new CommandGiveSubPlus());
-		Main.plugin.getCommand("removesub").setExecutor(new CommandRemoveSub());
-		Main.plugin.getCommand("removesubplus").setExecutor(new CommandRemoveSubPlus());
 		Main.plugin.getCommand("rewardsublife").setExecutor(new CommandRewardSubLife());
 		Main.plugin.getCommand("addsubdaystoall").setExecutor(new CommandAddSubDaysToAll());
 		

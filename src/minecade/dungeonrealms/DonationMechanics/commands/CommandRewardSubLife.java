@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.DonationMechanics.DonationMechanics;
+import minecade.dungeonrealms.PermissionMechanics.PermissionMechanics;
 
 public class CommandRewardSubLife implements CommandExecutor {
 	
@@ -16,7 +17,7 @@ public class CommandRewardSubLife implements CommandExecutor {
 		Player ps = null;
 		if(sender instanceof Player) {
 			ps = (Player) sender;
-			if(!(ps.isOp())) { return true; }
+			if(!PermissionMechanics.isGM(ps)) { return true; }
 		}
 		
 		DonationMechanics.tickLifetimeSubEcash();

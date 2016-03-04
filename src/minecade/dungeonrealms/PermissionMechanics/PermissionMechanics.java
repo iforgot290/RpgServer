@@ -133,10 +133,14 @@ public class PermissionMechanics implements Listener {
 		Hive.sql_query.add("INSERT INTO player_database (p_name, rank)" + " VALUES" + "('" + p_uuid + "', '" + rank + "') ON DUPLICATE KEY UPDATE rank ='" + rank + "'");
 		
 	}
+	
+	public static void setRank(OfflinePlayer player, String rank, boolean upload_sql){
+		setRank(player.getUniqueId(), rank, upload_sql);
+	}
 
 	public static void setRank(UUID p_uuid, String rank, boolean upload_sql) {
 		Player p = null;
-		if(Bukkit.getPlayer(p_uuid) != null && Bukkit.getPlayer(p_uuid).isOnline()) {
+		if(Bukkit.getPlayer(p_uuid) != null) {
 			p = Bukkit.getPlayer(p_uuid);
 		}
 		
@@ -149,6 +153,7 @@ public class PermissionMechanics implements Listener {
 			if(current_rank == null) {
 				current_rank = "default";
 			}
+			//TODO this is setrank, should it matter?
 			if(current_rank != null) {
 				if((current_rank.equalsIgnoreCase("pmod") && !rank.equalsIgnoreCase("gm") && !rank.equalsIgnoreCase("default")) || current_rank.equalsIgnoreCase("gm") && !rank.equalsIgnoreCase("default")) {
 					// Not demote, not promote, ignore sub.
