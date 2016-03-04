@@ -180,7 +180,7 @@ public class RealmMechanics implements Listener {
 	public static HashMap<String, Long> recent_movement = new HashMap<String, Long>();
 	// Used to prevent players from placing portals ontop of AFK players. Contains time of last player movement.
 
-	public static HashMap<String, Location> saved_locations = new HashMap<String, Location>();
+	public static HashMap<UUID, Location> saved_locations = new HashMap<UUID, Location>();
 	// Locations of all the places in the REAL world for players in realms. Used to TP them out.
 
 	public static ConcurrentHashMap<Location, String> portal_map = new ConcurrentHashMap<Location, String>();

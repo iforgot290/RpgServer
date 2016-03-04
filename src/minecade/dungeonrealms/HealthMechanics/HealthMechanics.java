@@ -135,7 +135,7 @@ public class HealthMechanics implements Listener {
 	//public static Objective objective;
 	// }
 
-	public static List<String> noob_players = new ArrayList<String>();
+	public static List<UUID> noob_players = new ArrayList<UUID>();
 	// Noobie players, TODO: Recode this so it can be removed on death.
 
 	public static HealthMechanics plugin = null;
@@ -225,7 +225,7 @@ public class HealthMechanics implements Listener {
 		//board = manager.getNewScoreboard();
 		//objective = board.registerNewObjective("hpdisplay", "dummy");
 		//objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-		//objective.setDisplayName("§c" + "❤");
+		//objective.setDisplayName("Â§c" + "â�¤");
 
 		// "in combat" Handler, removes players from the in_combat list after 'HealthRegenCombatDelay' is over.
 		Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(Main.plugin, new Runnable() {

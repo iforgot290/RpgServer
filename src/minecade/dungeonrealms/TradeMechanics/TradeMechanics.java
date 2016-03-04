@@ -55,7 +55,6 @@ import minecade.dungeonrealms.models.LogModel;
 //TODO: Add combat support, if you get hit, close window.
 //TODO: Add a trade request system perhaps? They have to type /accept? Alternatively, allow players to disable trades.
 
-@SuppressWarnings("deprecation")
 public class TradeMechanics implements Listener {
     Logger log = Logger.getLogger("Minecraft");
     static Inventory TradeWindowTemplate;
@@ -191,7 +190,7 @@ public class TradeMechanics implements Listener {
             // check for entities near this block in the line of sight
             for (LivingEntity e : livingE) {
                 if (e instanceof Player) {
-                    if (ModerationMechanics.isPlayerVanished(((Player) e).getName())) {
+                    if (ModerationMechanics.isPlayerVanished(((Player) e).getUniqueId())) {
                         continue; // Ignore vanish'd GM's.
                     }
                 }
@@ -530,7 +529,7 @@ public class TradeMechanics implements Listener {
                 return;
             }
 
-            if (CommunityMechanics.isPlayerOnIgnoreList(tradie, trader.getName()) || CommunityMechanics.isPlayerOnIgnoreList(trader, tradie.getName())) {
+            if (CommunityMechanics.isPlayerOnIgnoreList(tradie.getUniqueId(), trader.getUniqueId()) || CommunityMechanics.isPlayerOnIgnoreList(trader.getUniqueId(), tradie.getUniqueId())) {
                 trader.sendMessage(ChatColor.YELLOW + tradie.getName() + " has trade disabled.");
                 e.setCancelled(true);
                 Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
@@ -629,8 +628,8 @@ public class TradeMechanics implements Listener {
             trade_map.put(tradie, trader);
             trader.openInventory(TradeWindow);
             tradie.openInventory(TradeWindow);
-            trader.playSound(trader.getLocation(), Sound.WOOD_CLICK, 1F, 0.8F);
-            tradie.playSound(tradie.getLocation(), Sound.WOOD_CLICK, 1F, 0.8F);
+            trader.playSound(trader.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON /*WOOD_CLICK*/, 1F, 0.8F);
+            tradie.playSound(tradie.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON /*WOOD_CLICK*/, 1F, 0.8F);
             trader.sendMessage(ChatColor.YELLOW + "Trading with " + ChatColor.BOLD + tradie.getName() + ChatColor.YELLOW + "...");
             tradie.sendMessage(ChatColor.YELLOW + "Trading with " + ChatColor.BOLD + trader.getName() + ChatColor.YELLOW + "...");
             TradeWindow.setItem(1, makeUnique(being_dropped));
@@ -1042,7 +1041,7 @@ public class TradeMechanics implements Listener {
                      * if(tradeWin.getItem(x) != null){ tradeWin.getItem(x).setAmount(to_move.getAmount()); }
                      */
 
-                    clicker.getInventory().remove(local_to_move_slot);
+                    //clicker.getInventory().remove(clicker.getInventory().getItem(local_to_move_slot));
                     clicker.getInventory().setItem(local_to_move_slot, new ItemStack(Material.AIR));
                     clicker.updateInventory();
                     break;
@@ -1061,7 +1060,7 @@ public class TradeMechanics implements Listener {
 
                     tradeWin.setItem(x, makeUnique(to_move));
 
-                    clicker.getInventory().remove(local_to_move_slot);
+                    //clicker.getInventory().remove(clicker.getInventory().getItem(local_to_move_slot));
                     clicker.getInventory().setItem(local_to_move_slot, new ItemStack(Material.AIR));
                     clicker.updateInventory();
                     break;
@@ -1079,7 +1078,7 @@ public class TradeMechanics implements Listener {
                 e.getCurrentItem().setDurability((short) 10);
                 e.setCurrentItem(setIinfo(new ItemStack(Material.INK_SACK, 1, (short) 10), ChatColor.GREEN.toString() + "Trade ACCEPTED.",
                         ChatColor.GRAY.toString() + "Modify the trade to unaccept."));
-                clicker.playSound(clicker.getLocation(), Sound.BLAZE_HIT, 1F, 2.0F);
+                clicker.playSound(clicker.getLocation(), Sound.ENTITY_BLAZE_HURT, 1F, 2.0F);
 
                 if (tradeWin.getItem(0).getDurability() == (short) 10 && tradeWin.getItem(8).getDurability() == (short) 10) {
                     final Player tradie = trade_map.get(clicker);
@@ -1222,7 +1221,7 @@ public class TradeMechanics implements Listener {
                         tradeItem = 0;
 
                         tradie.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Trade accepted.");
-                        tradie.playSound(tradie.getLocation(), Sound.BLAZE_HIT, 1F, 1.5F);
+                        tradie.playSound(tradie.getLocation(), Sound.ENTITY_BLAZE_HURT, 1F, 1.5F);
 
                         slot_var = -1;
                         while (slot_var <= 27) {
@@ -1258,7 +1257,7 @@ public class TradeMechanics implements Listener {
                         data.setData("items_to_trader_2", itemData);
                         
                         clicker.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Trade accepted.");
-                        clicker.playSound(clicker.getLocation(), Sound.BLAZE_HIT, 1F, 1.5F);
+                        clicker.playSound(clicker.getLocation(), Sound.ENTITY_BLAZE_HURT, 1F, 1.5F);
                         
                         new LogModel(LogType.TRADE, p_name, data.getJson());
                         new LogModel(LogType.TRADE, tradie.getName(), data.getJson());
@@ -1380,7 +1379,7 @@ public class TradeMechanics implements Listener {
                         tradeItem = 0;
 
                         clicker.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Trade accepted.");
-                        clicker.playSound(clicker.getLocation(), Sound.BLAZE_HIT, 1F, 1.5F);
+                        clicker.playSound(clicker.getLocation(), Sound.ENTITY_BLAZE_HURT, 1F, 1.5F);
                         slot_var = -1;
 
                         slot_var = -1;
@@ -1416,7 +1415,7 @@ public class TradeMechanics implements Listener {
                         
                         data.setData("items_to_trader_2", itemData);
 
-                        tradie.playSound(tradie.getLocation(), Sound.BLAZE_HIT, 1F, 1.5F);
+                        tradie.playSound(tradie.getLocation(), Sound.ENTITY_BLAZE_HURT, 1F, 1.5F);
                         tradie.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Trade accepted.");
                         
                         new LogModel(LogType.TRADE, p_name, data.getJson());

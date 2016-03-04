@@ -16,8 +16,8 @@ public class CommandSkip implements CommandExecutor {
 		if(!(TutorialMechanics.onTutorialIsland(p))) {
 		
 		return true; }
-		if(!(TutorialMechanics.skip_confirm.contains(p.getName()))) {
-			TutorialMechanics.skip_confirm.add(p.getName());
+		if(!(TutorialMechanics.skip_confirm.contains(p.getUniqueId()))) {
+			TutorialMechanics.skip_confirm.add(p.getUniqueId());
 			p.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD.toString() + "WARNING: " + ChatColor.RED + "If you skip this tutorial you will not recieve " + ChatColor.UNDERLINE + "ANY" + ChatColor.RED + " of the item rewards for completing it.");
 			p.sendMessage(ChatColor.GRAY + "If you're sure you still want to skip it, type '" + ChatColor.GREEN + ChatColor.BOLD + "Y" + ChatColor.GRAY + "' to finish the tutorial. Otherwise, just type '" + ChatColor.RED + "cancel" + ChatColor.GRAY + "' to continue with the tutorial.");
 			return true;

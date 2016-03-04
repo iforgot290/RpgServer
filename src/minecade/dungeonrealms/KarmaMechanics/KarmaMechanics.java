@@ -77,7 +77,7 @@ public class KarmaMechanics implements Listener {
 	// Used to prevent dupe from neutral deaths not coordinating correct lost items.
 	// ',' delim list of slot #'s of armor/weapon that was dropped.
 
-	public static HashMap<String, Location> saved_location = new HashMap<String, Location>();
+	public static HashMap<UUID, Location> saved_location = new HashMap<UUID, Location>();
 	// Location to TP players back to on asyncmove event.
 
 	public static List<Location> evil_spawns = new ArrayList<Location>();

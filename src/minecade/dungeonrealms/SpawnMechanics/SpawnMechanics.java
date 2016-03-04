@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -102,10 +103,10 @@ public class SpawnMechanics implements Listener {
 		log.info("[SpawnMechanics] " + count + " SPAWN LOCATIONS have been SAVED.");
 	}
 	
-	public static Location getRandomSpawnPoint(String p_name) {
+	public static Location getRandomSpawnPoint(UUID p_id) {
 		Location respawn_location = new Location(Bukkit.getWorlds().get(0), -367, 83, 390); // Default to this if something goes wrong.
 		
-		if(Hive.first_login.contains(p_name) || HealthMechanics.noob_players.contains(p_name)) { return respawn_location; // They're noobs, spawn them in center.
+		if(Hive.first_login.contains(p_id) || HealthMechanics.noob_players.contains(p_id)) { return respawn_location; // They're noobs, spawn them in center.
 		}
 		
 		if(spawn_map.size() > 0) {
@@ -130,14 +131,14 @@ public class SpawnMechanics implements Listener {
 		}
 		
 		Location respawn_location = null;
-		if(KarmaMechanics.getRawAlignment(p.getName()).equalsIgnoreCase("evil")) {
+		if(KarmaMechanics.getRawAlignment(p).equalsIgnoreCase("evil")) {
 			int spawn = new Random().nextInt(KarmaMechanics.evil_spawns.size());
 			respawn_location = KarmaMechanics.evil_spawns.get(spawn);
 		} else {
-			respawn_location = getRandomSpawnPoint(p.getName());
+			respawn_location = getRandomSpawnPoint(p.getUniqueId());
 		}
 		
-		KarmaMechanics.saved_location.put(p.getName(), respawn_location);
+		KarmaMechanics.saved_location.put(p.getUniqueId(), respawn_location);
 		e.setRespawnLocation(respawn_location);
 	}
 	

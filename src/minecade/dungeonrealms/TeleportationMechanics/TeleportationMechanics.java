@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -74,11 +75,11 @@ public class TeleportationMechanics implements Listener {
 	public static Location Crestguard_Keep;
 	public static Location CrestWatch;
 	
-	public static HashMap<String, String> tp_map = new HashMap<String, String>();
-	public static ConcurrentHashMap<String, Integer> tp_effect = new ConcurrentHashMap<String, Integer>();
-	public static HashMap<String, Location> tp_location = new HashMap<String, Location>();
+	public static HashMap<UUID, String> tp_map = new HashMap<UUID, String>();
+	public static ConcurrentHashMap<UUID, Integer> tp_effect = new ConcurrentHashMap<UUID, Integer>();
+	public static HashMap<UUID, Location> tp_location = new HashMap<UUID, Location>();
 	
-	public static HashMap<String, Long> processing_move = new HashMap<String, Long>();
+	public static HashMap<UUID, Long> processing_move = new HashMap<UUID, Long>();
 	// Player Name, Time of last movement check. -- Used for teleport_ regions.
 	
 	public static HashMap<String, Location> warp_map = new HashMap<String, Location>();
@@ -125,7 +126,7 @@ public class TeleportationMechanics implements Listener {
 						
 						Location warp = warp_map.get(warp_name);
 						warp.setYaw(pl.getLocation().getYaw());
-						processing_move.put(pl.getName(), System.currentTimeMillis() + 4000);
+						processing_move.put(pl.getUniqueId(), System.currentTimeMillis() + 4000);
 						pl.teleport(warp);
 					}
 				}
@@ -134,14 +135,14 @@ public class TeleportationMechanics implements Listener {
 		
 		Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
 			public void run() {
-				List<String> to_remove = new ArrayList<String>();
-				for(Entry<String, Integer> data : tp_effect.entrySet()) {
-					String p_name = data.getKey();
+				List<UUID> to_remove = new ArrayList<UUID>();
+				for(Entry<UUID, Integer> data : tp_effect.entrySet()) {
+					UUID p_id = data.getKey();
 					int seconds_left = data.getValue();
 					
 					if(seconds_left <= 0) {
-						if(Bukkit.getPlayer(p_name) != null) {
-							final Player pl = Bukkit.getPlayer(p_name);
+						if(Bukkit.getPlayer(p_id) != null) {
+							final Player pl = Bukkit.getPlayer(p_id);
 							
 							new BukkitRunnable() {
 								public void run() {
@@ -157,17 +158,17 @@ public class TeleportationMechanics implements Listener {
 						}
 						
 						try {
-							teleportUser(p_name, tp_map.get(p_name));
+							teleportUser(p_id, tp_map.get(p_id));
 						} catch(NullPointerException npe) {
-							to_remove.add(p_name);
+							to_remove.add(p_id);
 							continue;
 						}
-						to_remove.add(p_name);
+						to_remove.add(p_id);
 						continue;
 					}
 				}
 				
-				for(String s : to_remove) {
+				for(UUID s : to_remove) {
 					tp_effect.remove(s);
 					tp_map.remove(s);
 				}
@@ -177,14 +178,14 @@ public class TeleportationMechanics implements Listener {
 		new BukkitRunnable() {
 			
 			public void run() {
-				List<String> to_remove = new ArrayList<String>();
-				for(Entry<String, Integer> data : tp_effect.entrySet()) {
-					String p_name = data.getKey();
+				List<UUID> to_remove = new ArrayList<UUID>();
+				for(Entry<UUID, Integer> data : tp_effect.entrySet()) {
+					UUID p_id = data.getKey();
 					int seconds_left = data.getValue();
 					
 					if(seconds_left <= 0) {
-						if(Bukkit.getPlayer(p_name) != null) {
-							Player pl = Bukkit.getPlayer(p_name);
+						if(Bukkit.getPlayer(p_id) != null) {
+							Player pl = Bukkit.getPlayer(p_id);
 							try {
 								ParticleEffect.sendToLocation(ParticleEffect.WITCH_MAGIC, pl.getLocation().add(0, 1, 0), new Random().nextFloat(), new Random().nextFloat(), new Random().nextFloat(), 0.20F, 200);
 							} catch(Exception err) {
@@ -196,8 +197,8 @@ public class TeleportationMechanics implements Listener {
 					}
 					
 					//TODO: Tick effect goes here.
-					if(Bukkit.getPlayer(p_name) != null) {
-						Player pl = Bukkit.getPlayer(p_name);
+					if(Bukkit.getPlayer(p_id) != null) {
+						Player pl = Bukkit.getPlayer(p_id);
 						pl.sendMessage(ChatColor.WHITE + "" + ChatColor.BOLD + "CASTING" + ChatColor.WHITE + " ... " + seconds_left + ChatColor.BOLD + "s");
 						
 						//double x = pl.getLocation().getX(); //(pet.getLocation().getX() + partner.getLocation().getX()) / 2;
@@ -223,12 +224,12 @@ public class TeleportationMechanics implements Listener {
 						}
 						
 					} else {
-						to_remove.add(p_name);
+						to_remove.add(p_id);
 						continue;
 					}
 					
 					seconds_left--;
-					tp_effect.put(p_name, seconds_left);
+					tp_effect.put(p_id, seconds_left);
 				}
 			}
 		}.runTaskTimer(Main.plugin, 5L * 20L, 20L);
@@ -254,13 +255,13 @@ public class TeleportationMechanics implements Listener {
 		return true;
 	}
 	
-	public void teleportUser(String p_name, String type) {
+	public void teleportUser(UUID p_id, String type) {
 		
-		if(Bukkit.getPlayer(p_name) != null) {
-			Player p = Bukkit.getPlayer(p_name);
+		if(Bukkit.getPlayer(p_id) != null) {
+			Player p = Bukkit.getPlayer(p_id);
 			if(!(p.getWorld().getName().equalsIgnoreCase(Hive.main_world_name))) {
 				// They're in a realm.
-				RealmMechanics.saved_locations.remove(p.getName());
+				RealmMechanics.saved_locations.remove(p.getUniqueId());
 			}
 			
 			if(p.getItemOnCursor() != null) {
@@ -273,78 +274,78 @@ public class TeleportationMechanics implements Listener {
 		}
 		
 		if(type.equalsIgnoreCase("cyrennica")) {
-			if(Bukkit.getPlayer(p_name) != null) {
-				Player pl = Bukkit.getPlayer(p_name);
+			if(Bukkit.getPlayer(p_id) != null) {
+				Player pl = Bukkit.getPlayer(p_id);
 				pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 2));
 				//pl.teleport(SpawnMechanics.getRandomSpawnPoint(pl.getName()).add(0, 1, 0));
 				pl.teleport(new Location(Bukkit.getWorlds().get(0), -367, 83, 390));
-				tp_map.remove(p_name);
+				tp_map.remove(p_id);
 			}
 		} else if(type.contains("harrison")) {
-			if(Bukkit.getPlayer(p_name) != null) {
-				Player pl = Bukkit.getPlayer(p_name);
+			if(Bukkit.getPlayer(p_id) != null) {
+				Player pl = Bukkit.getPlayer(p_id);
 				pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 2));
 				pl.teleport(Harrison_Field);
-				tp_map.remove(p_name);
+				tp_map.remove(p_id);
 			}
 		} else if(type.contains("dark oak")) {
-			if(Bukkit.getPlayer(p_name) != null) {
-				Player pl = Bukkit.getPlayer(p_name);
+			if(Bukkit.getPlayer(p_id) != null) {
+				Player pl = Bukkit.getPlayer(p_id);
 				pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 2));
 				pl.teleport(Dark_Oak_Tavern);
-				tp_map.remove(p_name);
+				tp_map.remove(p_id);
 			}
 		} else if(type.contains("deadpeaks")) {
-			if(Bukkit.getPlayer(p_name) != null) {
-				Player pl = Bukkit.getPlayer(p_name);
+			if(Bukkit.getPlayer(p_id) != null) {
+				Player pl = Bukkit.getPlayer(p_id);
 				pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 2));
 				//new Location(Bukkit.getWorlds().get(0), -1173, 105, 1030, -88.0F, 1F);
 				Location loc = getRandomLocation(Bukkit.getWorlds().get(0), -1165, -1180, 1020, 1030);
 				pl.teleport(loc);
-				tp_map.remove(p_name);
+				tp_map.remove(p_id);
 			}
 		} else if(type.contains("trollsbane")) {
-			if(Bukkit.getPlayer(p_name) != null) {
-				Player pl = Bukkit.getPlayer(p_name);
+			if(Bukkit.getPlayer(p_id) != null) {
+				Player pl = Bukkit.getPlayer(p_id);
 				pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 2));
 				pl.teleport(Trollsbane_tavern);
-				tp_map.remove(p_name);
+				tp_map.remove(p_id);
 			}
 		} else if(type.contains("tripoli")) {
-			if(Bukkit.getPlayer(p_name) != null) {
-				Player pl = Bukkit.getPlayer(p_name);
+			if(Bukkit.getPlayer(p_id) != null) {
+				Player pl = Bukkit.getPlayer(p_id);
 				pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 2));
 				pl.teleport(Tripoli);
-				tp_map.remove(p_name);
+				tp_map.remove(p_id);
 			}
 		} else if(type.contains("gloomy")) {
-			if(Bukkit.getPlayer(p_name) != null) {
-				Player pl = Bukkit.getPlayer(p_name);
+			if(Bukkit.getPlayer(p_id) != null) {
+				Player pl = Bukkit.getPlayer(p_id);
 				pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 2));
 				pl.teleport(Gloomy_Hollows);
-				tp_map.remove(p_name);
+				tp_map.remove(p_id);
 			}
 		} else if(type.contains("crestguard")) {
-			if(Bukkit.getPlayer(p_name) != null) {
-				Player pl = Bukkit.getPlayer(p_name);
+			if(Bukkit.getPlayer(p_id) != null) {
+				Player pl = Bukkit.getPlayer(p_id);
 				pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 2));
 				pl.teleport(Crestguard_Keep);
-				tp_map.remove(p_name);
+				tp_map.remove(p_id);
 			}
 		} else if(type.contains("crestwatch")) {
-			if(Bukkit.getPlayer(p_name) != null) {
-				Player pl = Bukkit.getPlayer(p_name);
+			if(Bukkit.getPlayer(p_id) != null) {
+				Player pl = Bukkit.getPlayer(p_id);
 				pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 2));
 				pl.teleport(CrestWatch);
-				tp_map.remove(p_name);
+				tp_map.remove(p_id);
 			}
 		}
 	}
 	
 	public void runTeleportCast(Player pl, String type) {
 		double seconds_left = 5; // Default 3 seconds cast time.
-		if(HealthMechanics.in_combat.containsKey(pl.getName())) {
-			long dif = ((HealthMechanics.HealthRegenCombatDelay * 1000) + HealthMechanics.in_combat.get(pl.getName())) - System.currentTimeMillis();
+		if(HealthMechanics.in_combat.containsKey(pl.getUniqueId())) {
+			long dif = ((HealthMechanics.HealthRegenCombatDelay * 1000) + HealthMechanics.in_combat.get(pl.getUniqueId())) - System.currentTimeMillis();
 			seconds_left = (dif / 1000.0D) + 0.5D;
 			seconds_left = Math.round(seconds_left);
 		}
@@ -407,7 +408,7 @@ public class TeleportationMechanics implements Listener {
 			//TODO: Correct sound effect.
 		}
 		
-		pl.playSound(pl.getLocation(), Sound.AMBIENCE_CAVE, 1F, 1F);
+		pl.playSound(pl.getLocation(), Sound.AMBIENT_CAVE, 1F, 1F);
 		
 		/*double x = pl.getLocation().getX(); //(pet.getLocation().getX() + partner.getLocation().getX()) / 2;
 		   	double y = pl.getLocation().getY(); //((pet.getLocation().getY() + partner.getLocation().getY()) / 2);
@@ -418,9 +419,9 @@ public class TeleportationMechanics implements Listener {
 		
 		pl.eject();
 		
-		tp_map.put(pl.getName(), type);
-		tp_effect.put(pl.getName(), (int) seconds_left);
-		tp_location.put(pl.getName(), pl.getLocation());
+		tp_map.put(pl.getUniqueId(), type);
+		tp_effect.put(pl.getUniqueId(), (int) seconds_left);
+		tp_location.put(pl.getUniqueId(), pl.getLocation());
 	}
 	
 	public Location getRandomLocation(World world, int Xminimum, int Xmaximum, int Zminimum, int Zmaximum) {
@@ -447,8 +448,8 @@ public class TeleportationMechanics implements Listener {
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		Player pl = e.getPlayer();
-		tp_map.remove(pl.getName());
-		tp_effect.remove(pl.getName());
+		tp_map.remove(pl.getUniqueId());
+		tp_effect.remove(pl.getUniqueId());
 	}
 	
 	/*@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
@@ -610,7 +611,7 @@ public class TeleportationMechanics implements Listener {
 		/*if(e.isCancelled() && p.getWorld().getName().equalsIgnoreCase(Hive.main_world_name)){
 			return;
 		}*/
-		if(Hive.server_swap.containsKey(p.getName())) { return; }
+		if(Hive.server_swap.containsKey(p.getUniqueId())) { return; }
 		if(e.hasItem() && isScroll(e.getItem())) {
 			if(e.isCancelled() && e.getAction() != Action.RIGHT_CLICK_AIR) { return; }
 			
@@ -626,14 +627,14 @@ public class TeleportationMechanics implements Listener {
 				}
 			}*/
 			
-			if(tp_map.containsKey(p.getName())) {
+			if(tp_map.containsKey(p.getUniqueId())) {
 				p.updateInventory();
 				return;
 			}
 			
 			ItemStack scroll = e.getItem();
 			if(scroll.getAmount() <= 1) {
-				p.setItemInHand(new ItemStack(Material.AIR));
+				p.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 				p.updateInventory();
 			} else if(scroll.getAmount() > 1) {
 				int new_amount = scroll.getAmount() - 1;
@@ -653,14 +654,14 @@ public class TeleportationMechanics implements Listener {
 				}
 				//scroll.setAmount(new_amount);
 				//p.setItemInHand(scroll);
-				p.setItemInHand(new ItemStack(Material.AIR));
+				p.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 				p.updateInventory();
 			}
 			
 			String tp_loc = getScrollLocation(scroll);
-			if(!(tp_loc.equalsIgnoreCase("deadpeaks")) && KarmaMechanics.getRawAlignment(p.getName()).equalsIgnoreCase("evil")) {
+			if(!(tp_loc.equalsIgnoreCase("deadpeaks")) && KarmaMechanics.getRawAlignment(p.getUniqueId()).equalsIgnoreCase("evil")) {
 				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " teleport to non-chaotic zones while chaotic.");
-				p.sendMessage(ChatColor.GRAY + "Neutral in " + ChatColor.BOLD + KarmaMechanics.getSecondsUntilAlignmentChange(p.getName()) + "s");
+				p.sendMessage(ChatColor.GRAY + "Neutral in " + ChatColor.BOLD + KarmaMechanics.getSecondsUntilAlignmentChange(p.getUniqueId()) + "s");
 				return;
 			}
 			runTeleportCast(p, tp_loc);
@@ -673,9 +674,9 @@ public class TeleportationMechanics implements Listener {
 		if(e.getDamage() <= 0) { return; }
 		if(e.getEntity() instanceof Player) {
 			Player pl = (Player) e.getEntity();
-			if(tp_map.containsKey(pl.getName())) {
-				tp_effect.remove(pl.getName());
-				tp_map.remove(pl.getName());
+			if(tp_map.containsKey(pl.getUniqueId())) {
+				tp_effect.remove(pl.getUniqueId());
+				tp_map.remove(pl.getUniqueId());
 				pl.sendMessage(ChatColor.RED + "Teleportation - " + ChatColor.BOLD + "CANCELLED");
 				pl.removePotionEffect(PotionEffectType.CONFUSION);
 			}
@@ -685,11 +686,11 @@ public class TeleportationMechanics implements Listener {
 	@EventHandler
 	public void onPlayerMoveEvent(PlayerMoveEvent e) {
 		Player pl = e.getPlayer();
-		if(tp_map.containsKey(pl.getName())) {
-			Location loc = tp_location.get(pl.getName());
+		if(tp_map.containsKey(pl.getUniqueId())) {
+			Location loc = tp_location.get(pl.getUniqueId());
 			if(!(e.getTo().getWorld().getName().equalsIgnoreCase(loc.getWorld().getName())) || e.getTo().distanceSquared(loc) >= 2) {
-				tp_effect.remove(pl.getName());
-				tp_map.remove(pl.getName());
+				tp_effect.remove(pl.getUniqueId());
+				tp_map.remove(pl.getUniqueId());
 				pl.sendMessage(ChatColor.RED + "Teleportation - " + ChatColor.BOLD + "CANCELLED");
 				pl.removePotionEffect(PotionEffectType.CONFUSION);
 			}
