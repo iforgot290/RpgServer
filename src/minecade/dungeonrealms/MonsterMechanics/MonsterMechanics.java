@@ -351,7 +351,7 @@ public class MonsterMechanics implements Listener {
                             if (ent instanceof Player) {
                                 Player pl = (Player) ent;
                                 pl.damage(dmg, end);
-                                pl.playSound(pl.getLocation(), Sound.ENDERMAN_STARE, 1F, 1F);
+                                pl.playSound(pl.getLocation(), Sound.ENTITY_ENDERMEN_AMBIENT, 1F, 1F);
                                 try {
                                     ParticleEffect.sendToLocation(ParticleEffect.WITCH_MAGIC, pl.getLocation().add(0, 2, 0), new Random().nextFloat(),
                                             new Random().nextFloat(), new Random().nextFloat(), 1F, 50);
@@ -548,7 +548,7 @@ public class MonsterMechanics implements Listener {
         // DEPRECIATED, running along with MobSpawnEvent() to keep stuff in sync.
         /*
          * this.getServer().getScheduler() .scheduleSyncRepeatingTask(this, new Runnable() { public void run() { unloadChunks(); // Custom chunk unloading. //
-         * Unloads all chunks that do not have a player within XXX blocks of them, adding all entities to the entities_to_remove list. } }, 12 * 20L, 40L);
+         * Unloads all chunks that do not have a player within X blocks of them, adding all entities to the entities_to_remove list. } }, 12 * 20L, 40L);
          */
 
         // DEPRECIATED, running along with processMobsToSpawn() to keep stuff in sync.
@@ -574,7 +574,7 @@ public class MonsterMechanics implements Listener {
 
         Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
             public void run() {
-                player_count = Bukkit.getOnlinePlayers().length;
+                player_count = Bukkit.getOnlinePlayers().size();
                 // Gets player count for mob density settings.
             }
         }, 30 * 20L, 60 * 20L);
@@ -707,9 +707,12 @@ public class MonsterMechanics implements Listener {
         List<Entity> to_remove = new ArrayList<Entity>();
 
         for (Entry<Entity, Integer> data : power_strike.entrySet()) {
-            Entity ent = data.getKey();
+            
+        	Entity ent = data.getKey();
+        	LivingEntity le = (LivingEntity) ent;
+            
             try {
-                if (ent == null || ent.isDead() || !(mob_health.containsKey(ent)) || !(max_mob_health.containsKey(ent))) {
+                if (le == null || le.isDead() || !(mob_health.containsKey(ent)) || !(max_mob_health.containsKey(ent))) {
                     to_remove.add(ent);
                     continue;
                 }
@@ -719,13 +722,13 @@ public class MonsterMechanics implements Listener {
                     power_strike.put(ent, step);
                     special_attack.put(ent, step);
                     boolean is_elite = false;
-                    ItemStack weapon = CraftItemStack.asBukkitCopy(((CraftEntity) ent).getHandle().getEquipment()[0]);
+                    //ItemStack weapon = CraftItemStack.asBukkitCopy(((CraftEntity) ent).getHandle().getEquipment()[0]);
+                    ItemStack weapon = le.getEquipment().getItemInMainHand();
                     if (weapon.getEnchantments().containsKey(Enchantment.KNOCKBACK)) {
                         is_elite = true;
                     }
-                    LivingEntity le = (LivingEntity) ent;
                     le.setCustomName(generateOverheadBar(ent, mob_health.get(ent), max_mob_health.get(ent), getMobTier(ent), is_elite));
-                    ent.getWorld().playSound(ent.getLocation(), Sound.PISTON_EXTEND, 1F, 2.0F);
+                    ent.getWorld().playSound(ent.getLocation(), Sound.BLOCK_PISTON_EXTEND, 1F, 2.0F);
                     continue;
                 }
                 if (step == 5) { // Ready!
@@ -748,11 +751,11 @@ public class MonsterMechanics implements Listener {
                     }
 
                     boolean is_elite = false;
-                    ItemStack weapon = CraftItemStack.asBukkitCopy(((CraftEntity) ent).getHandle().getEquipment()[0]);
+                    //ItemStack weapon = CraftItemStack.asBukkitCopy(((CraftEntity) ent).getHandle().getEquipment()[0]);
+                    ItemStack weapon = le.getEquipment().getItemInMainHand();
                     if (weapon.getEnchantments().containsKey(Enchantment.KNOCKBACK)) {
                         is_elite = true;
                     }
-                    LivingEntity le = (LivingEntity) ent;
                     le.setCustomName(generateOverheadBar(ent, mob_health.get(ent), max_mob_health.get(ent), getMobTier(ent), is_elite));
                 }
             } catch (Exception err) {
@@ -1024,6 +1027,7 @@ public class MonsterMechanics implements Listener {
         return loot;
     }
 
+    //TODO do we need whirlwind?
     public void twirlWhirldwind() {
         for (Entry<Entity, Integer> data : whirlwind.entrySet()) {
             Entity ent = data.getKey();
@@ -2465,6 +2469,7 @@ public class MonsterMechanics implements Listener {
 
     }
 
+    //TODO laggy af?
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerMoveEvent(PlayerMoveEvent e) {
         Player p = e.getPlayer();
