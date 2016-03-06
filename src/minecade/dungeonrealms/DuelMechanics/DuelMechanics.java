@@ -1085,12 +1085,13 @@ public class DuelMechanics implements Listener {
             }
             if (e.getCurrentItem().getDurability() == 8) { // Gray button
                 // e.getCurrentItem().setDurability((short) 10);
-                clicker.playSound(clicker.getLocation(), Sound.BLAZE_HIT, 1F, 2.0F);
+                clicker.playSound(clicker.getLocation(), Sound.ENTITY_BLAZE_HURT, 1F, 2.0F);
                 e.setCurrentItem(green_button);
                 if (tradeWin.getItem(0).getDurability() == (short) 10 && tradeWin.getItem(8).getDurability() == (short) 10) {
                     final Player tradie = Bukkit.getPlayer(duel_map.get(clicker.getName()));
-                    clicker.playSound(clicker.getLocation(), Sound.BLAZE_HIT, 1F, 1.5F);
-                    tradie.playSound(tradie.getLocation(), Sound.BLAZE_HIT, 1F, 1.5F);
+                    // Sound.BLAZE_HIT
+                    clicker.playSound(clicker.getLocation(), Sound.ENTITY_BLAZE_HURT, 1F, 1.5F);
+                    tradie.playSound(tradie.getLocation(), Sound.ENTITY_BLAZE_HURT, 1F, 1.5F);
 
                     // 1.1
                     int max_armor_tier = ItemMechanics.getItemTier(e.getInventory().getItem(30));
@@ -1965,8 +1966,8 @@ public class DuelMechanics implements Listener {
          */
 
         if (PlayerManager.getPlayerModel(attacker).getToggleList().contains("duel") || PlayerManager.getPlayerModel(attacked).getToggleList().contains("duel")
-                || CommunityMechanics.isPlayerOnIgnoreList(attacked, attacker.getName())
-                || CommunityMechanics.isPlayerOnIgnoreList(attacker, attacked.getName())) {
+                || CommunityMechanics.isPlayerOnIgnoreList(attacked, attacker)
+                || CommunityMechanics.isPlayerOnIgnoreList(attacker, attacked)) {
             if (PlayerManager.getPlayerModel(attacker).getToggleList().contains("duel")) {
                 attacker.sendMessage(ChatColor.RED + "You currently have dueling requests " + ChatColor.UNDERLINE + "DISABLED." + ChatColor.RED
                         + " To re-enable dueling, type '/toggleduel'");

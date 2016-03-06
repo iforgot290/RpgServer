@@ -22,7 +22,7 @@ public class CommandECash implements CommandExecutor {
         	return true;
         }
 		
-		pl.playSound(pl.getLocation(), Sound.WOOD_CLICK, 1.0F, 1.0F);
+		pl.playSound(pl.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1.0F, 1.0F);
 		
 		MerchantMechanics.in_npc_shop.add(pl.getName());
 		pl.openInventory(MerchantMechanics.eCashVendor);

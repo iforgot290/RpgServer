@@ -320,13 +320,13 @@ public class EcashMechanics implements Listener {
                             if (new Random().nextInt(100) == 77) {
                                 int sound = new Random().nextInt(3);
                                 if (sound == 0) {
-                                    pl.getWorld().playSound(pl.getLocation(), Sound.ENDERMAN_STARE, 1F, 1F);
+                                    pl.getWorld().playSound(pl.getLocation(), Sound.ENTITY_ENDERMEN_STARE, 1F, 1F);
                                 }
                                 if (sound == 1) {
-                                    pl.getWorld().playSound(pl.getLocation(), Sound.ENDERMAN_SCREAM, 1F, 3F);
+                                    pl.getWorld().playSound(pl.getLocation(), Sound.ENTITY_ENDERMEN_SCREAM, 1F, 3F);
                                 }
                                 if (sound == 2) {
-                                    pl.getWorld().playSound(pl.getLocation(), Sound.GHAST_MOAN, 1F, 1F);
+                                    pl.getWorld().playSound(pl.getLocation(), Sound.ENTITY_GHAST_SCREAM, 1F, 1F);
                                 }
                             }
                         }
@@ -362,7 +362,8 @@ public class EcashMechanics implements Listener {
                                  * Sound.NOTE_BASS_GUITAR; } if(ran_s == 3){ sd = Sound.NOTE_PIANO; } if(ran_s == 4){ sd = Sound.NOTE_PLING; } if(ran_s == 5){
                                  * sd = Sound.NOTE_SNARE_DRUM; } if(ran_s == 6){ sd = Sound.NOTE_STICKS; }
                                  */
-                                sd = Sound.NOTE_PIANO;
+                                // NOTE_PIANO
+                                sd = Sound.BLOCK_NOTE_PLING;
 
                                 float ran_pitch = 1F + (new Random().nextFloat()) - (new Random().nextFloat());
                                 float ran_vol = 0.35F + (new Random().nextFloat()) - (new Random().nextFloat());
@@ -1691,12 +1692,12 @@ public class EcashMechanics implements Listener {
                     // Turn it OFF.
                     gold_curse.remove(pl.getName());
                     pl.sendMessage(ChatColor.RED + "Golden Curse - " + ChatColor.BOLD + "DISABLED");
-                    pl.getWorld().playSound(pl.getLocation(), Sound.ORB_PICKUP, 1F, 0.5F);
+                    pl.getWorld().playSound(pl.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0.5F);
                 } else {
                     // Turn it ON.
                     gold_curse.add(pl.getName());
                     pl.sendMessage(ChatColor.GREEN + "Golden Curse - " + ChatColor.BOLD + "ENABLED");
-                    pl.getWorld().playSound(pl.getLocation(), Sound.ORB_PICKUP, 1F, 3F);
+                    pl.getWorld().playSound(pl.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 3F);
                 }
             }
         }
@@ -1712,12 +1713,12 @@ public class EcashMechanics implements Listener {
                     // Turn it OFF.
                     music_spirits.remove(pl.getName());
                     pl.sendMessage(ChatColor.RED + "Musical Spirit - " + ChatColor.BOLD + "DISABLED");
-                    pl.getWorld().playSound(pl.getLocation(), Sound.ORB_PICKUP, 1F, 0.5F);
+                    pl.getWorld().playSound(pl.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0.5F);
                 } else {
                     // Turn it ON.
                     music_spirits.add(pl.getName());
                     pl.sendMessage(ChatColor.GREEN + "Musical Spirit - " + ChatColor.BOLD + "ENABLED");
-                    pl.getWorld().playSound(pl.getLocation(), Sound.ORB_PICKUP, 1F, 3F);
+                    pl.getWorld().playSound(pl.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 3F);
                 }
             }
         }
@@ -1733,12 +1734,12 @@ public class EcashMechanics implements Listener {
                     // Turn it OFF.
                     demonic_aura.remove(pl.getName());
                     pl.sendMessage(ChatColor.RED + "Demonic Aura - " + ChatColor.BOLD + "DISABLED");
-                    pl.getWorld().playSound(pl.getLocation(), Sound.ENDERMAN_IDLE, 1F, 0.5F);
+                    pl.getWorld().playSound(pl.getLocation(), Sound.ENTITY_ENDERMEN_AMBIENT, 1F, 0.5F);
                 } else {
                     // Turn it ON.
                     demonic_aura.add(pl.getName());
                     pl.sendMessage(ChatColor.GREEN + "Demonic Aura - " + ChatColor.BOLD + "ENABLED");
-                    pl.getWorld().playSound(pl.getLocation(), Sound.ENDERMAN_SCREAM, 1F, 3F);
+                    pl.getWorld().playSound(pl.getLocation(), Sound.ENTITY_ENDERMEN_SCREAM, 1F, 3F);
                 }
             }
         }
@@ -1754,12 +1755,12 @@ public class EcashMechanics implements Listener {
                     // Turn it OFF.
                     flaming_armor.remove(pl.getName());
                     pl.sendMessage(ChatColor.RED + "Blazing Armor - " + ChatColor.BOLD + "DISABLED");
-                    pl.playSound(pl.getLocation(), Sound.LAVA_POP, 0.5F, 0.5F);
+                    pl.playSound(pl.getLocation(), Sound.BLOCK_LAVA_POP, 0.5F, 0.5F);
                 } else {
                     // Turn it ON.
                     flaming_armor.add(pl.getName());
                     pl.sendMessage(ChatColor.GREEN + "Blazing Armor - " + ChatColor.BOLD + "ENABLED");
-                    pl.playSound(pl.getLocation(), Sound.LAVA, 1F, 1F);
+                    pl.playSound(pl.getLocation(), Sound.BLOCK_LAVA_AMBIENT, 1F, 1F);
                 }
             }
         }
@@ -1775,12 +1776,12 @@ public class EcashMechanics implements Listener {
                     // Turn it OFF.
                     flame_trail.remove(pl.getName());
                     pl.sendMessage(ChatColor.RED + "Flame Trail - " + ChatColor.BOLD + "DISABLED");
-                    pl.playSound(pl.getLocation(), Sound.FIZZ, 0.5F, 0.5F);
+                    pl.playSound(pl.getLocation(), Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.5F, 0.5F);
                 } else {
                     // Turn it ON.
                     flame_trail.add(pl.getName());
                     pl.sendMessage(ChatColor.GREEN + "Flame Trail - " + ChatColor.BOLD + "ENABLED");
-                    pl.playSound(pl.getLocation(), Sound.FIRE_IGNITE, 4F, 1F);
+                    pl.playSound(pl.getLocation(), Sound.ITEM_FIRECHARGE_USE, 4F, 1F);
                 }
             }
         }
