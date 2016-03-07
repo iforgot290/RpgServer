@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,10 +24,10 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
+import org.bukkit.block.Jukebox;
 import org.bukkit.craftbukkit.v1_9_R1.block.CraftJukebox;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
@@ -52,8 +53,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.AchievementMechanics.AchievementMechanics;
 import minecade.dungeonrealms.ChatMechanics.ChatMechanics;
@@ -75,7 +74,6 @@ import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
 import minecade.dungeonrealms.config.Config;
 import net.minecraft.server.v1_9_R1.EntityLiving;
-import net.minecraft.server.v1_9_R1.PacketPlayOutWorldEvent;
 
 public class EcashMechanics implements Listener {
     static Logger log = Logger.getLogger("Minecraft");
@@ -212,30 +210,17 @@ public class EcashMechanics implements Listener {
                 for (Entry<Block, Long> data : music_box_timeout.entrySet()) {
                     long timeout = data.getValue();
                     if ((System.currentTimeMillis() - timeout) >= 360 * 1000) {
-                        // Despawn.
-                        final Block b = data.getKey();
-                        new BukkitRunnable() {
-                            public void run() {
-                                CraftJukebox cj = (CraftJukebox) b.getState();
-                                cj.setPlaying(Material.AIR);
-                                cj.setRawData((byte) 0x0);
-                                b.setType(Material.AIR);
-                            }
-                        }.runTask(Main.plugin);
+                        Block block = data.getKey();
+                    	Jukebox juke = (Jukebox) block.getState();
+                        juke.setPlaying(Material.AIR);
+                        block.setType(Material.AIR);
+                        block.getLocation().getWorld().spawnParticle(Particle.BLOCK_DUST, block.getLocation(), 1, 84);
 
-                        Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(b.getLocation().getX()),
-                                (int) Math.round(b.getLocation().getY()), (int) Math.round(b.getLocation().getZ()), 84, false);
-                        ((CraftServer) Bukkit.getServer())
-                                .getServer()
-                                .getPlayerList()
-                                .sendPacketNearby(b.getLocation().getX(), b.getLocation().getY(), b.getLocation().getZ(), 24,
-                                        ((CraftWorld) b.getWorld()).getHandle().dimension, particles);
-
-                        String owner = music_box_ownership.get(b);
+                        String owner = music_box_ownership.get(block);
                         music_box_placement.remove(owner);
 
-                        music_box_ownership.remove(b);
-                        music_box_timeout.remove(b);
+                        music_box_ownership.remove(block);
+                        music_box_timeout.remove(block);
                     } else {
                         Block b = data.getKey();
                         if (b.getType() == Material.JUKEBOX) {
@@ -722,14 +707,14 @@ public class EcashMechanics implements Listener {
                         .equalsIgnoreCase(ChatColor.GREEN.toString() + "Rollback Appology")) {
             e.setCancelled(true);
             Player pl = e.getPlayer();
-            if (pl.getItemInHand().getAmount() <= 1) {
-                pl.setItemInHand(new ItemStack(Material.AIR));
+            if (pl.getInventory().getItemInMainHand().getAmount() <= 1) {
+                pl.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
             } else {
-                ItemStack new_cookie = pl.getItemInHand();
+                ItemStack new_cookie = pl.getInventory().getItemInMainHand();
                 new_cookie.setAmount(new_cookie.getAmount() - 1);
-                pl.setItemInHand(new_cookie);
+                pl.getInventory().setItemInMainHand(new_cookie);
             }
-            pl.playSound(pl.getLocation(), Sound.EAT, 1F, 1F);
+            pl.playSound(pl.getLocation(), Sound.ENTITY_GENERIC_EAT, 1F, 1F);
 
             try {
                 ParticleEffect.sendToLocation(ParticleEffect.HEART, pl.getLocation().add(0, 2, 0), new Random().nextFloat(), new Random().nextFloat(),
@@ -756,7 +741,7 @@ public class EcashMechanics implements Listener {
 
             if (p.getInventory().firstEmpty() != -1) {
                 p.getInventory().addItem(ItemGenerators.customGenerator("rollback_cookie"));
-                p.playSound(p.getLocation(), Sound.WOOD_CLICK, 1.0F, 1.0F);
+                p.playSound(p.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1.0F, 1.0F);
                 p.updateInventory();
             }
         }
@@ -986,7 +971,7 @@ public class EcashMechanics implements Listener {
                 return;
             }
             if (!(confirm_loot_buff.contains(pl.getName()))) {
-                pl.setItemInHand(new ItemStack(Material.AIR));
+                pl.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
                 confirm_loot_buff.add(pl.getName());
                 long diff = System.currentTimeMillis() - Hive.serverStart;
                 diff = (4 * 60 * 60 * 1000) - diff;
@@ -1016,7 +1001,7 @@ public class EcashMechanics implements Listener {
                 return;
             }
             if (!(confirm_profession_buff.contains(pl.getName()))) {
-                pl.setItemInHand(new ItemStack(Material.AIR));
+                pl.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
                 confirm_profession_buff.add(pl.getName());
                 long diff = System.currentTimeMillis() - Hive.serverStart;
                 diff = (4 * 60 * 60 * 1000) - diff;
@@ -1042,7 +1027,7 @@ public class EcashMechanics implements Listener {
             e.setUseItemInHand(Result.DENY);
             Player pl = e.getPlayer();
             if (!(sending_global_chat.contains(pl.getName()))) {
-                pl.setItemInHand(new ItemStack(Material.AIR)); // Remove the smega, if they cancel we'll return it.
+                pl.getInventory().setItemInMainHand(new ItemStack(Material.AIR)); // Remove the smega, if they cancel we'll return it.
                 sending_global_chat.add(pl.getName());
                 pl.sendMessage("");
                 pl.sendMessage(ChatColor.YELLOW + "Please enter the message you'd like to send to " + ChatColor.UNDERLINE + "all servers" + ChatColor.YELLOW
@@ -1173,7 +1158,7 @@ public class EcashMechanics implements Listener {
             is.setItemMeta(im);
 
             pl.getInventory().addItem(is);
-            pl.playSound(pl.getLocation(), Sound.BAT_TAKEOFF, 1F, 1.2F);
+            pl.playSound(pl.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1.2F);
             pl.updateInventory();
 
             item_lore_being_added.remove(pl.getName());
@@ -1240,9 +1225,9 @@ public class EcashMechanics implements Listener {
             is.setItemMeta(im);
 
             pl.getInventory().addItem(is);
-            pl.playSound(pl.getLocation(), Sound.BAT_TAKEOFF, 1F, 1.2F);
+            pl.playSound(pl.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1.2F);
             pl.updateInventory();
-            AchievementMechanics.addAchievement(pl.getName(), "Its Personal");
+            AchievementMechanics.addAchievement(pl, "Its Personal");
 
             item_name_change.remove(pl.getName());
         }
@@ -1336,7 +1321,7 @@ public class EcashMechanics implements Listener {
                 }
 
                 e.setCurrentItem(removeCustomLoreLines(x_current));
-                pl.playSound(pl.getLocation(), Sound.WATER, 1F, 1F);
+                pl.playSound(pl.getLocation(), Sound.BLOCK_WATER_AMBIENT, 1F, 1F);
             }
         }
     }
@@ -1562,7 +1547,7 @@ public class EcashMechanics implements Listener {
                 }
             }
 
-            if ((!pl.getWorld().getName().equalsIgnoreCase("DungeonRealms") && !(InstanceMechanics.isInstance(pl.getWorld().getName()))) && Main.isDev(pl.getName())) {
+            if ((!pl.getWorld().getName().equalsIgnoreCase("DungeonRealms") && !(InstanceMechanics.isInstance(pl.getWorld().getName()))) && Main.isDev(pl.getUniqueId())) {
                 pl.sendMessage(ChatColor.RED + "You cannot place your music box here.");
                 e.setCancelled(true);
                 return;
@@ -1592,7 +1577,7 @@ public class EcashMechanics implements Listener {
 
         if (e.hasBlock() && e.getAction() == Action.LEFT_CLICK_BLOCK) {
             Block b = e.getClickedBlock();
-            if (b.getState() instanceof CraftJukebox) {
+            if (b.getState() instanceof Jukebox) {
                 if (music_box_ownership.containsKey(b)) {
                     e.setCancelled(true);
                     e.setUseInteractedBlock(Result.DENY);
@@ -1600,22 +1585,10 @@ public class EcashMechanics implements Listener {
                     Player pl = e.getPlayer();
                     if (music_box_ownership.get(b).equalsIgnoreCase(pl.getName())) {
                         // Destroy.
-                        CraftJukebox cj = (CraftJukebox) b.getState();
-                        cj.setPlaying(Material.AIR);
-                        cj.setRawData((byte) 0x0);
+                        Jukebox juke = (Jukebox) b.getState();
+                        juke.setPlaying(Material.AIR);
                         b.setType(Material.AIR);
-                        final Block fb = b;
-                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
-                            public void run() {
-                                Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(fb.getLocation().getX()), (int) Math.round(fb
-                                        .getLocation().getY()), (int) Math.round(fb.getLocation().getZ()), 84, false);
-                                ((CraftServer) Bukkit.getServer())
-                                        .getServer()
-                                        .getPlayerList()
-                                        .sendPacketNearby(fb.getLocation().getX(), fb.getLocation().getY(), fb.getLocation().getZ(), 24,
-                                                ((CraftWorld) fb.getWorld()).getHandle().dimension, particles);
-                            }
-                        }, 2L);
+                        b.getLocation().getWorld().spawnParticle(Particle.BLOCK_DUST, b.getLocation(), 1, 84);
 
                         String owner = music_box_ownership.get(b);
                         music_box_placement.remove(owner);
@@ -1787,7 +1760,6 @@ public class EcashMechanics implements Listener {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @EventHandler
     public void onFireworkWandUse(PlayerInteractEvent e) {
         if (e.hasItem()) {
@@ -1908,7 +1880,7 @@ public class EcashMechanics implements Listener {
                     t = Type.STAR;
                 }
 
-                Firework fw = (Firework) pl.getWorld().spawnEntity(pl.getTargetBlock(null, 2).getLocation(), EntityType.FIREWORK);
+                Firework fw = (Firework) pl.getWorld().spawnEntity(pl.getTargetBlock((Set<Material>) null, 2).getLocation(), EntityType.FIREWORK);
                 FireworkMeta fwm = fw.getFireworkMeta();
                 FireworkEffect effect = FireworkEffect.builder().flicker(true).withColor(c1).withFade(c2).with(t).trail(true).build();
                 fwm.addEffect(effect);
@@ -1920,7 +1892,6 @@ public class EcashMechanics implements Listener {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @EventHandler
     public void onDestructoWandUse(PlayerInteractEvent e) {
         if (e.hasItem()) {
@@ -1957,7 +1928,7 @@ public class EcashMechanics implements Listener {
                 }
 
                 if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-                    Location target_loc = pl.getTargetBlock(null, 8).getLocation();
+                    Location target_loc = pl.getTargetBlock((Set<Material>) null, 8).getLocation();
                     try {
                         ParticleEffect.sendToLocation(ParticleEffect.HUGE_EXPLOSION, target_loc.add(0.50, 0.95, 0.50), new Random().nextFloat(),
                                 new Random().nextFloat(), new Random().nextFloat(), 0.5F, 40);
@@ -1965,7 +1936,7 @@ public class EcashMechanics implements Listener {
                         e1.printStackTrace();
                     }
 
-                    pl.getWorld().playSound(pl.getLocation(), Sound.EXPLODE, 1F, 1F);
+                    pl.getWorld().playSound(pl.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F);
                     // pl.getWorld().createExplosion(target_loc.getX(), target_loc.getY() + 2, target_loc.getZ(), 10.0F, false, false);
                 }
 
