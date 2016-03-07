@@ -14,12 +14,12 @@ public class CommandGBanner implements CommandExecutor {
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		final Player p = (Player) sender;
-		if(!(GuildMechanics.inGuild(p.getName()))) {
+		if(!(GuildMechanics.inGuild(p))) {
 			p.sendMessage(ChatColor.RED + "You must be in a " + ChatColor.BOLD + "GUILD" + ChatColor.RED + " to use " + ChatColor.BOLD + "/gbanner.");
 			return true;
 		}
 		
-		String g_name = GuildMechanics.getGuild(p.getName());
+		String g_name = GuildMechanics.getGuild(p);
 		
 		if(!(GuildMechanics.isGuildLeader(p.getName()) || GuildMechanics.isGuildCoOwner(p.getName()))) {
 			p.sendMessage(ChatColor.RED + "You must be the " + ChatColor.BOLD + "GUILD LEADER" + ChatColor.RED + " to use " + ChatColor.BOLD + "/gbanner.");

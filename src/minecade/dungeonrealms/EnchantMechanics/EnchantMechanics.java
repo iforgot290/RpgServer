@@ -437,7 +437,7 @@ public class EnchantMechanics implements Listener {
 			
 			e.setCurrentItem(addProtection(in_slot));
 			p.sendMessage(ChatColor.GREEN + "Your " + in_slot.getItemMeta().getDisplayName() + ChatColor.GREEN + " is now protected -- even if an enchant scroll fails, it will " + ChatColor.UNDERLINE + "NOT" + ChatColor.GREEN + " be destroyed up to +8 status.");
-			p.playSound(p.getLocation(), Sound.LEVEL_UP, 1F, 1F);
+			p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
 			
 			Firework fw = (Firework) p.getWorld().spawnEntity(p.getLocation(), EntityType.FIREWORK);
 			FireworkMeta fwm = fw.getFireworkMeta();
@@ -523,7 +523,7 @@ public class EnchantMechanics implements Listener {
 				}
 				
 				p.updateInventory();
-				p.getWorld().playSound(p.getLocation(), Sound.LEVEL_UP, 1.0F, 1.25F);
+				p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.25F);
 				// p.getWorld().spawnParticle(p.getLocation().add(0, 8, 0), Particle.FIREWORKS_SPARK, 0.75F, 50);
 				Firework fw = (Firework) p.getWorld().spawnEntity(p.getLocation(), EntityType.FIREWORK);
 				FireworkMeta fwm = fw.getFireworkMeta();
@@ -541,7 +541,7 @@ public class EnchantMechanics implements Listener {
 					p.sendMessage(ChatColor.RED + "Your enchantment scroll " + ChatColor.UNDERLINE + "FAILED" + ChatColor.RED + " but since you had white scroll protection, your item did not vanish.");
 				}
 				p.updateInventory();
-				p.getWorld().playSound(p.getLocation(), Sound.FIZZ, 2.0F, 1.25F);
+				p.getWorld().playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 2.0F, 1.25F);
 				
 				try {
 					ParticleEffect.sendToLocation(ParticleEffect.LAVA, p.getLocation().add(0, 2.5, 0), new Random().nextFloat(), new Random().nextFloat(), new Random().nextFloat(), 1F, 75);

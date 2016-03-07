@@ -2,6 +2,7 @@ package minecade.dungeonrealms.GuildMechanics.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,7 +20,7 @@ public class CommandGPromote implements CommandExecutor {
 			return true;
 		}
 
-		if(!(GuildMechanics.inGuild(p.getName()))) {
+		if(!(GuildMechanics.inGuild(p))) {
 			p.sendMessage(ChatColor.RED + "You must be in a " + ChatColor.BOLD + "GUILD" + ChatColor.RED + " to use " + ChatColor.BOLD + "/gpromote.");
 			return true;
 		}
@@ -46,8 +47,11 @@ public class CommandGPromote implements CommandExecutor {
 			return true;
 		}
 
+		@SuppressWarnings("deprecation")
+		OfflinePlayer player = Bukkit.getOfflinePlayer(p_name_2promote);
+		
 		if (!(GuildMechanics.areGuildies(p.getName(), p_name_2promote))) {
-			p.sendMessage(ChatColor.RED + "" + ChatColor.UNDERLINE + p_name_2promote + ChatColor.RED + " is not in YOUR guild. But in " + ChatColor.UNDERLINE + GuildMechanics.getGuild(p_name_2promote));
+			p.sendMessage(ChatColor.RED + "" + ChatColor.UNDERLINE + p_name_2promote + ChatColor.RED + " is not in YOUR guild. But in " + ChatColor.UNDERLINE + GuildMechanics.getGuild(player));
 			return true;
 		}
 
@@ -65,7 +69,7 @@ public class CommandGPromote implements CommandExecutor {
 			return true;
 		}
 
-		if (GuildMechanics.getTotalCoOwnersCount(GuildMechanics.getGuild(p.getName())) == 2 && GuildMechanics.isGuildLeader(p.getName())) {
+		if (GuildMechanics.getTotalCoOwnersCount(GuildMechanics.getGuild(p)) == 2 && GuildMechanics.isGuildLeader(p.getName())) {
 			p.sendMessage(ChatColor.RED + "You've already set 2 guild co-owners, demote one of them to set another!");
 			return true;
 		}

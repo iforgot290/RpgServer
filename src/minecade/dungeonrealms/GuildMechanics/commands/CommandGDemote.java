@@ -19,7 +19,7 @@ public class CommandGDemote implements CommandExecutor {
 			return true;
 		}
 		
-		if(!(GuildMechanics.inGuild(p.getName()))) {
+		if(!(GuildMechanics.inGuild(p))) {
 			p.sendMessage(ChatColor.RED + "You must be in a " + ChatColor.BOLD + "GUILD" + ChatColor.RED + " to use " + ChatColor.BOLD + "/gdemote.");
 			return true;
 		}

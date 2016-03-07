@@ -17,7 +17,7 @@ public class CommandGInvite implements CommandExecutor {
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		final Player p = (Player) sender;
-		if(!(GuildMechanics.inGuild(p.getName()))) {
+		if(!(GuildMechanics.inGuild(p))) {
 			p.sendMessage(ChatColor.RED + "You must be in a " + ChatColor.BOLD + "GUILD" + ChatColor.RED + " to use " + ChatColor.BOLD + "/ginvite.");
 			return true;
 		}
@@ -48,17 +48,17 @@ public class CommandGInvite implements CommandExecutor {
 			return true;
 		}
 		
-		if(PlayerManager.getPlayerModel(p_name).getToggleList() != null && PlayerManager.getPlayerModel(p_name).getToggleList().contains("guild")){
-			if(!CommunityMechanics.isPlayerOnBuddyList(p_name, p.getName())) {
+		Player to_invite = Bukkit.getPlayer(p_name);
+		
+		if(PlayerManager.getPlayerModel(to_invite).getToggleList() != null && PlayerManager.getPlayerModel(to_invite).getToggleList().contains("guild")){
+			if(!CommunityMechanics.isPlayerOnBuddyList(to_invite, p)) {
 				// They're not buddies and this player doesn't want non-bud invites.
 				p.sendMessage(ChatColor.RED + p_name + " has Non-BUD guild invites " + ChatColor.BOLD + "DISABLED");
 				return true;
 			}
 		}
 		
-		Player to_invite = Bukkit.getPlayer(p_name);
-		
-		if(CommunityMechanics.isPlayerOnIgnoreList(to_invite, p.getName()) || ModerationMechanics.isPlayerVanished(p_name)) {
+		if(CommunityMechanics.isPlayerOnIgnoreList(to_invite, p) || ModerationMechanics.isPlayerVanished(to_invite)) {
 			p.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + p_name + ChatColor.RED + " is OFFLINE");
 			return true;
 		}

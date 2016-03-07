@@ -13,17 +13,17 @@ public class CommandGBio implements CommandExecutor {
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		final Player p = (Player) sender;
-		if(!(GuildMechanics.inGuild(p.getName()))) {
+		if(!(GuildMechanics.inGuild(p))) {
 			p.sendMessage(ChatColor.RED + "You must be in a " + ChatColor.BOLD + "GUILD" + ChatColor.RED + " to view " + ChatColor.BOLD + "/gbio.");
 			return true;
 		}
 		
 		if(args.length == 0) {
-			String g_name = GuildMechanics.getGuild(p.getName());
+			String g_name = GuildMechanics.getGuild(p);
 			
 			if(!(GuildMechanics.isGuildLeader(p.getName()) || GuildMechanics.isGuildCoOwner(p.getName()))) {
 				// TODO: Display the biography if it exists.
-				if((!(GuildMechanics.guild_bio.containsKey(GuildMechanics.getGuild(p.getName())))) || GuildMechanics.guild_bio.get(GuildMechanics.getGuild(p.getName())) == null) {
+				if((!(GuildMechanics.guild_bio.containsKey(GuildMechanics.getGuild(p)))) || GuildMechanics.guild_bio.get(GuildMechanics.getGuild(p)) == null) {
 					// NO MOTD.
 					p.sendMessage(ChatColor.RED + "No " + ChatColor.BOLD + "GUILD BIOGRAPHY" + ChatColor.RED + " currently set.");
 					p.sendMessage(ChatColor.GRAY + "Your guild leader/co-owner should use /gbio to write one!");

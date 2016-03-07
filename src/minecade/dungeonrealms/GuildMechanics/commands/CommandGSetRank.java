@@ -1,6 +1,8 @@
 package minecade.dungeonrealms.GuildMechanics.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,8 +38,8 @@ public class CommandGSetRank implements CommandExecutor {
 				pl.sendMessage(ChatColor.RED + "Please choose a rank between \u00A7n1 \u00A7cand \u00A7n4."); // \u00A7 = § - too lazy to use ChatColor, takes up less space as well.
 				return true;
 			}
-			if (GuildMechanics.guild_map.containsKey(GuildMechanics.getGuild(pl.getName()))) {
-				GuildMechanics.setGuildRank(pl.getName(), Integer.parseInt(args[0]));
+			if (GuildMechanics.guild_map.containsKey(GuildMechanics.getGuild(pl))) {
+				GuildMechanics.setGuildRank(pl.getUniqueId(), Integer.parseInt(args[0]));
 				String rank = "";
 				switch (Integer.parseInt(args[0])) {
 				case 1:
@@ -56,7 +58,7 @@ public class CommandGSetRank implements CommandExecutor {
 					break;
 				}
 				pl.sendMessage(ChatColor.GREEN + "You set your rank to " + ChatColor.UNDERLINE + rank);
-				GuildMechanics.sendGuildMessageCrossServer("[gupdate]" + GuildMechanics.getGuild(args[0])); 
+				GuildMechanics.sendGuildMessageCrossServer("[gupdate]" + GuildMechanics.getGuild(pl)); 
 				return true;
 			}
 			pl.sendMessage(ChatColor.RED + "You aren't in an existant guild.");
@@ -67,9 +69,13 @@ public class CommandGSetRank implements CommandExecutor {
 				pl.sendMessage(ChatColor.RED + "Please choose a rank between \u00A7n1 \u00A7cand \u00A7n4."); // \u00A7 = § - too lazy to use ChatColor, takes up less space as well.
 				return true;
 			}
-			if (GuildMechanics.guild_map.containsKey(GuildMechanics.getGuild(args[0]))) {
-				GuildMechanics.setGuildRank(args[0], Integer.parseInt(args[1]));
-				GuildMechanics.updateGuildSQL(GuildMechanics.getGuild(args[0]));
+			
+			@SuppressWarnings("deprecation")
+			OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
+			
+			if (GuildMechanics.guild_map.containsKey(GuildMechanics.getGuild(player))) {
+				GuildMechanics.setGuildRank(player.getUniqueId(), Integer.parseInt(args[1]));
+				GuildMechanics.updateGuildSQL(GuildMechanics.getGuild(player));
 				String rank = "";
 				switch (Integer.parseInt(args[1])) {
 				case 1:
@@ -88,7 +94,7 @@ public class CommandGSetRank implements CommandExecutor {
 					break;
 				}
 				pl.sendMessage(ChatColor.GREEN + "You set " + ChatColor.UNDERLINE + args[0] + ChatColor.RED + " to the rank " + ChatColor.UNDERLINE + rank);
-				GuildMechanics.sendGuildMessageCrossServer("[gupdate]" + GuildMechanics.getGuild(args[0])); 
+				GuildMechanics.sendGuildMessageCrossServer("[gupdate]" + GuildMechanics.getGuild(player)); 
 				return true;
 			}
 			pl.sendMessage(ChatColor.RED + "The guild the user is doesn't exist.");

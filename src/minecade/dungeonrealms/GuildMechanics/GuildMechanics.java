@@ -2715,9 +2715,18 @@ public class GuildMechanics implements Listener {
 
 		return false;
 	}
+	
+	public static boolean inGuild(Player player){
+		return inGuild(player.getUniqueId());
+	}
+	
 	public static boolean inGuild(UUID p_uuid) {
 		if(player_guilds.containsKey(p_uuid)) { return true; }
 		return false;
+	}
+	
+	public static String getGuild(OfflinePlayer player){
+		return getGuild(player.getUniqueId());
 	}
 
 	public static String getGuild(UUID id) {

@@ -600,6 +600,10 @@ public class ModerationMechanics implements Listener {
 		}
 	}
 	
+	public static boolean isPlayerVanished(Player player){
+		return isPlayerVanished(player.getUniqueId());
+	}
+	
 	public static boolean isPlayerVanished(UUID p_uuid) {
 	    return vanish_list.contains(p_uuid);
 	}

@@ -15,7 +15,7 @@ public class CommandGuild implements CommandExecutor {
 		if(!(p.isOp())) { return true; }
 		p.getInventory().addItem(GuildMechanics.guild_dye);
 		p.getInventory().addItem(GuildMechanics.guild_emblem);
-		p.getItemInHand().setDurability((short) 20);
+		p.getInventory().getItemInMainHand().setDurability((short) 20);
 		return true;
 	}
 	

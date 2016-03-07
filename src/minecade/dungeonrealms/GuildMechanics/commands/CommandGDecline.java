@@ -19,15 +19,15 @@ public class CommandGDecline implements CommandExecutor {
 			return true;
 		}
 		
-		if(!(GuildMechanics.guild_invite.containsKey(p.getName()))) {
+		if(!(GuildMechanics.guild_invite.containsKey(p.getUniqueId()))) {
 			p.sendMessage(ChatColor.RED + "No pending guild invites.");
 			return true;
 		}
 		
-		String guild_name = GuildMechanics.guild_invite.get(p.getName());
-		GuildMechanics.guild_invite.remove(p.getName());
-		GuildMechanics.guild_inviter.remove(p.getName());
-		GuildMechanics.guild_invite_time.remove(p.getName());
+		String guild_name = GuildMechanics.guild_invite.get(p.getUniqueId());
+		GuildMechanics.guild_invite.remove(p.getUniqueId());
+		GuildMechanics.guild_inviter.remove(p.getUniqueId());
+		GuildMechanics.guild_invite_time.remove(p.getUniqueId());
 		p.sendMessage(ChatColor.RED + "Declined invitation to '" + ChatColor.BOLD + guild_name + "'" + ChatColor.RED + "s guild.");
 		if(Bukkit.getPlayer(guild_name) != null) {
 			Player owner = Bukkit.getPlayer(guild_name);
