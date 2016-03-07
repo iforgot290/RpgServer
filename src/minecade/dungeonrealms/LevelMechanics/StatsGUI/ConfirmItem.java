@@ -42,23 +42,20 @@ public class ConfirmItem implements MenuItem, BonusItem<PlayerModel> {
 		DynamicMenu plrMenu = DynamicMenuModel.getMenu(plr);
 		for (Entry<Integer, MenuItem> entry : plrMenu.getDynamicItems().entrySet()) {
 			if (entry.getValue() instanceof StrengthItem) {
-				drPlayer.setStrength(drPlayer.getStrength() + (((StrengthItem) entry.getValue()).getPoints()
-						- pLevel.getStrPoints()));
+				drPlayer.setStrength(drPlayer.getStrength()
+						+ (((StrengthItem) entry.getValue()).getPoints() - pLevel.getStrPoints()));
 				pLevel.setStrPoints(((StrengthItem) entry.getValue()).getPoints());
-			}
-			else if (entry.getValue() instanceof DexterityItem) {
-				drPlayer.setDexterity(drPlayer.getDexterity() + (((DexterityItem) entry.getValue()).getPoints()
-						- pLevel.getDexPoints()));
+			} else if (entry.getValue() instanceof DexterityItem) {
+				drPlayer.setDexterity(drPlayer.getDexterity()
+						+ (((DexterityItem) entry.getValue()).getPoints() - pLevel.getDexPoints()));
 				pLevel.setDexPoints(((DexterityItem) entry.getValue()).getPoints());
-			}
-			else if (entry.getValue() instanceof IntellectItem) {
-				drPlayer.setIntelligence(drPlayer.getIntelligence() + (((IntellectItem) entry.getValue()).getPoints()
-						- pLevel.getIntPoints()));
+			} else if (entry.getValue() instanceof IntellectItem) {
+				drPlayer.setIntelligence(drPlayer.getIntelligence()
+						+ (((IntellectItem) entry.getValue()).getPoints() - pLevel.getIntPoints()));
 				pLevel.setIntPoints(((IntellectItem) entry.getValue()).getPoints());
-			}
-			else if (entry.getValue() instanceof VitalityItem) {
-				drPlayer.setVitality(drPlayer.getVitality() + (((VitalityItem) entry.getValue()).getPoints()
-						- pLevel.getVitPoints()));
+			} else if (entry.getValue() instanceof VitalityItem) {
+				drPlayer.setVitality(drPlayer.getVitality()
+						+ (((VitalityItem) entry.getValue()).getPoints() - pLevel.getVitPoints()));
 				pLevel.setVitPoints(((VitalityItem) entry.getValue()).getPoints());
 			}
 		}
@@ -69,20 +66,18 @@ public class ConfirmItem implements MenuItem, BonusItem<PlayerModel> {
 
 	@Override
 	public ItemStack getItem() {
-        return new Builder(Material.INK_SACK)
-                .setDurability((short) 10)
-                .setName(ChatColor.GREEN + "Confirm")
-                .setLore(
-                        Arrays.asList(ChatColor.GRAY + "Click to confirm your stat ", ChatColor.GRAY
-                                + "point allocation.  If you ", ChatColor.GRAY + "want to undo your changes, ",
-                                ChatColor.GRAY + "press escape.")).getItem();
-    }
+		return new Builder(Material.INK_SACK).setDurability((short) 10).setName(ChatColor.GREEN + "Confirm")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Click to confirm your stat ",
+						ChatColor.GRAY + "point allocation.  If you ", ChatColor.GRAY + "want to undo your changes, ",
+						ChatColor.GRAY + "press escape."))
+				.getItem();
+	}
 
 	@Override
 	public void setBonusData(PlayerModel player) {
 		drPlayer = player;
-		DynamicMenuModel.getMenu(((PlayerModel) player).getPlayer()).setName(
-				ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Stat Points");
+		DynamicMenuModel.getMenu(((PlayerModel) player).getPlayer())
+				.setName(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Stat Points");
 	}
 
 }

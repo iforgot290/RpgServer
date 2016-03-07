@@ -13,18 +13,18 @@ import minecade.dungeonrealms.HearthstoneMechanics.HearthstoneMechanics;
 
 public class CommandListHearthstone implements CommandExecutor {
 
-    
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (!(sender instanceof Player))
-            return true;
-        Player p = (Player) sender;
-        if (!p.isOp())
-            return true;
-        for (Entry<String, Location> s : HearthstoneMechanics.spawn_map.entrySet()) {
-            p.sendMessage(ChatColor.RED + "Name: " + s.getKey() + " Location: " + s.getValue().getBlockX() + ", " + s.getValue().getBlockY() + ", "
-                    + s.getValue().getBlockZ() + ChatColor.GRAY + " Price: " + HearthstoneMechanics.hearthstone_price.get(s.getKey()));
-        }
-        return false;
-    }
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (!(sender instanceof Player))
+			return true;
+		Player p = (Player) sender;
+		if (!p.isOp())
+			return true;
+		for (Entry<String, Location> s : HearthstoneMechanics.spawn_map.entrySet()) {
+			p.sendMessage(ChatColor.RED + "Name: " + s.getKey() + " Location: " + s.getValue().getBlockX() + ", "
+					+ s.getValue().getBlockY() + ", " + s.getValue().getBlockZ() + ChatColor.GRAY + " Price: "
+					+ HearthstoneMechanics.hearthstone_price.get(s.getKey()));
+		}
+		return false;
+	}
 
 }

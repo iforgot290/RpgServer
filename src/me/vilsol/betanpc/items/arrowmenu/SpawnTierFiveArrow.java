@@ -23,12 +23,15 @@ public class SpawnTierFiveArrow implements MenuItem {
 	public void execute(Player plr, ClickType click) {
 		ItemStack arrow = ItemMechanics.t5_arrow.clone();
 		arrow.setAmount(64);
-        plr.getInventory().addItem(arrow);
+		plr.getInventory().addItem(arrow);
 	}
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.ARROW).setName(ChatColor.YELLOW + "Spawn Tier 5 Arrow").setLore(Arrays.asList(ChatColor.GRAY + "Spawn in " + ChatColor.BOLD + "64x " + ChatColor.YELLOW + "Tier 5 Arrows.")).getItem();
+		return new Builder(Material.ARROW).setName(ChatColor.YELLOW + "Spawn Tier 5 Arrow")
+				.setLore(Arrays.asList(
+						ChatColor.GRAY + "Spawn in " + ChatColor.BOLD + "64x " + ChatColor.YELLOW + "Tier 5 Arrows."))
+				.getItem();
 	}
-	
+
 }

@@ -32,33 +32,42 @@ public class SpawnFishingRod implements MenuItem, ChatCallback {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.FISHING_ROD).setName(ChatColor.YELLOW + "Spawn Fishing Rod").setLore(Arrays.asList(ChatColor.GRAY + "Spawn a Fishing Rod with Random Enchants.")).getItem();
+		return new Builder(Material.FISHING_ROD).setName(ChatColor.YELLOW + "Spawn Fishing Rod")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn a Fishing Rod with Random Enchants.")).getItem();
 	}
 
 	@Override
 	public void onChatMessage(AsyncPlayerChatEvent e) {
-		if(Utils.isInteger(e.getMessage())){
+		if (Utils.isInteger(e.getMessage())) {
 			int level = Integer.parseInt(e.getMessage());
-			if(level > 100 || level < 1){
-				e.getPlayer().sendMessage(Utils.NPC + "Fishing Rod spawning cancelled because number is not between 1 - 100!");
-			}else{
+			if (level > 100 || level < 1) {
+				e.getPlayer().sendMessage(
+						Utils.NPC + "Fishing Rod spawning cancelled because number is not between 1 - 100!");
+			} else {
 				ItemStack base = ProfessionMechanics.t1_fishing.clone();
-				if(level >= 20) base = ProfessionMechanics.t2_fishing.clone();
-				if(level >= 40) base = ProfessionMechanics.t3_fishing.clone();
-				if(level >= 60) base = ProfessionMechanics.t4_fishing.clone();
-				if(level >= 80) base = ProfessionMechanics.t5_fishing.clone();
-				
-				while(ProfessionMechanics.getItemLevel(base) < level){
-					ProfessionMechanics.addEXP(e.getPlayer(), base, ProfessionMechanics.getEXPNeeded(ProfessionMechanics.getItemLevel(base), "fishing"), "fishing");
+				if (level >= 20)
+					base = ProfessionMechanics.t2_fishing.clone();
+				if (level >= 40)
+					base = ProfessionMechanics.t3_fishing.clone();
+				if (level >= 60)
+					base = ProfessionMechanics.t4_fishing.clone();
+				if (level >= 80)
+					base = ProfessionMechanics.t5_fishing.clone();
+
+				while (ProfessionMechanics.getItemLevel(base) < level) {
+					ProfessionMechanics.addEXP(e.getPlayer(), base,
+							ProfessionMechanics.getEXPNeeded(ProfessionMechanics.getItemLevel(base), "fishing"),
+							"fishing");
 				}
-				
+
 				e.getPlayer().getInventory().addItem(base);
 			}
-		}else{
-			e.getPlayer().sendMessage(Utils.NPC + "Fishing Rod spawning cancelled because number is not between 1 - 100!");
+		} else {
+			e.getPlayer()
+					.sendMessage(Utils.NPC + "Fishing Rod spawning cancelled because number is not between 1 - 100!");
 		}
 		ChatCallback.locked_players.remove(e.getPlayer());
 		MenuModel.openLastMenu(e.getPlayer());
 	}
-	
+
 }

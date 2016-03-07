@@ -10,17 +10,18 @@ import org.bukkit.entity.Player;
 import minecade.dungeonrealms.SpawnMechanics.SpawnMechanics;
 
 public class CommandDRLoad implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if(sender instanceof Player) {
+		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			if(!(p.isOp())) { return true; }
+			if (!(p.isOp())) {
+				return true;
+			}
 		}
 		SpawnMechanics.loadSpawnLocationTemplate();
 		Bukkit.broadcastMessage(ChatColor.GREEN + "Loaded all data to filesystem.");
-		//p.sendMessage(ChatColor.GREEN + "Saved all data to filesystem.");
+		// p.sendMessage(ChatColor.GREEN + "Saved all data to filesystem.");
 		return true;
 	}
-	
+
 }

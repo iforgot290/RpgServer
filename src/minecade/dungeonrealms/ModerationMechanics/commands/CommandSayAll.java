@@ -8,37 +8,38 @@ import org.bukkit.entity.Player;
 import minecade.dungeonrealms.CommunityMechanics.CommunityMechanics;
 
 public class CommandSayAll implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = null;
-		if(sender instanceof Player) {
+		if (sender instanceof Player) {
 			p = (Player) sender;
 		}
-		
-		if(p != null) {
-			if(!(p.isOp())) { return true; }
+
+		if (p != null) {
+			if (!(p.isOp())) {
+				return true;
+			}
 		}
-		
+
 		String msg = "";
-		for(String s : args) {
+		for (String s : args) {
 			msg += s + " ";
 		}
-		
+
 		msg = "!!!" + msg;
 		final String fmsg = msg;
-		
-		//Thread t = new Thread(new Runnable(){
-		//	public void run(){
-		for(final String ip : CommunityMechanics.server_list.values()) {
+
+		// Thread t = new Thread(new Runnable(){
+		// public void run(){
+		for (final String ip : CommunityMechanics.server_list.values()) {
 			CommunityMechanics.sendPacketCrossServer(fmsg, ip);
 		}
-		//	}
-		//});
-		
-		//t.start();
-		
+		// }
+		// });
+
+		// t.start();
+
 		return true;
 	}
-	
+
 }

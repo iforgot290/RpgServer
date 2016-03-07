@@ -31,7 +31,10 @@ public class TierTwo implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.CHAINMAIL_CHESTPLATE).setName(ChatColor.GREEN + "Tier Two").setLore(Arrays.asList(ChatColor.GRAY + "Spawn " + ChatColor.GREEN.toString() + ChatColor.BOLD + "Tier Two " + ChatColor.GRAY + " Armor and Weapons")).getItem();
+		return new Builder(Material.CHAINMAIL_CHESTPLATE).setName(ChatColor.GREEN + "Tier Two")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn " + ChatColor.GREEN.toString() + ChatColor.BOLD
+						+ "Tier Two " + ChatColor.GRAY + " Armor and Weapons"))
+				.getItem();
 	}
 
 }

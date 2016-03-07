@@ -19,8 +19,8 @@ public class MainMenu extends MenuModel {
 		getMenu().addItem(SpawnGems.class, 2);
 		getMenu().addItem(SpawnMiscItems.class, 3);
 		getMenu().addItem(SpawnProfessionItem.class, 4);
-		
+
 		getMenu().addItem(ExitMenu.class, 8);
 	}
-	
+
 }

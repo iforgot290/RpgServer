@@ -12,7 +12,7 @@ public class MenuFoodVendor extends DynamicMenuModel {
 	public MenuFoodVendor() {
 		super(DynamicFoodVendor.class);
 	}
-	
+
 	@Override
 	public void addItems(DynamicMenu d, Player arg1) {
 		d.addItemDynamic(FoodItem.class, 0, 0);
@@ -26,7 +26,7 @@ public class MenuFoodVendor extends DynamicMenuModel {
 		d.addItemDynamic(FoodItem.class, 8, 8);
 		d.addItemDynamic(FoodItem.class, 9, 9);
 	}
-	
+
 	@Override
 	public boolean canPlaceItem(DynamicMenu arg0, Player arg1, int arg2, ItemStack arg3) {
 		return false;

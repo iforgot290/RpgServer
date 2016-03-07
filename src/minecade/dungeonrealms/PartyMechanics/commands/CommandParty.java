@@ -9,20 +9,23 @@ import org.bukkit.entity.Player;
 import minecade.dungeonrealms.PartyMechanics.PartyMechanics;
 
 public class CommandParty implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
 
-		if(PartyMechanics.isInParty(p.getName())){
+		if (PartyMechanics.isInParty(p.getName())) {
 			p.sendMessage(ChatColor.RED + "You are already in a party!");
 			return true;
 		}
-		
+
 		PartyMechanics.createParty(p.getName(), p, null);
 		p.sendMessage(ChatColor.GREEN.toString() + ChatColor.BOLD + "Party created.");
-		p.sendMessage(ChatColor.GRAY.toString() + "To invite more people to join your party, " + ChatColor.UNDERLINE + "Left Click" + ChatColor.GRAY.toString() + " them with your character journal or use " + ChatColor.BOLD + "/pinvite" + ChatColor.GRAY + ". To kick, use " + ChatColor.BOLD + "/pkick" + ChatColor.GRAY + ". To chat with party, use " + ChatColor.BOLD + "/p" + ChatColor.GRAY + " To change the loot profile, use " + ChatColor.BOLD + "/ploot");
+		p.sendMessage(ChatColor.GRAY.toString() + "To invite more people to join your party, " + ChatColor.UNDERLINE
+				+ "Left Click" + ChatColor.GRAY.toString() + " them with your character journal or use "
+				+ ChatColor.BOLD + "/pinvite" + ChatColor.GRAY + ". To kick, use " + ChatColor.BOLD + "/pkick"
+				+ ChatColor.GRAY + ". To chat with party, use " + ChatColor.BOLD + "/p" + ChatColor.GRAY
+				+ " To change the loot profile, use " + ChatColor.BOLD + "/ploot");
 		return true;
 	}
-	
+
 }

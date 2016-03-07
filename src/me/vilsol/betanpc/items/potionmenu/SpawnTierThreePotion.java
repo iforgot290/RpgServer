@@ -24,14 +24,17 @@ public class SpawnTierThreePotion implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-        ItemStack pot = MerchantMechanics.t3_pot.clone();
-        pot.setAmount(64);
-        plr.getInventory().addItem(pot);
+		ItemStack pot = MerchantMechanics.t3_pot.clone();
+		pot.setAmount(64);
+		plr.getInventory().addItem(pot);
 	}
 
 	@Override
 	public ItemStack getItem() {
-		ItemStack item = new Builder(Material.POTION).setName(ChatColor.AQUA + "Spawn " + ChatColor.BOLD + "Tier 3 " + ChatColor.AQUA + "Potion").setLore(Arrays.asList(ChatColor.GRAY + "Spawn a potion that heals " + ChatColor.BOLD + "300hp")).getItem();
+		ItemStack item = new Builder(Material.POTION)
+				.setName(ChatColor.AQUA + "Spawn " + ChatColor.BOLD + "Tier 3 " + ChatColor.AQUA + "Potion")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn a potion that heals " + ChatColor.BOLD + "300hp"))
+				.getItem();
 		new Potion(PotionType.STRENGTH).apply(item);
 		return Utils.removePotionLore(item);
 	}

@@ -25,5 +25,5 @@ public class ExitMenu implements MenuItem {
 	public ItemStack getItem() {
 		return new Builder(Material.ARROW).setName(ChatColor.RED + "Exit Menu").getItem();
 	}
-	
+
 }

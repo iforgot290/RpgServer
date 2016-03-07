@@ -24,14 +24,17 @@ public class SpawnTierTwoPotion implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-        ItemStack pot = MerchantMechanics.t2_pot.clone();
-        pot.setAmount(64);
-        plr.getInventory().addItem(pot);
+		ItemStack pot = MerchantMechanics.t2_pot.clone();
+		pot.setAmount(64);
+		plr.getInventory().addItem(pot);
 	}
 
 	@Override
 	public ItemStack getItem() {
-		ItemStack item = new Builder(Material.POTION).setName(ChatColor.GREEN + "Spawn " + ChatColor.BOLD + "Tier 2 " + ChatColor.GREEN + "Potion").setLore(Arrays.asList(ChatColor.GRAY + "Spawn a potion that heals " + ChatColor.BOLD + "75hp")).getItem();
+		ItemStack item = new Builder(Material.POTION)
+				.setName(ChatColor.GREEN + "Spawn " + ChatColor.BOLD + "Tier 2 " + ChatColor.GREEN + "Potion")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn a potion that heals " + ChatColor.BOLD + "75hp"))
+				.getItem();
 		new Potion(PotionType.INSTANT_HEAL).apply(item);
 		return Utils.removePotionLore(item);
 	}

@@ -11,35 +11,34 @@ import org.bukkit.entity.Player;
 import minecade.dungeonrealms.managers.PlayerManager;
 
 public class CommandToggleTabChat implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		final Player p = (Player) sender;
-		
-		if(!(args.length == 0)) {
+
+		if (!(args.length == 0)) {
 			p.sendMessage(ChatColor.RED + "Invalid Command.");
 			p.sendMessage(ChatColor.GRAY + "Usage: /toggletabchat");
 			p.sendMessage(ChatColor.GRAY + "Description: Enables / Disables tabcomplete chat.");
 			return true;
 		}
-		
-		if(PlayerManager.getPlayerModel(p).getToggleList().contains("tabchat")){
+
+		if (PlayerManager.getPlayerModel(p).getToggleList().contains("tabchat")) {
 			List<String> ltoggle_list = PlayerManager.getPlayerModel(p).getToggleList();
 			ltoggle_list.remove("tabchat");
 			PlayerManager.getPlayerModel(p).setToggleList(ltoggle_list);
 			p.sendMessage(ChatColor.RED + "Tabcomplete Chat - " + ChatColor.BOLD + "DISABLED");
 			return true;
 		}
-		
-		if(!PlayerManager.getPlayerModel(p).getToggleList().contains("tabchat")){
+
+		if (!PlayerManager.getPlayerModel(p).getToggleList().contains("tabchat")) {
 			List<String> ltoggle_list = PlayerManager.getPlayerModel(p).getToggleList();
 			ltoggle_list.add("tabchat");
 			PlayerManager.getPlayerModel(p).setToggleList(ltoggle_list);
 			p.sendMessage(ChatColor.GREEN + "Tabcomplete Chat - " + ChatColor.BOLD + "ENABLED");
 			return true;
 		}
-		
+
 		return true;
 	}
-	
+
 }

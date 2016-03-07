@@ -10,49 +10,55 @@ import minecade.dungeonrealms.ModerationMechanics.ModerationMechanics;
 import minecade.dungeonrealms.PermissionMechanics.PermissionMechanics;
 
 public class CommandUnban implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = null;
-		if(sender instanceof Player) {
+		if (sender instanceof Player) {
 			p = (Player) sender;
 		}
-		
+
 		String rank = "";
-		if(p != null) {
+		if (p != null) {
 			rank = PermissionMechanics.getRank(p.getName());
-			if(rank == null) { return true; }
-			
-			if(!p.isOp() && !rank.equalsIgnoreCase("gm")) { return true; }
+			if (rank == null) {
+				return true;
+			}
+
+			if (!p.isOp() && !rank.equalsIgnoreCase("gm")) {
+				return true;
+			}
 		}
-		
-		if(args.length <= 1) {
-			if(p != null) {
-				p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Invalid Syntax. " + ChatColor.RED + "/unban <PLAYER> <REASON>");
+
+		if (args.length <= 1) {
+			if (p != null) {
+				p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Invalid Syntax. " + ChatColor.RED
+						+ "/unban <PLAYER> <REASON>");
 			}
 			return true;
 		}
-		
+
 		String unbanner = "Console";
-		if(p != null) {
+		if (p != null) {
 			unbanner = p.getName();
 		}
-		
+
 		String p_name = args[0];
 		String reason = "";
-		
-		for(int i = 1; i < args.length; i++) {
+
+		for (int i = 1; i < args.length; i++) {
 			reason += args[i] + " ";
 		}
-		
+
 		ModerationMechanics.unbanPlayer(p_name, reason, unbanner);
-		ModerationMechanics.log.info("[ModerationMechanics] UNBANNED player " + p_name + " for " + reason + "by " + unbanner);
-		
-		if(p != null) {
-			p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "UNBANNED" + ChatColor.RED + " player " + p_name + " because " + reason);
+		ModerationMechanics.log
+				.info("[ModerationMechanics] UNBANNED player " + p_name + " for " + reason + "by " + unbanner);
+
+		if (p != null) {
+			p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "UNBANNED" + ChatColor.RED + " player " + p_name
+					+ " because " + reason);
 		}
-		
+
 		return true;
 	}
-	
+
 }

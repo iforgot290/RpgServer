@@ -11,36 +11,35 @@ import minecade.dungeonrealms.CommunityMechanics.CommunityMechanics;
 import minecade.dungeonrealms.HiveServer.HiveServer;
 
 public class CommandCycle implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if(sender instanceof Player) {
+		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			p.sendMessage(ChatColor.RED + "You cannot issue this command from anywhere but the console window.");
 			return true;
 		}
-		
-		if(args.length != 1) {
+
+		if (args.length != 1) {
 			Main.log.info("Invalid Syntax. /cycle <IP/*>");
 			return true;
 		}
-		
+
 		String ip = args[0];
-		
-		if(HiveServer.isThisRootMachine()) {
-			if(ip.equalsIgnoreCase("*")) {
-				//send8008Packet("@restart@", null, true);
+
+		if (HiveServer.isThisRootMachine()) {
+			if (ip.equalsIgnoreCase("*")) {
+				// send8008Packet("@restart@", null, true);
 				CommunityMechanics.sendPacketCrossServer("@restart@", -1, true);
 				return true;
-			} else if(ip.equalsIgnoreCase("proxy")) {
+			} else if (ip.equalsIgnoreCase("proxy")) {
 				return true;
 			} else {
 				CommunityMechanics.sendPacketCrossServer("@rollout@", args[0]);
-				//send8008Packet("@restart@", args[0], false);
+				// send8008Packet("@restart@", args[0], false);
 				return true;
 			}
 		}
 		return true;
 	}
-	
+
 }

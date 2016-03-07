@@ -19,7 +19,7 @@ import me.vilsol.menuengine.utils.Builder;
 public class Chestplate implements MenuItem, BonusItem<ItemTier> {
 
 	private ItemTier tier;
-	
+
 	@Override
 	public void setBonusData(ItemTier t) {
 		tier = t;
@@ -39,7 +39,9 @@ public class Chestplate implements MenuItem, BonusItem<ItemTier> {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(tier.getMaterialFromType(ItemType.CHESTPLATE)).setName(tier.getTierColor() + "Get Random " + tier.name() + " Chestplate").setLore(Arrays.asList(ChatColor.GRAY + "Spawn Random " + tier.name() + " Chestplate")).getItem();
+		return new Builder(tier.getMaterialFromType(ItemType.CHESTPLATE))
+				.setName(tier.getTierColor() + "Get Random " + tier.name() + " Chestplate")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn Random " + tier.name() + " Chestplate")).getItem();
 	}
-	
+
 }

@@ -47,20 +47,27 @@ public class StrengthStatsItem implements MenuItem, BonusItem<PlayerModel> {
 		int str = pLevel.getStrPoints();
 		int aPoints = item.getPoints() - str; // allocated points
 		boolean spent = (aPoints > 0) ? true : false;
-		return new Builder(Material.TRIPWIRE_HOOK)
-				.setName(
-						ChatColor.RED + "Strength Bonuses: " + str
-								+ (spent ? ChatColor.GREEN + " [+" + aPoints + "]" : ""))
-				.setLore(
-						Arrays.asList(ChatColor.GOLD + "ARMOR: " + ChatColor.AQUA + df.format(str * 0.03) + "%"
-								+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.03) + "%]" : ""),
+		return new Builder(
+				Material.TRIPWIRE_HOOK)
+						.setName(
+								ChatColor.RED + "Strength Bonuses: " + str
+										+ (spent ? ChatColor.GREEN + " [+" + aPoints + "]"
+												: ""))
+						.setLore(Arrays.asList(
+								ChatColor.GOLD + "ARMOR: " + ChatColor.AQUA + df.format(str * 0.03) + "%"
+										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.03) + "%]"
+												: ""),
 								ChatColor.GOLD + "BLOCK: " + ChatColor.AQUA + df.format(str * 0.017) + "%"
-										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.017) + "%]" : ""),
-								ChatColor.GOLD + "AXE DMG: " + ChatColor.AQUA + df.format(str * 0.015) + "%"
+										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.017) + "%]"
+												: ""),
+								ChatColor.GOLD + "AXE DMG: " + ChatColor.AQUA
+										+ df.format(
+												str * 0.015)
+										+ "%"
 										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.015) + "%]" : ""),
 								ChatColor.GOLD + "POLEARM DMG: " + ChatColor.AQUA + df.format(str * 0.023) + "%"
 										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.023) + "%]" : "")))
-				.getItem();
+						.getItem();
 	}
 
 	@Override
@@ -69,7 +76,8 @@ public class StrengthStatsItem implements MenuItem, BonusItem<PlayerModel> {
 		pLevel = drPlayer.getPlayerLevel();
 		points = pLevel.getStrPoints();
 		pLevel.setTempFreePoints(pLevel.getFreePoints());
-		for (Entry<Integer, MenuItem> entry : DynamicMenuModel.getMenu(drPlayer.getPlayer()).getDynamicItems().entrySet()) {
+		for (Entry<Integer, MenuItem> entry : DynamicMenuModel.getMenu(drPlayer.getPlayer()).getDynamicItems()
+				.entrySet()) {
 			if (entry.getValue() instanceof StrengthItem) {
 				item = (StrengthItem) entry.getValue();
 				points = item.getPoints();

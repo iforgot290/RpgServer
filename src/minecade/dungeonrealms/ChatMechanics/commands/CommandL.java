@@ -18,27 +18,26 @@ import minecade.dungeonrealms.TutorialMechanics.TutorialMechanics;
 
 public class CommandL implements CommandExecutor {
 
-	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		final Player p = (Player) sender;
 		String msg = "";
-		for(String s : args) {
+		for (String s : args) {
 			msg += s + " ";
 		}
-		if(msg.endsWith(" ")) {
+		if (msg.endsWith(" ")) {
 			msg = msg.substring(0, (msg.length() - 1));
 		}
 
-
-
-		if(ChatMechanics.mute_list.containsKey(p.getUniqueId())) {
+		if (ChatMechanics.mute_list.containsKey(p.getUniqueId())) {
 			long time_left = ChatMechanics.mute_list.get(p.getUniqueId());
-			p.sendMessage(ChatColor.RED + "You are currently " + ChatColor.BOLD + "GLOBALLY MUTED" + ChatColor.RED + ". You will be unmuted in " + time_left + " minute(s).");
+			p.sendMessage(ChatColor.RED + "You are currently " + ChatColor.BOLD + "GLOBALLY MUTED" + ChatColor.RED
+					+ ". You will be unmuted in " + time_left + " minute(s).");
 			return true;
 		}
 
-		if(TutorialMechanics.onTutorialIsland(p) && !(p.isOp())) {
-			p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " chat while on tutorial island.");
+		if (TutorialMechanics.onTutorialIsland(p) && !(p.isOp())) {
+			p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+					+ " chat while on tutorial island.");
 			p.sendMessage(ChatColor.GRAY + "Either finish the tutorial or type /skip to enable chat.");
 			return true;
 		}
@@ -46,22 +45,22 @@ public class CommandL implements CommandExecutor {
 		List<Player> to_send = new ArrayList<Player>();
 		List<Player> secret_send = new ArrayList<Player>();
 
-		for(Player pl : Bukkit.getServer().getOnlinePlayers()) {
-			if(pl.getName().equalsIgnoreCase(p.getName())) {
+		for (Player pl : Bukkit.getServer().getOnlinePlayers()) {
+			if (pl.getName().equalsIgnoreCase(p.getName())) {
 				continue;
 			}
-			if(!pl.getWorld().getName().equalsIgnoreCase(p.getWorld().getName())) {
+			if (!pl.getWorld().getName().equalsIgnoreCase(p.getWorld().getName())) {
 				continue;
 			}
-			if(pl.getLocation().distanceSquared(p.getLocation()) > 16384) {
+			if (pl.getLocation().distanceSquared(p.getLocation()) > 16384) {
 				continue;
 			}
-			if(CommunityMechanics.isPlayerOnIgnoreList(p, pl) || CommunityMechanics.isPlayerOnIgnoreList(pl, p)) {
+			if (CommunityMechanics.isPlayerOnIgnoreList(p, pl) || CommunityMechanics.isPlayerOnIgnoreList(pl, p)) {
 				continue; // Either sender has the sendie ignored or vise versa,
 							// no need for them to be able to see each other's
 							// messages.
 			}
-			if(ModerationMechanics.isPlayerVanished(pl.getUniqueId())) {
+			if (ModerationMechanics.isPlayerVanished(pl.getUniqueId())) {
 				secret_send.add(pl);
 			} else {
 				to_send.add(pl);
@@ -69,18 +68,18 @@ public class CommandL implements CommandExecutor {
 			continue;
 		}
 
-		if(to_send.size() <= 0) {
+		if (to_send.size() <= 0) {
 			ChatColor p_color = ChatMechanics.getPlayerColor(p, p);
 			String prefix = ChatMechanics.getPlayerPrefix(p);
 
 			String personal_msg = msg;
-			if(ChatMechanics.hasAdultFilter(p)) {
+			if (ChatMechanics.hasAdultFilter(p)) {
 				personal_msg = ChatMechanics.censorMessage(msg);
 			}
 
 			personal_msg = ChatMechanics.fixCapsLock(personal_msg);
 
-			if(personal_msg.endsWith(" ")) {
+			if (personal_msg.endsWith(" ")) {
 				personal_msg = personal_msg.substring(0, personal_msg.length() - 1);
 			}
 
@@ -88,54 +87,55 @@ public class CommandL implements CommandExecutor {
 			p.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "No one heard you.");
 		}
 
-		for(Player pl : to_send) {
+		for (Player pl : to_send) {
 			ChatColor p_color = ChatMechanics.getPlayerColor(p, pl);
 			String prefix = ChatMechanics.getPlayerPrefix(p);
 			String personal_msg = msg;
-			if(ChatMechanics.hasAdultFilter(pl)) {
+			if (ChatMechanics.hasAdultFilter(pl)) {
 				personal_msg = ChatMechanics.censorMessage(msg);
 			}
 
 			personal_msg = ChatMechanics.fixCapsLock(personal_msg);
 
-			if(personal_msg.endsWith(" ")) {
+			if (personal_msg.endsWith(" ")) {
 				personal_msg = personal_msg.substring(0, personal_msg.length() - 1);
 			}
 
 			pl.sendMessage(prefix + p_color + p.getName() + ": " + ChatColor.WHITE + personal_msg);
 		}
 
-		for(Player pl : secret_send) {
+		for (Player pl : secret_send) {
 			ChatColor p_color = ChatMechanics.getPlayerColor(p, pl);
 			String prefix = ChatMechanics.getPlayerPrefix(p);
 			String personal_msg = msg;
-			if(ChatMechanics.hasAdultFilter(pl)) {
+			if (ChatMechanics.hasAdultFilter(pl)) {
 				personal_msg = ChatMechanics.censorMessage(msg);
 			}
 
 			personal_msg = ChatMechanics.fixCapsLock(personal_msg);
 
-			if(personal_msg.endsWith(" ")) {
+			if (personal_msg.endsWith(" ")) {
 				personal_msg = personal_msg.substring(0, personal_msg.length() - 1);
 			}
 
 			pl.sendMessage(prefix + p_color + p.getName() + ": " + ChatColor.WHITE + personal_msg);
 		}
 
-		if(to_send.size() <= 0) { return true; // Don't show debug.
+		if (to_send.size() <= 0) {
+			return true; // Don't show debug.
 		}
 
 		ChatColor p_color = ChatMechanics.getPlayerColor(p, p);
 		String prefix = ChatMechanics.getPlayerPrefix(p);
 
 		String personal_msg = msg;
-		if(ChatMechanics.hasAdultFilter(p)) {
+		if (ChatMechanics.hasAdultFilter(p)) {
 			personal_msg = ChatMechanics.censorMessage(msg);
 		}
 
 		personal_msg = ChatMechanics.fixCapsLock(personal_msg);
 
-		if(personal_msg.endsWith(" ")) {
+		if (personal_msg.endsWith(" ")) {
 			personal_msg = personal_msg.substring(0, personal_msg.length() - 1);
 		}
 

@@ -23,12 +23,15 @@ public class SpawnTierTwoArrow implements MenuItem {
 	public void execute(Player plr, ClickType click) {
 		ItemStack arrow = ItemMechanics.t2_arrow.clone();
 		arrow.setAmount(64);
-        plr.getInventory().addItem(arrow);
+		plr.getInventory().addItem(arrow);
 	}
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.ARROW).setName(ChatColor.GREEN + "Spawn Tier 2 Arrow").setLore(Arrays.asList(ChatColor.GRAY + "Spawn in " + ChatColor.BOLD + "64x " + ChatColor.GREEN + "Tier 2 Arrows.")).getItem();
+		return new Builder(Material.ARROW).setName(ChatColor.GREEN + "Spawn Tier 2 Arrow")
+				.setLore(Arrays.asList(
+						ChatColor.GRAY + "Spawn in " + ChatColor.BOLD + "64x " + ChatColor.GREEN + "Tier 2 Arrows."))
+				.getItem();
 	}
-	
+
 }

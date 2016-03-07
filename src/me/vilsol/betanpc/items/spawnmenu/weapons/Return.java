@@ -16,7 +16,7 @@ import me.vilsol.menuengine.utils.Builder;
 public class Return implements MenuItem, BonusItem<ItemTier> {
 
 	private ItemTier tier;
-	
+
 	@Override
 	public void setBonusData(ItemTier t) {
 		tier = t;
@@ -35,7 +35,8 @@ public class Return implements MenuItem, BonusItem<ItemTier> {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(tier.getMaterialFromType(ItemType.CHESTPLATE)).setName(tier.getTierColor() + "Return To Armor Menu").getItem();
+		return new Builder(tier.getMaterialFromType(ItemType.CHESTPLATE))
+				.setName(tier.getTierColor() + "Return To Armor Menu").getItem();
 	}
-	
+
 }

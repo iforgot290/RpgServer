@@ -9,44 +9,46 @@ import org.bukkit.entity.Player;
 import minecade.dungeonrealms.ModerationMechanics.ModerationMechanics;
 
 public class CommandIPBan implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = null;
-		if(sender instanceof Player) {
+		if (sender instanceof Player) {
 			p = (Player) sender;
 		}
-		
-		if(p != null) {
-			if(!(p.isOp())) { return true; }
+
+		if (p != null) {
+			if (!(p.isOp())) {
+				return true;
+			}
 		}
-		
-		if(args.length != 1) {
-			if(p != null) {
-				p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Invalid Syntax. " + ChatColor.RED + "/ipban <IP / PLAYER>");
+
+		if (args.length != 1) {
+			if (p != null) {
+				p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Invalid Syntax. " + ChatColor.RED
+						+ "/ipban <IP / PLAYER>");
 				p.sendMessage(ChatColor.GRAY + "All IP bans are permanent.");
 			}
 			return true;
 		}
-		
+
 		final String IP = args[0];
 		// Check if they gave us an IP or a player.
-		
+
 		Thread t = new Thread(new Runnable() {
 			public void run() {
 				ModerationMechanics.IPBanPlayer(IP);
 			}
 		});
-		
+
 		t.start();
-		
-		if(p != null) {
+
+		if (p != null) {
 			p.sendMessage("IP ban issued for " + IP + "...");
 		} else {
 			ModerationMechanics.log.info("IP ban issued for " + IP + "...");
 		}
-		
+
 		return true;
 	}
-	
+
 }

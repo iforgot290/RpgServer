@@ -11,35 +11,36 @@ import org.bukkit.entity.Player;
 import minecade.dungeonrealms.managers.PlayerManager;
 
 public class CommandToggleChaos implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		final Player p = (Player) sender;
-		
-		if(cmd.getName().equalsIgnoreCase("crypt")) {
-			if(p != null) {
-				if(!(p.isOp())) { return true; }
+
+		if (cmd.getName().equalsIgnoreCase("crypt")) {
+			if (p != null) {
+				if (!(p.isOp())) {
+					return true;
+				}
 			}
-			
+
 			return true;
 		}
-		
-		if(!(args.length == 0)) {
+
+		if (!(args.length == 0)) {
 			p.sendMessage(ChatColor.RED + "Invalid Command.");
 			p.sendMessage(ChatColor.GRAY + "Usage: /togglechaos");
 			p.sendMessage(ChatColor.GRAY + "Description: Enables / Disables recieving chaotic alignment.");
 			return true;
 		}
-		
-		if(PlayerManager.getPlayerModel(p).getToggleList().contains("chaos")) {
+
+		if (PlayerManager.getPlayerModel(p).getToggleList().contains("chaos")) {
 			List<String> ltoggle_list = PlayerManager.getPlayerModel(p).getToggleList();
 			ltoggle_list.remove("chaos");
 			PlayerManager.getPlayerModel(p).setToggleList(ltoggle_list);
 			p.sendMessage(ChatColor.RED + "Anti-Chaotic - " + ChatColor.BOLD + "DISABLED");
 			return true;
 		}
-		
-		if(!PlayerManager.getPlayerModel(p).getToggleList().contains("chaos")) {
+
+		if (!PlayerManager.getPlayerModel(p).getToggleList().contains("chaos")) {
 			List<String> ltoggle_list = PlayerManager.getPlayerModel(p).getToggleList();
 			ltoggle_list.add("chaos");
 			PlayerManager.getPlayerModel(p).setToggleList(ltoggle_list);
@@ -48,5 +49,5 @@ public class CommandToggleChaos implements CommandExecutor {
 		}
 		return true;
 	}
-	
+
 }

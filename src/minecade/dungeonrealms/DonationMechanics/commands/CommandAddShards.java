@@ -16,13 +16,15 @@ import minecade.dungeonrealms.PermissionMechanics.PermissionMechanics;
 
 public class CommandAddShards implements CommandExecutor {
 
-	//TODO make it force update on sql server
+	// TODO make it force update on sql server
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
 		Player ps = null;
-		if(sender instanceof Player) {
+		if (sender instanceof Player) {
 			ps = (Player) sender;
-			if(!PermissionMechanics.isGM(ps)) { return true; }
+			if (!PermissionMechanics.isGM(ps)) {
+				return true;
+			}
 		}
 
 		if (args.length != 3) {
@@ -39,16 +41,17 @@ public class CommandAddShards implements CommandExecutor {
 
 		// Add <amount> E-CASH to player. (player_database->ecash)
 
-		Main.log.info("[DonationMechanics] Adding " + amount + "T" + tier + " Shards to " + p_name + "'s stash of " + current_shards + " EC!");
-
+		Main.log.info("[DonationMechanics] Adding " + amount + "T" + tier + " Shards to " + p_name + "'s stash of "
+				+ current_shards + " EC!");
 
 		portal_shards.set(tier, current_shards);
 
 		Hive.player_portal_shards.put(p_name, portal_shards);
 
-		//CommunityMechanics.sendPacketCrossServer("[portal shards]" + p_name + ":" + current_shards, -1, true);
+		// CommunityMechanics.sendPacketCrossServer("[portal shards]" + p_name +
+		// ":" + current_shards, -1, true);
 
-		if(Bukkit.getPlayer(p_name) != null) {
+		if (Bukkit.getPlayer(p_name) != null) {
 			Player pl = Bukkit.getPlayer(p_name);
 			pl.sendMessage(ChatColor.GOLD + "  +" + amount + ChatColor.BOLD + "T" + tier + " Portal Shards");
 			pl.playSound(pl.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);

@@ -13,28 +13,29 @@ import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.CommunityMechanics.CommunityMechanics;
 
 public class CommandDelete implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		final Player p = (Player) sender;
-		
-		if(cmd.getName().equalsIgnoreCase("crypt")) {
-			if(p != null) {
-				if(!(p.isOp())) { return true; }
+
+		if (cmd.getName().equalsIgnoreCase("crypt")) {
+			if (p != null) {
+				if (!(p.isOp())) {
+					return true;
+				}
 			}
-			
+
 			return true;
 		}
-		
-		if(!(args.length == 1)) {
+
+		if (!(args.length == 1)) {
 			p.sendMessage(ChatColor.RED + "Incorrect syntax - " + ChatColor.BOLD + "/delete <PLAYER>");
 			return true;
 		}
-		
+
 		final String op_name = args[0];
-		
+
 		new BukkitRunnable() {
-			
+
 			public void run() {
 				@SuppressWarnings("deprecation")
 				OfflinePlayer to_remove = Bukkit.getOfflinePlayer(op_name);
@@ -42,9 +43,9 @@ public class CommandDelete implements CommandExecutor {
 				CommunityMechanics.updateCommBook(p);
 			}
 		}.runTaskLaterAsynchronously(Main.plugin, 1L);
-		
+
 		// TODO: Send "X has logged out" to person who was deleted.
 		return true;
 	}
-	
+
 }

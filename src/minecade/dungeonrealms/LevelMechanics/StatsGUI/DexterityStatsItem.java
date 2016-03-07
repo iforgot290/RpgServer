@@ -47,19 +47,26 @@ public class DexterityStatsItem implements MenuItem, BonusItem<PlayerModel> {
 		int dex = pLevel.getDexPoints();
 		int aPoints = item.getPoints() - dex; // allocated points
 		boolean spent = (aPoints > 0) ? true : false;
-		return new Builder(Material.TRIPWIRE_HOOK)
-				.setName(
-						ChatColor.RED + "Dexterity Bonuses: " + dex
-								+ (spent ? ChatColor.GREEN + " [+" + aPoints + "]" : ""))
-				.setLore(
-						Arrays.asList(ChatColor.GOLD + "DPS: " + ChatColor.AQUA + df.format(dex * 0.03) + "%"
-								+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.03) + "%]" : ""), ChatColor.GOLD
-								+ "DODGE: " + ChatColor.AQUA + df.format(dex * 0.017) + "%"
-								+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.017) + "%]" : ""), ChatColor.GOLD
-								+ "ARMOR PEN: " + ChatColor.AQUA + df.format(dex * 0.02) + "%"
-								+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.02) + "%]" : ""), ChatColor.GOLD
-								+ "BOW DMG: " + ChatColor.AQUA + df.format(dex * 0.015) + "%"
-								+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.015) + "%]" : ""))).getItem();
+		return new Builder(
+				Material.TRIPWIRE_HOOK)
+						.setName(
+								ChatColor.RED + "Dexterity Bonuses: " + dex
+										+ (spent ? ChatColor.GREEN + " [+" + aPoints + "]"
+												: ""))
+						.setLore(Arrays.asList(
+								ChatColor.GOLD + "DPS: " + ChatColor.AQUA + df.format(dex * 0.03) + "%"
+										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.03) + "%]" : ""),
+								ChatColor.GOLD + "DODGE: " + ChatColor.AQUA + df.format(dex * 0.017) + "%"
+										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.017) + "%]"
+												: ""),
+								ChatColor.GOLD + "ARMOR PEN: " + ChatColor.AQUA
+										+ df.format(
+												dex * 0.02)
+										+ "%"
+										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.02) + "%]" : ""),
+								ChatColor.GOLD + "BOW DMG: " + ChatColor.AQUA + df.format(dex * 0.015) + "%"
+										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.015) + "%]" : "")))
+						.getItem();
 	}
 
 	@Override
@@ -68,7 +75,8 @@ public class DexterityStatsItem implements MenuItem, BonusItem<PlayerModel> {
 		pLevel = drPlayer.getPlayerLevel();
 		points = pLevel.getDexPoints();
 		pLevel.setTempFreePoints(pLevel.getFreePoints());
-		for (Entry<Integer, MenuItem> entry : DynamicMenuModel.getMenu(drPlayer.getPlayer()).getDynamicItems().entrySet()) {
+		for (Entry<Integer, MenuItem> entry : DynamicMenuModel.getMenu(drPlayer.getPlayer()).getDynamicItems()
+				.entrySet()) {
 			if (entry.getValue() instanceof DexterityItem) {
 				item = (DexterityItem) entry.getValue();
 				points = item.getPoints();

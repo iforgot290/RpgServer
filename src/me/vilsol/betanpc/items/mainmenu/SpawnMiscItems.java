@@ -27,7 +27,10 @@ public class SpawnMiscItems implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.DIAMOND).setName(ChatColor.GOLD + "Spawn Misc. Item(s)").setLore(Arrays.asList(ChatColor.GRAY + "Spawn items such as", ChatColor.GRAY + "Orbs, Enchant Scrolls, Food and Potions")).getItem();
+		return new Builder(Material.DIAMOND).setName(ChatColor.GOLD + "Spawn Misc. Item(s)")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn items such as",
+						ChatColor.GRAY + "Orbs, Enchant Scrolls, Food and Potions"))
+				.getItem();
 	}
-	
+
 }

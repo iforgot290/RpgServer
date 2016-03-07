@@ -11,26 +11,25 @@ import org.bukkit.entity.Player;
 import minecade.dungeonrealms.managers.PlayerManager;
 
 public class CommandToggleTrade implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
-		if(!(args.length == 0)) {
+		if (!(args.length == 0)) {
 			p.sendMessage(ChatColor.RED + "Invalid Command.");
 			p.sendMessage(ChatColor.GRAY + "Usage: /toggletrade");
 			p.sendMessage(ChatColor.GRAY + "Description: Enables / Disables recieving trade requests.");
 			return true;
 		}
-		
-		if(PlayerManager.getPlayerModel(p).getToggleList().contains("trade")){
+
+		if (PlayerManager.getPlayerModel(p).getToggleList().contains("trade")) {
 			List<String> ltoggle_list = PlayerManager.getPlayerModel(p).getToggleList();
 			ltoggle_list.remove("trade");
 			PlayerManager.getPlayerModel(p).setToggleList(ltoggle_list);
 			p.sendMessage(ChatColor.GREEN + "Trade - " + ChatColor.BOLD + "ENABLED");
 			return true;
 		}
-		
-		if(!PlayerManager.getPlayerModel(p).getToggleList().contains("trade")){
+
+		if (!PlayerManager.getPlayerModel(p).getToggleList().contains("trade")) {
 			List<String> ltoggle_list = PlayerManager.getPlayerModel(p).getToggleList();
 			ltoggle_list.add("trade");
 			PlayerManager.getPlayerModel(p).setToggleList(ltoggle_list);
@@ -39,5 +38,5 @@ public class CommandToggleTrade implements CommandExecutor {
 		}
 		return true;
 	}
-	
+
 }

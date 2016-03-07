@@ -20,42 +20,44 @@ import minecade.dungeonrealms.managers.PlayerManager;
 
 public class CommandGL implements CommandExecutor {
 
-	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
 
-		if(args.length <= 0) {
-			p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Incorrect Syntax. You must supply a message! " + ChatColor.RED + "/gl <MESSAGE>");
+		if (args.length <= 0) {
+			p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Incorrect Syntax. You must supply a message! "
+					+ ChatColor.RED + "/gl <MESSAGE>");
 			return true;
 		}
 
-		if(TutorialMechanics.onTutorialIsland(p) && !(p.isOp())) {
-			p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " chat while on tutorial island.");
+		if (TutorialMechanics.onTutorialIsland(p) && !(p.isOp())) {
+			p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+					+ " chat while on tutorial island.");
 			p.sendMessage(ChatColor.GRAY + "Either finish the tutorial or type /skip to enable chat.");
 			return true;
 		}
 
-		if(ChatMechanics.mute_list.containsKey(p.getUniqueId())) {
+		if (ChatMechanics.mute_list.containsKey(p.getUniqueId())) {
 			long time_left = ChatMechanics.mute_list.get(p.getUniqueId());
-			p.sendMessage(ChatColor.RED + "You are currently " + ChatColor.BOLD + "GLOBALLY MUTED" + ChatColor.RED + ". You will be unmuted in " + time_left + " minute(s).");
+			p.sendMessage(ChatColor.RED + "You are currently " + ChatColor.BOLD + "GLOBALLY MUTED" + ChatColor.RED
+					+ ". You will be unmuted in " + time_left + " minute(s).");
 			return true;
 		}
 
 		String msg = "";
 
-		for(String s : args) {
+		for (String s : args) {
 			msg += s + " ";
 		}
 
 		String rank = PermissionMechanics.getRank(p.getUniqueId());
 
-		if(PlayerManager.getPlayerModel(p).getGlobalChatDelay() != 0) {
+		if (PlayerManager.getPlayerModel(p).getGlobalChatDelay() != 0) {
 			long old_time = PlayerManager.getPlayerModel(p).getGlobalChatDelay();
 			long cur_time = System.currentTimeMillis();
 
 			int personal_delay = ChatMechanics.GChat_Delay;
 			ItemStack global_amp = EcashMechanics.tickGlobalAmplifier(p);
-			if(global_amp != null) {
+			if (global_amp != null) {
 				// They have one!
 				personal_delay *= 0.50D;
 
@@ -64,9 +66,11 @@ public class CommandGL implements CommandExecutor {
 				// It will subtract from the item in getGlobalAmplifier.
 			}
 
-			if((cur_time - old_time) < (personal_delay * 1000) && !(p.isOp()) && !(rank.equalsIgnoreCase("GM")) && !(rank.equalsIgnoreCase("PMOD") && !(rank.equalsIgnoreCase("WD")))) {
+			if ((cur_time - old_time) < (personal_delay * 1000) && !(p.isOp()) && !(rank.equalsIgnoreCase("GM"))
+					&& !(rank.equalsIgnoreCase("PMOD") && !(rank.equalsIgnoreCase("WD")))) {
 				int s_delay_left = personal_delay - (int) ((cur_time - old_time) / 1000);
-				p.sendMessage(ChatColor.RED + "You can send another GLOBAL MESSAGE in " + s_delay_left + ChatColor.BOLD + "s");
+				p.sendMessage(ChatColor.RED + "You can send another GLOBAL MESSAGE in " + s_delay_left + ChatColor.BOLD
+						+ "s");
 				return true;
 			}
 		}
@@ -75,7 +79,7 @@ public class CommandGL implements CommandExecutor {
 
 		boolean trade = false;
 		boolean guild = false;
-		if(ChatMechanics.hasTradeKeyword(msg)) {
+		if (ChatMechanics.hasTradeKeyword(msg)) {
 			trade = true;
 		}
 		if (ChatMechanics.hasGuildKeyword(msg)) {
@@ -84,21 +88,24 @@ public class CommandGL implements CommandExecutor {
 
 		String prefix = ChatMechanics.getPlayerPrefix(p);
 		String message = ChatMechanics.fixCapsLock(msg);
-	      if (PlayerManager.getPlayerModel(p).getToggleList() != null && PlayerManager.getPlayerModel(p).getToggleList().contains("global")) {
-	            p.sendMessage(ChatColor.RED + "You currently have global messaging " + ChatColor.BOLD + "DISABLED." + ChatColor.RED
-	                    + " Type '/toggleglobal' to re-enable.");
-	            return true;
-	        }
+		if (PlayerManager.getPlayerModel(p).getToggleList() != null
+				&& PlayerManager.getPlayerModel(p).getToggleList().contains("global")) {
+			p.sendMessage(ChatColor.RED + "You currently have global messaging " + ChatColor.BOLD + "DISABLED."
+					+ ChatColor.RED + " Type '/toggleglobal' to re-enable.");
+			return true;
+		}
 		JSONMessage filter = null;
 		JSONMessage normal = null;
 		String aprefix = p.getName() + ": " + ChatColor.WHITE;
 		ItemStack handitem = p.getInventory().getItemInMainHand();
-		if(message.contains("@i@") && handitem.getType() != Material.AIR) {
+		if (message.contains("@i@") && handitem.getType() != Material.AIR) {
 			String[] split = message.split("@i@");
 			String after = "";
 			String before = "";
-			if(split.length > 0) before = split[0];
-			if(split.length > 1) after = split[1];
+			if (split.length > 0)
+				before = split[0];
+			if (split.length > 1)
+				after = split[1];
 
 			normal = new JSONMessage(prefix + ChatColor.WHITE + aprefix, ChatColor.WHITE);
 			normal.addText(before + " ");
@@ -111,50 +118,58 @@ public class CommandGL implements CommandExecutor {
 			filter.addText(ChatMechanics.censorMessage(after));
 		}
 
-		for(Player pl : Bukkit.getServer().getOnlinePlayers()) {
-			if(CommunityMechanics.isPlayerOnIgnoreList(p, pl) || CommunityMechanics.isPlayerOnIgnoreList(pl, p)) {
+		for (Player pl : Bukkit.getServer().getOnlinePlayers()) {
+			if (CommunityMechanics.isPlayerOnIgnoreList(p, pl) || CommunityMechanics.isPlayerOnIgnoreList(pl, p)) {
 				continue; // Either sender has the sendie ignored or vise versa,
 							// no need for them to be able to see each other's
 							// messages.
 			}
-			if(!trade && PlayerManager.getPlayerModel(pl).getToggleList() != null && PlayerManager.getPlayerModel(pl).getToggleList().contains("global")) {
+			if (!trade && PlayerManager.getPlayerModel(pl).getToggleList() != null
+					&& PlayerManager.getPlayerModel(pl).getToggleList().contains("global")) {
 				continue; // They have global off, and only want to hear from
 							// their buds.
 			}
-			if(trade && PlayerManager.getPlayerModel(pl).getToggleList() != null && PlayerManager.getPlayerModel(pl).getToggleList().contains("tchat")) {
+			if (trade && PlayerManager.getPlayerModel(pl).getToggleList() != null
+					&& PlayerManager.getPlayerModel(pl).getToggleList().contains("tchat")) {
 				continue; // They have global off, and only want to hear from
 							// their buds.
 			}
-			if(TutorialMechanics.onTutorialIsland(pl)) {
+			if (TutorialMechanics.onTutorialIsland(pl)) {
 				continue; // Don't send global chat to players on tutorial
 							// island.
 			}
 
-			if(normal != null){
+			if (normal != null) {
 				JSONMessage toSend = normal;
-				if(ChatMechanics.hasAdultFilter(pl)) {
+				if (ChatMechanics.hasAdultFilter(pl)) {
 					toSend = filter;
 				}
 				ChatColor p_color = ChatMechanics.getPlayerColor(p, pl);
 
-				if(trade){
-					toSend.setText(ChatColor.GREEN + "<" + ChatColor.BOLD + "T" + ChatColor.GREEN + ">" + " " + prefix + p_color + aprefix);
-				}else if(guild) {
-					toSend.setText(ChatColor.RED + "<" + ChatColor.BOLD + "GR" + ChatColor.RED + ">" + " " + prefix + p_color + aprefix);
+				if (trade) {
+					toSend.setText(ChatColor.GREEN + "<" + ChatColor.BOLD + "T" + ChatColor.GREEN + ">" + " " + prefix
+							+ p_color + aprefix);
+				} else if (guild) {
+					toSend.setText(ChatColor.RED + "<" + ChatColor.BOLD + "GR" + ChatColor.RED + ">" + " " + prefix
+							+ p_color + aprefix);
 				} else {
-					toSend.setText(ChatColor.AQUA + "<" + ChatColor.BOLD + "G" + ChatColor.AQUA + ">" + " " + prefix + p_color + aprefix);
+					toSend.setText(ChatColor.AQUA + "<" + ChatColor.BOLD + "G" + ChatColor.AQUA + ">" + " " + prefix
+							+ p_color + aprefix);
 				}
 
 				toSend.sendToPlayer(pl);
-			}else{
+			} else {
 				ChatColor p_color = ChatMechanics.getPlayerColor(p, p);
 
-				if(trade){
-					pl.sendMessage(ChatColor.GREEN + "<" + ChatColor.BOLD + "T" + ChatColor.GREEN + ">" + " " + prefix + p_color + aprefix + message);
-				}else if (guild) {
-					pl.sendMessage(ChatColor.RED + "<" + ChatColor.BOLD + "GR" + ChatColor.RED + ">" + " " + prefix + p_color + aprefix + message);
+				if (trade) {
+					pl.sendMessage(ChatColor.GREEN + "<" + ChatColor.BOLD + "T" + ChatColor.GREEN + ">" + " " + prefix
+							+ p_color + aprefix + message);
+				} else if (guild) {
+					pl.sendMessage(ChatColor.RED + "<" + ChatColor.BOLD + "GR" + ChatColor.RED + ">" + " " + prefix
+							+ p_color + aprefix + message);
 				} else {
-					pl.sendMessage(ChatColor.AQUA + "<" + ChatColor.BOLD + "G" + ChatColor.AQUA + ">" + " " + prefix + p_color + aprefix + message);
+					pl.sendMessage(ChatColor.AQUA + "<" + ChatColor.BOLD + "G" + ChatColor.AQUA + ">" + " " + prefix
+							+ p_color + aprefix + message);
 				}
 			}
 		}

@@ -31,7 +31,10 @@ public class TierFour implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.DIAMOND_CHESTPLATE).setName(ChatColor.LIGHT_PURPLE + "Tier Four").setLore(Arrays.asList(ChatColor.GRAY + "Spawn " + ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "Tier Four " + ChatColor.GRAY + " Armor and Weapons")).getItem();
+		return new Builder(Material.DIAMOND_CHESTPLATE).setName(ChatColor.LIGHT_PURPLE + "Tier Four")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn " + ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD
+						+ "Tier Four " + ChatColor.GRAY + " Armor and Weapons"))
+				.getItem();
 	}
 
 }

@@ -27,7 +27,10 @@ public class SpawnProfessionItem implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.FISHING_ROD).setName(ChatColor.AQUA + "Spawn Profession Item").setLore(Arrays.asList(ChatColor.GRAY + "Spawn Pickaxes/Fishing rods", ChatColor.GRAY + "with a custom level/enchants")).getItem();
+		return new Builder(Material.FISHING_ROD).setName(ChatColor.AQUA + "Spawn Profession Item")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn Pickaxes/Fishing rods",
+						ChatColor.GRAY + "with a custom level/enchants"))
+				.getItem();
 	}
-	
+
 }

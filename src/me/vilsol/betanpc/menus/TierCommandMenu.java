@@ -11,6 +11,7 @@ import me.vilsol.menuengine.engine.MenuModel;
 
 /**
  * Same as TierMenu except functions as main menu for /addweaponnewnew's GUI
+ * 
  * @author Alan
  *
  */
@@ -24,5 +25,5 @@ public class TierCommandMenu extends MenuModel {
 		getMenu().addItem(TierFour.class, 3);
 		getMenu().addItem(TierFive.class, 4);
 	}
-	
+
 }

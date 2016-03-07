@@ -9,18 +9,17 @@ import org.bukkit.entity.Player;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
 
 public class CommandRealm implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
-		
+
 		String msg = "";
-		for(String s : args) {
-			if(!(s.contains("/realm"))) {
+		for (String s : args) {
+			if (!(s.contains("/realm"))) {
 				msg += s + " ";
 			}
 		}
-		
+
 		RealmMechanics.realm_title.put(p.getName(), msg);
 		p.sendMessage("");
 		p.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "                       " + "* REALM TITLE SET *");
@@ -28,5 +27,5 @@ public class CommandRealm implements CommandExecutor {
 		p.sendMessage("");
 		return true;
 	}
-	
+
 }

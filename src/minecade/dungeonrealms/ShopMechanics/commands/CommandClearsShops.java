@@ -13,27 +13,33 @@ import minecade.dungeonrealms.ShopMechanics.ShopMechanics;
 
 public class CommandClearsShops implements CommandExecutor {
 
-	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player pl = (Player)sender;
-		if (pl == null) return true;
+		Player pl = (Player) sender;
+		if (pl == null)
+			return true;
 
 		if (!pl.isOp() || !Main.isMaster(pl.getName())) {
 			pl.sendMessage(ChatColor.RED + "You don't have the required permission for this command.");
 			return true;
 		}
 
-		if (args.length > 1) return true;
+		if (args.length > 1)
+			return true;
 
 		if (!ShopMechanics.inverse_shop_owners.isEmpty()) {
 			ShopMechanics.saveOpenShopsToCollBin();
-			if (args.length == 1 && args[0].equalsIgnoreCase("stdb")) { // SaveToDatabase and re-download to simulate shutdown/reboot
+			if (args.length == 1 && args[0].equalsIgnoreCase("stdb")) { // SaveToDatabase
+																		// and
+																		// re-download
+																		// to
+																		// simulate
+																		// shutdown/reboot
 				new BukkitRunnable() {
 					public void run() {
 						ShopMechanics.uploadAllCollectionBinData();
 					}
 				}.runTaskLater(Main.plugin, 20L * 5);
-				
+
 				new BukkitRunnable() {
 					public void run() {
 						for (Player p : Bukkit.getOnlinePlayers()) {

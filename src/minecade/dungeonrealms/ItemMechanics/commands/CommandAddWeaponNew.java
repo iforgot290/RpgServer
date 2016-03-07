@@ -13,17 +13,19 @@ import minecade.dungeonrealms.enums.ItemType;
 
 public class CommandAddWeaponNew implements CommandExecutor {
 
-	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!(sender instanceof Player)) return true;
+		if (!(sender instanceof Player))
+			return true;
 		Player p = (Player) sender;
 
-		if (!p.isOp()) return true;
+		if (!p.isOp())
+			return true;
 
-		if(args.length < 1) {
+		if (args.length < 1) {
 			p.sendMessage(ChatColor.RED + "Wrong usage: /addweaponnew <tier> [type] [rarity]");
 			p.sendMessage(ChatColor.GREEN + "Item Tiers: " + ChatColor.DARK_GREEN + "T1, T2, T3, T4, T5");
-			p.sendMessage(ChatColor.GREEN + "Item Types: " + ChatColor.DARK_GREEN + "STAFF, AXE, SWORD, POLEARM, BOW, HELMET, CHESTPLATE, LEGGINGS, BOOTS");
+			p.sendMessage(ChatColor.GREEN + "Item Types: " + ChatColor.DARK_GREEN
+					+ "STAFF, AXE, SWORD, POLEARM, BOW, HELMET, CHESTPLATE, LEGGINGS, BOOTS");
 			p.sendMessage(ChatColor.GREEN + "Item Rarity: " + ChatColor.DARK_GREEN + "COMMON, UNCOMMON, RARE, UNIQUE");
 			return true;
 		}
@@ -32,9 +34,9 @@ public class CommandAddWeaponNew implements CommandExecutor {
 		ItemType type = null;
 		ItemRarity rarity = null;
 
-		if(args.length >= 1){
+		if (args.length >= 1) {
 			String s = args[0].toUpperCase();
-			if(!s.equals("T1") && !s.equals("T2") && !s.equals("T3") && !s.equals("T4") && !s.equals("T5")) {
+			if (!s.equals("T1") && !s.equals("T2") && !s.equals("T3") && !s.equals("T4") && !s.equals("T5")) {
 				p.sendMessage("No such tier: " + s);
 				return true;
 			}
@@ -42,9 +44,10 @@ public class CommandAddWeaponNew implements CommandExecutor {
 			tier = ItemTier.valueOf(s);
 		}
 
-		if(args.length >= 2){
+		if (args.length >= 2) {
 			String s = args[1].toUpperCase();
-			if(!s.equals("STAFF") && !s.equals("AXE") && !s.equals("SWORD") && !s.equals("POLEARM") && !s.equals("BOW") && !s.equals("HELMET") && !s.equals("CHESTPLATE") && !s.equals("LEGGINGS") && !s.equals("BOOTS")){
+			if (!s.equals("STAFF") && !s.equals("AXE") && !s.equals("SWORD") && !s.equals("POLEARM") && !s.equals("BOW")
+					&& !s.equals("HELMET") && !s.equals("CHESTPLATE") && !s.equals("LEGGINGS") && !s.equals("BOOTS")) {
 				p.sendMessage("No such item: " + s);
 				return true;
 			}
@@ -52,9 +55,9 @@ public class CommandAddWeaponNew implements CommandExecutor {
 			type = ItemType.valueOf(s);
 		}
 
-		if(args.length >= 3){
+		if (args.length >= 3) {
 			String s = args[2].toUpperCase();
-			if(!s.equals("COMMON") && !s.equals("UNCOMMON") && !s.equals("RARE") && !s.equals("UNIQUE")){
+			if (!s.equals("COMMON") && !s.equals("UNCOMMON") && !s.equals("RARE") && !s.equals("UNIQUE")) {
 				p.sendMessage("No such rarity: " + s);
 				return true;
 			}
@@ -62,15 +65,15 @@ public class CommandAddWeaponNew implements CommandExecutor {
 			rarity = ItemRarity.valueOf(s);
 		}
 
-
 		ItemStack item = null;
-		if(ItemType.isArmor(type)){
+		if (ItemType.isArmor(type)) {
 			item = type.generateArmor(tier, null, -1, rarity);
-		}else{
+		} else {
 			item = type.generateWeapon(tier, null, rarity);
 		}
 
-		p.sendMessage(ChatColor.RED + "You spawned an item using old item values!  For updated patch 1.9 values, use /addweaponnewnew.");
+		p.sendMessage(ChatColor.RED
+				+ "You spawned an item using old item values!  For updated patch 1.9 values, use /addweaponnewnew.");
 		p.getInventory().addItem(item);
 
 		return true;

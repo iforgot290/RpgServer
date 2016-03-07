@@ -32,24 +32,25 @@ public class ChangeLevel implements MenuItem, ChatCallback {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.EXP_BOTTLE).setName(ChatColor.YELLOW + "Change Level").setLore(Arrays.asList(ChatColor.GRAY + "Set a custom level for yourself.")).getItem();
+		return new Builder(Material.EXP_BOTTLE).setName(ChatColor.YELLOW + "Change Level")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Set a custom level for yourself.")).getItem();
 	}
 
 	@Override
 	public void onChatMessage(AsyncPlayerChatEvent e) {
-		if(Utils.isInteger(e.getMessage())){
+		if (Utils.isInteger(e.getMessage())) {
 			int level = Integer.parseInt(e.getMessage());
-			if(level > 100 || level < 1){
+			if (level > 100 || level < 1) {
 				e.getPlayer().sendMessage(Utils.NPC + "Level change cancelled because number is not between 1 - 100!");
-			}else{
+			} else {
 				LevelMechanics.getPlayerData(e.getPlayer()).setXP(0);
 				LevelMechanics.getPlayerData(e.getPlayer()).setLevel(level);
 			}
-		}else{
+		} else {
 			e.getPlayer().sendMessage(Utils.NPC + "Level change cancelled because number is not between 1 - 100!");
 		}
 		ChatCallback.locked_players.remove(e.getPlayer());
 		MenuModel.openLastMenu(e.getPlayer());
 	}
-	
+
 }

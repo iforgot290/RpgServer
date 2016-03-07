@@ -16,44 +16,46 @@ import minecade.dungeonrealms.enums.ItemType;
 
 public class CommandAddWeaponNewNew implements CommandExecutor {
 
-	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
 
-		if(!p.isOp()) return true;
-		
+		if (!p.isOp())
+			return true;
+
 		// show GUI
-		if(args.length == 0) {
-		    MenuModel.getMenu(TierCommandMenu.class).getMenu().showToPlayer(p);
-		    return true;
+		if (args.length == 0) {
+			MenuModel.getMenu(TierCommandMenu.class).getMenu().showToPlayer(p);
+			return true;
 		}
 
 		ItemTier tier = null;
 		ItemType type = null;
 		ItemRarity rarity = null;
-		
+
 		if (args[0].equalsIgnoreCase("random") && StringUtils.isNumeric(args[1])) {
-		    if (Integer.valueOf(args[1]) > 30) return true;
-		    for (int i = 0; i < Integer.valueOf(args[1]); i++) {
-		        p.getInventory().addItem(new ItemGenerator().generateItem().getItem());
-		    }
-		    return true;
+			if (Integer.valueOf(args[1]) > 30)
+				return true;
+			for (int i = 0; i < Integer.valueOf(args[1]); i++) {
+				p.getInventory().addItem(new ItemGenerator().generateItem().getItem());
+			}
+			return true;
 		}
 
-		if(args.length >= 1){
+		if (args.length >= 1) {
 			String s = args[0].toUpperCase();
-			if(!s.equals("T1") && !s.equals("T2") && !s.equals("T3") && !s.equals("T4") && !s.equals("T5")) {
+			if (!s.equals("T1") && !s.equals("T2") && !s.equals("T3") && !s.equals("T4") && !s.equals("T5")) {
 				p.sendMessage("No such tier: " + s);
 				listUsage(p);
-	            return true;
+				return true;
 			}
 
 			tier = ItemTier.valueOf(s);
 		}
 
-		if(args.length >= 2){
+		if (args.length >= 2) {
 			String s = args[1].toUpperCase();
-			if(!s.equals("STAFF") && !s.equals("AXE") && !s.equals("SWORD") && !s.equals("POLEARM") && !s.equals("BOW") && !s.equals("HELMET") && !s.equals("CHESTPLATE") && !s.equals("LEGGINGS") && !s.equals("BOOTS")){
+			if (!s.equals("STAFF") && !s.equals("AXE") && !s.equals("SWORD") && !s.equals("POLEARM") && !s.equals("BOW")
+					&& !s.equals("HELMET") && !s.equals("CHESTPLATE") && !s.equals("LEGGINGS") && !s.equals("BOOTS")) {
 				p.sendMessage("No such item: " + s);
 				listUsage(p);
 				return true;
@@ -62,9 +64,9 @@ public class CommandAddWeaponNewNew implements CommandExecutor {
 			type = ItemType.valueOf(s);
 		}
 
-		if(args.length >= 3){
+		if (args.length >= 3) {
 			String s = args[2].toUpperCase();
-			if(!s.equals("COMMON") && !s.equals("UNCOMMON") && !s.equals("RARE") && !s.equals("UNIQUE")){
+			if (!s.equals("COMMON") && !s.equals("UNCOMMON") && !s.equals("RARE") && !s.equals("UNIQUE")) {
 				p.sendMessage("No such rarity: " + s);
 				listUsage(p);
 				return true;
@@ -85,12 +87,14 @@ public class CommandAddWeaponNewNew implements CommandExecutor {
 
 		return true;
 	}
-	
+
 	private void listUsage(Player p) {
-	    p.sendMessage(ChatColor.RED + "Wrong usage: /addweaponnewnew to open up gui OR /addweaponnewnew <tier> [type] [rarity]");
-        p.sendMessage(ChatColor.GREEN + "Item Tiers: " + ChatColor.DARK_GREEN + "T1, T2, T3, T4, T5");
-        p.sendMessage(ChatColor.GREEN + "Item Types: " + ChatColor.DARK_GREEN + "STAFF, AXE, SWORD, POLEARM, BOW, HELMET, CHESTPLATE, LEGGINGS, BOOTS");
-        p.sendMessage(ChatColor.GREEN + "Item Rarity: " + ChatColor.DARK_GREEN + "COMMON, UNCOMMON, RARE, UNIQUE");
+		p.sendMessage(ChatColor.RED
+				+ "Wrong usage: /addweaponnewnew to open up gui OR /addweaponnewnew <tier> [type] [rarity]");
+		p.sendMessage(ChatColor.GREEN + "Item Tiers: " + ChatColor.DARK_GREEN + "T1, T2, T3, T4, T5");
+		p.sendMessage(ChatColor.GREEN + "Item Types: " + ChatColor.DARK_GREEN
+				+ "STAFF, AXE, SWORD, POLEARM, BOW, HELMET, CHESTPLATE, LEGGINGS, BOOTS");
+		p.sendMessage(ChatColor.GREEN + "Item Rarity: " + ChatColor.DARK_GREEN + "COMMON, UNCOMMON, RARE, UNIQUE");
 	}
-	
+
 }

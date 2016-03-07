@@ -31,7 +31,10 @@ public class TierFive implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.GOLD_CHESTPLATE).setName(ChatColor.YELLOW + "Tier Five").setLore(Arrays.asList(ChatColor.GRAY + "Spawn " + ChatColor.YELLOW.toString() + ChatColor.BOLD + "Tier Five " + ChatColor.GRAY + " Armor and Weapons")).getItem();
+		return new Builder(Material.GOLD_CHESTPLATE).setName(ChatColor.YELLOW + "Tier Five")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn " + ChatColor.YELLOW.toString() + ChatColor.BOLD
+						+ "Tier Five " + ChatColor.GRAY + " Armor and Weapons"))
+				.getItem();
 	}
 
 }

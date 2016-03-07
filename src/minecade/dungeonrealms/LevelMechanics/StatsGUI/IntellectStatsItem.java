@@ -48,18 +48,25 @@ public class IntellectStatsItem implements MenuItem, BonusItem<PlayerModel> {
 		int aPoints = item.getPoints() - in; // allocated points
 		boolean spent = (aPoints > 0) ? true : false;
 		return new Builder(Material.TRIPWIRE_HOOK)
-				.setName(
-						ChatColor.RED + "Intellect Bonuses: " + in
-								+ (spent ? ChatColor.GREEN + " [+" + aPoints + "]" : ""))
-				.setLore(
-						Arrays.asList(ChatColor.GOLD + "ENERGY REGEN: " + ChatColor.AQUA + df.format(in * 0.015) + "%"
-								+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.015) + "%]" : ""),
-								ChatColor.GOLD + "ELE DMG: " + ChatColor.AQUA + df.format(in * 0.05)
-										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.05) + "%]" : ""),
-								ChatColor.GOLD + "CRIT CHANCE: " + ChatColor.AQUA + df.format(in * 0.025) + "%"
-										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.025) + "%]" : ""),
-								ChatColor.GOLD + "STAFF DMG: " + ChatColor.AQUA + df.format(in * 0.02) + "%"
-										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.02) + "%]" : "")))
+				.setName(ChatColor.RED + "Intellect Bonuses: " + in
+						+ (spent ? ChatColor.GREEN + " [+" + aPoints + "]"
+								: ""))
+				.setLore(Arrays.asList(
+						ChatColor.GOLD + "ENERGY REGEN: " + ChatColor.AQUA + df.format(in * 0.015) + "%"
+								+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.015) + "%]"
+										: ""),
+						ChatColor.GOLD + "ELE DMG: " + ChatColor.AQUA
+								+ df.format(
+										in * 0.05)
+								+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.05) + "%]"
+										: ""),
+						ChatColor.GOLD + "CRIT CHANCE: "
+								+ ChatColor.AQUA + df
+										.format(in
+												* 0.025)
+								+ "%" + (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.025) + "%]" : ""),
+						ChatColor.GOLD + "STAFF DMG: " + ChatColor.AQUA + df.format(in * 0.02) + "%"
+								+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.02) + "%]" : "")))
 				.getItem();
 	}
 
@@ -69,7 +76,8 @@ public class IntellectStatsItem implements MenuItem, BonusItem<PlayerModel> {
 		pLevel = drPlayer.getPlayerLevel();
 		points = pLevel.getIntPoints();
 		pLevel.setTempFreePoints(pLevel.getFreePoints());
-		for (Entry<Integer, MenuItem> entry : DynamicMenuModel.getMenu(drPlayer.getPlayer()).getDynamicItems().entrySet()) {
+		for (Entry<Integer, MenuItem> entry : DynamicMenuModel.getMenu(drPlayer.getPlayer()).getDynamicItems()
+				.entrySet()) {
 			if (entry.getValue() instanceof IntellectItem) {
 				item = (IntellectItem) entry.getValue();
 				points = item.getPoints();

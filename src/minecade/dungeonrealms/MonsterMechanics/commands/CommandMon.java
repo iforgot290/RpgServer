@@ -15,43 +15,46 @@ import org.bukkit.inventory.ItemStack;
 import minecade.dungeonrealms.MonsterMechanics.MonsterMechanics;
 
 public class CommandMon implements CommandExecutor {
-	
+
 	@SuppressWarnings("deprecation")
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
-		
-		if(!(p.isOp())) { return true; }
-		
+
+		if (!(p.isOp())) {
+			return true;
+		}
+
 		Location l = p.getTargetBlock(null, 128).getLocation().add(0, 1, 0);
-		
-		if(args.length == 2) {
+
+		if (args.length == 2) {
 			p.getInventory().addItem(new ItemStack(Material.MOB_SPAWNER, 10));
 			p.sendMessage(ChatColor.YELLOW + "Dropped it like it's hot.");
 			return true;
 		}
-		
-		if(args.length != 1) {
+
+		if (args.length != 1) {
 			p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Incorrect Syntax. " + ChatColor.RED + "/mon <tier #>");
 			return true;
 		}
-		
+
 		int tier = 1;
-		
+
 		try {
 			tier = Integer.parseInt(args[0]);
-		} catch(NumberFormatException nfe) {
+		} catch (NumberFormatException nfe) {
 			p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Non-Numeric Tier. " + ChatColor.RED + "/mon <tier #>");
 			return true;
 		}
-		
-		if(tier > 5 || tier <= 0) {
+
+		if (tier > 5 || tier <= 0) {
 			p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Invalid Tier." + ChatColor.RED + "/mon <tier #(1-5)>");
 			return true;
 		}
-		
-		MonsterMechanics.spawnTierMob(l, EntityType.SKELETON, tier, -1, p.getLocation(), false, "", "", true, new Random().nextInt(3) + 1);
+
+		MonsterMechanics.spawnTierMob(l, EntityType.SKELETON, tier, -1, p.getLocation(), false, "", "", true,
+				new Random().nextInt(3) + 1);
 		return true;
 	}
-	
+
 }

@@ -25,7 +25,7 @@ import minecade.dungeonrealms.PartyMechanics.Party;
 import minecade.dungeonrealms.holograms.Hologram;
 
 public class PlayerModel {
-	
+
 	private String achievements;
 	private long globalChatDelay;
 	private Location deathLocation;
@@ -37,7 +37,9 @@ public class PlayerModel {
 	private List<UUID> localConfirmedBuddies = new ArrayList<UUID>();
 	private List<UUID> ignoreList = new ArrayList<UUID>();
 	private List<UUID> localConfirmedIgnores = new ArrayList<UUID>();
-	private List<String> toggleList = new ArrayList<String>(); // TODO Convert toggles to ENUM's
+	private List<String> toggleList = new ArrayList<String>(); // TODO Convert
+																// toggles to
+																// ENUM's
 	private long lastOnline;
 	private long lastBookClick;
 	private long rollDelay;
@@ -288,19 +290,19 @@ public class PlayerModel {
 	private int regenTimer = -1;
 	private Location teleportLoc;
 	private UUID uuid;
-	
+
 	public PlayerModel(UUID uuid) {
 		this.uuid = uuid;
 	}
-	
-	public UUID getUUID(){
+
+	public UUID getUUID() {
 		return uuid;
 	}
-	
+
 	public Player getPlayer() {
 		return Bukkit.getPlayer(uuid);
 	}
-	
+
 	public OfflinePlayer getOfflinePlayer() {
 		return Bukkit.getOfflinePlayer(uuid);
 	}
@@ -308,13 +310,15 @@ public class PlayerModel {
 	public String getAchievements() {
 		return achievements;
 	}
-	public void setPlayerLevel(PlayerLevel pl){
-	    this.player_level = pl;
+
+	public void setPlayerLevel(PlayerLevel pl) {
+		this.player_level = pl;
 	}
-	
-	public PlayerLevel getPlayerLevel(){
-	    return player_level;
+
+	public PlayerLevel getPlayerLevel() {
+		return player_level;
 	}
+
 	public void setAchievements(String achievements) {
 		this.achievements = achievements;
 	}
@@ -2350,54 +2354,53 @@ public class PlayerModel {
 	public void setLastLocalLogin(long lastLocalLogin) {
 		this.lastLocalLogin = lastLocalLogin;
 	}
-	
+
 	public void updateStats() {
-	    Player p = getPlayer();
-	    ItemMechanics.str_data.put(uuid, ItemMechanics.generateTotalStrVal(p));
-	    ItemMechanics.dex_data.put(uuid, ItemMechanics.generateTotalDexVal(p));
-	    ItemMechanics.int_data.put(uuid, ItemMechanics.generateTotalIntVal(p));
-	    ItemMechanics.vit_data.put(uuid, ItemMechanics.generateTotalVitVal(p));
+		Player p = getPlayer();
+		ItemMechanics.str_data.put(uuid, ItemMechanics.generateTotalStrVal(p));
+		ItemMechanics.dex_data.put(uuid, ItemMechanics.generateTotalDexVal(p));
+		ItemMechanics.int_data.put(uuid, ItemMechanics.generateTotalIntVal(p));
+		ItemMechanics.vit_data.put(uuid, ItemMechanics.generateTotalVitVal(p));
 	}
 
-    public int getRegenFoodBonus() {
-        return regenFoodBonus;
-    }
+	public int getRegenFoodBonus() {
+		return regenFoodBonus;
+	}
 
-    public void setRegenFoodBonus(int regenFoodBonus) {
-        this.regenFoodBonus = regenFoodBonus;
-    }
+	public void setRegenFoodBonus(int regenFoodBonus) {
+		this.regenFoodBonus = regenFoodBonus;
+	}
 
-    public boolean isBuyingItem() {
-        return isBuyingItem;
-    }
+	public boolean isBuyingItem() {
+		return isBuyingItem;
+	}
 
-    public void setBuyingItem(boolean isBuyingItem) {
-        this.isBuyingItem = isBuyingItem;
-    }
+	public void setBuyingItem(boolean isBuyingItem) {
+		this.isBuyingItem = isBuyingItem;
+	}
 
+	public ItemStack getItemStackBeingBought() {
+		return itemStackBeingBought;
+	}
 
-    public ItemStack getItemStackBeingBought() {
-        return itemStackBeingBought;
-    }
+	public void setItemStackBeingBought(ItemStack itemStackBeingBought) {
+		this.itemStackBeingBought = itemStackBeingBought;
+	}
 
-    public void setItemStackBeingBought(ItemStack itemStackBeingBought) {
-        this.itemStackBeingBought = itemStackBeingBought;
-    }
+	public int getRegenTimer() {
+		return regenTimer;
+	}
 
-    public int getRegenTimer() {
-        return regenTimer;
-    }
+	public void setRegenTimer(int regenTimer) {
+		this.regenTimer = regenTimer;
+	}
 
-    public void setRegenTimer(int regenTimer) {
-        this.regenTimer = regenTimer;
-    }
+	public Location getTeleportLoc() {
+		return teleportLoc;
+	}
 
-    public Location getTeleportLoc() {
-        return teleportLoc;
-    }
+	public void setTeleportLoc(Location teleportLoc) {
+		this.teleportLoc = teleportLoc;
+	}
 
-    public void setTeleportLoc(Location teleportLoc) {
-        this.teleportLoc = teleportLoc;
-    }
-	
 }

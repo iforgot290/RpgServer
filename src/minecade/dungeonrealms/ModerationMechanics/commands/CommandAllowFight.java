@@ -12,7 +12,6 @@ import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
 
 public class CommandAllowFight implements CommandExecutor {
 
-	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = null;
 
@@ -21,14 +20,15 @@ public class CommandAllowFight implements CommandExecutor {
 		}
 
 		if (p != null) {
-			if (!p.isOp()) return true;
+			if (!p.isOp())
+				return true;
 		}
 
 		if (args.length > 0) {
 			if (p != null) {
 				p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Invalid Syntax. " + ChatColor.RED + "/allowfight");
 			}
-		return true;
+			return true;
 		}
 
 		if (p != null) {
@@ -37,7 +37,8 @@ public class CommandAllowFight implements CommandExecutor {
 				isGod = RealmMechanics.player_god_mode.containsKey(p.getName());
 				ModerationMechanics.allowsFight.add(p.getName());
 				HealthMechanics.setPlayerHP(p.getName(), HealthMechanics.health_data.get(p.getName()));
-				if (isGod) RealmMechanics.player_god_mode.remove(p.getName());
+				if (isGod)
+					RealmMechanics.player_god_mode.remove(p.getName());
 				sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "You toggled on fight mode.");
 			} else {
 				ModerationMechanics.allowsFight.remove(p.getName());

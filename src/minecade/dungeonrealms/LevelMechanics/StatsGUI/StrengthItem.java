@@ -39,39 +39,39 @@ public class StrengthItem implements MenuItem, BonusItem<PlayerModel> {
 			}
 		}
 		if (pLevel.getTempFreePoints() > 0) {
-            switch (click) {
-            case LEFT:
-                allocatePoints(1, plr);
-                break;
-            case MIDDLE:
-                plr.closeInventory();
-                StatsGUIWorker.setCustomStatAllocationSlot(slot, plr, getItem());
-                break;
-            case RIGHT:
-                allocatePoints(-1, plr);
-                break;
-            case SHIFT_LEFT:
-                allocatePoints(3, plr);
-                break;
-            case SHIFT_RIGHT:
-                allocatePoints(-3, plr);
-                break;
-            default:
-                break;
-            }
+			switch (click) {
+			case LEFT:
+				allocatePoints(1, plr);
+				break;
+			case MIDDLE:
+				plr.closeInventory();
+				StatsGUIWorker.setCustomStatAllocationSlot(slot, plr, getItem());
+				break;
+			case RIGHT:
+				allocatePoints(-1, plr);
+				break;
+			case SHIFT_LEFT:
+				allocatePoints(3, plr);
+				break;
+			case SHIFT_RIGHT:
+				allocatePoints(-3, plr);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
 	@Override
 	public ItemStack getItem() {
-        return new Builder(Material.EMPTY_MAP)
-                .setName(ChatColor.DARK_PURPLE + "Strength")
-                .setLore(
-                        Arrays.asList(ChatColor.GRAY + "Adds armor, block chance, axe ", ChatColor.GRAY
-                                + "damage, and polearm damage.",
-                                ChatColor.AQUA + "Allocated Points: " + pLevel.getStrPoints() + (points - pLevel.getStrPoints() > 0 ? ChatColor.GREEN
-                                        + " [+" + (points - pLevel.getStrPoints()) + "]" : ""), ChatColor.RED
-                                        + "Free Points: " + pLevel.getTempFreePoints())).getItem();
+		return new Builder(Material.EMPTY_MAP).setName(ChatColor.DARK_PURPLE + "Strength")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Adds armor, block chance, axe ",
+						ChatColor.GRAY + "damage, and polearm damage.",
+						ChatColor.AQUA + "Allocated Points: " + pLevel.getStrPoints()
+								+ (points - pLevel.getStrPoints() > 0
+										? ChatColor.GREEN + " [+" + (points - pLevel.getStrPoints()) + "]" : ""),
+						ChatColor.RED + "Free Points: " + pLevel.getTempFreePoints()))
+				.getItem();
 	}
 
 	@Override
@@ -83,15 +83,16 @@ public class StrengthItem implements MenuItem, BonusItem<PlayerModel> {
 	}
 
 	private void allocatePoints(int points, Player plr) {
-	    if ((points > 0 && pLevel.getTempFreePoints() >= points
-                || (points < 0 && (this.points - pLevel.getStrPoints()) >= Math.abs(points))) && this.points + points <= 600) {
-	        this.points += points;
-	        pLevel.setTempFreePoints(pLevel.getTempFreePoints() - points);
-	        plr.playSound(plr.getLocation(), Sound.SHEEP_SHEAR, 1.0F, 1.3F);
-	        for (Entry<Integer, MenuItem> entry : DynamicMenuModel.getMenu(plr).getDynamicItems().entrySet()) {
-	            DynamicMenuModel.getMenu(plr).getInventory().setItem(entry.getKey(), entry.getValue().getItem());
-	        }
-	    }
+		if ((points > 0 && pLevel.getTempFreePoints() >= points
+				|| (points < 0 && (this.points - pLevel.getStrPoints()) >= Math.abs(points)))
+				&& this.points + points <= 600) {
+			this.points += points;
+			pLevel.setTempFreePoints(pLevel.getTempFreePoints() - points);
+			plr.playSound(plr.getLocation(), Sound.SHEEP_SHEAR, 1.0F, 1.3F);
+			for (Entry<Integer, MenuItem> entry : DynamicMenuModel.getMenu(plr).getDynamicItems().entrySet()) {
+				DynamicMenuModel.getMenu(plr).getInventory().setItem(entry.getKey(), entry.getValue().getItem());
+			}
+		}
 	}
 
 	public int getPoints() {

@@ -27,7 +27,12 @@ public class TeleportToGloomyHallows implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.BOOK).setName(ChatColor.WHITE.toString() + ChatColor.BOLD + "Teleport: " + ChatColor.WHITE + "Gloomy Hallows").setLore(Arrays.asList(ChatColor.GRAY + "Spawn a teleportation book to " + ChatColor.BOLD + "Gloomy Hallows")).getItem();
+		return new Builder(Material.BOOK)
+				.setName(
+						ChatColor.WHITE.toString() + ChatColor.BOLD + "Teleport: " + ChatColor.WHITE + "Gloomy Hallows")
+				.setLore(Arrays
+						.asList(ChatColor.GRAY + "Spawn a teleportation book to " + ChatColor.BOLD + "Gloomy Hallows"))
+				.getItem();
 	}
 
 }

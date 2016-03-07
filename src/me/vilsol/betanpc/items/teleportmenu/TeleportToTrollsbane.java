@@ -27,7 +27,11 @@ public class TeleportToTrollsbane implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.BOOK).setName(ChatColor.WHITE.toString() + ChatColor.BOLD + "Teleport: " + ChatColor.WHITE + "Trollsbane").setLore(Arrays.asList(ChatColor.GRAY + "Spawn a teleportation book to " + ChatColor.BOLD + "Trollsbane")).getItem();
+		return new Builder(Material.BOOK)
+				.setName(ChatColor.WHITE.toString() + ChatColor.BOLD + "Teleport: " + ChatColor.WHITE + "Trollsbane")
+				.setLore(Arrays
+						.asList(ChatColor.GRAY + "Spawn a teleportation book to " + ChatColor.BOLD + "Trollsbane"))
+				.getItem();
 	}
 
 }

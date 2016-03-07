@@ -17,7 +17,7 @@ import net.minecraft.server.v1_9_R1.PathfinderGoalSelector;
 import net.minecraft.server.v1_9_R1.PathfinderGoalTarget;
 
 public class Golem extends EntityIronGolem {
-	
+
 	public Golem(World world) {
 		super(world);
 		clearGoalSelectors();
@@ -29,7 +29,7 @@ public class Golem extends EntityIronGolem {
 		this.targetSelector.a(0, new PathfinderGoalHurtByTarget(this, false));
 		this.targetSelector.a(1, new PathfinderGoalNearestAttackableTarget(this, EntityHuman.class, 0, true));
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public void clearGoalSelectors() {
 		try {
@@ -39,11 +39,11 @@ public class Golem extends EntityIronGolem {
 			b.setAccessible(true);
 			((UnsafeList) a.get(this.goalSelector)).clear();
 			((UnsafeList) b.get(this.goalSelector)).clear();
-		} catch(Throwable e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public void clearTargetSelectors() {
 		try {
@@ -53,7 +53,7 @@ public class Golem extends EntityIronGolem {
 			b.setAccessible(true);
 			((UnsafeList) a.get(this.targetSelector)).clear();
 			((UnsafeList) b.get(this.targetSelector)).clear();
-		} catch(Throwable e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}

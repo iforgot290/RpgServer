@@ -27,7 +27,12 @@ public class TeleportToCrestguard implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.BOOK).setName(ChatColor.WHITE.toString() + ChatColor.BOLD + "Teleport: " + ChatColor.WHITE + "Crestguard Keep").setLore(Arrays.asList(ChatColor.GRAY + "Spawn a teleportation book to " + ChatColor.BOLD + "Crestguard Keep")).getItem();
+		return new Builder(Material.BOOK)
+				.setName(ChatColor.WHITE.toString() + ChatColor.BOLD + "Teleport: " + ChatColor.WHITE
+						+ "Crestguard Keep")
+				.setLore(Arrays
+						.asList(ChatColor.GRAY + "Spawn a teleportation book to " + ChatColor.BOLD + "Crestguard Keep"))
+				.getItem();
 	}
 
 }

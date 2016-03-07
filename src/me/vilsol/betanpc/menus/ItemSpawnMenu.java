@@ -31,29 +31,29 @@ public class ItemSpawnMenu extends DynamicMenuModel {
 	public ItemSpawnMenu() {
 		super(ItemSpawnWorker.class);
 	}
-	
+
 	@Override
 	public void addItems(DynamicMenu i, Player plr) {
 		ItemSpawnWorker w = (ItemSpawnWorker) i;
-		if(w.stage == SpawnStage.TYPE_CHOICE){
+		if (w.stage == SpawnStage.TYPE_CHOICE) {
 			i.setName(ChatColor.GOLD.toString() + ChatColor.BOLD + "Choose Type");
 			i.addItemDynamic(Helmet.class, 0, w.tier);
 			i.addItemDynamic(Chestplate.class, 1, w.tier);
 			i.addItemDynamic(Leggings.class, 2, w.tier);
 			i.addItemDynamic(Boots.class, 3, w.tier);
 			i.addItemDynamic(Weapon.class, 4, w.tier);
-		}else if(w.stage == SpawnStage.WEAPON_CHOICE){
+		} else if (w.stage == SpawnStage.WEAPON_CHOICE) {
 			i.setName(ChatColor.GOLD.toString() + ChatColor.BOLD + "Choose Weapon");
 			i.addItemDynamic(Sword.class, 0, w.tier);
 			i.addItemDynamic(Axe.class, 1, w.tier);
 			i.addItemDynamic(Polearm.class, 2, w.tier);
 			i.addItemDynamic(Staff.class, 3, w.tier);
 			i.addItemDynamic(Bow.class, 4, w.tier);
-			
+
 			i.addItemDynamic(Return.class, 6, w.tier);
-			
+
 			i.addItemDynamic(BackToMainMenu.class, 8);
-		}else if(w.stage == SpawnStage.RARITY_CHOICE){
+		} else if (w.stage == SpawnStage.RARITY_CHOICE) {
 			i.setName(ChatColor.GOLD.toString() + ChatColor.BOLD + "Choose Rarity");
 			i.addItemDynamic(Common.class, 0);
 			i.addItemDynamic(Uncommon.class, 1);
@@ -62,7 +62,7 @@ public class ItemSpawnMenu extends DynamicMenuModel {
 
 			i.addItemDynamic(BackToMainMenu.class, 8);
 		}
-		
+
 		i.addItem(BackToMainMenu.class, 8);
 	}
 
@@ -85,5 +85,5 @@ public class ItemSpawnMenu extends DynamicMenuModel {
 	public void onPlaceItem(DynamicMenu i, ItemStack item, int slot) {
 		return;
 	}
-	
+
 }

@@ -11,13 +11,11 @@ import minecade.dungeonrealms.PermissionMechanics.PermissionMechanics;
 
 public class CommandBank implements CommandExecutor {
 
-
-
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
 		String rank = PermissionMechanics.getRank(p);
 
-		if (!rank.equalsIgnoreCase("SUB++") || !PermissionMechanics.isGM(p)){
+		if (!rank.equalsIgnoreCase("SUB++") || !PermissionMechanics.isGM(p)) {
 			p.sendMessage(ChatColor.RED + "This feature is just for Sub++");
 			return true;
 
@@ -30,6 +28,6 @@ public class CommandBank implements CommandExecutor {
 			p.sendMessage(ChatColor.RED + "You cannot do this while chaotic or neutral!");
 			return true;
 		}
-		
+
 	}
 }

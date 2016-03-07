@@ -16,25 +16,31 @@ public class PlayerManager implements Listener {
 
 	/**
 	 * Gets the player model associated with that UUID
-	 * @param uuid ID to get player model for
+	 * 
+	 * @param uuid
+	 *            ID to get player model for
 	 * @return player model
 	 */
-	public static PlayerModel getPlayerModel(UUID uuid){
-		if(!models.containsKey(uuid)) models.put(uuid, new PlayerModel(uuid));
+	public static PlayerModel getPlayerModel(UUID uuid) {
+		if (!models.containsKey(uuid))
+			models.put(uuid, new PlayerModel(uuid));
 		return models.get(uuid);
 	}
-	
+
 	/**
 	 * Gets the player model associated with that player
-	 * @param player player to get player model for
+	 * 
+	 * @param player
+	 *            player to get player model for
 	 * @return player model
 	 */
-	public static PlayerModel getPlayerModel(Player player){
+	public static PlayerModel getPlayerModel(Player player) {
 		return getPlayerModel(player.getUniqueId());
 	}
-	
+
 	/**
 	 * Gets all player models
+	 * 
 	 * @return all player models
 	 */
 	public static List<PlayerModel> getPlayerModels() {

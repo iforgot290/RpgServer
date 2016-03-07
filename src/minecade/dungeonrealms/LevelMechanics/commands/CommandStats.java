@@ -11,17 +11,16 @@ import minecade.dungeonrealms.LevelMechanics.StatsGUI.StatsGUIWorker;
 
 public class CommandStats implements CommandExecutor {
 
-    
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-    	if (!(sender instanceof Player)) {
-    		sender.sendMessage("You must be a player to use this command.");
-    		return true;
-    	}
-        Player p = (Player) sender;
-        DynamicMenuModel.cleanInventories(p, p.getInventory());
-        StatsGUIWorker gui = (StatsGUIWorker) DynamicMenuModel.createMenu(p, StatsGUI.class);
-        gui.showToPlayer(p);
-        return true;
-    }
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (!(sender instanceof Player)) {
+			sender.sendMessage("You must be a player to use this command.");
+			return true;
+		}
+		Player p = (Player) sender;
+		DynamicMenuModel.cleanInventories(p, p.getInventory());
+		StatsGUIWorker gui = (StatsGUIWorker) DynamicMenuModel.createMenu(p, StatsGUI.class);
+		gui.showToPlayer(p);
+		return true;
+	}
 
 }

@@ -11,35 +11,36 @@ import org.bukkit.entity.Player;
 import minecade.dungeonrealms.managers.PlayerManager;
 
 public class CommandToggleFilter implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		final Player p = (Player) sender;
-		
-		if(cmd.getName().equalsIgnoreCase("crypt")) {
-			if(p != null) {
-				if(!(p.isOp())) { return true; }
+
+		if (cmd.getName().equalsIgnoreCase("crypt")) {
+			if (p != null) {
+				if (!(p.isOp())) {
+					return true;
+				}
 			}
-			
+
 			return true;
 		}
-		
-		if(!(args.length == 0)) {
+
+		if (!(args.length == 0)) {
 			p.sendMessage(ChatColor.RED + "Invalid Command.");
 			p.sendMessage(ChatColor.GRAY + "Usage: /togglefilter");
 			p.sendMessage(ChatColor.GRAY + "Description: Enables / Disables the adult language chat filter.");
 			return true;
 		}
-		
-		if(PlayerManager.getPlayerModel(p).getToggleList().contains("filter")){
+
+		if (PlayerManager.getPlayerModel(p).getToggleList().contains("filter")) {
 			List<String> ltoggle_list = PlayerManager.getPlayerModel(p).getToggleList();
 			ltoggle_list.remove("filter");
 			PlayerManager.getPlayerModel(p).setToggleList(ltoggle_list);
 			p.sendMessage(ChatColor.GREEN + "Adult Chat Filter - " + ChatColor.BOLD + "ENABLED");
 			return true;
 		}
-		
-		if(!PlayerManager.getPlayerModel(p).getToggleList().contains("filter")){
+
+		if (!PlayerManager.getPlayerModel(p).getToggleList().contains("filter")) {
 			List<String> ltoggle_list = PlayerManager.getPlayerModel(p).getToggleList();
 			ltoggle_list.add("filter");
 			PlayerManager.getPlayerModel(p).setToggleList(ltoggle_list);
@@ -48,5 +49,5 @@ public class CommandToggleFilter implements CommandExecutor {
 		}
 		return true;
 	}
-	
+
 }

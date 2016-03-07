@@ -21,21 +21,21 @@ import net.minecraft.server.v1_9_R1.PathfinderGoalRandomStroll;
 import net.minecraft.server.v1_9_R1.PathfinderGoalSelector;
 
 public class ZombieArcher extends EntityZombie implements IRangedEntity {
-	
+
 	private PathfinderGoalArrowAttack bp = new PathfinderGoalArrowAttack(this, 1.0D, 20, 60, 15.0F);
 	private PathfinderGoalMeleeAttack bq = new PathfinderGoalMeleeAttack(this, EntityHuman.class, 1.2D, false);
-	
+
 	public ZombieArcher(World world) {
 		super(world);
 		clearGoalSelectors();
 		this.goalSelector.a(0, new PathfinderGoalRandomStroll(this, .6F));
 		this.goalSelector.a(1, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 8.0F));
 		this.goalSelector.a(2, new PathfinderGoalRandomLookaround(this));
-		if(world != null && !world.isStatic) {
+		if (world != null && !world.isStatic) {
 			this.bZ();
 		}
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public void clearGoalSelectors() {
 		try {
@@ -45,52 +45,57 @@ public class ZombieArcher extends EntityZombie implements IRangedEntity {
 			b.setAccessible(true);
 			((UnsafeList) a.get(this.goalSelector)).clear();
 			((UnsafeList) b.get(this.goalSelector)).clear();
-		} catch(Throwable e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	public void setEquipment(int i, ItemStack itemstack) {
 		super.setEquipment(i, itemstack);
 		this.bZ();
 	}
-	
+
 	public boolean bZ() {
 		this.goalSelector.a((PathfinderGoal) this.bq);
 		this.goalSelector.a((PathfinderGoal) this.bp);
 		ItemStack itemstack = this.getEquipment(0);
-		
-		if(itemstack != null && itemstack.getItem() == Items.BOW) {
+
+		if (itemstack != null && itemstack.getItem() == Items.BOW) {
 			this.goalSelector.a(4, this.bp);
 		} else {
 			this.goalSelector.a(4, this.bq);
 		}
 		return false;
 	}
-	
-	
+
 	public void a(EntityLiving entityliving, float f) {
-		EntityArrow entityarrow = new EntityArrow(this.world, this, entityliving, 1.6F, (float) (14 - this.world.difficulty.a() * 4));
-		// int i = EnchantmentManager.getEnchantmentLevel(Enchantment.ARROW_DAMAGE.id, this.bd());
-		// int j = EnchantmentManager.getEnchantmentLevel(Enchantment.ARROW_KNOCKBACK.id, this.bd());
-		
-		entityarrow.b((double) (f * 2.0F) + this.random.nextGaussian() * 0.25D + (double) ((float) this.world.difficulty.a() * 0.11F));
-		
+		EntityArrow entityarrow = new EntityArrow(this.world, this, entityliving, 1.6F,
+				(float) (14 - this.world.difficulty.a() * 4));
+		// int i =
+		// EnchantmentManager.getEnchantmentLevel(Enchantment.ARROW_DAMAGE.id,
+		// this.bd());
+		// int j =
+		// EnchantmentManager.getEnchantmentLevel(Enchantment.ARROW_KNOCKBACK.id,
+		// this.bd());
+
+		entityarrow.b((double) (f * 2.0F) + this.random.nextGaussian() * 0.25D
+				+ (double) ((float) this.world.difficulty.a() * 0.11F));
+
 		// CraftBukkit start
-		org.bukkit.event.entity.EntityShootBowEvent event = CraftEventFactory.callEntityShootBowEvent(this, this.getEquipment(0), entityarrow, 0.8F);
-		if(event.isCancelled()) {
+		org.bukkit.event.entity.EntityShootBowEvent event = CraftEventFactory.callEntityShootBowEvent(this,
+				this.getEquipment(0), entityarrow, 0.8F);
+		if (event.isCancelled()) {
 			event.getProjectile().remove();
 			return;
 		}
-		
-		if(event.getProjectile() == entityarrow.getBukkitEntity()) {
+
+		if (event.getProjectile() == entityarrow.getBukkitEntity()) {
 			world.addEntity(entityarrow);
 		}
 		// CraftBukkit end
-		
+
 		this.makeSound("random.bow", 1.0F, 1.0F / (new Random().nextFloat() * 0.4F + 0.8F));
 		// this.world.addEntity(entityarrow); // CraftBukkit - moved up
 	}
-	
+
 }

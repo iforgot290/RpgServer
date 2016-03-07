@@ -14,8 +14,8 @@ import me.vilsol.menuengine.engine.MenuModel;
 import me.vilsol.menuengine.utils.Builder;
 
 public class BackToMainMenu implements MenuItem, BonusItem<Boolean> {
-    
-    private boolean isAddWeaponNewNew = false;
+
+	private boolean isAddWeaponNewNew = false;
 
 	@Override
 	public void registerItem() {
@@ -24,12 +24,11 @@ public class BackToMainMenu implements MenuItem, BonusItem<Boolean> {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-	    if (!isAddWeaponNewNew) {
-	        MenuModel.getMenu(MainMenu.class).getMenu().showToPlayer(plr);
-	    }
-	    else {
-	    	MenuModel.getMenu(TierMenu.class).getMenu().showToPlayer(plr);
-	    }
+		if (!isAddWeaponNewNew) {
+			MenuModel.getMenu(MainMenu.class).getMenu().showToPlayer(plr);
+		} else {
+			MenuModel.getMenu(TierMenu.class).getMenu().showToPlayer(plr);
+		}
 	}
 
 	@Override
@@ -37,9 +36,9 @@ public class BackToMainMenu implements MenuItem, BonusItem<Boolean> {
 		return new Builder(Material.ARROW).setName(ChatColor.GRAY + "Back to Main Menu").getItem();
 	}
 
-    @Override
-    public void setBonusData(Boolean isAddWeaponNewNewCommand) {
-        isAddWeaponNewNew = isAddWeaponNewNewCommand;
-    }
-	
+	@Override
+	public void setBonusData(Boolean isAddWeaponNewNewCommand) {
+		isAddWeaponNewNew = isAddWeaponNewNewCommand;
+	}
+
 }

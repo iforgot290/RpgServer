@@ -24,14 +24,17 @@ public class SpawnTierOnePotion implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-        ItemStack pot = MerchantMechanics.t1_pot.clone();
-        pot.setAmount(64);
-        plr.getInventory().addItem(pot);
+		ItemStack pot = MerchantMechanics.t1_pot.clone();
+		pot.setAmount(64);
+		plr.getInventory().addItem(pot);
 	}
 
 	@Override
 	public ItemStack getItem() {
-		ItemStack item = new Builder(Material.POTION).setName(ChatColor.WHITE + "Spawn " + ChatColor.BOLD + "Tier 1 " + ChatColor.WHITE + "Potion").setLore(Arrays.asList(ChatColor.GRAY + "Spawn a potion that heals " + ChatColor.BOLD + "15hp")).getItem();
+		ItemStack item = new Builder(Material.POTION)
+				.setName(ChatColor.WHITE + "Spawn " + ChatColor.BOLD + "Tier 1 " + ChatColor.WHITE + "Potion")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn a potion that heals " + ChatColor.BOLD + "15hp"))
+				.getItem();
 		new Potion(PotionType.REGEN).apply(item);
 		return Utils.removePotionLore(item);
 	}

@@ -21,22 +21,26 @@ public class SpawnTierFourScrolls implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-        ItemStack i1 = EnchantMechanics.t4_white_scroll.clone();
-        ItemStack i2 = EnchantMechanics.t4_armor_scroll.clone();
-        ItemStack i3 = EnchantMechanics.t4_wep_scroll.clone();
+		ItemStack i1 = EnchantMechanics.t4_white_scroll.clone();
+		ItemStack i2 = EnchantMechanics.t4_armor_scroll.clone();
+		ItemStack i3 = EnchantMechanics.t4_wep_scroll.clone();
 
-        i1.setAmount(64);
-        i2.setAmount(64);
-        i3.setAmount(64);
+		i1.setAmount(64);
+		i2.setAmount(64);
+		i3.setAmount(64);
 
-        plr.getInventory().addItem(i1);
-        plr.getInventory().addItem(i2);
-        plr.getInventory().addItem(i3);
+		plr.getInventory().addItem(i1);
+		plr.getInventory().addItem(i2);
+		plr.getInventory().addItem(i3);
 	}
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.EMPTY_MAP).setName(ChatColor.LIGHT_PURPLE + "Spawn " + ChatColor.BOLD + "Tier 4 " + ChatColor.LIGHT_PURPLE + "Scrolls").setLore(Arrays.asList(ChatColor.GRAY + "Adds a stack of Armor, Weapon and Protection Scrolls")).getItem();
+		return new Builder(Material.EMPTY_MAP)
+				.setName(ChatColor.LIGHT_PURPLE + "Spawn " + ChatColor.BOLD + "Tier 4 " + ChatColor.LIGHT_PURPLE
+						+ "Scrolls")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Adds a stack of Armor, Weapon and Protection Scrolls"))
+				.getItem();
 	}
 
 }

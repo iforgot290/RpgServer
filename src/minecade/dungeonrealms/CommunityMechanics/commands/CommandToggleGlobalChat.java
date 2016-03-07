@@ -11,35 +11,34 @@ import org.bukkit.entity.Player;
 import minecade.dungeonrealms.managers.PlayerManager;
 
 public class CommandToggleGlobalChat implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		final Player p = (Player) sender;
-		
-		if(!(args.length == 0)) {
+
+		if (!(args.length == 0)) {
 			p.sendMessage(ChatColor.RED + "Invalid Command.");
 			p.sendMessage(ChatColor.GRAY + "Usage: /toggleglobalchat");
 			p.sendMessage(ChatColor.GRAY + "Description: Enables / Disables talking in global chat.");
 			return true;
 		}
-		
-		if(PlayerManager.getPlayerModel(p).getToggleList().contains("globalchat")){
+
+		if (PlayerManager.getPlayerModel(p).getToggleList().contains("globalchat")) {
 			List<String> ltoggle_list = PlayerManager.getPlayerModel(p).getToggleList();
 			ltoggle_list.remove("globalchat");
 			PlayerManager.getPlayerModel(p).setToggleList(ltoggle_list);
 			p.sendMessage(ChatColor.RED + "Global Only Chat - " + ChatColor.BOLD + "DISABLED");
 			return true;
 		}
-		
-		if(!PlayerManager.getPlayerModel(p).getToggleList().contains("globalchat")){
+
+		if (!PlayerManager.getPlayerModel(p).getToggleList().contains("globalchat")) {
 			List<String> ltoggle_list = PlayerManager.getPlayerModel(p).getToggleList();
 			ltoggle_list.add("globalchat");
 			PlayerManager.getPlayerModel(p).setToggleList(ltoggle_list);
 			p.sendMessage(ChatColor.GREEN + "Global Only Chat - " + ChatColor.BOLD + "ENABLED");
 			return true;
 		}
-		
+
 		return true;
 	}
-	
+
 }

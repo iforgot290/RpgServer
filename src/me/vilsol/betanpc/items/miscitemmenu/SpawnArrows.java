@@ -27,7 +27,8 @@ public class SpawnArrows implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.ARROW).setName(ChatColor.AQUA + "Spawn Arrows").setLore(Arrays.asList(ChatColor.GRAY + "Spawn in Arrows of any Tier.")).getItem();
+		return new Builder(Material.ARROW).setName(ChatColor.AQUA + "Spawn Arrows")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn in Arrows of any Tier.")).getItem();
 	}
 
 }

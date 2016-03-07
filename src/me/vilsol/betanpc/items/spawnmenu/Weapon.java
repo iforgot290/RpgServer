@@ -19,7 +19,7 @@ import me.vilsol.menuengine.utils.Builder;
 public class Weapon implements MenuItem, BonusItem<ItemTier> {
 
 	private ItemTier tier;
-	
+
 	@Override
 	public void setBonusData(ItemTier t) {
 		tier = t;
@@ -38,7 +38,9 @@ public class Weapon implements MenuItem, BonusItem<ItemTier> {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(tier.getMaterialFromType(ItemType.SWORD)).setName(tier.getTierColor() + "Spawn " + tier.name() + " Weapons").setLore(Arrays.asList(ChatColor.GRAY + "Open " + tier.name() + " Weaponry Menu")).getItem();
+		return new Builder(tier.getMaterialFromType(ItemType.SWORD))
+				.setName(tier.getTierColor() + "Spawn " + tier.name() + " Weapons")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Open " + tier.name() + " Weaponry Menu")).getItem();
 	}
-	
+
 }

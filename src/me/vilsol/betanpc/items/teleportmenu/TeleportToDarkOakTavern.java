@@ -27,7 +27,12 @@ public class TeleportToDarkOakTavern implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.BOOK).setName(ChatColor.WHITE.toString() + ChatColor.BOLD + "Teleport: " + ChatColor.WHITE + "Dark Oak Tavern").setLore(Arrays.asList(ChatColor.GRAY + "Spawn a teleportation book to " + ChatColor.BOLD + "Dark Oak Tavern")).getItem();
+		return new Builder(Material.BOOK)
+				.setName(ChatColor.WHITE.toString() + ChatColor.BOLD + "Teleport: " + ChatColor.WHITE
+						+ "Dark Oak Tavern")
+				.setLore(Arrays
+						.asList(ChatColor.GRAY + "Spawn a teleportation book to " + ChatColor.BOLD + "Dark Oak Tavern"))
+				.getItem();
 	}
 
 }

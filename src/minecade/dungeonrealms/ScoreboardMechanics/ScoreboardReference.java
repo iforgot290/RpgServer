@@ -4,21 +4,21 @@ public class ScoreboardReference implements Comparable<ScoreboardReference> {
 
 	private Object reference;
 	private int priority = 0;
-	
-	public ScoreboardReference(Object reference){
+
+	public ScoreboardReference(Object reference) {
 		this.reference = reference;
 	}
-	
-	public ScoreboardReference setPriority(int priority){
+
+	public ScoreboardReference setPriority(int priority) {
 		this.priority = priority;
 		return this;
 	}
-	
-	public int getPriority(){
+
+	public int getPriority() {
 		return priority;
 	}
-	
-	public String getData(){
+
+	public String getData() {
 		return reference.toString();
 	}
 
@@ -26,5 +26,5 @@ public class ScoreboardReference implements Comparable<ScoreboardReference> {
 	public int compareTo(ScoreboardReference o) {
 		return o.getPriority() - this.getPriority();
 	}
-	
+
 }

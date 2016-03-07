@@ -21,8 +21,8 @@ public class MiscItemMenu extends MenuModel {
 		getMenu().addItem(SpawnScrolls.class, 3);
 		getMenu().addItem(SpawnFood.class, 4);
 		getMenu().addItem(SpawnPotions.class, 5);
-		
+
 		getMenu().addItem(BackToMainMenu.class, 8);
 	}
-	
+
 }

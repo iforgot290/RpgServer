@@ -10,12 +10,13 @@ import minecade.dungeonrealms.Hive.Hive;
 import minecade.dungeonrealms.jsonlib.JSONMessage;
 
 public class CommandProfile implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
-		//p.sendMessage(ChatColor.RED + "This feature is temporarily disabled due to host transfer.");
-		if(!p.isOp()) return true;
+		// p.sendMessage(ChatColor.RED + "This feature is temporarily disabled
+		// due to host transfer.");
+		if (!p.isOp())
+			return true;
 		String code = Hive.generateProfileCode(p.getName());
 		String url = "http://69.69.69.69:6969/lolaskdfjasdlf/?name=" + p.getName() + "&code=" + code;
 		JSONMessage msg = new JSONMessage("Click ", ChatColor.AQUA);
@@ -24,5 +25,5 @@ public class CommandProfile implements CommandExecutor {
 		msg.sendToPlayer(p);
 		return true;
 	}
-	
+
 }

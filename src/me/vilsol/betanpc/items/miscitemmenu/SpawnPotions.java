@@ -29,7 +29,8 @@ public class SpawnPotions implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		ItemStack item = new Builder(Material.POTION).setName(ChatColor.GREEN + "Spawn Potions").setLore(Arrays.asList(ChatColor.GRAY + "Spawn Health Potions of any Tier")).getItem();
+		ItemStack item = new Builder(Material.POTION).setName(ChatColor.GREEN + "Spawn Potions")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn Health Potions of any Tier")).getItem();
 		new Potion(PotionType.WATER).apply(item);
 		return item;
 	}

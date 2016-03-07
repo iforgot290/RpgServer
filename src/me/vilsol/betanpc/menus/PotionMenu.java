@@ -19,8 +19,8 @@ public class PotionMenu extends MenuModel {
 		getMenu().addItem(SpawnTierThreePotion.class, 2);
 		getMenu().addItem(SpawnTierFourPotion.class, 3);
 		getMenu().addItem(SpawnTierFivePotion.class, 4);
-		
+
 		getMenu().addItem(BackToMainMenu.class, 8);
 	}
-	
+
 }

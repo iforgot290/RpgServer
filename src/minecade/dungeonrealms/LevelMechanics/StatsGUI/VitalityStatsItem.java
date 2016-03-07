@@ -48,15 +48,20 @@ public class VitalityStatsItem implements MenuItem, BonusItem<PlayerModel> {
 		int aPoints = item.getPoints() - vit; // allocated points
 		boolean spent = (aPoints > 0) ? true : false;
 		return new Builder(Material.TRIPWIRE_HOOK)
-				.setName(
-						ChatColor.RED + "Vitality Bonuses: " + vit
-								+ (spent ? ChatColor.GREEN + " [+" + aPoints + "]" : ""))
+				.setName(ChatColor.RED + "Vitality Bonuses: " + vit
+						+ (spent ? ChatColor.GREEN + " [+" + aPoints + "]" : ""))
 				.setLore(
-						Arrays.asList(ChatColor.GOLD + "HP: " + ChatColor.AQUA + df.format(vit * 0.034) + "%"
-								+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.034) + "%]" : ""),
+						Arrays.asList(
+								ChatColor.GOLD + "HP: " + ChatColor.AQUA + df.format(vit * 0.034) + "%"
+										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.034) + "%]"
+												: ""),
 								ChatColor.GOLD + "HP REGEN: " + ChatColor.AQUA + df.format(vit * 0.03) + " HP/s"
-										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.03) + " HP/s]" : ""),
-								ChatColor.GOLD + "ELE RESIST: " + ChatColor.AQUA + df.format(vit * 0.04) + "%"
+										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.03) + " HP/s]"
+												: ""),
+								ChatColor.GOLD + "ELE RESIST: " + ChatColor.AQUA
+										+ df.format(
+												vit * 0.04)
+										+ "%"
 										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.04) + "%]" : ""),
 								ChatColor.GOLD + "SWORD DMG: " + ChatColor.AQUA + df.format(vit * 0.01) + "%"
 										+ (spent ? ChatColor.GREEN + " [+" + df.format(aPoints * 0.01) + "%]" : "")))
@@ -69,7 +74,8 @@ public class VitalityStatsItem implements MenuItem, BonusItem<PlayerModel> {
 		pLevel = drPlayer.getPlayerLevel();
 		points = pLevel.getVitPoints();
 		pLevel.setTempFreePoints(pLevel.getFreePoints());
-		for (Entry<Integer, MenuItem> entry : DynamicMenuModel.getMenu(drPlayer.getPlayer()).getDynamicItems().entrySet()) {
+		for (Entry<Integer, MenuItem> entry : DynamicMenuModel.getMenu(drPlayer.getPlayer()).getDynamicItems()
+				.entrySet()) {
 			if (entry.getValue() instanceof VitalityItem) {
 				item = (VitalityItem) entry.getValue();
 				points = item.getPoints();

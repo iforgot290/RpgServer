@@ -21,14 +21,17 @@ public class SpawnOrbsOfAlteration implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-        ItemStack item = MerchantMechanics.orb_of_alteration.clone();
-        item.setAmount(64);
-        plr.getInventory().addItem(item);
+		ItemStack item = MerchantMechanics.orb_of_alteration.clone();
+		item.setAmount(64);
+		plr.getInventory().addItem(item);
 	}
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.MAGMA_CREAM).setName(ChatColor.LIGHT_PURPLE + "Spawn 64x Orbs Of Alteration").setLore(Arrays.asList(ChatColor.GRAY + "Will give you " + ChatColor.BOLD + "64x " + ChatColor.LIGHT_PURPLE + "Orbs Of Alteration")).getItem();
+		return new Builder(Material.MAGMA_CREAM)
+				.setName(ChatColor.LIGHT_PURPLE + "Spawn 64x Orbs Of Alteration").setLore(Arrays.asList(ChatColor.GRAY
+						+ "Will give you " + ChatColor.BOLD + "64x " + ChatColor.LIGHT_PURPLE + "Orbs Of Alteration"))
+				.getItem();
 	}
 
 }

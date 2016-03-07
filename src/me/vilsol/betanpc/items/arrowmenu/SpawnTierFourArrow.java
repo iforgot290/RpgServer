@@ -23,12 +23,14 @@ public class SpawnTierFourArrow implements MenuItem {
 	public void execute(Player plr, ClickType click) {
 		ItemStack arrow = ItemMechanics.t4_arrow.clone();
 		arrow.setAmount(64);
-        plr.getInventory().addItem(arrow);
+		plr.getInventory().addItem(arrow);
 	}
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.ARROW).setName(ChatColor.LIGHT_PURPLE + "Spawn Tier 4 Arrow").setLore(Arrays.asList(ChatColor.GRAY + "Spawn in " + ChatColor.BOLD + "64x " + ChatColor.LIGHT_PURPLE + "Tier 4 Arrows.")).getItem();
+		return new Builder(Material.ARROW).setName(ChatColor.LIGHT_PURPLE + "Spawn Tier 4 Arrow").setLore(Arrays.asList(
+				ChatColor.GRAY + "Spawn in " + ChatColor.BOLD + "64x " + ChatColor.LIGHT_PURPLE + "Tier 4 Arrows."))
+				.getItem();
 	}
-	
+
 }

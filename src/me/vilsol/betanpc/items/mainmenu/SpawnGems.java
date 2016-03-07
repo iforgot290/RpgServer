@@ -26,7 +26,9 @@ public class SpawnGems implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.EMERALD).setName(ChatColor.GREEN + "Spawn Gems").setLore(Arrays.asList(ChatColor.GRAY + "Spawns a bank note worth " + ChatColor.BOLD + "1,000,000g")).getItem();
+		return new Builder(Material.EMERALD).setName(ChatColor.GREEN + "Spawn Gems")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawns a bank note worth " + ChatColor.BOLD + "1,000,000g"))
+				.getItem();
 	}
 
 }

@@ -24,14 +24,17 @@ public class SpawnTierFivePotion implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-        ItemStack pot = MerchantMechanics.t5_pot.clone();
-        pot.setAmount(64);
-        plr.getInventory().addItem(pot);
+		ItemStack pot = MerchantMechanics.t5_pot.clone();
+		pot.setAmount(64);
+		plr.getInventory().addItem(pot);
 	}
 
 	@Override
 	public ItemStack getItem() {
-		ItemStack item = new Builder(Material.POTION).setName(ChatColor.YELLOW + "Spawn " + ChatColor.BOLD + "Tier 5 " + ChatColor.YELLOW + "Potion").setLore(Arrays.asList(ChatColor.GRAY + "Spawn a potion that heals " + ChatColor.BOLD + "1800hp")).getItem();
+		ItemStack item = new Builder(Material.POTION)
+				.setName(ChatColor.YELLOW + "Spawn " + ChatColor.BOLD + "Tier 5 " + ChatColor.YELLOW + "Potion")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn a potion that heals " + ChatColor.BOLD + "1800hp"))
+				.getItem();
 		new Potion(PotionType.FIRE_RESISTANCE).apply(item);
 		return Utils.removePotionLore(item);
 	}

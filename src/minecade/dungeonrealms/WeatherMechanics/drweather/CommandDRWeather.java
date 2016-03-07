@@ -7,18 +7,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CommandDRWeather implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
-		if(!(p.isOp())) { return true; }
-		
-		if(args[0].equalsIgnoreCase("rain")) {
+		if (!(p.isOp())) {
+			return true;
+		}
+
+		if (args[0].equalsIgnoreCase("rain")) {
 			p.setPlayerWeather(WeatherType.DOWNFALL);
 		} else {
 			p.setPlayerWeather(WeatherType.CLEAR);
 		}
 		return true;
 	}
-	
+
 }

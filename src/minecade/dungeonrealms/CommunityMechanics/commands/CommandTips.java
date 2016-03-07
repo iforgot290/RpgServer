@@ -9,30 +9,33 @@ import org.bukkit.entity.Player;
 import minecade.dungeonrealms.CommunityMechanics.TipMechanics;
 
 public class CommandTips implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		final Player p = (Player) sender;
-		
-		if(cmd.getName().equalsIgnoreCase("crypt")) {
-			if(p != null) {
-				if(!(p.isOp())) { return true; }
+
+		if (cmd.getName().equalsIgnoreCase("crypt")) {
+			if (p != null) {
+				if (!(p.isOp())) {
+					return true;
+				}
 			}
-			
+
 			return true;
 		}
-		
-		if(!(p.isOp())) { return true; }
-		
-		if(!(args.length == 0)) {
+
+		if (!(p.isOp())) {
+			return true;
+		}
+
+		if (!(args.length == 0)) {
 			p.sendMessage(ChatColor.RED + "Invalid Command.");
 			p.sendMessage(ChatColor.GRAY + "Usage: /tips");
 			p.sendMessage(ChatColor.GRAY + "Description: Displays a random tip.");
 			return true;
 		}
-		
+
 		TipMechanics.displayRandomTip();
 		return true;
 	}
-	
+
 }

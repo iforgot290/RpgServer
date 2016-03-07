@@ -31,7 +31,10 @@ public class TierThree implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.IRON_CHESTPLATE).setName(ChatColor.AQUA + "Tier Three").setLore(Arrays.asList(ChatColor.GRAY + "Spawn " + ChatColor.AQUA.toString() + ChatColor.BOLD + "Tier Three " + ChatColor.GRAY + " Armor and Weapons")).getItem();
+		return new Builder(Material.IRON_CHESTPLATE).setName(ChatColor.AQUA + "Tier Three")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn " + ChatColor.AQUA.toString() + ChatColor.BOLD
+						+ "Tier Three " + ChatColor.GRAY + " Armor and Weapons"))
+				.getItem();
 	}
 
 }

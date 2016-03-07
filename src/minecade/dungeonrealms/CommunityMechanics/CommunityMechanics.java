@@ -170,7 +170,8 @@ public class CommunityMechanics implements Listener {
 
 		TipMechanics.loadTips();
 
-		serverNum = Integer.parseInt(Bukkit.getMotd().substring(Bukkit.getMotd().indexOf("-") + 1, Bukkit.getMotd().indexOf(" ")));
+		serverNum = Integer
+				.parseInt(Bukkit.getMotd().substring(Bukkit.getMotd().indexOf("-") + 1, Bukkit.getMotd().indexOf(" ")));
 
 		new BukkitRunnable() {
 
@@ -187,54 +188,55 @@ public class CommunityMechanics implements Listener {
 			}
 		}, 400 * 20L, 300 * 20L);
 
-		//server_list.put(0, "69.69.69.69");
+		// server_list.put(0, "69.69.69.69");
 
-		// the following ports are listen ports, not the minecraft ports the servers are actually running on!
-		//server_list.put(0, "37.187.136.77:25705");
+		// the following ports are listen ports, not the minecraft ports the
+		// servers are actually running on!
+		// server_list.put(0, "37.187.136.77:25705");
 		server_list.put(0, "127.0.0.1:25644");
 		server_list.put(1, "127.0.0.1:25645");
 		server_list.put(2, "127.0.0.1:25646");
 		// server_list.put(2, "37.187.136.77:25705");
-		//server_list.put(3, "69.69.69.69:6429");
-		// server_list.put(4, "69.69.69.69:6430"); 
+		// server_list.put(3, "69.69.69.69:6429");
+		// server_list.put(4, "69.69.69.69:6430");
 		// server_list.put(5, "69.69.69.69:6431");
 
-		//server_list.put(100, "69.69.69.69");
+		// server_list.put(100, "69.69.69.69");
 
-		/* moved to new server boxes on 7/2/14
-		server_list.put(1, "69.69.69.69"); // 74..63.245.13 US-1
-		server_list.put(2, "69.69.69.69"); // 74..63.245.14 US-2
-		server_list.put(3, "69.69.69.69"); // US-3
-		server_list.put(4, "69.69.69.69"); // US-4
-		// server_list.put(5, "69.69.69.69"); // US-5
-		// server_list.put(6, "69.69.69.69"); // US-6
-		// server_list.put(7, "69.69.69.69"); // US-7
-		// server_list.put(8, "69.69.69.69"); // US-8
-		server_list.put(9, "69.69.69.69"); // US-9 (VIP)
-		server_list.put(10, "69.69.69.69"); // US-10 (VIP)
-		server_list.put(11, "69.69.69.69"); // US-11 (RP)
-		server_list.put(100, "69.69.69.69"); // US-100
-
-		server_list.put(2001, "69.69.69.69"); // BR-1
+		/*
+		 * moved to new server boxes on 7/2/14 server_list.put(1,
+		 * "69.69.69.69"); // 74..63.245.13 US-1 server_list.put(2,
+		 * "69.69.69.69"); // 74..63.245.14 US-2 server_list.put(3,
+		 * "69.69.69.69"); // US-3 server_list.put(4, "69.69.69.69"); // US-4 //
+		 * server_list.put(5, "69.69.69.69"); // US-5 // server_list.put(6,
+		 * "69.69.69.69"); // US-6 // server_list.put(7, "69.69.69.69"); // US-7
+		 * // server_list.put(8, "69.69.69.69"); // US-8 server_list.put(9,
+		 * "69.69.69.69"); // US-9 (VIP) server_list.put(10, "69.69.69.69"); //
+		 * US-10 (VIP) server_list.put(11, "69.69.69.69"); // US-11 (RP)
+		 * server_list.put(100, "69.69.69.69"); // US-100
+		 * 
+		 * server_list.put(2001, "69.69.69.69"); // BR-1
 		 */
 
 		for (String s : server_list.values()) {
 			ip_whitelist.add(s);
 		}
 
-		ip_whitelist.add("192.99.45.33"); //Live Shards
+		ip_whitelist.add("192.99.45.33"); // Live Shards
 		ip_whitelist.add("127.0.0.1");
 		ip_whitelist.add(Config.Hive_IP);
-		//ip_whitelist.add("37.187.136.77"); // Donation Back-end Server AND US-0
-		//ip_whitelist.add("69.69.69.69");
-		//ip_whitelist.add("69.69.69.69");
-		//ip_whitelist.add("69.69.69.69");
-		//ip_whitelist.add("69.69.69.69");
-		//ip_whitelist.add("69.69.69.69");
-		//ip_whitelist.add("69.69.69.69");
-		//ip_whitelist.add("69.69.69.69");
-		//ip_whitelist.add("69.69.69.69"); // Testing packet connection for bradez
-		//ip_whitelist.add("69.69.69.69"); // GM Tool Packet Manager
+		// ip_whitelist.add("37.187.136.77"); // Donation Back-end Server AND
+		// US-0
+		// ip_whitelist.add("69.69.69.69");
+		// ip_whitelist.add("69.69.69.69");
+		// ip_whitelist.add("69.69.69.69");
+		// ip_whitelist.add("69.69.69.69");
+		// ip_whitelist.add("69.69.69.69");
+		// ip_whitelist.add("69.69.69.69");
+		// ip_whitelist.add("69.69.69.69");
+		// ip_whitelist.add("69.69.69.69"); // Testing packet connection for
+		// bradez
+		// ip_whitelist.add("69.69.69.69"); // GM Tool Packet Manager
 
 		toggle_map.add("toggledebug");
 		toggle_map.add("toggleff");
@@ -289,31 +291,34 @@ public class CommunityMechanics implements Listener {
 				} else if (!(msg.contains(" "))) {
 					sent_to_s = msg.substring(1, msg.length());
 				}
-				
-				if (sent_to_s.equalsIgnoreCase("")){
-					if (PlayerManager.getPlayerModel(p_uuid).getLastReply() == null){
-						sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "ERROR: " + ChatColor.RED + "You have no conversation to respond to!");
+
+				if (sent_to_s.equalsIgnoreCase("")) {
+					if (PlayerManager.getPlayerModel(p_uuid).getLastReply() == null) {
+						sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "ERROR: " + ChatColor.RED
+								+ "You have no conversation to respond to!");
 						continue;
 					}
 					sent_to_s = PlayerManager.getPlayerModel(p_uuid).getLastReply();
 				}
-				
+
 				@SuppressWarnings("deprecation")
 				OfflinePlayer sent_to = Bukkit.getOfflinePlayer(sent_from_s);
 
 				if (PlayerManager.getPlayerModel(sent_from.getUniqueId()).getToggleList().contains("tells")
 						&& (!(CommunityMechanics.isPlayerOnBuddyList(sent_from, sent_to)))) {
 
-					sent_from.sendMessage(ChatColor.RED + "You currently have non-BUD private messages " + ChatColor.BOLD + "DISABLED." + ChatColor.RED
-							+ " Type '/toggletells' to re-enable.");
+					sent_from.sendMessage(ChatColor.RED + "You currently have non-BUD private messages "
+							+ ChatColor.BOLD + "DISABLED." + ChatColor.RED + " Type '/toggletells' to re-enable.");
 					continue;
 				}
 
 				if ((!PermissionMechanics.getRank(sent_from).equalsIgnoreCase("gm")
-						&& (PlayerManager.getPlayerModel(sent_from).getIgnoreList().contains(sent_to_s)) || (CommunityMechanics
-								.socialQuery(sent_from.getUniqueId(), sent_to.getUniqueId(), "CHECK_FOE")))
+						&& (PlayerManager.getPlayerModel(sent_from).getIgnoreList().contains(sent_to_s))
+						|| (CommunityMechanics.socialQuery(sent_from.getUniqueId(), sent_to.getUniqueId(),
+								"CHECK_FOE")))
 						|| (!sent_from.isOp() && ModerationMechanics.isPlayerVanished(sent_to.getUniqueId()))) {
-					sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + sent_to.getName() + ChatColor.RED + " is OFFLINE.");
+					sent_from.sendMessage(
+							ChatColor.RED + "" + ChatColor.BOLD + sent_to.getName() + ChatColor.RED + " is OFFLINE.");
 					continue;
 				}
 
@@ -321,17 +326,18 @@ public class CommunityMechanics implements Listener {
 
 				if (sent_to_server_data < 0) {
 					if (sent_to_server_data == -1) {
-						sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + sent_to_s + ChatColor.RED + " is OFFLINE.");
+						sent_from.sendMessage(
+								ChatColor.RED + "" + ChatColor.BOLD + sent_to_s + ChatColor.RED + " is OFFLINE.");
 					} else if (sent_to_server_data == -2) {
-						sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + sent_to_s + ChatColor.RED + " has " + ChatColor.UNDERLINE + "NEVER"
-								+ ChatColor.RED + " logged in to Dungeon Realms.");
+						sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + sent_to_s + ChatColor.RED + " has "
+								+ ChatColor.UNDERLINE + "NEVER" + ChatColor.RED + " logged in to Dungeon Realms.");
 					}
 					continue;
 				}
 
 				if (!(CommunityMechanics.server_list.containsKey(sent_to_server_data))) {
-					sent_from.sendMessage(ChatColor.RED + "Your message could not be delivered because the server ID " + sent_to_server_data
-							+ " is not defined.");
+					sent_from.sendMessage(ChatColor.RED + "Your message could not be delivered because the server ID "
+							+ sent_to_server_data + " is not defined.");
 					continue;
 				}
 
@@ -369,13 +375,14 @@ public class CommunityMechanics implements Listener {
 					PlayerManager.getPlayerModel(sent_from).setLastPMTime(System.currentTimeMillis());
 
 					if (!sent_from.isOp()
-							&& (PlayerManager.getPlayerModel(sent_to_p).getToggleList().contains("tells") && !(CommunityMechanics.isPlayerOnBuddyList(
-									sent_to, sent_from)))
-							|| (PlayerManager.getPlayerModel(sent_from).getToggleList().contains("tells") && !(CommunityMechanics.isPlayerOnBuddyList(
-									sent_from, sent_to)))) {
+							&& (PlayerManager.getPlayerModel(sent_to_p).getToggleList().contains("tells")
+									&& !(CommunityMechanics.isPlayerOnBuddyList(sent_to, sent_from)))
+							|| (PlayerManager.getPlayerModel(sent_from).getToggleList().contains("tells")
+									&& !(CommunityMechanics.isPlayerOnBuddyList(sent_from, sent_to)))) {
 						if (PlayerManager.getPlayerModel(sent_to_p).getToggleList().contains("tells")) {
-							sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + sent_to_p.getName() + ChatColor.RED
-									+ " currently has private messaging " + ChatColor.UNDERLINE + "DISABLED.");
+							sent_from.sendMessage(
+									ChatColor.RED + "" + ChatColor.BOLD + sent_to_p.getName() + ChatColor.RED
+											+ " currently has private messaging " + ChatColor.UNDERLINE + "DISABLED.");
 							continue;
 						}
 						continue;
@@ -399,10 +406,10 @@ public class CommunityMechanics implements Listener {
 						from_personal_msg = ChatMechanics.censorMessage(message);
 					}
 
-					sent_to_p.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "FROM " + from_prefix + st_c + sent_from_s + ":" + ChatColor.WHITE
-							+ to_personal_msg);
-					sent_from.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "TO " + to_prefix + sf_c + sent_to_p.getName() + ":" + ChatColor.WHITE
-							+ from_personal_msg);
+					sent_to_p.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "FROM " + from_prefix + st_c
+							+ sent_from_s + ":" + ChatColor.WHITE + to_personal_msg);
+					sent_from.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "TO " + to_prefix + sf_c
+							+ sent_to_p.getName() + ":" + ChatColor.WHITE + from_personal_msg);
 					if (PlayerManager.getPlayerModel(sent_to_p).getLastReply() == null
 							|| !PlayerManager.getPlayerModel(sent_to_p).getLastReply().equalsIgnoreCase(sent_from_s)) {
 						sent_to_p.playSound(sent_to_p.getLocation(), Sound.ENTITY_CHICKEN_EGG, 2F, 1.2F);
@@ -410,7 +417,9 @@ public class CommunityMechanics implements Listener {
 					}
 				} else if (!(sent_to_server.equalsIgnoreCase(local_server))) {
 					List<Object> query = new ArrayList<Object>();
-					query.add("^" + sent_from.getUniqueId().toString() + "%" + sent_to_s + "/" + GuildMechanics.getGuildPrefix(sent_from) + "@" + sent_from_s + ";" + local_server + ":" + message);
+					query.add("^" + sent_from.getUniqueId().toString() + "%" + sent_to_s + "/"
+							+ GuildMechanics.getGuildPrefix(sent_from) + "@" + sent_from_s + ";" + local_server + ":"
+							+ message);
 					query.add(sent_to_s);
 					query.add(false);
 					social_query_list.put(p_uuid.toString(), query);
@@ -433,8 +442,11 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Sets the player name color
-	 * @param pl player to set
-	 * @param c color to set player as
+	 * 
+	 * @param pl
+	 *            player to set
+	 * @param c
+	 *            color to set player as
 	 */
 	public static void setColor(Player pl, ChatColor c) {
 		if (pl == null) {
@@ -447,38 +459,50 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Gets if the player is online or not (Thread blocking)
-	 * @param p_uuid player to check
+	 * 
+	 * @param p_uuid
+	 *            player to check
 	 * @return if the player is online
 	 */
 	public static boolean isPlayerOnline(UUID p_uuid) {
 		int server_num = Hive.getPlayerServer(p_uuid, true);
 		return server_num > -1;
 	}
-	
+
 	/**
 	 * Gets if the player is online or not (Thread blocking)
-	 * @param player player to check
+	 * 
+	 * @param player
+	 *            player to check
 	 * @return if the player is online
 	 */
-	public static boolean isPlayerOnline(OfflinePlayer player){
+	public static boolean isPlayerOnline(OfflinePlayer player) {
 		return isPlayerOnline(player.getUniqueId());
 	}
-	
+
 	/**
-	 * Gets if the player is online or not (Only thread blocking if refresh is true)
-	 * @param p_uuid player to check
-	 * @param refresh refresh from sql server
+	 * Gets if the player is online or not (Only thread blocking if refresh is
+	 * true)
+	 * 
+	 * @param p_uuid
+	 *            player to check
+	 * @param refresh
+	 *            refresh from sql server
 	 * @return if the player is online
 	 */
-	public static boolean isPlayerOnline(UUID p_uuid, boolean refresh){
+	public static boolean isPlayerOnline(UUID p_uuid, boolean refresh) {
 		int server_num = Hive.getPlayerServer(p_uuid, refresh);
 		return server_num > -1;
 	}
 
 	/**
-	 * Gets if the player is online or not (Only thread blocking if refresh is true)
-	 * @param player player to check
-	 * @param refresh refresh from sql server
+	 * Gets if the player is online or not (Only thread blocking if refresh is
+	 * true)
+	 * 
+	 * @param player
+	 *            player to check
+	 * @param refresh
+	 *            refresh from sql server
 	 * @return if the player is online
 	 */
 	public static boolean isPlayerOnline(OfflinePlayer player, boolean refresh) {
@@ -486,8 +510,11 @@ public class CommunityMechanics implements Listener {
 	}
 
 	/**
-	 * Only updates the first few pages of the character journal, the pages with realtime, non-SQL/socket based information.
-	 * @param p player to update book for
+	 * Only updates the first few pages of the character journal, the pages with
+	 * realtime, non-SQL/socket based information.
+	 * 
+	 * @param p
+	 *            player to update book for
 	 */
 	public static void updateCombatPage(Player p) {
 		List<String> new_pages = new ArrayList<String>();
@@ -520,13 +547,13 @@ public class CommunityMechanics implements Listener {
 			String align_expire_message = "";
 
 			if (raw_align.equalsIgnoreCase("neutral")) {
-				align_expire_message = "\n" + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "Lawful" + ChatColor.BLACK.toString() + " in "
-						+ KarmaMechanics.getSecondsUntilAlignmentChange(p) + "s";
+				align_expire_message = "\n" + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "Lawful"
+						+ ChatColor.BLACK.toString() + " in " + KarmaMechanics.getSecondsUntilAlignmentChange(p) + "s";
 			}
 
 			if (raw_align.equalsIgnoreCase("evil")) {
-				align_expire_message = "\n" + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "Neutral" + ChatColor.BLACK.toString() + " in "
-						+ KarmaMechanics.getSecondsUntilAlignmentChange(p) + "s";
+				align_expire_message = "\n" + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "Neutral"
+						+ ChatColor.BLACK.toString() + " in " + KarmaMechanics.getSecondsUntilAlignmentChange(p) + "s";
 			}
 
 			DecimalFormat df = new DecimalFormat("#.##");
@@ -553,31 +580,45 @@ public class CommunityMechanics implements Listener {
 					item_find = "1.00";
 				}
 
-				page1_string = ChatColor.BLACK.toString() + "" + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "  Your Character" + "   " + "\n"
-						+ ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "Alignment: " + pretty_align + align_expire_message + "\n"
-						+ ChatColor.BLACK.toString() + align_descrip + new_line + ChatColor.BLACK.toString() + "   " + HealthMechanics.getPlayerHP(p.getName())
-						+ " / " + HealthMechanics.health_data.get(p.getUniqueId()) + "" + ChatColor.BOLD.toString() + " HP" + "\n" + ChatColor.BLACK.toString()
-						+ "   " + ItemMechanics.armor_data.get(p.getUniqueId()).get(0) + " - " + ItemMechanics.armor_data.get(p.getUniqueId()).get(1) + "% "
-						+ ChatColor.BOLD.toString() + "Armor" + "\n" + ChatColor.BLACK.toString() + "   " + ItemMechanics.dmg_data.get(p.getUniqueId()).get(0)
-						+ " - " + ItemMechanics.dmg_data.get(p.getUniqueId()).get(1) + "% " + ChatColor.BOLD.toString() + "DPS" + "\n" + ChatColor.BLACK.toString()
-						+ "   " + (HealthMechanics.health_regen_data.get((p.getUniqueId())) + 5) + " " + ChatColor.BOLD.toString() + "HP/s" + "\n"
-						+ ChatColor.BLACK.toString() + "   " + df.format((((double) FatigueMechanics.energy_regen_data.get((p.getUniqueId()))) * 100.0D) + 90.0D)
-						+ "% " + ChatColor.BOLD.toString() + "Energy" + "\n" + ChatColor.BLACK.toString() + "   " + gold_find + "x "
-						+ ChatColor.BOLD.toString() + "Gem Find" + "\n" + ChatColor.BLACK.toString() + "   " + item_find + "x " + ChatColor.BOLD.toString()
-						+ "Item Find" + money_space + ChatColor.BLACK.toString() + "" + Hive.player_ecash.get(p.getUniqueId()) + " " + ChatColor.BOLD.toString()
-						+ "E-CASH";
-				
-				page2_string = ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + "  ** LEVEL/EXP **\n\n" + ChatColor.BLACK + ChatColor.BOLD
-						+ "       LEVEL\n\n" + "         " + ChatColor.BLACK + LevelMechanics.getPlayerLevel(p) + "\n\n" + ChatColor.BLACK + ChatColor.BOLD
-						+ "          XP" + "\n" + ChatColor.BLACK + "       " + LevelMechanics.getPlayerData(p).getXP() + " / "
+				page1_string = ChatColor.BLACK.toString() + "" + ChatColor.BOLD.toString()
+						+ ChatColor.UNDERLINE.toString() + "  Your Character" + "   " + "\n"
+						+ ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "Alignment: " + pretty_align
+						+ align_expire_message + "\n" + ChatColor.BLACK.toString() + align_descrip + new_line
+						+ ChatColor.BLACK.toString() + "   " + HealthMechanics.getPlayerHP(p.getName()) + " / "
+						+ HealthMechanics.health_data.get(p.getUniqueId()) + "" + ChatColor.BOLD.toString() + " HP"
+						+ "\n" + ChatColor.BLACK.toString() + "   "
+						+ ItemMechanics.armor_data.get(p.getUniqueId()).get(0) + " - "
+						+ ItemMechanics.armor_data.get(p.getUniqueId()).get(1) + "% " + ChatColor.BOLD.toString()
+						+ "Armor" + "\n" + ChatColor.BLACK.toString() + "   "
+						+ ItemMechanics.dmg_data.get(p.getUniqueId()).get(0) + " - "
+						+ ItemMechanics.dmg_data.get(p.getUniqueId()).get(1) + "% " + ChatColor.BOLD.toString() + "DPS"
+						+ "\n" + ChatColor.BLACK.toString() + "   "
+						+ (HealthMechanics.health_regen_data.get((p.getUniqueId())) + 5) + " "
+						+ ChatColor.BOLD.toString() + "HP/s" + "\n" + ChatColor.BLACK.toString() + "   "
+						+ df.format(
+								(((double) FatigueMechanics.energy_regen_data.get((p.getUniqueId()))) * 100.0D) + 90.0D)
+						+ "% " + ChatColor.BOLD.toString() + "Energy" + "\n" + ChatColor.BLACK.toString() + "   "
+						+ gold_find + "x " + ChatColor.BOLD.toString() + "Gem Find" + "\n" + ChatColor.BLACK.toString()
+						+ "   " + item_find + "x " + ChatColor.BOLD.toString() + "Item Find" + money_space
+						+ ChatColor.BLACK.toString() + "" + Hive.player_ecash.get(p.getUniqueId()) + " "
+						+ ChatColor.BOLD.toString() + "E-CASH";
+
+				page2_string = ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + "  ** LEVEL/EXP **\n\n"
+						+ ChatColor.BLACK + ChatColor.BOLD + "       LEVEL\n\n" + "         " + ChatColor.BLACK
+						+ LevelMechanics.getPlayerLevel(p) + "\n\n" + ChatColor.BLACK + ChatColor.BOLD + "          XP"
+						+ "\n" + ChatColor.BLACK + "       " + LevelMechanics.getPlayerData(p).getXP() + " / "
 						+ LevelMechanics.getPlayerData(p).getEXPNeeded(LevelMechanics.getPlayerLevel(p));
-				
-				page3_string = "\n" + ChatColor.BLACK.toString() + "   " + ItemMechanics.fire_res_data.get(p.getUniqueId()) + "% " + ChatColor.BOLD.toString()
-						+ "Fire Resist" + "\n" + ChatColor.BLACK.toString() + "   " + ItemMechanics.ice_res_data.get(p.getUniqueId()) + "% "
-						+ ChatColor.BOLD.toString() + "Ice Resist" + "\n" + ChatColor.BLACK.toString() + "   " + ItemMechanics.poison_res_data.get(p.getUniqueId())
-						+ "% " + ChatColor.BOLD.toString() + "Poison Resist" + new_line + ChatColor.BLACK.toString() + "Monsters that deal" + "\n"
-						+ "elemental damage will" + "\n" + "ignore 80% of your" + "\n" + "ARMOR." + new_line + ChatColor.BLACK.toString()
-						+ "Fire, Ice, and Poison" + "\n" + "resistances will take" + "\n" + "the place of your" + "\n" + "ARMOR vs. elements.";
+
+				page3_string = "\n" + ChatColor.BLACK.toString() + "   "
+						+ ItemMechanics.fire_res_data.get(p.getUniqueId()) + "% " + ChatColor.BOLD.toString()
+						+ "Fire Resist" + "\n" + ChatColor.BLACK.toString() + "   "
+						+ ItemMechanics.ice_res_data.get(p.getUniqueId()) + "% " + ChatColor.BOLD.toString()
+						+ "Ice Resist" + "\n" + ChatColor.BLACK.toString() + "   "
+						+ ItemMechanics.poison_res_data.get(p.getUniqueId()) + "% " + ChatColor.BOLD.toString()
+						+ "Poison Resist" + new_line + ChatColor.BLACK.toString() + "Monsters that deal" + "\n"
+						+ "elemental damage will" + "\n" + "ignore 80% of your" + "\n" + "ARMOR." + new_line
+						+ ChatColor.BLACK.toString() + "Fire, Ice, and Poison" + "\n" + "resistances will take" + "\n"
+						+ "the place of your" + "\n" + "ARMOR vs. elements.";
 
 				int str_val = ItemMechanics.str_data.get(p.getUniqueId());
 				int dex_val = ItemMechanics.dex_data.get(p.getUniqueId());
@@ -610,14 +651,17 @@ public class CommunityMechanics implements Listener {
 						+ ChatColor.BLACK.toString() + "+" + df.format(int_val * 0.025) + "% Critical Hit" + "\n"
 						+ ChatColor.BLACK.toString() + "+" + df.format(int_val * 0.02) + "% Staff DMG";
 
-				page6_string = ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "Portal Key Shards" + "\n" + ChatColor.BLACK.toString()
-				+ ChatColor.ITALIC.toString()
-				+ "A sharded fragment from the great portal of Maltai that may be exchanged at the Dungeoneer for epic equipment." + new_line
-				+ ChatColor.DARK_GRAY.toString() + "Portal Shards: " + ChatColor.BLACK + InstanceMechanics.getPortalShardCount(p, 1) + "\n"
-				+ ChatColor.GREEN.toString() + "Portal Shards: " + ChatColor.BLACK + InstanceMechanics.getPortalShardCount(p, 2) + "\n"
-				+ ChatColor.AQUA.toString() + "Portal Shards: " + ChatColor.BLACK + InstanceMechanics.getPortalShardCount(p, 3) + "\n"
-				+ ChatColor.LIGHT_PURPLE.toString() + "Portal Shards: " + ChatColor.BLACK + InstanceMechanics.getPortalShardCount(p, 4)
-				+ "\n" + ChatColor.GOLD.toString() + "Portal Shards: " + ChatColor.BLACK + InstanceMechanics.getPortalShardCount(p, 5);
+				page6_string = ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "Portal Key Shards" + "\n"
+						+ ChatColor.BLACK.toString() + ChatColor.ITALIC.toString()
+						+ "A sharded fragment from the great portal of Maltai that may be exchanged at the Dungeoneer for epic equipment."
+						+ new_line + ChatColor.DARK_GRAY.toString() + "Portal Shards: " + ChatColor.BLACK
+						+ InstanceMechanics.getPortalShardCount(p, 1) + "\n" + ChatColor.GREEN.toString()
+						+ "Portal Shards: " + ChatColor.BLACK + InstanceMechanics.getPortalShardCount(p, 2) + "\n"
+						+ ChatColor.AQUA.toString() + "Portal Shards: " + ChatColor.BLACK
+						+ InstanceMechanics.getPortalShardCount(p, 3) + "\n" + ChatColor.LIGHT_PURPLE.toString()
+						+ "Portal Shards: " + ChatColor.BLACK + InstanceMechanics.getPortalShardCount(p, 4) + "\n"
+						+ ChatColor.GOLD.toString() + "Portal Shards: " + ChatColor.BLACK
+						+ InstanceMechanics.getPortalShardCount(p, 5);
 
 				new_pages.add(page1_string);
 				new_pages.add(page2_string);
@@ -626,8 +670,10 @@ public class CommunityMechanics implements Listener {
 				new_pages.add(page5_string);
 				new_pages.add(page6_string);
 				for (String s : pages) {
-					if (!s.contains("Your Character") && !s.startsWith(ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "+ ")
-							&& !(s.contains("Monsters that deal")) && !(s.contains("Portal Key Shards")) && !s.contains("LEVEL/EXP")) {
+					if (!s.contains("Your Character")
+							&& !s.startsWith(ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "+ ")
+							&& !(s.contains("Monsters that deal")) && !(s.contains("Portal Key Shards"))
+							&& !s.contains("LEVEL/EXP")) {
 						new_pages.add(s);
 					}
 				}
@@ -649,358 +695,368 @@ public class CommunityMechanics implements Listener {
 	}
 
 	/*
-	 * Generates a full character journal. -- updateCombatPage() will run after this everytime the book opens to insert those pages.
+	 * Generates a full character journal. -- updateCombatPage() will run after
+	 * this everytime the book opens to insert those pages.
 	 */
-	//TODO fuck this book
+	// TODO fuck this book
 	public static ItemStack generateCommBook(final Player p) {
 		if (p == null || !p.isOnline()) {
 			return null;
 		}
-		//String new_line = "\n" + ChatColor.WHITE.toString() + "`" + "\n";
+		// String new_line = "\n" + ChatColor.WHITE.toString() + "`" + "\n";
 		ItemStack i = new ItemStack(Material.WRITTEN_BOOK, 1);
-		/*List<String> the_pages = new ArrayList<String>();
-		List<String> lbuddy_list = PlayerManager.getPlayerModel(p).getBuddyList();
-		List<String> lignore_list = PlayerManager.getPlayerModel(p).getIgnoreList();
+		/*
+		 * List<String> the_pages = new ArrayList<String>(); List<String>
+		 * lbuddy_list = PlayerManager.getPlayerModel(p).getBuddyList();
+		 * List<String> lignore_list =
+		 * PlayerManager.getPlayerModel(p).getIgnoreList();
+		 * 
+		 * int buddies_printed = 0; boolean first_buddy_page = true;
+		 * 
+		 * String pretty_align = KarmaMechanics.getAlignment(p.getName());
+		 * String raw_align = KarmaMechanics.align_map.get(p.getName()); String
+		 * align_descrip = KarmaMechanics.getAlignmentDescription(raw_align);
+		 * String align_expire_message = "";
+		 * 
+		 * if (!KarmaMechanics.align_map.containsKey(p.getName())) { raw_align =
+		 * "good"; align_expire_message = ""; }
+		 * 
+		 * if (raw_align.equalsIgnoreCase("neutral")) { align_expire_message =
+		 * "\n" + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() +
+		 * "Lawful" + ChatColor.BLACK.toString() + " in " +
+		 * KarmaMechanics.getSecondsUntilAlignmentChange(p.getName()) + "s"; }
+		 * 
+		 * if (raw_align.equalsIgnoreCase("evil")) { align_expire_message = "\n"
+		 * + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "Neutral"
+		 * + ChatColor.BLACK.toString() + " in " +
+		 * KarmaMechanics.getSecondsUntilAlignmentChange(p.getName()) + "s"; }
+		 * 
+		 * DecimalFormat df = new DecimalFormat("#.##");
+		 * 
+		 * String money_space = ""; if (align_expire_message.length() > 0) {
+		 * money_space = new_line; } else { money_space = new_line; }
+		 * 
+		 * String gold_find = "1.00"; if
+		 * (ItemMechanics.gfind_data.containsKey(p.getName())) { gold_find =
+		 * (df.format((((double) ItemMechanics.gfind_data.get(p.getName())) /
+		 * 100.0D) + 1.0D)); if (gold_find.equalsIgnoreCase("1")) { gold_find =
+		 * "1.00"; } }
+		 * 
+		 * String item_find = "1.00"; if
+		 * (ItemMechanics.ifind_data.containsKey(p.getName())) { item_find =
+		 * (df.format((((double) ItemMechanics.ifind_data.get(p.getName())) /
+		 * 100.0D) + 1.0D)); } if (item_find.equalsIgnoreCase("1")) { item_find
+		 * = "1.00"; }
+		 * 
+		 * try { the_pages.add(ChatColor.BLACK.toString() + "" +
+		 * ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() +
+		 * "  Your Character" + "   " + "\n" + ChatColor.BLACK.toString() +
+		 * ChatColor.BOLD.toString() + "Alignment: " + pretty_align +
+		 * align_expire_message + "\n" + ChatColor.BLACK.toString() +
+		 * align_descrip + new_line + ChatColor.BLACK.toString() + "   " +
+		 * HealthMechanics.getPlayerHP(p.getName()) + " / " +
+		 * HealthMechanics.health_data.get(p.getName()) + "" +
+		 * ChatColor.BOLD.toString() + " HP" + "\n" + ChatColor.BLACK.toString()
+		 * + "   " + ItemMechanics.armor_data.get(p.getName()).get(0) + " - " +
+		 * ItemMechanics.armor_data.get(p.getName()).get(1) + "% " +
+		 * ChatColor.BOLD.toString() + "Armor" + "\n" +
+		 * ChatColor.BLACK.toString() + "   " +
+		 * ItemMechanics.dmg_data.get(p.getName()).get(0) + " - " +
+		 * ItemMechanics.dmg_data.get(p.getName()).get(1) + "% " +
+		 * ChatColor.BOLD.toString() + "DPS" + "\n" + ChatColor.BLACK.toString()
+		 * + "   " + (HealthMechanics.health_regen_data.get((p.getName())) + 5)
+		 * + " " + ChatColor.BOLD.toString() + "HP/s" + "\n" +
+		 * ChatColor.BLACK.toString() + "   " + df.format((((double)
+		 * FatigueMechanics.energy_regen_data.get((p.getName()))) * 100.0D) +
+		 * 90.0D) + "% " + ChatColor.BOLD.toString() + "Energy" + "\n" +
+		 * ChatColor.BLACK.toString() + "   " + gold_find + "x " +
+		 * ChatColor.BOLD.toString() + "Gem Find" + "\n" +
+		 * ChatColor.BLACK.toString() + "   " + item_find + "x " +
+		 * ChatColor.BOLD.toString() + "Item Find" + money_space +
+		 * ChatColor.BLACK.toString() + "" + Hive.player_ecash.get(p.getName())
+		 * + " " + ChatColor.BOLD.toString() + "E-CASH"); // +
+		 * RealmMechanics.getMoneyInInventory(p) + " / " + //
+		 * (MoneyMechanics.bank_map.get(p.getName()) + //
+		 * RealmMechanics.getMoneyInInventory(p)) + // ChatColor.BOLD.toString()
+		 * + "G"); } catch (NullPointerException npe) { log.info(
+		 * "[CommunityMechanics] Failed to give book to " + p.getName());
+		 * npe.printStackTrace(); return null; } if (lbuddy_list == null ||
+		 * lbuddy_list.size() == 0 ||
+		 * PlayerManager.getPlayerModel(p).getBuddyList() == null) {
+		 * the_pages.add(ChatColor.BLACK.toString() + "" +
+		 * ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() +
+		 * "     Buddy List" + "      " + "\n" + ChatColor.BLACK.toString() +
+		 * ChatColor.BOLD.toString() + "@<PLAYER> <MSG>" + "\n" +
+		 * ChatColor.BLACK.toString() + "Sends <MSG> to <PLAYER>." + new_line +
+		 * ChatColor.BLACK.toString() + ChatColor.BOLD.toString() +
+		 * "/add <PLAYER>" + "\n" + ChatColor.BLACK.toString() +
+		 * "Adds PLAYER to buddy list." + new_line + ChatColor.BLACK.toString()
+		 * + ChatColor.BOLD.toString() + "/delete <PLAYER>" + "\n" +
+		 * ChatColor.BLACK.toString() + "Deletes PLAYER from all lists."); }
+		 * 
+		 * if (!(lbuddy_list == null)) { List<String> format_buddy_list = new
+		 * ArrayList<String>();
+		 * 
+		 * for (String s : lbuddy_list) { s = ChatColor.stripColor(s); String
+		 * online_mark = ""; // Boolean is_buddy = socialQuery(p.getName(), s,
+		 * "CHECK_BUD"); boolean online = isPlayerOnline(s);
+		 * 
+		 * if (online) { // is_buddy && online_mark =
+		 * ChatColor.DARK_GREEN.toString() + ChatColor.BOLD.toString() + "O"; }
+		 * else if (!(online)) { online_mark = ChatColor.DARK_RED.toString() +
+		 * ChatColor.BOLD.toString() + "O"; }
+		 * 
+		 * int server_num = getPlayerServer(s); // TODO: See if this is //
+		 * causing SQL // bottleneck.
+		 * 
+		 * OfflinePlayer op = Bukkit.getServer().getOfflinePlayer(s);
+		 * 
+		 * if (server_num >= 0 && !op.isOp()) {
+		 * 
+		 * String prefix = "US-";
+		 * 
+		 * if (server_num > 1000 && server_num < 2000) { server_num -= 1000;
+		 * prefix = "EU-"; }
+		 * 
+		 * if (server_num > 2000 && server_num < 3000) { server_num -= 2000;
+		 * prefix = "BR-"; }
+		 * 
+		 * if (server_num >= 3000) { server_num -= 3000; prefix = "US-YT"; }
+		 * 
+		 * String remote_server = prefix + server_num;
+		 * 
+		 * format_buddy_list.add(ChatColor.BLACK.toString() + "" + online_mark +
+		 * ChatColor.BLACK.toString() + " " + ChatColor.BOLD.toString() + s +
+		 * "\n" + ChatColor.BLACK.toString() + "Shard: " + remote_server +
+		 * new_line); } }
+		 * 
+		 * for (String s : lbuddy_list) { s = ChatColor.stripColor(s); String
+		 * online_mark = ""; online_mark = ChatColor.DARK_RED.toString() +
+		 * ChatColor.BOLD.toString() + "O";
+		 * 
+		 * int server_num = getPlayerServer(s); // TODO: See if this is //
+		 * causing SQL // bottleneck.
+		 * 
+		 * OfflinePlayer op = Bukkit.getServer().getOfflinePlayer(s);
+		 * 
+		 * if (server_num == -1 || op.isOp()) { Long last_login =
+		 * getLastLogin(s, false); // TODO: Make this time save locally or have
+		 * it DL database at start String release_s = "";
+		 * 
+		 * if (last_login == -1L || op.isOp()) { release_s = "NEVER"; } else {
+		 * Date startTime, endTime; endTime = new
+		 * Date(System.currentTimeMillis()); startTime = new Date(last_login);
+		 * 
+		 * long sec; sec = (endTime.getTime() - startTime.getTime()) / 1000; int
+		 * hour = (int) (sec / 3600); sec = sec % 3600; int min = (int) (sec /
+		 * 60); sec = sec % 60;
+		 * 
+		 * if (min <= 0) { release_s = sec + "s ago"; } else if (release_s == ""
+		 * && (min > 0 && min <= 60) && hour <= 0) { release_s = min + "m ago";
+		 * } else if (release_s == "" && (hour > 0 && hour <= 24)) { release_s =
+		 * hour + "h ago"; } else if (release_s == "") { release_s =
+		 * String.valueOf(Math.round((hour / 24))) + "d ago"; } }
+		 * 
+		 * format_buddy_list.add(ChatColor.BLACK.toString() + "" + online_mark +
+		 * ChatColor.BLACK.toString() + " " + ChatColor.BOLD.toString() + s +
+		 * "\n" + ChatColor.BLACK.toString() + "Last On: " + release_s +
+		 * new_line);
+		 * 
+		 * // // page_structure += ChatColor.BLACK.toString() + "" + online_mark
+		 * + ChatColor.BLACK.toString() + " " + ChatColor.BOLD.toString() + s +
+		 * "\n" // + ChatColor.BLACK.toString() + "Last On: " + release_s +
+		 * new_line; being_added_to_book.remove(s); // } }
+		 * 
+		 * for (String s : lbuddy_list) { s = ChatColor.stripColor(s); String
+		 * online_mark = ""; online_mark = ChatColor.DARK_RED.toString() +
+		 * ChatColor.BOLD.toString() + "O";
+		 * 
+		 * int server_num = getPlayerServer(s); // TODO: See if this is //
+		 * causing SQL // bottleneck.
+		 * 
+		 * if (server_num == -2) {
+		 * format_buddy_list.add(ChatColor.BLACK.toString() + "" + online_mark +
+		 * ChatColor.BLACK.toString() + " " + ChatColor.BOLD.toString() + s +
+		 * "\n" + ChatColor.BLACK.toString() + "Last On: " + "NEVER" +
+		 * new_line);
+		 * 
+		 * // // page_structure += ChatColor.BLACK.toString() + "" + online_mark
+		 * + ChatColor.BLACK.toString() + " " + ChatColor.BOLD.toString() + s +
+		 * "\n" // + ChatColor.BLACK.toString() + "Last On: " + "NEVER" +
+		 * new_line; being_added_to_book.remove(s); // } }
+		 * 
+		 * int attempts = 50; while (format_buddy_list.size() > buddies_printed
+		 * && attempts > 0) { attempts--; int buddies_to_print = 5;
+		 * 
+		 * if (first_buddy_page == true) { buddies_to_print = 4; }
+		 * 
+		 * if ((buddies_printed + buddies_to_print) > lbuddy_list.size()) {
+		 * buddies_to_print = lbuddy_list.size() - buddies_printed; // Less than
+		 * 5 buddies left to add. So we just add one final // page. }
+		 * 
+		 * CopyOnWriteArrayList<String> being_added_to_book = new
+		 * CopyOnWriteArrayList<String>(format_buddy_list.subList(
+		 * buddies_printed, (buddies_printed + buddies_to_print))); String
+		 * page_structure = "";
+		 * 
+		 * if (first_buddy_page == true) { page_structure +=
+		 * ChatColor.BLACK.toString() + "" + ChatColor.BOLD.toString() +
+		 * ChatColor.UNDERLINE.toString() + "     Buddy List" + "      " + "\n"
+		 * + ChatColor.BLACK.toString(); }
+		 * 
+		 * for (String s : being_added_to_book) { page_structure += s; }
+		 * 
+		 * the_pages.add(page_structure); buddies_printed += buddies_to_print;
+		 * first_buddy_page = false; } }
+		 * 
+		 * if (lignore_list == null || lignore_list.size() == 0 ||
+		 * PlayerManager.getPlayerModel(p).getIgnoreList() == null) {
+		 * the_pages.add(ChatColor.BLACK.toString() + "" +
+		 * ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() +
+		 * "    Ignore List" + "     " + new_line + ChatColor.BLACK.toString() +
+		 * ChatColor.BOLD.toString() + "/ignore <PLAYER>" + "\n" +
+		 * ChatColor.BLACK.toString() + "Adds PLAYER to ignore list." + new_line
+		 * + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() +
+		 * "/delete <PLAYER>" + "\n" + ChatColor.BLACK.toString() +
+		 * "Deletes PLAYER from all lists."); }
+		 * 
+		 * if (lignore_list != null) { int ignores_printed = 0; boolean
+		 * first_ignore_page = true;
+		 * 
+		 * while (lignore_list.size() > ignores_printed) { int ignores_to_print
+		 * = 13;
+		 * 
+		 * if (first_ignore_page == true) { ignores_to_print = 11; }
+		 * 
+		 * if ((ignores_printed + ignores_to_print) > lignore_list.size()) {
+		 * ignores_to_print = lignore_list.size() - ignores_printed; } // Less
+		 * than 5 ignores left to add. So we just add one final // page.
+		 * List<String> being_added_to_book =
+		 * lignore_list.subList(ignores_printed, (ignores_printed +
+		 * ignores_to_print)); String page_structure = "";
+		 * 
+		 * if (first_ignore_page == true) { page_structure +=
+		 * ChatColor.BLACK.toString() + "" + ChatColor.BOLD.toString() +
+		 * ChatColor.UNDERLINE.toString() + "    Ignore List" + "     " +
+		 * new_line + ChatColor.BLACK.toString(); first_ignore_page = false; }
+		 * 
+		 * for (String s : being_added_to_book) { page_structure +=
+		 * ChatColor.BLACK.toString() + s + "\n"; }
+		 * 
+		 * the_pages.add(page_structure); ignores_printed += ignores_to_print; }
+		 * }
+		 * 
+		 * the_pages.add(ChatColor.BLACK.toString() + "" +
+		 * ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() +
+		 * "   Command Guide  " + new_line + ChatColor.BLACK.toString() +
+		 * ChatColor.BOLD.toString() + "@<PLAYER> <MSG>" + "\n" +
+		 * ChatColor.BLACK.toString() + "Sends a PM." + new_line +
+		 * ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/shard" +
+		 * "\n" + ChatColor.BLACK.toString() +
+		 * "Opens game shard selection menu." + new_line +
+		 * ChatColor.BLACK.toString() + ChatColor.BOLD + "Press TAB (CHAT)" +
+		 * "\n" + ChatColor.BLACK.toString() +
+		 * "Sends MESSAGE typed to all players on the shard. ");
+		 * 
+		 * the_pages.add(ChatColor.BLACK.toString() + ChatColor.BOLD + "/realm"
+		 * + ChatColor.BLACK.toString() + " <TITLE>" + "\n" +
+		 * ChatColor.BLACK.toString() + "Sets your realm description to TITLE."
+		 * + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() +
+		 * "/add " + ChatColor.BLACK.toString() + "<PLAYER>" + "\n" +
+		 * ChatColor.BLACK.toString() + "Adds PLAYER to buddy list." + new_line
+		 * + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/ignore "
+		 * + ChatColor.BLACK.toString() + "<PLAYER>" + "\n" +
+		 * ChatColor.BLACK.toString() + "Adds PLAYER to ignore list." + new_line
+		 * + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/delete "
+		 * + ChatColor.BLACK.toString() + "<PLAYER>" + "\n" +
+		 * ChatColor.BLACK.toString() +
+		 * "Deletes PLAYER from           all lists.");
+		 * 
+		 * the_pages.add(ChatColor.BLACK.toString() + ChatColor.BOLD.toString()
+		 * + "/[p/g]invite" + "\n" + ChatColor.BLACK.toString() +
+		 * "Invite to p(arty) or g(uild)" // "               " + new_line +
+		 * ChatColor.BLACK + ChatColor.BOLD.toString() + "/[p/g]kick " + "\n" +
+		 * ChatColor.BLACK.toString() + "Kick player from p(arty) or g(uild)" +
+		 * new_line + ChatColor.BLACK + ChatColor.BOLD.toString() +
+		 * "/[p/g]quit " + "\n" + ChatColor.BLACK.toString() +
+		 * "Leave your p(arty) or g(uild)" + new_line +
+		 * ChatColor.BLACK.toString() + ChatColor.BOLD.toString() +
+		 * "/[p/g]promote " + "\n" + ChatColor.BLACK.toString() +
+		 * "Set to p(arty) leader         g(uild) officer"); // " + " // " + "
+		 * party // leader"
+		 * 
+		 * // //the_pages.add(ChatColor.BLACK.toString() +
+		 * ChatColor.BOLD.toString() + "/toggledebug" + "\n" +
+		 * ChatColor.BLACK.toString() + "Toggles debug messages." ////
+		 * "               " + new_line + ChatColor.BLACK +
+		 * ChatColor.BOLD.toString() + "/toggleff " + "\n" +
+		 * ChatColor.BLACK.toString() + //
+		 * "Toggles friendly fire against buddies." + new_line + ChatColor.BLACK
+		 * + ChatColor.BOLD.toString() + "/toggletrade " + "\n" +
+		 * //ChatColor.BLACK.toString() + "Toggles accepting player trades." +
+		 * new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() +
+		 * "/toggleduel " // + "\n" + ChatColor.BLACK.toString() +
+		 * "Toggles accepting" + "        " + "     duels"); //
+		 * //the_pages.add(ChatColor.BLACK.toString() +
+		 * ChatColor.BOLD.toString() + "/toggletells " + "\n" +
+		 * ChatColor.BLACK.toString() + //"Toggles Non-BUD private messages." +
+		 * new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() +
+		 * "/toggleglobal " + "\n" + //ChatColor.BLACK.toString() +
+		 * "Toggles Global Chat messaging." + new_line +
+		 * ChatColor.BLACK.toString() + ChatColor.BOLD.toString() +
+		 * "/togglefilter " //+ "\n" + ChatColor.BLACK.toString() +
+		 * "Toggles adult chat filter." + new_line + ChatColor.BLACK.toString()
+		 * + ChatColor.BOLD.toString() + //"/toggleparty " + "\n" +
+		 * ChatColor.BLACK.toString() +
+		 * "Toggles Non-BUD              party invites"); //
+		 * 
+		 * the_pages.add(ChatColor.BLACK.toString() + ChatColor.BOLD.toString()
+		 * + "/toggles " + "\n" + ChatColor.BLACK.toString() +
+		 * "Display Toggle Menu." + new_line + ChatColor.BLACK.toString() +
+		 * ChatColor.BOLD.toString() + "/roll " + "\n" +
+		 * ChatColor.BLACK.toString() + "Rolls a random number." + new_line +
+		 * ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/logout " +
+		 * "\n" + ChatColor.BLACK.toString() +
+		 * "Safetly logs out your character." + new_line +
+		 * ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/report " +
+		 * "\n" + ChatColor.BLACK.toString() + "Submit a ticket to the staff.");
+		 * 
+		 * the_pages.add(ChatColor.BLACK.toString() + ChatColor.BOLD.toString()
+		 * + "/biography " + "\n" + ChatColor.BLACK.toString() +
+		 * "Write your player bio." + new_line + ChatColor.BLACK.toString() +
+		 * ChatColor.BOLD.toString() + "/gbiography " + "\n" +
+		 * ChatColor.BLACK.toString() + "Write your guild bio." + new_line +
+		 * ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/gbanner "
+		 * + "\n" + ChatColor.BLACK.toString() + "Upload your guild banner." +
+		 * new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() +
+		 * "/suicide " + "\n" + ChatColor.BLACK.toString() +
+		 * "KILLS your character.");
+		 * 
+		 * the_pages.add(ChatColor.BLACK.toString() + ChatColor.BOLD.toString()
+		 * + "/reboot " + "\n" + ChatColor.BLACK.toString() +
+		 * "Time until next scheduled reboot." + new_line +
+		 * ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/profile "
+		 * + "\n" + ChatColor.BLACK.toString() +
+		 * "Displays link to player profile." + new_line +
+		 * ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/ecash " +
+		 * "\n" + ChatColor.BLACK.toString() + "Opens E-CASH Vendor." + new_line
+		 * + ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString() +
+		 * "      ! CAUTION !" + "\n" + ChatColor.BLACK.toString() +
+		 * ChatColor.BOLD.toString() + "/resetrealm " + "\n" +
+		 * ChatColor.BLACK.toString() + "Resets your player owned realm. ");
+		 */
 
-		int buddies_printed = 0;
-		boolean first_buddy_page = true;
-
-		String pretty_align = KarmaMechanics.getAlignment(p.getName());
-		String raw_align = KarmaMechanics.align_map.get(p.getName());
-		String align_descrip = KarmaMechanics.getAlignmentDescription(raw_align);
-		String align_expire_message = "";
-
-		if (!KarmaMechanics.align_map.containsKey(p.getName())) {
-			raw_align = "good";
-			align_expire_message = "";
-		}
-
-		if (raw_align.equalsIgnoreCase("neutral")) {
-			align_expire_message = "\n" + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "Lawful" + ChatColor.BLACK.toString() + " in "
-					+ KarmaMechanics.getSecondsUntilAlignmentChange(p.getName()) + "s";
-		}
-
-		if (raw_align.equalsIgnoreCase("evil")) {
-			align_expire_message = "\n" + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "Neutral" + ChatColor.BLACK.toString() + " in "
-					+ KarmaMechanics.getSecondsUntilAlignmentChange(p.getName()) + "s";
-		}
-
-		DecimalFormat df = new DecimalFormat("#.##");
-
-		String money_space = "";
-		if (align_expire_message.length() > 0) {
-			money_space = new_line;
-		} else {
-			money_space = new_line;
-		}
-
-		String gold_find = "1.00";
-		if (ItemMechanics.gfind_data.containsKey(p.getName())) {
-			gold_find = (df.format((((double) ItemMechanics.gfind_data.get(p.getName())) / 100.0D) + 1.0D));
-			if (gold_find.equalsIgnoreCase("1")) {
-				gold_find = "1.00";
-			}
-		}
-
-		String item_find = "1.00";
-		if (ItemMechanics.ifind_data.containsKey(p.getName())) {
-			item_find = (df.format((((double) ItemMechanics.ifind_data.get(p.getName())) / 100.0D) + 1.0D));
-		}
-		if (item_find.equalsIgnoreCase("1")) {
-			item_find = "1.00";
-		}
-
-		try {
-			the_pages.add(ChatColor.BLACK.toString() + "" + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "  Your Character" + "   " + "\n"
-					+ ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "Alignment: " + pretty_align + align_expire_message + "\n"
-					+ ChatColor.BLACK.toString() + align_descrip + new_line + ChatColor.BLACK.toString() + "   " + HealthMechanics.getPlayerHP(p.getName())
-					+ " / " + HealthMechanics.health_data.get(p.getName()) + "" + ChatColor.BOLD.toString() + " HP" + "\n" + ChatColor.BLACK.toString() + "   "
-					+ ItemMechanics.armor_data.get(p.getName()).get(0) + " - " + ItemMechanics.armor_data.get(p.getName()).get(1) + "% "
-					+ ChatColor.BOLD.toString() + "Armor" + "\n" + ChatColor.BLACK.toString() + "   " + ItemMechanics.dmg_data.get(p.getName()).get(0) + " - "
-					+ ItemMechanics.dmg_data.get(p.getName()).get(1) + "% " + ChatColor.BOLD.toString() + "DPS" + "\n" + ChatColor.BLACK.toString() + "   "
-					+ (HealthMechanics.health_regen_data.get((p.getName())) + 5) + " " + ChatColor.BOLD.toString() + "HP/s" + "\n" + ChatColor.BLACK.toString()
-					+ "   " + df.format((((double) FatigueMechanics.energy_regen_data.get((p.getName()))) * 100.0D) + 90.0D) + "% " + ChatColor.BOLD.toString()
-					+ "Energy" + "\n" + ChatColor.BLACK.toString() + "   " + gold_find + "x " + ChatColor.BOLD.toString() + "Gem Find" + "\n"
-					+ ChatColor.BLACK.toString() + "   " + item_find + "x " + ChatColor.BOLD.toString() + "Item Find" + money_space
-					+ ChatColor.BLACK.toString() + "" + Hive.player_ecash.get(p.getName()) + " " + ChatColor.BOLD.toString() + "E-CASH");
-			// + RealmMechanics.getMoneyInInventory(p) + " / " +
-			// (MoneyMechanics.bank_map.get(p.getName()) +
-			// RealmMechanics.getMoneyInInventory(p)) +
-			// ChatColor.BOLD.toString() + "G");
-		} catch (NullPointerException npe) {
-			log.info("[CommunityMechanics] Failed to give book to " + p.getName());
-			npe.printStackTrace();
-			return null;
-		}
-		if (lbuddy_list == null || lbuddy_list.size() == 0 || PlayerManager.getPlayerModel(p).getBuddyList() == null) {
-			the_pages.add(ChatColor.BLACK.toString() + "" + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "     Buddy List" + "      " + "\n"
-					+ ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "@<PLAYER> <MSG>" + "\n" + ChatColor.BLACK.toString()
-					+ "Sends <MSG> to <PLAYER>." + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/add <PLAYER>" + "\n"
-					+ ChatColor.BLACK.toString() + "Adds PLAYER to buddy list." + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString()
-					+ "/delete <PLAYER>" + "\n" + ChatColor.BLACK.toString() + "Deletes PLAYER from all lists.");
-		}
-
-		if (!(lbuddy_list == null)) {
-			List<String> format_buddy_list = new ArrayList<String>();
-
-			for (String s : lbuddy_list) {
-				s = ChatColor.stripColor(s);
-				String online_mark = "";
-				// Boolean is_buddy = socialQuery(p.getName(), s, "CHECK_BUD");
-				boolean online = isPlayerOnline(s);
-
-				if (online) { // is_buddy &&
-					online_mark = ChatColor.DARK_GREEN.toString() + ChatColor.BOLD.toString() + "O";
-				} else if (!(online)) {
-					online_mark = ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString() + "O";
-				}
-
-				int server_num = getPlayerServer(s); // TODO: See if this is
-				// causing SQL
-				// bottleneck.
-
-				OfflinePlayer op = Bukkit.getServer().getOfflinePlayer(s);
-
-				if (server_num >= 0 && !op.isOp()) {
-
-					String prefix = "US-";
-
-					if (server_num > 1000 && server_num < 2000) {
-						server_num -= 1000;
-						prefix = "EU-";
-					}
-
-					if (server_num > 2000 && server_num < 3000) {
-						server_num -= 2000;
-						prefix = "BR-";
-					}
-
-					if (server_num >= 3000) {
-						server_num -= 3000;
-						prefix = "US-YT";
-					}
-
-					String remote_server = prefix + server_num;
-
-					format_buddy_list.add(ChatColor.BLACK.toString() + "" + online_mark + ChatColor.BLACK.toString() + " " + ChatColor.BOLD.toString() + s
-							+ "\n" + ChatColor.BLACK.toString() + "Shard: " + remote_server + new_line);
-				}
-			}
-
-			for (String s : lbuddy_list) {
-				s = ChatColor.stripColor(s);
-				String online_mark = "";
-				online_mark = ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString() + "O";
-
-				int server_num = getPlayerServer(s); // TODO: See if this is
-				// causing SQL
-				// bottleneck.
-
-				OfflinePlayer op = Bukkit.getServer().getOfflinePlayer(s);
-
-				if (server_num == -1 || op.isOp()) {
-					Long last_login = getLastLogin(s, false); // TODO: Make this time save locally or have it DL database at start
-					String release_s = "";
-
-					if (last_login == -1L || op.isOp()) {
-						release_s = "NEVER";
-					} else {
-						Date startTime, endTime;
-						endTime = new Date(System.currentTimeMillis());
-						startTime = new Date(last_login);
-
-						long sec;
-						sec = (endTime.getTime() - startTime.getTime()) / 1000;
-						int hour = (int) (sec / 3600);
-						sec = sec % 3600;
-						int min = (int) (sec / 60);
-						sec = sec % 60;
-
-						if (min <= 0) {
-							release_s = sec + "s ago";
-						} else if (release_s == "" && (min > 0 && min <= 60) && hour <= 0) {
-							release_s = min + "m ago";
-						} else if (release_s == "" && (hour > 0 && hour <= 24)) {
-							release_s = hour + "h ago";
-						} else if (release_s == "") {
-							release_s = String.valueOf(Math.round((hour / 24))) + "d ago";
-						}
-					}
-
-					format_buddy_list.add(ChatColor.BLACK.toString() + "" + online_mark + ChatColor.BLACK.toString() + " " + ChatColor.BOLD.toString() + s
-							+ "\n" + ChatColor.BLACK.toString() + "Last On: " + release_s + new_line);
-
-					//
-					// page_structure += ChatColor.BLACK.toString() + "" + online_mark + ChatColor.BLACK.toString() + " " + ChatColor.BOLD.toString() + s + "\n"
-					// + ChatColor.BLACK.toString() + "Last On: " + release_s + new_line; being_added_to_book.remove(s);
-					//
-				}
-			}
-
-			for (String s : lbuddy_list) {
-				s = ChatColor.stripColor(s);
-				String online_mark = "";
-				online_mark = ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString() + "O";
-
-				int server_num = getPlayerServer(s); // TODO: See if this is
-				// causing SQL
-				// bottleneck.
-
-				if (server_num == -2) {
-					format_buddy_list.add(ChatColor.BLACK.toString() + "" + online_mark + ChatColor.BLACK.toString() + " " + ChatColor.BOLD.toString() + s
-							+ "\n" + ChatColor.BLACK.toString() + "Last On: " + "NEVER" + new_line);
-
-					//
-					// page_structure += ChatColor.BLACK.toString() + "" + online_mark + ChatColor.BLACK.toString() + " " + ChatColor.BOLD.toString() + s + "\n"
-					// + ChatColor.BLACK.toString() + "Last On: " + "NEVER" + new_line; being_added_to_book.remove(s);
-					//
-				}
-			}
-
-			int attempts = 50;
-			while (format_buddy_list.size() > buddies_printed && attempts > 0) {
-				attempts--;
-				int buddies_to_print = 5;
-
-				if (first_buddy_page == true) {
-					buddies_to_print = 4;
-				}
-
-				if ((buddies_printed + buddies_to_print) > lbuddy_list.size()) {
-					buddies_to_print = lbuddy_list.size() - buddies_printed;
-					// Less than 5 buddies left to add. So we just add one final
-					// page.
-				}
-
-				CopyOnWriteArrayList<String> being_added_to_book = new CopyOnWriteArrayList<String>(format_buddy_list.subList(buddies_printed,
-						(buddies_printed + buddies_to_print)));
-				String page_structure = "";
-
-				if (first_buddy_page == true) {
-					page_structure += ChatColor.BLACK.toString() + "" + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "     Buddy List"
-							+ "      " + "\n" + ChatColor.BLACK.toString();
-				}
-
-				for (String s : being_added_to_book) {
-					page_structure += s;
-				}
-
-				the_pages.add(page_structure);
-				buddies_printed += buddies_to_print;
-				first_buddy_page = false;
-			}
-		}
-
-		if (lignore_list == null || lignore_list.size() == 0 || PlayerManager.getPlayerModel(p).getIgnoreList() == null) {
-			the_pages.add(ChatColor.BLACK.toString() + "" + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "    Ignore List" + "     " + new_line
-					+ ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/ignore <PLAYER>" + "\n" + ChatColor.BLACK.toString()
-					+ "Adds PLAYER to ignore list." + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/delete <PLAYER>" + "\n"
-					+ ChatColor.BLACK.toString() + "Deletes PLAYER from all lists.");
-		}
-
-		if (lignore_list != null) {
-			int ignores_printed = 0;
-			boolean first_ignore_page = true;
-
-			while (lignore_list.size() > ignores_printed) {
-				int ignores_to_print = 13;
-
-				if (first_ignore_page == true) {
-					ignores_to_print = 11;
-				}
-
-				if ((ignores_printed + ignores_to_print) > lignore_list.size()) {
-					ignores_to_print = lignore_list.size() - ignores_printed;
-				}
-				// Less than 5 ignores left to add. So we just add one final
-				// page.
-				List<String> being_added_to_book = lignore_list.subList(ignores_printed, (ignores_printed + ignores_to_print));
-				String page_structure = "";
-
-				if (first_ignore_page == true) {
-					page_structure += ChatColor.BLACK.toString() + "" + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "    Ignore List"
-							+ "     " + new_line + ChatColor.BLACK.toString();
-					first_ignore_page = false;
-				}
-
-				for (String s : being_added_to_book) {
-					page_structure += ChatColor.BLACK.toString() + s + "\n";
-				}
-
-				the_pages.add(page_structure);
-				ignores_printed += ignores_to_print;
-			}
-		}
-
-		the_pages.add(ChatColor.BLACK.toString() + "" + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "   Command Guide  " + new_line
-				+ ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "@<PLAYER> <MSG>" + "\n" + ChatColor.BLACK.toString() + "Sends a PM." + new_line
-				+ ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/shard" + "\n" + ChatColor.BLACK.toString() + "Opens game shard selection menu."
-				+ new_line + ChatColor.BLACK.toString() + ChatColor.BOLD + "Press TAB (CHAT)" + "\n" + ChatColor.BLACK.toString()
-				+ "Sends MESSAGE typed to all players on the shard. ");
-
-		the_pages.add(ChatColor.BLACK.toString() + ChatColor.BOLD + "/realm" + ChatColor.BLACK.toString() + " <TITLE>" + "\n" + ChatColor.BLACK.toString()
-		+ "Sets your realm description to TITLE." + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/add "
-		+ ChatColor.BLACK.toString() + "<PLAYER>" + "\n" + ChatColor.BLACK.toString() + "Adds PLAYER to buddy list." + new_line
-		+ ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/ignore " + ChatColor.BLACK.toString() + "<PLAYER>" + "\n"
-		+ ChatColor.BLACK.toString() + "Adds PLAYER to ignore list." + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/delete "
-		+ ChatColor.BLACK.toString() + "<PLAYER>" + "\n" + ChatColor.BLACK.toString() + "Deletes PLAYER from           all lists.");
-
-		the_pages.add(ChatColor.BLACK.toString() + ChatColor.BOLD.toString()
-		+ "/[p/g]invite"
-		+ "\n"
-		+ ChatColor.BLACK.toString()
-		+ "Invite to p(arty) or g(uild)" // "               "
-		+ new_line + ChatColor.BLACK + ChatColor.BOLD.toString() + "/[p/g]kick " + "\n" + ChatColor.BLACK.toString()
-		+ "Kick player from p(arty) or g(uild)" + new_line + ChatColor.BLACK + ChatColor.BOLD.toString() + "/[p/g]quit " + "\n"
-		+ ChatColor.BLACK.toString() + "Leave your p(arty) or g(uild)" + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString()
-		+ "/[p/g]promote " + "\n" + ChatColor.BLACK.toString() + "Set to p(arty) leader         g(uild) officer"); // " + "
-		// " + "party
-		// leader"
-
-		//
-		 //the_pages.add(ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/toggledebug" + "\n" + ChatColor.BLACK.toString() + "Toggles debug messages."
-		 ////"               " + new_line + ChatColor.BLACK + ChatColor.BOLD.toString() + "/toggleff " + "\n" + ChatColor.BLACK.toString() +
-		 //"Toggles friendly fire against buddies." + new_line + ChatColor.BLACK + ChatColor.BOLD.toString() + "/toggletrade " + "\n" +
-		 //ChatColor.BLACK.toString() + "Toggles accepting player trades." + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/toggleduel "
-		 // + "\n" + ChatColor.BLACK.toString() + "Toggles accepting" + "        " + "     duels");
-		 //
-		 //the_pages.add(ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/toggletells " + "\n" + ChatColor.BLACK.toString() +
-		 //"Toggles Non-BUD private messages." + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/toggleglobal " + "\n" +
-		 //ChatColor.BLACK.toString() + "Toggles Global Chat messaging." + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/togglefilter "
-		 //+ "\n" + ChatColor.BLACK.toString() + "Toggles adult chat filter." + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() +
-		 //"/toggleparty " + "\n" + ChatColor.BLACK.toString() + "Toggles Non-BUD              party invites");
-		 //
-
-		the_pages.add(ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/toggles " + "\n" + ChatColor.BLACK.toString() + "Display Toggle Menu."
-				+ new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/roll " + "\n" + ChatColor.BLACK.toString() + "Rolls a random number."
-				+ new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/logout " + "\n" + ChatColor.BLACK.toString()
-				+ "Safetly logs out your character." + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/report " + "\n"
-				+ ChatColor.BLACK.toString() + "Submit a ticket to the staff.");
-
-		the_pages.add(ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/biography " + "\n" + ChatColor.BLACK.toString() + "Write your player bio."
-				+ new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/gbiography " + "\n" + ChatColor.BLACK.toString()
-				+ "Write your guild bio." + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/gbanner " + "\n" + ChatColor.BLACK.toString()
-				+ "Upload your guild banner." + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/suicide " + "\n"
-				+ ChatColor.BLACK.toString() + "KILLS your character.");
-
-		the_pages.add(ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/reboot " + "\n" + ChatColor.BLACK.toString()
-		+ "Time until next scheduled reboot." + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/profile " + "\n"
-		+ ChatColor.BLACK.toString() + "Displays link to player profile." + new_line + ChatColor.BLACK.toString() + ChatColor.BOLD.toString()
-		+ "/ecash " + "\n" + ChatColor.BLACK.toString() + "Opens E-CASH Vendor." + new_line + ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString()
-		+ "      ! CAUTION !" + "\n" + ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "/resetrealm " + "\n" + ChatColor.BLACK.toString()
-		+ "Resets your player owned realm. ");
-		*/
-		
 		List<String> the_pages = new ArrayList<String>();
-		
+
 		the_pages.add("Fuck this book");
 
 		BookMeta bm = (BookMeta) i.getItemMeta();
 
 		bm.setAuthor("");
-		bm.setLore(new ArrayList<String>(Arrays.asList(ChatColor.GRAY.toString() + "A book that displays", ChatColor.GRAY.toString() + "your character's data",
-				ChatColor.GREEN.toString() + "Left Click: " + ChatColor.GRAY + "Invite to Party", ChatColor.GREEN.toString() + "Sneak-Left Click:"
-						+ ChatColor.GRAY + " Setup Shop")));
+		bm.setLore(new ArrayList<String>(Arrays.asList(ChatColor.GRAY.toString() + "A book that displays",
+				ChatColor.GRAY.toString() + "your character's data",
+				ChatColor.GREEN.toString() + "Left Click: " + ChatColor.GRAY + "Invite to Party",
+				ChatColor.GREEN.toString() + "Sneak-Left Click:" + ChatColor.GRAY + " Setup Shop")));
 		bm.setTitle(ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "Character Journal");
 		bm.setPages(the_pages);
 
@@ -1011,7 +1067,9 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Gets the last login time (Thread blocking if not found locally)
-	 * @param p_uuid player uuid to fetch login time for
+	 * 
+	 * @param p_uuid
+	 *            player uuid to fetch login time for
 	 * @return the last login time for the player
 	 */
 	public static long getLastLogin(UUID p_uuid) {
@@ -1024,7 +1082,8 @@ public class CommunityMechanics implements Listener {
 
 		try {
 
-			pst = ConnectionPool.getConnection().prepareStatement("SELECT last_login_time FROM player_database WHERE p_name = '" + p_uuid + "'");
+			pst = ConnectionPool.getConnection()
+					.prepareStatement("SELECT last_login_time FROM player_database WHERE p_name = '" + p_uuid + "'");
 
 			pst.execute();
 			ResultSet rs = pst.getResultSet();
@@ -1054,26 +1113,31 @@ public class CommunityMechanics implements Listener {
 
 		return -1L;
 	}
-	
+
 	/**
 	 * Gets the last login time (Thread blocking if not found locally)
-	 * @param player player to fetch login time for
+	 * 
+	 * @param player
+	 *            player to fetch login time for
 	 * @return the last login time for the player
 	 */
-	public static long getLastLogin(OfflinePlayer player){
+	public static long getLastLogin(OfflinePlayer player) {
 		return getLastLogin(player.getUniqueId());
 	}
 
 	/**
 	 * Checks if the specified itemstack is the social book
-	 * @param i itemstack to check
+	 * 
+	 * @param i
+	 *            itemstack to check
 	 * @return if the itemstack is a social book
 	 */
 	public static boolean isSocialBook(ItemStack i) {
 		try {
 			if (i.getType() == Material.WRITTEN_BOOK && hasTitle(i)) {
 				String fake_var = CraftItemStack.asNMSCopy(i).getTag().getString("title");
-				if (fake_var.equalsIgnoreCase(ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "Character Journal")) {
+				if (fake_var.equalsIgnoreCase(
+						ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "Character Journal")) {
 					return true;
 				}
 			}
@@ -1086,7 +1150,9 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Checks if the specified itemstack has a book title
-	 * @param i itemstack to check
+	 * 
+	 * @param i
+	 *            itemstack to check
 	 * @return if the itemstack has a title
 	 */
 	public static boolean hasTitle(ItemStack i) {
@@ -1109,18 +1175,21 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Async uploads the social lists of a player (buddy and ignore)
-	 * @param uuid uuid to upload social lists for
+	 * 
+	 * @param uuid
+	 *            uuid to upload social lists for
 	 */
-	public static void upload_social_lists(final UUID uuid){
+	public static void upload_social_lists(final UUID uuid) {
 
-		Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, new Runnable(){
+		Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, new Runnable() {
 
 			@SuppressWarnings("resource")
-			public void run(){
+			public void run() {
 				Connection con = null;
 				PreparedStatement pst = null;
 
-				if (PlayerManager.getPlayerModel(uuid).getBuddyList() == null && PlayerManager.getPlayerModel(uuid).getIgnoreList() == null) {
+				if (PlayerManager.getPlayerModel(uuid).getBuddyList() == null
+						&& PlayerManager.getPlayerModel(uuid).getIgnoreList() == null) {
 					return;
 				}
 
@@ -1143,18 +1212,20 @@ public class CommunityMechanics implements Listener {
 				}
 				try {
 					if (PlayerManager.getPlayerModel(uuid).getBuddyList() != null) {
-						pst = ConnectionPool.getConnection().prepareStatement(
-								"INSERT INTO player_database (p_name, buddy_list)" + " VALUES" + "('" + uuid.toString() + "', '"
-										+ StringEscapeUtils.escapeSql(buddy_list_string) + "') ON DUPLICATE KEY UPDATE buddy_list='"
+						pst = ConnectionPool.getConnection()
+								.prepareStatement("INSERT INTO player_database (p_name, buddy_list)" + " VALUES" + "('"
+										+ uuid.toString() + "', '" + StringEscapeUtils.escapeSql(buddy_list_string)
+										+ "') ON DUPLICATE KEY UPDATE buddy_list='"
 										+ StringEscapeUtils.escapeSql(buddy_list_string) + "'");
 
 						pst.executeUpdate();
 					}
 
 					if (PlayerManager.getPlayerModel(uuid).getIgnoreList() != null) {
-						pst = ConnectionPool.getConnection().prepareStatement(
-								"INSERT INTO player_database (p_name, ignore_list)" + " VALUES" + "('" + uuid.toString() + "', '"
-										+ StringEscapeUtils.escapeSql(ignore_list_string) + "') ON DUPLICATE KEY UPDATE ignore_list='"
+						pst = ConnectionPool.getConnection()
+								.prepareStatement("INSERT INTO player_database (p_name, ignore_list)" + " VALUES" + "('"
+										+ uuid.toString() + "', '" + StringEscapeUtils.escapeSql(ignore_list_string)
+										+ "') ON DUPLICATE KEY UPDATE ignore_list='"
 										+ StringEscapeUtils.escapeSql(ignore_list_string) + "'");
 
 						pst.executeUpdate();
@@ -1184,7 +1255,9 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Async uploads the social lists of a player (buddy and ignore)
-	 * @param p player to upload the social lists for
+	 * 
+	 * @param p
+	 *            player to upload the social lists for
 	 */
 	public static void upload_social_lists(Player p) {
 		upload_social_lists(p.getUniqueId());
@@ -1192,7 +1265,9 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Thread blocking query for a player's buddy list
-	 * @param p_uuid uuid to get buddy list for
+	 * 
+	 * @param p_uuid
+	 *            uuid to get buddy list for
 	 * @return the player's buddy list in UUID format
 	 */
 	public static List<UUID> query_buddy_list(UUID p_uuid) {
@@ -1201,7 +1276,8 @@ public class CommunityMechanics implements Listener {
 		List<UUID> lbuddy_list = new ArrayList<UUID>();
 
 		try {
-			pst = ConnectionPool.getConnection().prepareStatement("SELECT buddy_List FROM player_database WHERE p_name = '" + p_uuid.toString() + "'");
+			pst = ConnectionPool.getConnection().prepareStatement(
+					"SELECT buddy_List FROM player_database WHERE p_name = '" + p_uuid.toString() + "'");
 
 			pst.execute();
 			ResultSet rs = pst.getResultSet();
@@ -1238,17 +1314,20 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Checks if a player is on a certain player's buddy list
-	 * @param p player's buddy list to check
-	 * @param p_to_check player to check is on first player's buddy list
+	 * 
+	 * @param p
+	 *            player's buddy list to check
+	 * @param p_to_check
+	 *            player to check is on first player's buddy list
 	 * @return if the player is on the first player's buddy list
 	 */
-	public static boolean isPlayerOnBuddyList(UUID p, UUID p_to_check){
-		if (PlayerManager.getPlayerModel(p).getBuddyList() == null){
+	public static boolean isPlayerOnBuddyList(UUID p, UUID p_to_check) {
+		if (PlayerManager.getPlayerModel(p).getBuddyList() == null) {
 			return false;
 		}
 
-		for (UUID uuid : PlayerManager.getPlayerModel(p).getBuddyList()){
-			if (uuid.equals(p_to_check)){
+		for (UUID uuid : PlayerManager.getPlayerModel(p).getBuddyList()) {
+			if (uuid.equals(p_to_check)) {
 				return true;
 			}
 		}
@@ -1258,8 +1337,11 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Checks if a player is on a certain player's buddy list
-	 * @param p player's buddy list to check
-	 * @param p_to_check player to check is on first player's buddy list
+	 * 
+	 * @param p
+	 *            player's buddy list to check
+	 * @param p_to_check
+	 *            player to check is on first player's buddy list
 	 * @return if the player is on the first player's buddy list
 	 */
 	public static boolean isPlayerOnBuddyList(OfflinePlayer p, OfflinePlayer p_to_check) {
@@ -1268,16 +1350,19 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Checks if the player is on ignore list
-	 * @param p_uuid uuid of the player's ignore list to check
-	 * @param uuid_to_check uuid of the player to check if on ignore list
+	 * 
+	 * @param p_uuid
+	 *            uuid of the player's ignore list to check
+	 * @param uuid_to_check
+	 *            uuid of the player to check if on ignore list
 	 * @return if the player is on the first player's ignore list
 	 */
-	public static boolean isPlayerOnIgnoreList(UUID p_uuid, UUID uuid_to_check){
-		if (PlayerManager.getPlayerModel(p_uuid).getIgnoreList() == null){
+	public static boolean isPlayerOnIgnoreList(UUID p_uuid, UUID uuid_to_check) {
+		if (PlayerManager.getPlayerModel(p_uuid).getIgnoreList() == null) {
 			return false;
 		}
 
-		for (UUID uuid : PlayerManager.getPlayerModel(p_uuid).getIgnoreList()){
+		for (UUID uuid : PlayerManager.getPlayerModel(p_uuid).getIgnoreList()) {
 			if (uuid.equals(uuid_to_check))
 				return true;
 		}
@@ -1287,8 +1372,11 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Checks if the player is on ignore list
-	 * @param p player's ignore list to check
-	 * @param p_to_check player to check if on the ignore list
+	 * 
+	 * @param p
+	 *            player's ignore list to check
+	 * @param p_to_check
+	 *            player to check if on the ignore list
 	 * @return if the player is on the first player's ignore list
 	 */
 	public static boolean isPlayerOnIgnoreList(OfflinePlayer p, OfflinePlayer p_to_check) {
@@ -1297,20 +1385,27 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Checks relation of remote player to local player based on metadata
-	 * @param local_player local player to check
-	 * @param remote_player remote player to check
-	 * @param meta_data check_bud or check_foe
+	 * 
+	 * @param local_player
+	 *            local player to check
+	 * @param remote_player
+	 *            remote player to check
+	 * @param meta_data
+	 *            check_bud or check_foe
 	 * @return if remote player has metadata in relation to local player
 	 */
 	public static boolean socialQuery(UUID local_player, UUID remote_player, String meta_data) {
 
 		/*
-		 * CHECK_BUD = Check if remote_player has local_player on their friends list. TRUE=yes, FALSE=no CHECK_FOE = Check if remote_player has local_player on
-		 * their ignore list. TRUE=yes, FALSE=no
+		 * CHECK_BUD = Check if remote_player has local_player on their friends
+		 * list. TRUE=yes, FALSE=no CHECK_FOE = Check if remote_player has
+		 * local_player on their ignore list. TRUE=yes, FALSE=no
 		 *
-		 * ONLINE = Check if remote_player has local_player on their friends list AND if they do, tell them that local_player has logged in. TRUE=yes, FALSE=no
-		 * OFFLINE = Check if remote_player has local_player on their friends list AND if they do, tell them that local_player has logged out. TRUE=yes,
-		 * FALSE=no
+		 * ONLINE = Check if remote_player has local_player on their friends
+		 * list AND if they do, tell them that local_player has logged in.
+		 * TRUE=yes, FALSE=no OFFLINE = Check if remote_player has local_player
+		 * on their friends list AND if they do, tell them that local_player has
+		 * logged out. TRUE=yes, FALSE=no
 		 */
 
 		OfflinePlayer op = Bukkit.getOfflinePlayer(local_player);
@@ -1319,13 +1414,15 @@ public class CommunityMechanics implements Listener {
 			return false;
 		}
 
-		if (PlayerManager.getPlayerModel(local_player).getLocalConfirmedBuddies() != null && (meta_data.equalsIgnoreCase("CHECK_BUD"))) {
+		if (PlayerManager.getPlayerModel(local_player).getLocalConfirmedBuddies() != null
+				&& (meta_data.equalsIgnoreCase("CHECK_BUD"))) {
 			if (PlayerManager.getPlayerModel(local_player).getLocalConfirmedBuddies().contains(remote_player)) {
 				return true;
 			}
 		}
 
-		if (PlayerManager.getPlayerModel(local_player).getLocalConfirmedIgnores() != null && (meta_data.equalsIgnoreCase("CHECK_FOE"))) {
+		if (PlayerManager.getPlayerModel(local_player).getLocalConfirmedIgnores() != null
+				&& (meta_data.equalsIgnoreCase("CHECK_FOE"))) {
 			if (PlayerManager.getPlayerModel(local_player).getLocalConfirmedIgnores().contains(remote_player)) {
 				return true;
 			}
@@ -1344,7 +1441,8 @@ public class CommunityMechanics implements Listener {
 				}
 				for (UUID s : PlayerManager.getPlayerModel(p_check).getBuddyList()) {
 					if (s.equals(local_player)) {
-						List<UUID> confirmed_buds = PlayerManager.getPlayerModel(local_player).getLocalConfirmedBuddies();
+						List<UUID> confirmed_buds = PlayerManager.getPlayerModel(local_player)
+								.getLocalConfirmedBuddies();
 						confirmed_buds.add(p_check.getUniqueId());
 						PlayerManager.getPlayerModel(local_player).setLocalConfirmedBuddies(confirmed_buds);
 						return true;
@@ -1358,7 +1456,8 @@ public class CommunityMechanics implements Listener {
 				if (PlayerManager.getPlayerModel(p_check).getIgnoreList().contains(local_player)) {
 					for (UUID s : PlayerManager.getPlayerModel(p_check).getIgnoreList()) {
 						if (s.equals(local_player)) {
-							List<UUID> confirmed_foes = PlayerManager.getPlayerModel(local_player).getLocalConfirmedIgnores();
+							List<UUID> confirmed_foes = PlayerManager.getPlayerModel(local_player)
+									.getLocalConfirmedIgnores();
 							confirmed_foes.add(p_check.getUniqueId());
 							PlayerManager.getPlayerModel(local_player).setLocalConfirmedBuddies(confirmed_foes);
 							return true;
@@ -1378,7 +1477,8 @@ public class CommunityMechanics implements Listener {
 				return true;
 			}
 			if (meta_data.equalsIgnoreCase("CHECK_FOE")) {
-				return false; // They don't need to be enemies if they're offline
+				return false; // They don't need to be enemies if they're
+								// offline
 			}
 		}
 
@@ -1412,18 +1512,21 @@ public class CommunityMechanics implements Listener {
 			// sendPacketCrossServer("[sq_offline]" + local_player,
 			// getPlayerServer(remote_player), false);
 		}
-		
+
 		return true;
 	}
 
 	/**
 	 * Adds a buddy to the player's friends list
-	 * @param p_uuid friends list to add to
-	 * @param new_friend new friend
+	 * 
+	 * @param p_uuid
+	 *            friends list to add to
+	 * @param new_friend
+	 *            new friend
 	 */
-	public static void addBuddy(UUID p_uuid, UUID new_friend){
+	public static void addBuddy(UUID p_uuid, UUID new_friend) {
 		List<UUID> cur_list = new ArrayList<UUID>();
-		if (PlayerManager.getPlayerModel(p_uuid).getBuddyList() != null){
+		if (PlayerManager.getPlayerModel(p_uuid).getBuddyList() != null) {
 			cur_list = PlayerManager.getPlayerModel(p_uuid).getBuddyList();
 		}
 
@@ -1435,8 +1538,11 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Adds a buddy to the player's friends list
-	 * @param player friends list to add to
-	 * @param new_friend new friend
+	 * 
+	 * @param player
+	 *            friends list to add to
+	 * @param new_friend
+	 *            new friend
 	 */
 	public static void addBuddy(OfflinePlayer player, OfflinePlayer new_friend) {
 		addBuddy(player.getUniqueId(), new_friend.getUniqueId());
@@ -1444,10 +1550,13 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Adds an ignore to the player's friends list
-	 * @param host ignore list to add to
-	 * @param new_ignore new ignored person
+	 * 
+	 * @param host
+	 *            ignore list to add to
+	 * @param new_ignore
+	 *            new ignored person
 	 */
-	public static void addIgnore(UUID host, UUID new_ignore){
+	public static void addIgnore(UUID host, UUID new_ignore) {
 		// boolean first_add = false;
 		List<UUID> cur_list = new ArrayList<UUID>();
 		if (PlayerManager.getPlayerModel(host).getIgnoreList() != null) {
@@ -1462,8 +1571,11 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Adds an ignore to the player's friends list
-	 * @param host ignore list to add to
-	 * @param new_ignore new ignored person
+	 * 
+	 * @param host
+	 *            ignore list to add to
+	 * @param new_ignore
+	 *            new ignored person
 	 */
 	public static void addIgnore(OfflinePlayer host, OfflinePlayer new_ignore) {
 		addIgnore(host.getUniqueId(), new_ignore.getUniqueId());
@@ -1471,12 +1583,15 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Delete person from all lists
-	 * @param host player list to delete from
-	 * @param to_remove player to delete
+	 * 
+	 * @param host
+	 *            player list to delete from
+	 * @param to_remove
+	 *            player to delete
 	 */
-	public static void deleteFromAllLists(UUID host, UUID to_remove){
+	public static void deleteFromAllLists(UUID host, UUID to_remove) {
 
-		if (isPlayerOnBuddyList(host, to_remove)){
+		if (isPlayerOnBuddyList(host, to_remove)) {
 			List<UUID> cur_list = PlayerManager.getPlayerModel(host).getBuddyList();
 			UUID save_s = null;
 			for (UUID s : cur_list) {
@@ -1489,7 +1604,8 @@ public class CommunityMechanics implements Listener {
 			if (save_s != null) {
 				cur_list.remove(save_s);
 				PlayerManager.getPlayerModel(host).setBuddyList(cur_list);
-				Bukkit.getPlayer(host).sendMessage(ChatColor.YELLOW + "" + save_s + ChatColor.YELLOW + " has been removed from your BUDDY list.");
+				Bukkit.getPlayer(host).sendMessage(
+						ChatColor.YELLOW + "" + save_s + ChatColor.YELLOW + " has been removed from your BUDDY list.");
 				return; // We can return, if they were on buddy list they won't
 				// be on ignore.
 			}
@@ -1508,15 +1624,17 @@ public class CommunityMechanics implements Listener {
 			if (save_s != null) {
 				cur_list.remove(save_s);
 				PlayerManager.getPlayerModel(host).setIgnoreList(cur_list);
-				Bukkit.getPlayer(host).sendMessage(ChatColor.YELLOW + "" + save_s + ChatColor.YELLOW + " has been removed from your IGNORE list.");
+				Bukkit.getPlayer(host).sendMessage(
+						ChatColor.YELLOW + "" + save_s + ChatColor.YELLOW + " has been removed from your IGNORE list.");
 				return;
 			}
 		}
 
-		//TODO is this necessary?
-		if (Bukkit.getPlayer(host) != null){
+		// TODO is this necessary?
+		if (Bukkit.getPlayer(host) != null) {
 			Player p = Bukkit.getPlayer(host);
-			p.sendMessage(ChatColor.YELLOW + "" + to_remove + ChatColor.YELLOW + " is not on any of your social lists.");
+			p.sendMessage(
+					ChatColor.YELLOW + "" + to_remove + ChatColor.YELLOW + " is not on any of your social lists.");
 			updateCommBook(p);
 		}
 
@@ -1524,8 +1642,11 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Delete person from all lists
-	 * @param host player list to delete from
-	 * @param to_remove player to delete
+	 * 
+	 * @param host
+	 *            player list to delete from
+	 * @param to_remove
+	 *            player to delete
 	 */
 	public static void deleteFromAllLists(OfflinePlayer host, OfflinePlayer to_remove) {
 		deleteFromAllLists(host.getUniqueId(), to_remove.getUniqueId());
@@ -1533,7 +1654,9 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Gets the buddy list size
-	 * @param p_uuid buddy list to get size of
+	 * 
+	 * @param p_uuid
+	 *            buddy list to get size of
 	 * @return size of buddy list
 	 */
 	public static int getBuddyListLength(UUID p_uuid) {
@@ -1545,16 +1668,20 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Gets the buddy list size
-	 * @param player buddy list to get the size of
+	 * 
+	 * @param player
+	 *            buddy list to get the size of
 	 * @return size of buddy list
 	 */
-	public static int getBuddyListLength(Player player){
+	public static int getBuddyListLength(Player player) {
 		return getBuddyListLength(player.getUniqueId());
 	}
 
 	/**
 	 * Handles friendly fire
-	 * @param e Bukkit entity damage event
+	 * 
+	 * @param e
+	 *            Bukkit entity damage event
 	 */
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEntityDamageByEntityEvent(EntityDamageEvent e) {
@@ -1567,7 +1694,8 @@ public class CommunityMechanics implements Listener {
 
 				if (isPlayerOnBuddyList(attacker, hurt)) {
 					if (!PlayerManager.getPlayerModel(attacker).getToggleList().contains("ff")) {
-						if (DuelMechanics.duel_map.containsKey(attacker.getUniqueId()) && DuelMechanics.duel_map.containsKey(hurt.getUniqueId())) {
+						if (DuelMechanics.duel_map.containsKey(attacker.getUniqueId())
+								&& DuelMechanics.duel_map.containsKey(hurt.getUniqueId())) {
 							return;
 						}
 						e.setCancelled(true); // Friendly fire is OFF.
@@ -1588,7 +1716,8 @@ public class CommunityMechanics implements Listener {
 
 					if (isPlayerOnBuddyList(shooter, hurt)) {
 						if (!PlayerManager.getPlayerModel(shooter).getToggleList().contains("ff")) {
-							if (DuelMechanics.duel_map.containsKey(shooter.getUniqueId()) && DuelMechanics.duel_map.containsKey(hurt.getUniqueId())) {
+							if (DuelMechanics.duel_map.containsKey(shooter.getUniqueId())
+									&& DuelMechanics.duel_map.containsKey(hurt.getUniqueId())) {
 								return;
 							}
 							e.setCancelled(true); // Friendly fire is OFF.
@@ -1602,7 +1731,9 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Gets the toggle description of specified toggle
-	 * @param toggle toggle to get desc of
+	 * 
+	 * @param toggle
+	 *            toggle to get desc of
 	 * @return the desc of the toggle
 	 */
 	public static String getToggleDescription(String toggle) {
@@ -1666,8 +1797,11 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Generates the toggle button for menus
-	 * @param toggle the toggle feature to create the button for
-	 * @param on if the button should be on or not (green = on)
+	 * 
+	 * @param toggle
+	 *            the toggle feature to create the button for
+	 * @param on
+	 *            if the button should be on or not (green = on)
 	 * @return the generated itemstack
 	 */
 	public static ItemStack generateToggleButton(String toggle, boolean on) {
@@ -1696,17 +1830,17 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Checks if the itemstack is a toggle button
-	 * @param is itemstack to check
+	 * 
+	 * @param is
+	 *            itemstack to check
 	 * @return if the itemstack is a toggle button
 	 */
 	public boolean isToggleButton(ItemStack is) {
-		if (is != null
-				&& is.getType() == Material.INK_SACK
-				&& (is.getDurability() == (short) 8 || is.getDurability() == (short) 10)
-				&& is.hasItemMeta()
+		if (is != null && is.getType() == Material.INK_SACK
+				&& (is.getDurability() == (short) 8 || is.getDurability() == (short) 10) && is.hasItemMeta()
 				&& is.getItemMeta().hasDisplayName()
-				&& (is.getItemMeta().getDisplayName().startsWith(ChatColor.GREEN.toString() + "/toggle") || is.getItemMeta().getDisplayName()
-						.startsWith(ChatColor.RED.toString() + "/toggle"))) {
+				&& (is.getItemMeta().getDisplayName().startsWith(ChatColor.GREEN.toString() + "/toggle")
+						|| is.getItemMeta().getDisplayName().startsWith(ChatColor.RED.toString() + "/toggle"))) {
 			return true;
 		}
 		return false;
@@ -1714,7 +1848,9 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Gets the socket for specified server
-	 * @param server_num server number to get socket for
+	 * 
+	 * @param server_num
+	 *            server number to get socket for
 	 * @return the socket
 	 */
 	public static Socket getSocket(int server_num) {
@@ -1726,10 +1862,8 @@ public class CommunityMechanics implements Listener {
 				 * if(server_num > 1000 && server_num < 3000){ delay = 3000; }
 				 */
 				String ipAndPort = server_list.get(server_num);
-				String ipNoPort = ipAndPort.contains(":") ? server_list.get(server_num).split(":")[0]
-						: ipAndPort;
-				int port = ipAndPort.contains(":") ? Integer.parseInt(ipAndPort
-						.split(":")[1]) : Config.transfer_port;
+				String ipNoPort = ipAndPort.contains(":") ? server_list.get(server_num).split(":")[0] : ipAndPort;
+				int port = ipAndPort.contains(":") ? Integer.parseInt(ipAndPort.split(":")[1]) : Config.transfer_port;
 				Socket s = new Socket();
 				// s.bind(new InetSocketAddress(Hive.local_IP,
 				// Hive.transfer_port+1));
@@ -1743,12 +1877,16 @@ public class CommunityMechanics implements Listener {
 	}
 
 	// @server_num@p_name:server_num
-	//TODO fix creating a socket each time
+	// TODO fix creating a socket each time
 	/**
 	 * Sends a packet cross server
-	 * @param packet_data data to be sent
-	 * @param server_num server number to send to
-	 * @param all_servers if it should be sent to all servers or not
+	 * 
+	 * @param packet_data
+	 *            data to be sent
+	 * @param server_num
+	 *            server number to send to
+	 * @param all_servers
+	 *            if it should be sent to all servers or not
 	 */
 	public static void sendPacketCrossServer(String packet_data, int server_num, boolean all_servers) {
 		Socket kkSocket = null;
@@ -1759,8 +1897,8 @@ public class CommunityMechanics implements Listener {
 				String ipAndPort = CommunityMechanics.server_list.get(sn);
 				String ipNoPort = ipAndPort.contains(":") ? CommunityMechanics.server_list.get(sn).split(":")[0]
 						: ipAndPort;
-				int port = ipAndPort.contains(":") && StringUtils.isNumeric(ipAndPort.split(":")[1]) ? Integer.parseInt(ipAndPort
-						.split(":")[1]) : Config.transfer_port;
+				int port = ipAndPort.contains(":") && StringUtils.isNumeric(ipAndPort.split(":")[1])
+						? Integer.parseInt(ipAndPort.split(":")[1]) : Config.transfer_port;
 				if (sn == Main.getCommunityMechanics().getServerNum()) {
 					continue; // Don't send to same server.
 				}
@@ -1789,8 +1927,8 @@ public class CommunityMechanics implements Listener {
 				String ipAndPort = CommunityMechanics.server_list.get(server_num);
 				String ipNoPort = ipAndPort.contains(":") ? CommunityMechanics.server_list.get(server_num).split(":")[0]
 						: ipAndPort;
-				int port = ipAndPort.contains(":") && StringUtils.isNumeric(ipAndPort.split(":")[1]) ? Integer.parseInt(ipAndPort
-						.split(":")[1]) : Config.transfer_port;
+				int port = ipAndPort.contains(":") && StringUtils.isNumeric(ipAndPort.split(":")[1])
+						? Integer.parseInt(ipAndPort.split(":")[1]) : Config.transfer_port;
 				kkSocket = new Socket();
 				// kkSocket.bind(new InetSocketAddress(Hive.local_IP,
 				// Hive.transfer_port+1));
@@ -1815,8 +1953,11 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Sends a packet cross server
-	 * @param packet_data data to be sent
-	 * @param ip ip to send the data to
+	 * 
+	 * @param packet_data
+	 *            data to be sent
+	 * @param ip
+	 *            ip to send the data to
 	 */
 	public static void sendPacketCrossServer(String packet_data, String ip) {
 		Socket kkSocket = null;
@@ -1827,10 +1968,9 @@ public class CommunityMechanics implements Listener {
 			// kkSocket.bind(new InetSocketAddress(Hive.local_IP,
 			// Hive.transfer_port+1));
 			String ipAndPort = ip;
-			String ipNoPort = ipAndPort.contains(":") ? ip.split(":")[0]
-					: ipAndPort;
-			int port = ipAndPort.contains(":") && StringUtils.isNumeric(ipAndPort.split(":")[1]) ? Integer.parseInt(ipAndPort
-					.split(":")[1]) : Config.transfer_port;
+			String ipNoPort = ipAndPort.contains(":") ? ip.split(":")[0] : ipAndPort;
+			int port = ipAndPort.contains(":") && StringUtils.isNumeric(ipAndPort.split(":")[1])
+					? Integer.parseInt(ipAndPort.split(":")[1]) : Config.transfer_port;
 			kkSocket.connect(new InetSocketAddress(ipNoPort, port), 100);
 			out = new PrintWriter(kkSocket.getOutputStream(), true);
 
@@ -1850,28 +1990,40 @@ public class CommunityMechanics implements Listener {
 	}
 
 	/*
-	 * public static void sendMessageCrossServer(String message, String server_ip, int server_num){ // message = to/from@US-0: Message contents here. //
-	 * server_ip = IP.
+	 * public static void sendMessageCrossServer(String message, String
+	 * server_ip, int server_num){ // message = to/from@US-0: Message contents
+	 * here. // server_ip = IP.
 	 *
-	 * String p_name = message.substring(0, message.indexOf("/")); Socket kkSocket = null; PrintWriter out = null;
+	 * String p_name = message.substring(0, message.indexOf("/")); Socket
+	 * kkSocket = null; PrintWriter out = null;
 	 *
-	 * try { try { out = new PrintWriter(getSocket(server_num).getOutputStream(), true); } catch (SocketException e) { if(out != null){ out.close(); } kkSocket
-	 * = new Socket(); kkSocket.connect(new InetSocketAddress(server_ip, Hive.transfer_port), 100); out = new PrintWriter(kkSocket.getOutputStream(), true);
-	 * e.printStackTrace(); log.info(Ansi.ansi().fg(Ansi.Color.RED).boldOff().toString() + "[CommunityMechanics] FAILED to send message to " + p_name +
+	 * try { try { out = new
+	 * PrintWriter(getSocket(server_num).getOutputStream(), true); } catch
+	 * (SocketException e) { if(out != null){ out.close(); } kkSocket = new
+	 * Socket(); kkSocket.connect(new InetSocketAddress(server_ip,
+	 * Hive.transfer_port), 100); out = new
+	 * PrintWriter(kkSocket.getOutputStream(), true); e.printStackTrace();
+	 * log.info(Ansi.ansi().fg(Ansi.Color.RED).boldOff().toString() +
+	 * "[CommunityMechanics] FAILED to send message to " + p_name +
 	 * " on server " + server_ip + ". --> REROUTING..."); }
 	 *
 	 * out.println(message);
 	 *
-	 * } catch (IOException e) { if(out != null){ out.close(); } e.printStackTrace(); log.info(Ansi.ansi().fg(Ansi.Color.RED).boldOff().toString() +
-	 * "[CommunityMechanics] FAILED to send message to " + p_name + " on server " + server_ip + "."); return; }
+	 * } catch (IOException e) { if(out != null){ out.close(); }
+	 * e.printStackTrace();
+	 * log.info(Ansi.ansi().fg(Ansi.Color.RED).boldOff().toString() +
+	 * "[CommunityMechanics] FAILED to send message to " + p_name +
+	 * " on server " + server_ip + "."); return; }
 	 *
 	 * if(out != null){ out.close(); } }
 	 */
 
 	/**
-	 * Handles if the command is a private message and then cancels it so it will be 
-	 * handled by the async PM thread
-	 * @param e Bukkit pre command event
+	 * Handles if the command is a private message and then cancels it so it
+	 * will be handled by the async PM thread
+	 * 
+	 * @param e
+	 *            Bukkit pre command event
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onPlayerCommandPreProcess(PlayerCommandPreprocessEvent e) {
@@ -1886,16 +2038,19 @@ public class CommunityMechanics implements Listener {
 			e.setCancelled(true);
 		}
 
-		if (root_cmd.equalsIgnoreCase("/whisper") || root_cmd.equalsIgnoreCase("/m") || root_cmd.equalsIgnoreCase("/msg") || root_cmd.equalsIgnoreCase("/tell")
-				|| root_cmd.equalsIgnoreCase("/t") || root_cmd.equalsIgnoreCase("/w") || root_cmd.equalsIgnoreCase("/to")
-				|| root_cmd.equalsIgnoreCase("/message")) {
+		if (root_cmd.equalsIgnoreCase("/whisper") || root_cmd.equalsIgnoreCase("/m")
+				|| root_cmd.equalsIgnoreCase("/msg") || root_cmd.equalsIgnoreCase("/tell")
+				|| root_cmd.equalsIgnoreCase("/t") || root_cmd.equalsIgnoreCase("/w")
+				|| root_cmd.equalsIgnoreCase("/to") || root_cmd.equalsIgnoreCase("/message")) {
 			if (!(e.getMessage().contains(" "))) {
-				p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Incorrect syntax. " + root_cmd + " <PLAYER> <MESSAGE>");
+				p.sendMessage(
+						ChatColor.RED + "" + ChatColor.BOLD + "Incorrect syntax. " + root_cmd + " <PLAYER> <MESSAGE>");
 				e.setCancelled(true);
 				return;
 			}
 			String to_player = e.getMessage().split(" ")[1];
-			String message = "@" + to_player + " " + e.getMessage().replaceAll(root_cmd + " " + e.getMessage().split(" ")[1] + " ", "");
+			String message = "@" + to_player + " "
+					+ e.getMessage().replaceAll(root_cmd + " " + e.getMessage().split(" ")[1] + " ", "");
 			Set<Player> plist = new HashSet<Player>();
 			plist.add(p);
 			AsyncPlayerChatEvent asce = new AsyncPlayerChatEvent(false, p, message, plist);
@@ -1906,8 +2061,11 @@ public class CommunityMechanics implements Listener {
 	}
 
 	/**
-	 * Handles messages that are meant to be PM's and puts them in the async PM thread
-	 * @param e Bukkit async chat event
+	 * Handles messages that are meant to be PM's and puts them in the async PM
+	 * thread
+	 * 
+	 * @param e
+	 *            Bukkit async chat event
 	 */
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerAsyncChatEvent(final AsyncPlayerChatEvent e) {
@@ -1931,141 +2089,183 @@ public class CommunityMechanics implements Listener {
 
 		// Depreciated, using Thread Pooling (processPMs())
 		/*
-		 * Player sent_from = e.getPlayer(); String sent_to_s = ""; if(e.getMessage().contains(" ")){ sent_to_s = e.getMessage().substring(1,
-		 * e.getMessage().indexOf(" ")); } else if(!(e.getMessage().contains(" "))){ sent_to_s = e.getMessage().substring(1, e.getMessage().length()); }
+		 * Player sent_from = e.getPlayer(); String sent_to_s = "";
+		 * if(e.getMessage().contains(" ")){ sent_to_s =
+		 * e.getMessage().substring(1, e.getMessage().indexOf(" ")); } else
+		 * if(!(e.getMessage().contains(" "))){ sent_to_s =
+		 * e.getMessage().substring(1, e.getMessage().length()); }
 		 *
-		 * if(toggle_list.get(sent_from.getName()).contains("tells") && (!(isPlayerOnBuddyList(sent_from, sent_to_s)))){ // They have tells disabled and the
-		 * reciever is NOT a bud, so they can't reply. sent_from.sendMessage(ChatColor.RED + "You currently have non-BUD private messages " + ChatColor.BOLD +
-		 * "DISABLED." + ChatColor.RED + " Type '/toggletells' to re-enable."); return; }
+		 * if(toggle_list.get(sent_from.getName()).contains("tells") &&
+		 * (!(isPlayerOnBuddyList(sent_from, sent_to_s)))){ // They have tells
+		 * disabled and the reciever is NOT a bud, so they can't reply.
+		 * sent_from.sendMessage(ChatColor.RED +
+		 * "You currently have non-BUD private messages " + ChatColor.BOLD +
+		 * "DISABLED." + ChatColor.RED + " Type '/toggletells' to re-enable.");
+		 * return; }
 		 *
-		 * if(sent_to_s.equalsIgnoreCase("")){ if(!last_reply.containsKey(sent_from.getName())){ sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD +
-		 * "ERROR: " + ChatColor.RED + "You have no conversation to respond to!"); return; } sent_to_s = last_reply.get(sent_from.getName()); }
+		 * if(sent_to_s.equalsIgnoreCase("")){
+		 * if(!last_reply.containsKey(sent_from.getName())){
+		 * sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "ERROR: "
+		 * + ChatColor.RED + "You have no conversation to respond to!"); return;
+		 * } sent_to_s = last_reply.get(sent_from.getName()); }
 		 *
-		 * if(ignore_list.get(sent_from.getName()).contains(sent_to_s) || socialQuery(sent_from.getName(), sent_to_s, "CHECK_FOE")){
-		 * sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + sent_to_s + ChatColor.RED + " is OFFLINE."); return; }
+		 * if(ignore_list.get(sent_from.getName()).contains(sent_to_s) ||
+		 * socialQuery(sent_from.getName(), sent_to_s, "CHECK_FOE")){
+		 * sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + sent_to_s
+		 * + ChatColor.RED + " is OFFLINE."); return; }
 		 *
-		 * int sent_to_server_data = getPlayerServer(sent_to_s, true); // Update.
+		 * int sent_to_server_data = getPlayerServer(sent_to_s, true); //
+		 * Update.
 		 *
-		 * if(sent_to_server_data < 0){ if(sent_to_server_data == -1){ sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + sent_to_s + ChatColor.RED +
-		 * " is OFFLINE."); } else if(sent_to_server_data == -2){ sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + sent_to_s + ChatColor.RED +
-		 * " has " + ChatColor.UNDERLINE + "NEVER" + ChatColor.RED + " logged in to Dungeon Realms."); } return; }
+		 * if(sent_to_server_data < 0){ if(sent_to_server_data == -1){
+		 * sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + sent_to_s
+		 * + ChatColor.RED + " is OFFLINE."); } else if(sent_to_server_data ==
+		 * -2){ sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD +
+		 * sent_to_s + ChatColor.RED + " has " + ChatColor.UNDERLINE + "NEVER" +
+		 * ChatColor.RED + " logged in to Dungeon Realms."); } return; }
 		 *
-		 * if(!(server_list.containsKey(sent_to_server_data))){ sent_from.sendMessage(ChatColor.RED +
-		 * "Your message could not be delivered because the server ID " + sent_to_server_data + " is not defined."); return; }
+		 * if(!(server_list.containsKey(sent_to_server_data))){
+		 * sent_from.sendMessage(ChatColor.RED +
+		 * "Your message could not be delivered because the server ID " +
+		 * sent_to_server_data + " is not defined."); return; }
 		 *
 		 * int o_sent_to_server = sent_to_server_data; String prefix = "US-";
 		 *
-		 * if(sent_to_server_data > 1000 && sent_to_server_data < 2000){ sent_to_server_data -= 1000; prefix = "EU-"; }
+		 * if(sent_to_server_data > 1000 && sent_to_server_data < 2000){
+		 * sent_to_server_data -= 1000; prefix = "EU-"; }
 		 *
-		 * if(sent_to_server_data > 2000 && sent_to_server_data < 3000){ sent_to_server_data -= 2000; prefix = "BR-"; }
+		 * if(sent_to_server_data > 2000 && sent_to_server_data < 3000){
+		 * sent_to_server_data -= 2000; prefix = "BR-"; }
 		 *
 		 *
-		 * if(sent_to_server_data >= 3000){ sent_to_server_data -= 3000; prefix = "US-YT"; }
+		 * if(sent_to_server_data >= 3000){ sent_to_server_data -= 3000; prefix
+		 * = "US-YT"; }
 		 *
-		 * String sent_to_server = prefix + sent_to_server_data; String local_server = Bukkit.getMotd().substring(0, Bukkit.getMotd().indexOf(" ")); String
-		 * message = "";
+		 * String sent_to_server = prefix + sent_to_server_data; String
+		 * local_server = Bukkit.getMotd().substring(0,
+		 * Bukkit.getMotd().indexOf(" ")); String message = "";
 		 *
-		 * if(e.getMessage().contains(" ")){ message = e.getMessage().substring(e.getMessage().indexOf(" "), e.getMessage().length()); } else
-		 * if(!(e.getMessage().contains(" "))){ message = ""; }
+		 * if(e.getMessage().contains(" ")){ message =
+		 * e.getMessage().substring(e.getMessage().indexOf(" "),
+		 * e.getMessage().length()); } else if(!(e.getMessage().contains(" "))){
+		 * message = ""; }
 		 *
-		 * if(Bukkit.getPlayer(sent_to_s) != null){ // Local msg'ing. Player sent_to_p = Bukkit.getPlayer(sent_to_s); sent_to_s = sent_to_p.getName();
+		 * if(Bukkit.getPlayer(sent_to_s) != null){ // Local msg'ing. Player
+		 * sent_to_p = Bukkit.getPlayer(sent_to_s); sent_to_s =
+		 * sent_to_p.getName();
 		 *
 		 * last_pm.put(e.getPlayer().getName(), System.currentTimeMillis());
 		 *
-		 * if((toggle_list.get(sent_to_p.getName()).contains("tells") && !(isPlayerOnBuddyList(sent_to_p, sent_from.getName()))) ||
-		 * (toggle_list.get(sent_from.getName()).contains("tells") && !(isPlayerOnBuddyList(sent_from, sent_to_p.getName())))){
-		 * if(toggle_list.get(sent_to_p.getName()).contains("tells")){ sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + sent_to_p.getName() +
-		 * ChatColor.RED + " currently has private messaging " + ChatColor.UNDERLINE + "DISABLED."); return; } return; }
+		 * if((toggle_list.get(sent_to_p.getName()).contains("tells") &&
+		 * !(isPlayerOnBuddyList(sent_to_p, sent_from.getName()))) ||
+		 * (toggle_list.get(sent_from.getName()).contains("tells") &&
+		 * !(isPlayerOnBuddyList(sent_from, sent_to_p.getName())))){
+		 * if(toggle_list.get(sent_to_p.getName()).contains("tells")){
+		 * sent_from.sendMessage(ChatColor.RED + "" + ChatColor.BOLD +
+		 * sent_to_p.getName() + ChatColor.RED +
+		 * " currently has private messaging " + ChatColor.UNDERLINE +
+		 * "DISABLED."); return; } return; }
 		 *
-		 * log.info(sent_from.getName() + " --> " + sent_to_s + " " + e.getMessage());
+		 * log.info(sent_from.getName() + " --> " + sent_to_s + " " +
+		 * e.getMessage());
 		 *
-		 * ChatColor st_c = ChatMechanics.getPlayerColor(sent_from, sent_to_p); ChatColor sf_c = ChatMechanics.getPlayerColor(sent_to_p, sent_from);
+		 * ChatColor st_c = ChatMechanics.getPlayerColor(sent_from, sent_to_p);
+		 * ChatColor sf_c = ChatMechanics.getPlayerColor(sent_to_p, sent_from);
 		 *
-		 * String from_prefix = ChatMechanics.getPlayerPrefix(sent_from); String to_prefix = ChatMechanics.getPlayerPrefix(sent_to_p);
+		 * String from_prefix = ChatMechanics.getPlayerPrefix(sent_from); String
+		 * to_prefix = ChatMechanics.getPlayerPrefix(sent_to_p);
 		 *
-		 * String to_personal_msg = message; if(ChatMechanics.hasAdultFilter(sent_to_p.getName())){ to_personal_msg = ""; for(String s : message.split(" ")){
-		 * for(String bad : ChatMechanics.bad_words){ if(s.contains(bad)){ s = s.replaceAll(bad, "****"); } } to_personal_msg += s + " "; } }
+		 * String to_personal_msg = message;
+		 * if(ChatMechanics.hasAdultFilter(sent_to_p.getName())){
+		 * to_personal_msg = ""; for(String s : message.split(" ")){ for(String
+		 * bad : ChatMechanics.bad_words){ if(s.contains(bad)){ s =
+		 * s.replaceAll(bad, "****"); } } to_personal_msg += s + " "; } }
 		 *
-		 * String from_personal_msg = message; if(ChatMechanics.hasAdultFilter(sent_from.getName())){ from_personal_msg = ""; for(String s :
-		 * message.split(" ")){ for(String bad : ChatMechanics.bad_words){ if(s.contains(bad)){ s = s.replaceAll(bad, "****"); } } from_personal_msg += s + " ";
-		 * } }
+		 * String from_personal_msg = message;
+		 * if(ChatMechanics.hasAdultFilter(sent_from.getName())){
+		 * from_personal_msg = ""; for(String s : message.split(" ")){
+		 * for(String bad : ChatMechanics.bad_words){ if(s.contains(bad)){ s =
+		 * s.replaceAll(bad, "****"); } } from_personal_msg += s + " "; } }
 		 *
-		 * sent_to_p.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "FROM " + from_prefix + st_c + sent_from.getName() + ":" + ChatColor.WHITE +
-		 * to_personal_msg); sent_from.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "TO " + to_prefix + sf_c + sent_to_p.getName() + ":" +
-		 * ChatColor.WHITE + from_personal_msg); if(!(last_reply.containsKey(sent_to_p.getName())) || !last_reply.get(sent_to_p
-		 * .getName()).equalsIgnoreCase(sent_from.getName())){ sent_to_p.playSound(sent_to_p.getLocation(), Sound.CHICKEN_EGG_POP, 2F, 1.2F);
-		 * last_reply.put(sent_to_p.getName(), sent_from.getName()); } } else if(!(sent_to_server.equalsIgnoreCase(local_server))){ String message_to_send = "^"
-		 * + sent_to_s + "/" + GuildMechanics.getGuildPrefix(sent_from.getName()) + "@" + sent_from.getName() + ";" + local_server + ":" + message;
-		 * sendMessageCrossServer(message_to_send, server_list.get(o_sent_to_server), o_sent_to_server); }
+		 * sent_to_p.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD +
+		 * "FROM " + from_prefix + st_c + sent_from.getName() + ":" +
+		 * ChatColor.WHITE + to_personal_msg);
+		 * sent_from.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD +
+		 * "TO " + to_prefix + sf_c + sent_to_p.getName() + ":" +
+		 * ChatColor.WHITE + from_personal_msg);
+		 * if(!(last_reply.containsKey(sent_to_p.getName())) ||
+		 * !last_reply.get(sent_to_p
+		 * .getName()).equalsIgnoreCase(sent_from.getName())){
+		 * sent_to_p.playSound(sent_to_p.getLocation(), Sound.CHICKEN_EGG_POP,
+		 * 2F, 1.2F); last_reply.put(sent_to_p.getName(), sent_from.getName());
+		 * } } else if(!(sent_to_server.equalsIgnoreCase(local_server))){ String
+		 * message_to_send = "^" + sent_to_s + "/" +
+		 * GuildMechanics.getGuildPrefix(sent_from.getName()) + "@" +
+		 * sent_from.getName() + ";" + local_server + ":" + message;
+		 * sendMessageCrossServer(message_to_send,
+		 * server_list.get(o_sent_to_server), o_sent_to_server); }
 		 */
 	}
 
 	// DEPRECIATED, Kept for backwards compatibility
-	//public static void setIgnoreColor(final Player p_viewer, final Player p_edited) {
-	//}
+	// public static void setIgnoreColor(final Player p_viewer, final Player
+	// p_edited) {
+	// }
 
 	/*
 	 * What the actual fuck? Commenting out because useless?
+	 * 
 	 * @param p_viewer
+	 * 
 	 * @param p_edited
 	 */
-	/*public static void clearAllViewColor(final Player p_viewer, final Player p_edited) {
-		//final String r_name = p_edited.getName();
-
-		if (p_viewer.getName().equalsIgnoreCase(p_edited.getName())) {
-			return;
-		}
-
-		Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(Main.plugin, new Runnable() {
-			public void run() {
-				// ChatColor c = ChatColor.WHITE;
-
-				// test = (CraftPlayer)e_test.getBukkitEntity();
-
-				EntityPlayer ent_p_edited = ((CraftPlayer) p_edited).getHandle();
-				net.minecraft.server.v1_7_R2.ItemStack boots = null, legs = null, chest = null, head = null;
-
-				if (ent_p_edited.getEquipment(1) != null) {
-					boots = ent_p_edited.getEquipment(1);
-				}
-				if (ent_p_edited.getEquipment(2) != null) {
-					legs = ent_p_edited.getEquipment(2);
-				}
-				if (ent_p_edited.getEquipment(3) != null) {
-					chest = ent_p_edited.getEquipment(3);
-				}
-				if (ent_p_edited.getEquipment(4) != null) {
-					head = ent_p_edited.getEquipment(4);
-				}
-
-				ent_p_edited.displayName = ChatColor.stripColor(r_name);
-
-				((CraftPlayer) p_viewer).getHandle().playerConnection.sendPacket(new PacketPlayOutNamedEntitySpawn(ent_p_edited));
-				List<Packet> pack_list = new ArrayList<Packet>();
-				if (boots != null) {
-					pack_list.add(new PacketPlayOutEntityEquipment(ent_p_edited.getId(), 1, boots));
-				}
-				if (legs != null) {
-					pack_list.add(new PacketPlayOutEntityEquipment(ent_p_edited.getId(), 2, legs));
-				}
-				if (chest != null) {
-					pack_list.add(new PacketPlayOutEntityEquipment(ent_p_edited.getId(), 3, chest));
-				}
-				if (head != null) {
-					pack_list.add(new PacketPlayOutEntityEquipment(ent_p_edited.getId(), 4, head));
-				}
-
-				for (Packet pa : pack_list) {
-					((CraftPlayer) p_viewer).getHandle().playerConnection.sendPacket(pa);
-				}
-
-			}
-		}, 2L);
-	}*/
+	/*
+	 * public static void clearAllViewColor(final Player p_viewer, final Player
+	 * p_edited) { //final String r_name = p_edited.getName();
+	 * 
+	 * if (p_viewer.getName().equalsIgnoreCase(p_edited.getName())) { return; }
+	 * 
+	 * Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(Main.plugin,
+	 * new Runnable() { public void run() { // ChatColor c = ChatColor.WHITE;
+	 * 
+	 * // test = (CraftPlayer)e_test.getBukkitEntity();
+	 * 
+	 * EntityPlayer ent_p_edited = ((CraftPlayer) p_edited).getHandle();
+	 * net.minecraft.server.v1_7_R2.ItemStack boots = null, legs = null, chest =
+	 * null, head = null;
+	 * 
+	 * if (ent_p_edited.getEquipment(1) != null) { boots =
+	 * ent_p_edited.getEquipment(1); } if (ent_p_edited.getEquipment(2) != null)
+	 * { legs = ent_p_edited.getEquipment(2); } if (ent_p_edited.getEquipment(3)
+	 * != null) { chest = ent_p_edited.getEquipment(3); } if
+	 * (ent_p_edited.getEquipment(4) != null) { head =
+	 * ent_p_edited.getEquipment(4); }
+	 * 
+	 * ent_p_edited.displayName = ChatColor.stripColor(r_name);
+	 * 
+	 * ((CraftPlayer) p_viewer).getHandle().playerConnection.sendPacket(new
+	 * PacketPlayOutNamedEntitySpawn(ent_p_edited)); List<Packet> pack_list =
+	 * new ArrayList<Packet>(); if (boots != null) { pack_list.add(new
+	 * PacketPlayOutEntityEquipment(ent_p_edited.getId(), 1, boots)); } if (legs
+	 * != null) { pack_list.add(new
+	 * PacketPlayOutEntityEquipment(ent_p_edited.getId(), 2, legs)); } if (chest
+	 * != null) { pack_list.add(new
+	 * PacketPlayOutEntityEquipment(ent_p_edited.getId(), 3, chest)); } if (head
+	 * != null) { pack_list.add(new
+	 * PacketPlayOutEntityEquipment(ent_p_edited.getId(), 4, head)); }
+	 * 
+	 * for (Packet pa : pack_list) { ((CraftPlayer)
+	 * p_viewer).getHandle().playerConnection.sendPacket(pa); }
+	 * 
+	 * } }, 2L); }
+	 */
 
 	/**
-	 * Handles switching legacy trade toggle, sends toggle message, and sends cross server online message
-	 * @param e Bukkit join event
+	 * Handles switching legacy trade toggle, sends toggle message, and sends
+	 * cross server online message
+	 * 
+	 * @param e
+	 *            Bukkit join event
 	 */
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(final PlayerJoinEvent e) {
@@ -2083,7 +2283,8 @@ public class CommunityMechanics implements Listener {
 					return;
 				}
 
-				if (PlayerManager.getPlayerModel(p).getToggleList() != null && PlayerManager.getPlayerModel(p).getToggleList().size() > 0) {
+				if (PlayerManager.getPlayerModel(p).getToggleList() != null
+						&& PlayerManager.getPlayerModel(p).getToggleList().size() > 0) {
 					if (PlayerManager.getPlayerModel(p).getToggleList().contains("tradechat")) {
 						List<String> toggles = PlayerManager.getPlayerModel(p).getToggleList();
 						toggles.remove("tradechat");
@@ -2091,8 +2292,9 @@ public class CommunityMechanics implements Listener {
 						PlayerManager.getPlayerModel(p).setToggleList(toggles);
 					}
 
-					p.sendMessage(ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "     To manage your gameplay settings, use " + ChatColor.YELLOW
-							+ ChatColor.UNDERLINE + "/toggles");
+					p.sendMessage(ChatColor.GRAY.toString() + ChatColor.ITALIC.toString()
+							+ "     To manage your gameplay settings, use " + ChatColor.YELLOW + ChatColor.UNDERLINE
+							+ "/toggles");
 					p.sendMessage("");
 				} else {
 					PlayerManager.getPlayerModel(p).setToggleList(new ArrayList<String>());
@@ -2102,7 +2304,8 @@ public class CommunityMechanics implements Listener {
 
 				if (PlayerManager.getPlayerModel(p).getBuddyList() != null) {
 					List<Object> data = new ArrayList<Object>();
-					data.add("[sq_online]" + p.getName() + ":" + Bukkit.getServer().getMotd().substring(0, Bukkit.getServer().getMotd().indexOf(" ")));
+					data.add("[sq_online]" + p.getName() + ":"
+							+ Bukkit.getServer().getMotd().substring(0, Bukkit.getServer().getMotd().indexOf(" ")));
 					data.add(null);
 					data.add(true);
 					CommunityMechanics.social_query_list.put(p.getUniqueId().toString(), data);
@@ -2119,7 +2322,7 @@ public class CommunityMechanics implements Listener {
 						// from
 						// sendPacketCrossServer.
 					}
-					
+
 					for (UUID s : PlayerManager.getPlayerModel(p).getBuddyList()) {
 						if (Bukkit.getPlayer(s) != null) {
 							Player local_bud = Bukkit.getPlayer(s);
@@ -2139,7 +2342,9 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Updates the book in player's inventory
-	 * @param p Player to update book for
+	 * 
+	 * @param p
+	 *            Player to update book for
 	 */
 	public static void updateCommBook(Player p) {
 		int slot = -1;
@@ -2170,8 +2375,11 @@ public class CommunityMechanics implements Listener {
 	}
 
 	/**
-	 * Handles sending offline packet and notifying local buddies of the quit event
-	 * @param e Bukkit quit event
+	 * Handles sending offline packet and notifying local buddies of the quit
+	 * event
+	 * 
+	 * @param e
+	 *            Bukkit quit event
 	 */
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e) {
@@ -2179,14 +2387,15 @@ public class CommunityMechanics implements Listener {
 		if (PlayerManager.getPlayerModel(p).getBuddyList() != null) {
 			final List<UUID> lbuddy_list = PlayerManager.getPlayerModel(p).getBuddyList();
 
-			Bukkit.getScheduler().runTaskLaterAsynchronously(Main.plugin, new Runnable(){
+			Bukkit.getScheduler().runTaskLaterAsynchronously(Main.plugin, new Runnable() {
 				public void run() {
 					List<Object> data = new ArrayList<Object>();
-					data.add("[sq_offline]" + p.getName() + ":" + Bukkit.getServer().getMotd().substring(0, Bukkit.getServer().getMotd().indexOf(" ")));
+					data.add("[sq_offline]" + p.getName() + ":"
+							+ Bukkit.getServer().getMotd().substring(0, Bukkit.getServer().getMotd().indexOf(" ")));
 					data.add(null);
 					data.add(true);
 					CommunityMechanics.social_query_list.put(p.getUniqueId().toString(), data);
-					
+
 					for (UUID s : lbuddy_list) {
 						if (Bukkit.getPlayer(s) != null) {
 							final Player local_bud = Bukkit.getPlayer(s);
@@ -2204,7 +2413,9 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Cancels damage event when item in hand is a social book
-	 * @param e Bukkit entity damage by entity event
+	 * 
+	 * @param e
+	 *            Bukkit entity damage by entity event
 	 */
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e) {
@@ -2218,18 +2429,22 @@ public class CommunityMechanics implements Listener {
 	}
 
 	/**
-	 * Handle clicking on player with book and updating the book when it is opened
-	 * @param e Bukkit interact event
+	 * Handle clicking on player with book and updating the book when it is
+	 * opened
+	 * 
+	 * @param e
+	 *            Bukkit interact event
 	 */
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
 	public void onPlayerInteract(PlayerInteractEvent e) {
 		if (e.hasItem() && e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			final Player p = e.getPlayer();
 			if (isSocialBook(e.getItem())) {
-				if (PlayerManager.getPlayerModel(p).getLastBookClick() == 0
-						|| (System.currentTimeMillis() - PlayerManager.getPlayerModel(p).getLastBookClick()) > (2 * 1000)) {
+				if (PlayerManager.getPlayerModel(p).getLastBookClick() == 0 || (System.currentTimeMillis()
+						- PlayerManager.getPlayerModel(p).getLastBookClick()) > (2 * 1000)) {
 					updateCombatPage(p);
-					// Why close their inventory? The event is called before it so..
+					// Why close their inventory? The event is called before it
+					// so..
 					// p.closeInventory();
 					PlayerManager.getPlayerModel(p).setLastBookClick(System.currentTimeMillis());
 				}
@@ -2252,9 +2467,10 @@ public class CommunityMechanics implements Listener {
 					}
 
 					if (isPlayerOnIgnoreList(p, new_bud)) {
-						p.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + new_bud.getName() + ChatColor.YELLOW + " is currently on your IGNORE LIST.");
-						p.sendMessage(ChatColor.GRAY + "Use " + ChatColor.BOLD + "/delete " + new_bud.getName() + ChatColor.GRAY
-								+ " to remove them from your ignore list.");
+						p.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + new_bud.getName() + ChatColor.YELLOW
+								+ " is currently on your IGNORE LIST.");
+						p.sendMessage(ChatColor.GRAY + "Use " + ChatColor.BOLD + "/delete " + new_bud.getName()
+								+ ChatColor.GRAY + " to remove them from your ignore list.");
 						return;
 					}
 
@@ -2262,7 +2478,8 @@ public class CommunityMechanics implements Listener {
 						if (!CommunityMechanics.isPlayerOnBuddyList(new_bud, p)) {
 							// They're not buddies and this player doesn't want
 							// non-bud invites.
-							p.sendMessage(ChatColor.RED + new_bud.getName() + " has Non-BUD party invites " + ChatColor.BOLD + "DISABLED");
+							p.sendMessage(ChatColor.RED + new_bud.getName() + " has Non-BUD party invites "
+									+ ChatColor.BOLD + "DISABLED");
 							return;
 						}
 					}
@@ -2271,9 +2488,9 @@ public class CommunityMechanics implements Listener {
 				}
 
 				if (new_bud == null && !(p.isSneaking())) {
-					p.sendMessage(ChatColor.GREEN + "To invite a player to your party, use the " + ChatColor.BOLD + "/pinvite" + ChatColor.GREEN
-							+ " command OR " + ChatColor.UNDERLINE.toString() + "Left Click" + ChatColor.GREEN.toString()
-							+ " the player with your book in hand.");
+					p.sendMessage(ChatColor.GREEN + "To invite a player to your party, use the " + ChatColor.BOLD
+							+ "/pinvite" + ChatColor.GREEN + " command OR " + ChatColor.UNDERLINE.toString()
+							+ "Left Click" + ChatColor.GREEN.toString() + " the player with your book in hand.");
 					return;
 				}
 
@@ -2283,7 +2500,9 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Handles updating book on respawn
-	 * @param e Bukkit respawn event
+	 * 
+	 * @param e
+	 *            Bukkit respawn event
 	 */
 	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent e) {
@@ -2302,7 +2521,9 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Handles the toggle buttons
-	 * @param e Bukkit inventory click event
+	 * 
+	 * @param e
+	 *            Bukkit inventory click event
 	 */
 	@EventHandler
 	public void onToggleMenuClick(InventoryClickEvent e) {
@@ -2331,7 +2552,9 @@ public class CommunityMechanics implements Listener {
 
 	/**
 	 * Handles stopping the book from being dropped
-	 * @param e Bukkit inventory click event
+	 * 
+	 * @param e
+	 *            Bukkit inventory click event
 	 */
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
@@ -2343,10 +2566,12 @@ public class CommunityMechanics implements Listener {
 			return;
 		}
 
-		if (isSocialBook(e.getCurrentItem()) && !p.getOpenInventory().getTopInventory().getName().equalsIgnoreCase("container.crafting")) {
+		if (isSocialBook(e.getCurrentItem())
+				&& !p.getOpenInventory().getTopInventory().getName().equalsIgnoreCase("container.crafting")) {
 			e.setCancelled(true);
 		}
-		if (isSocialBook(e.getCursor()) && !p.getOpenInventory().getTopInventory().getName().equalsIgnoreCase("container.crafting")) {
+		if (isSocialBook(e.getCursor())
+				&& !p.getOpenInventory().getTopInventory().getName().equalsIgnoreCase("container.crafting")) {
 			e.setCancelled(true);
 		}
 	}

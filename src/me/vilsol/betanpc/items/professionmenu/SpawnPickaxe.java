@@ -32,33 +32,41 @@ public class SpawnPickaxe implements MenuItem, ChatCallback {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.GOLD_PICKAXE).setName(ChatColor.YELLOW + "Spawn Pickaxe").setLore(Arrays.asList(ChatColor.GRAY + "Spawn a Pickaxe with Random Enchants.")).getItem();
+		return new Builder(Material.GOLD_PICKAXE).setName(ChatColor.YELLOW + "Spawn Pickaxe")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn a Pickaxe with Random Enchants.")).getItem();
 	}
 
 	@Override
 	public void onChatMessage(AsyncPlayerChatEvent e) {
-		if(Utils.isInteger(e.getMessage())){
+		if (Utils.isInteger(e.getMessage())) {
 			int level = Integer.parseInt(e.getMessage());
-			if(level > 100 || level < 1){
-				e.getPlayer().sendMessage(Utils.NPC + "Pickaxe spawning cancelled because number is not between 1 - 100!");
-			}else{
+			if (level > 100 || level < 1) {
+				e.getPlayer()
+						.sendMessage(Utils.NPC + "Pickaxe spawning cancelled because number is not between 1 - 100!");
+			} else {
 				ItemStack base = ProfessionMechanics.t1_pickaxe.clone();
-				if(level >= 20) base = ProfessionMechanics.t2_pickaxe.clone();
-				if(level >= 40) base = ProfessionMechanics.t3_pickaxe.clone();
-				if(level >= 60) base = ProfessionMechanics.t4_pickaxe.clone();
-				if(level >= 80) base = ProfessionMechanics.t5_pickaxe.clone();
-				
-				while(ProfessionMechanics.getItemLevel(base) < level){
-					ProfessionMechanics.addEXP(e.getPlayer(), base, ProfessionMechanics.getEXPNeeded(ProfessionMechanics.getItemLevel(base), "mining"), "mining");
+				if (level >= 20)
+					base = ProfessionMechanics.t2_pickaxe.clone();
+				if (level >= 40)
+					base = ProfessionMechanics.t3_pickaxe.clone();
+				if (level >= 60)
+					base = ProfessionMechanics.t4_pickaxe.clone();
+				if (level >= 80)
+					base = ProfessionMechanics.t5_pickaxe.clone();
+
+				while (ProfessionMechanics.getItemLevel(base) < level) {
+					ProfessionMechanics.addEXP(e.getPlayer(), base,
+							ProfessionMechanics.getEXPNeeded(ProfessionMechanics.getItemLevel(base), "mining"),
+							"mining");
 				}
-				
+
 				e.getPlayer().getInventory().addItem(base);
 			}
-		}else{
+		} else {
 			e.getPlayer().sendMessage(Utils.NPC + "Pickaxe spawning cancelled because number is not between 1 - 100!");
 		}
 		ChatCallback.locked_players.remove(e.getPlayer());
 		MenuModel.openLastMenu(e.getPlayer());
 	}
-	
+
 }

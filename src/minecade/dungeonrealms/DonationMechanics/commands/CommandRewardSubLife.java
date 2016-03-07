@@ -10,19 +10,20 @@ import minecade.dungeonrealms.DonationMechanics.DonationMechanics;
 import minecade.dungeonrealms.PermissionMechanics.PermissionMechanics;
 
 public class CommandRewardSubLife implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		
+
 		Player ps = null;
-		if(sender instanceof Player) {
+		if (sender instanceof Player) {
 			ps = (Player) sender;
-			if(!PermissionMechanics.isGM(ps)) { return true; }
+			if (!PermissionMechanics.isGM(ps)) {
+				return true;
+			}
 		}
-		
+
 		DonationMechanics.tickLifetimeSubEcash();
 		Main.log.info("[DonationMechanics] 999 E-CASH has been given to all sub++ users.");
 		return true;
 	}
-	
+
 }

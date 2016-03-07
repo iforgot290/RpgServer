@@ -27,7 +27,11 @@ public class TeleportToCyrennica implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.BOOK).setName(ChatColor.WHITE.toString() + ChatColor.BOLD + "Teleport: " + ChatColor.WHITE + "Cyrennica").setLore(Arrays.asList(ChatColor.GRAY + "Spawn a teleportation book to " + ChatColor.BOLD + "Cyrennica")).getItem();
+		return new Builder(Material.BOOK)
+				.setName(ChatColor.WHITE.toString() + ChatColor.BOLD + "Teleport: " + ChatColor.WHITE + "Cyrennica")
+				.setLore(
+						Arrays.asList(ChatColor.GRAY + "Spawn a teleportation book to " + ChatColor.BOLD + "Cyrennica"))
+				.getItem();
 	}
 
 }

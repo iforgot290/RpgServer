@@ -40,7 +40,6 @@ import minecade.dungeonrealms.jsonlib.JsonBuilder;
 import minecade.dungeonrealms.managers.PlayerManager;
 import minecade.dungeonrealms.models.LogModel;
 
-
 public class ConnectProtocol implements Runnable {
 	private Socket clientSocket;
 	private String sendingIP;
@@ -61,8 +60,8 @@ public class ConnectProtocol implements Runnable {
 			} catch (Exception err) {
 				String ipAndPort = server_ip;
 				String ipNoPort = ipAndPort.contains(":") ? server_ip.split(":")[0] : ipAndPort;
-				int port = ipAndPort.contains(":") && StringUtils.isNumeric(ipAndPort.split(":")[1]) ? Integer.parseInt(ipAndPort
-						.split(":")[1]) : Config.transfer_port;
+				int port = ipAndPort.contains(":") && StringUtils.isNumeric(ipAndPort.split(":")[1])
+						? Integer.parseInt(ipAndPort.split(":")[1]) : Config.transfer_port;
 				kkSocket = new Socket();
 				kkSocket.connect(new InetSocketAddress(ipNoPort, port), 150);
 				out = new PrintWriter(kkSocket.getOutputStream(), true);
@@ -78,7 +77,6 @@ public class ConnectProtocol implements Runnable {
 			}
 		}
 	}
-
 
 	public void run() {
 
@@ -99,8 +97,10 @@ public class ConnectProtocol implements Runnable {
 
 				else if (inputLine.startsWith("@instance_time@")) {
 					// @instance_time@instance_template:seconds_they_took
-					String instance_template = inputLine.substring(inputLine.lastIndexOf("@") + 1, inputLine.indexOf(":"));
-					double seconds = Double.parseDouble(inputLine.substring(inputLine.indexOf(":") + 1, inputLine.length()));
+					String instance_template = inputLine.substring(inputLine.lastIndexOf("@") + 1,
+							inputLine.indexOf(":"));
+					double seconds = Double
+							.parseDouble(inputLine.substring(inputLine.indexOf(":") + 1, inputLine.length()));
 					if (InstanceMechanics.total_timing.containsKey(instance_template)) {
 						List<Integer> previous_times = InstanceMechanics.total_timing.get(instance_template);
 						previous_times.add((int) seconds);
@@ -116,16 +116,20 @@ public class ConnectProtocol implements Runnable {
 				// @level100@p_name:
 				else if (inputLine.startsWith("@level100@")) {
 					String p_name = inputLine.split("100@")[1].split(":")[0];
-					Bukkit.broadcastMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + p_name + ChatColor.WHITE + " has reached level 100!");
+					Bukkit.broadcastMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + p_name + ChatColor.WHITE
+							+ " has reached level 100!");
 					return;
 				}
 
 				// @population@US-1:online_players/max_players
 				else if (inputLine.startsWith("@population@")) {
 
-					final String server_prefix = inputLine.substring(inputLine.lastIndexOf("@") + 1, inputLine.indexOf(":"));
-					final int online_players = Integer.parseInt(inputLine.substring(inputLine.indexOf(":") + 1, inputLine.indexOf("/")));
-					final int max_players = Integer.parseInt(inputLine.substring(inputLine.indexOf("/") + 1, inputLine.length()));
+					final String server_prefix = inputLine.substring(inputLine.lastIndexOf("@") + 1,
+							inputLine.indexOf(":"));
+					final int online_players = Integer
+							.parseInt(inputLine.substring(inputLine.indexOf(":") + 1, inputLine.indexOf("/")));
+					final int max_players = Integer
+							.parseInt(inputLine.substring(inputLine.indexOf("/") + 1, inputLine.length()));
 					final int server_num = Hive.getServerNumFromPrefix(server_prefix);
 
 					if (online_players > 0 && Hive.offline_servers.contains(server_prefix)) {
@@ -135,7 +139,8 @@ public class ConnectProtocol implements Runnable {
 
 						public void run() {
 							Hive.last_ping.put(server_num, System.currentTimeMillis());
-							Hive.server_population.put(server_num, new ArrayList<Integer>(Arrays.asList(online_players, max_players)));
+							Hive.server_population.put(server_num,
+									new ArrayList<Integer>(Arrays.asList(online_players, max_players)));
 						}
 					}.runTask(Main.plugin);
 					return;
@@ -151,7 +156,8 @@ public class ConnectProtocol implements Runnable {
 				else if (inputLine.startsWith("@restart@")) {
 
 					int seconds = 60;
-					if (inputLine.contains(":")) seconds = Integer.parseInt(inputLine.split(":")[1]);
+					if (inputLine.contains(":"))
+						seconds = Integer.parseInt(inputLine.split(":")[1]);
 					Hive.startShutdown(seconds, false);
 
 					return;
@@ -174,7 +180,8 @@ public class ConnectProtocol implements Runnable {
 				// !!!message
 				else if (inputLine.startsWith("!!!")) {
 					String msg = inputLine.substring(3, inputLine.length());
-					Bukkit.getServer().broadcastMessage(ChatColor.AQUA + "" + ChatColor.BOLD + ">> " + ChatColor.AQUA + msg);
+					Bukkit.getServer()
+							.broadcastMessage(ChatColor.AQUA + "" + ChatColor.BOLD + ">> " + ChatColor.AQUA + msg);
 					return;
 				}
 
@@ -186,7 +193,7 @@ public class ConnectProtocol implements Runnable {
 					UUID p_uuid = null;
 					String reason = "N/A";
 
-					if (inputLine.contains(":")){
+					if (inputLine.contains(":")) {
 						String[] args = inputLine.split("/")[1].split(":");
 						p_uuid = UUID.fromString(args[0]);
 						reason = args[1];
@@ -195,15 +202,16 @@ public class ConnectProtocol implements Runnable {
 					}
 
 					if (Bukkit.getPlayer(p_uuid) != null) {
-						String first_line = ChatColor.RED + "Your account has been " + ChatColor.UNDERLINE + "TEMPORARILY"
-								+ ChatColor.RED + " locked due to suspicious activity.";
+						String first_line = ChatColor.RED + "Your account has been " + ChatColor.UNDERLINE
+								+ "TEMPORARILY" + ChatColor.RED + " locked due to suspicious activity.";
 
-						if (perm == 1) first_line.replace("TEMPORARILY", "PERMANENTLY");
+						if (perm == 1)
+							first_line.replace("TEMPORARILY", "PERMANENTLY");
 
-						Hive.to_kick.put(
-								p_uuid,
+						Hive.to_kick.put(p_uuid,
 								first_line + "\n" + ChatColor.RED + "Reason: " + ChatColor.GRAY + reason + "\n\n"
-										+ ChatColor.GRAY.toString() + "For further information about this suspension, please visit "
+										+ ChatColor.GRAY.toString()
+										+ "For further information about this suspension, please visit "
 										+ ChatColor.UNDERLINE.toString() + "http://www.dungeonrealms.net/bans");
 					}
 				}
@@ -215,8 +223,8 @@ public class ConnectProtocol implements Runnable {
 					String reason = inputLine.split(":")[1];
 
 					if (Bukkit.getPlayer(id) != null) {
-						Hive.to_kick.put(id, ChatColor.RED + "You have been disconnected from the game server." + "\n\n" + ChatColor.RED + "Reason: "
-								+ ChatColor.GRAY + reason);
+						Hive.to_kick.put(id, ChatColor.RED + "You have been disconnected from the game server." + "\n\n"
+								+ ChatColor.RED + "Reason: " + ChatColor.GRAY + reason);
 					}
 				}
 
@@ -230,8 +238,8 @@ public class ConnectProtocol implements Runnable {
 					if (Bukkit.getPlayer(id) != null) {
 						Player muted = Bukkit.getPlayer(id);
 						muted.sendMessage("");
-						muted.sendMessage(ChatColor.RED + "You have been " + ChatColor.BOLD + "GLOBALLY MUTED" + ChatColor.RED
-								+ " for " + unmute_time + " minute(s).");
+						muted.sendMessage(ChatColor.RED + "You have been " + ChatColor.BOLD + "GLOBALLY MUTED"
+								+ ChatColor.RED + " for " + unmute_time + " minute(s).");
 						muted.sendMessage("");
 					}
 				}
@@ -246,14 +254,16 @@ public class ConnectProtocol implements Runnable {
 					if (Bukkit.getPlayer(id) != null) {
 						Player muted = Bukkit.getPlayer(id);
 						muted.sendMessage("");
-						muted.sendMessage(ChatColor.GREEN + "Your " + ChatColor.BOLD + "GLOBAL MUTE" + ChatColor.GREEN + " has been removed.");
+						muted.sendMessage(ChatColor.GREEN + "Your " + ChatColor.BOLD + "GLOBAL MUTE" + ChatColor.GREEN
+								+ " has been removed.");
 						muted.sendMessage("");
 					}
 				}
 
 				// @collection_bin@p_name&DATA
 				else if (inputLine.startsWith("@collection_bin@")) {
-					// We've just recieved new collection bin data for a certain user!
+					// We've just recieved new collection bin data for a certain
+					// user!
 					inputLine = inputLine.replace("@collection_bin@", "");
 					UUID id = UUID.fromString(inputLine.substring(0, inputLine.indexOf("&")));
 
@@ -264,9 +274,11 @@ public class ConnectProtocol implements Runnable {
 
 					String collection_bin_s = inputLine.substring(inputLine.indexOf("&"), inputLine.length());
 					if (collection_bin_s != null && collection_bin_s.contains("@item@")) {
-						Inventory collection_bin_inv = Hive.convertStringToInventory(null, collection_bin_s, "Collection Bin", 54);
+						Inventory collection_bin_inv = Hive.convertStringToInventory(null, collection_bin_s,
+								"Collection Bin", 54);
 						ShopMechanics.collection_bin.put(id, collection_bin_inv);
-						CommunityMechanics.log.info("[ShopMechanics] Downloaded new collection bin data for user: " + id);
+						CommunityMechanics.log
+								.info("[ShopMechanics] Downloaded new collection bin data for user: " + id);
 					}
 				}
 
@@ -274,8 +286,10 @@ public class ConnectProtocol implements Runnable {
 				else if (inputLine.startsWith("@money@")) {
 					String uuid_raw = inputLine.substring(inputLine.lastIndexOf("@") + 1, inputLine.lastIndexOf(","));
 					UUID owner_id = UUID.fromString(uuid_raw);
-					int total_price = Integer.parseInt(inputLine.substring(inputLine.lastIndexOf(",") + 1, inputLine.indexOf(".")));
-					int amount = Integer.parseInt(inputLine.substring(inputLine.indexOf(".") + 1, inputLine.indexOf(":")));
+					int total_price = Integer
+							.parseInt(inputLine.substring(inputLine.lastIndexOf(",") + 1, inputLine.indexOf(".")));
+					int amount = Integer
+							.parseInt(inputLine.substring(inputLine.indexOf(".") + 1, inputLine.indexOf(":")));
 					String buyer = "Unknown";
 					String i_name = "???";
 					try {
@@ -292,8 +306,9 @@ public class ConnectProtocol implements Runnable {
 						MoneyMechanics.bank_map.put(owner_id, new_net);
 
 						Player owner = Bukkit.getPlayer(owner_id);
-						owner.sendMessage(ChatColor.GREEN + "SOLD " + amount + "x '" + ChatColor.WHITE + i_name + ChatColor.GREEN + "' for "
-								+ ChatColor.BOLD + total_price + "g" + ChatColor.GREEN + " to " + ChatColor.WHITE + "" + ChatColor.BOLD + buyer);
+						owner.sendMessage(ChatColor.GREEN + "SOLD " + amount + "x '" + ChatColor.WHITE + i_name
+								+ ChatColor.GREEN + "' for " + ChatColor.BOLD + total_price + "g" + ChatColor.GREEN
+								+ " to " + ChatColor.WHITE + "" + ChatColor.BOLD + buyer);
 					}
 				}
 
@@ -326,14 +341,16 @@ public class ConnectProtocol implements Runnable {
 					String from_server = inputLine.substring(inputLine.indexOf("@") + 1, inputLine.length());
 
 					Bukkit.getServer().broadcastMessage("");
-					Bukkit.getServer().broadcastMessage(
-							ChatColor.GOLD + "" + ChatColor.BOLD + ">> " + "(" + from_server + ") " + ChatColor.RESET + player_string + ChatColor.GOLD
-							+ " has just activated " + ChatColor.UNDERLINE + "+20% Global Mining / Fishing EXP Rates" + ChatColor.GOLD
-							+ " for 30 minutes by using 'Global Profession Buff' from the E-CASH store!");
+					Bukkit.getServer()
+							.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + ">> " + "(" + from_server + ") "
+									+ ChatColor.RESET + player_string + ChatColor.GOLD + " has just activated "
+									+ ChatColor.UNDERLINE + "+20% Global Mining / Fishing EXP Rates" + ChatColor.GOLD
+									+ " for 30 minutes by using 'Global Profession Buff' from the E-CASH store!");
 					Bukkit.getServer().broadcastMessage("");
 
 					ProfessionMechanics.profession_buff = true;
-					ProfessionMechanics.profession_buff_timeout = System.currentTimeMillis() + (1800 * 1000); // 30 minutes
+					ProfessionMechanics.profession_buff_timeout = System.currentTimeMillis() + (1800 * 1000); // 30
+																												// minutes
 				}
 
 				// [lootbuff]p_name@from_server
@@ -342,10 +359,11 @@ public class ConnectProtocol implements Runnable {
 					String from_server = inputLine.substring(inputLine.indexOf("@") + 1, inputLine.length());
 
 					Bukkit.getServer().broadcastMessage("");
-					Bukkit.getServer().broadcastMessage(
-							ChatColor.GOLD + "" + ChatColor.BOLD + ">> " + "(" + from_server + ") " + ChatColor.RESET + player_string + ChatColor.GOLD
-							+ " has just activated " + ChatColor.UNDERLINE + "+20% Global Drop Rates" + ChatColor.GOLD
-							+ " for 30 minutes by using 'Global Loot Buff' from the E-CASH store!");
+					Bukkit.getServer()
+							.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + ">> " + "(" + from_server + ") "
+									+ ChatColor.RESET + player_string + ChatColor.GOLD + " has just activated "
+									+ ChatColor.UNDERLINE + "+20% Global Drop Rates" + ChatColor.GOLD
+									+ " for 30 minutes by using 'Global Loot Buff' from the E-CASH store!");
 					Bukkit.getServer().broadcastMessage("");
 
 					MonsterMechanics.loot_buff_timeout = System.currentTimeMillis() + (1800 * 1000); // 30
@@ -363,7 +381,7 @@ public class ConnectProtocol implements Runnable {
 					EcashMechanics.sendGlobalMessage(msg, from_server, player_string);
 				}
 
-				//[addpet]p_uuid:new_pet
+				// [addpet]p_uuid:new_pet
 				else if (inputLine.startsWith("[addpet]")) {
 					String uuid_raw = inputLine.substring(inputLine.indexOf("]") + 1, inputLine.indexOf(":"));
 					UUID id = UUID.fromString(uuid_raw);
@@ -389,34 +407,42 @@ public class ConnectProtocol implements Runnable {
 							String strmeta = "";
 
 							// Add egg.
-							if (new_pet_type.equalsIgnoreCase("baby_zombie")) pettype = EntityType.ZOMBIE;
-							else if (new_pet_type.equalsIgnoreCase("baby_mooshroom")) pettype = EntityType.MUSHROOM_COW;
-							else if (new_pet_type.equalsIgnoreCase("baby_cat")) pettype = EntityType.OCELOT;
+							if (new_pet_type.equalsIgnoreCase("baby_zombie"))
+								pettype = EntityType.ZOMBIE;
+							else if (new_pet_type.equalsIgnoreCase("baby_mooshroom"))
+								pettype = EntityType.MUSHROOM_COW;
+							else if (new_pet_type.equalsIgnoreCase("baby_cat"))
+								pettype = EntityType.OCELOT;
 
 							else if (new_pet_type.equalsIgnoreCase("lucky_baby_sheep")) {
 								pettype = EntityType.SHEEP;
 								strmeta = "green";
 							}
 
-							else if (new_pet_type.equalsIgnoreCase("easter_chicken")) pettype = EntityType.CHICKEN;
-							else if (new_pet_type.equalsIgnoreCase("april_creeper")) pettype = EntityType.CREEPER;
-							else if (new_pet_type.equalsIgnoreCase("beta_slime")) pettype = EntityType.SLIME;
+							else if (new_pet_type.equalsIgnoreCase("easter_chicken"))
+								pettype = EntityType.CHICKEN;
+							else if (new_pet_type.equalsIgnoreCase("april_creeper"))
+								pettype = EntityType.CREEPER;
+							else if (new_pet_type.equalsIgnoreCase("beta_slime"))
+								pettype = EntityType.SLIME;
 
 							else if (new_pet_type.equalsIgnoreCase("july_creeper")) {
 								pettype = EntityType.CREEPER;
 								strmeta = "july";
 							}
 
-							else if (new_pet_type.equalsIgnoreCase("baby_horse")) pettype = EntityType.HORSE;
+							else if (new_pet_type.equalsIgnoreCase("baby_horse"))
+								pettype = EntityType.HORSE;
 
-							if (pettype == null){
-								CommunityMechanics.log.warning("Weird pet type recieved from other server: "+new_pet_type);
+							if (pettype == null) {
+								CommunityMechanics.log
+										.warning("Weird pet type recieved from other server: " + new_pet_type);
 								in.close();
 								return;
 							}
 
-							if (!(PetMechanics.containsPet(pl.getInventory(), new_pet_type))
-									&& !(PetMechanics.containsPet(MoneyMechanics.bank_contents.get(pl.getName()), new_pet_type))) {
+							if (!(PetMechanics.containsPet(pl.getInventory(), new_pet_type)) && !(PetMechanics
+									.containsPet(MoneyMechanics.bank_contents.get(pl.getName()), new_pet_type))) {
 								pl.getInventory().addItem(PetMechanics.generatePetEgg(pettype, strmeta));
 							}
 						}
@@ -469,7 +495,8 @@ public class ConnectProtocol implements Runnable {
 					// New server number data for a player.
 					String raw_id = inputLine.substring(inputLine.lastIndexOf("@") + 1, inputLine.indexOf(":"));
 					UUID id = UUID.fromString(raw_id);
-					int server_num = Integer.parseInt(inputLine.substring(inputLine.indexOf(":") + 1, inputLine.length()));
+					int server_num = Integer
+							.parseInt(inputLine.substring(inputLine.indexOf(":") + 1, inputLine.length()));
 
 					PlayerManager.getPlayerModel(id).setServerNum(server_num);
 				}
@@ -519,7 +546,8 @@ public class ConnectProtocol implements Runnable {
 							List<UUID> lbuddy_list = PlayerManager.getPlayerModel(pl).getBuddyList();
 							if (lbuddy_list.contains(id)) {
 								// Tell them! and update book!
-								pl.sendMessage(ChatColor.YELLOW + op.getName() + " has logged out of " + server_name + ".");
+								pl.sendMessage(
+										ChatColor.YELLOW + op.getName() + " has logged out of " + server_name + ".");
 								pl.playSound(pl.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 2F, 0.5F);
 							}
 						}
@@ -542,8 +570,8 @@ public class ConnectProtocol implements Runnable {
 						if (Bukkit.getPlayer(id) != null) {
 							Player pl = Bukkit.getPlayer(id);
 							pl.sendMessage("");
-							pl.sendMessage(ChatColor.RED + "Your guild, '" + ChatColor.DARK_AQUA + g_name + ChatColor.RED
-									+ "', has been disbanded by your leader.");
+							pl.sendMessage(ChatColor.RED + "Your guild, '" + ChatColor.DARK_AQUA + g_name
+									+ ChatColor.RED + "', has been disbanded by your leader.");
 						}
 						GuildMechanics.leaveGuild(id);
 					}
@@ -599,9 +627,11 @@ public class ConnectProtocol implements Runnable {
 					for (UUID s : GuildMechanics.getGuildMembers(g_name)) {
 						if (Bukkit.getPlayer(s) != null) {
 							Player pty_mem = Bukkit.getPlayer(s);
-							pty_mem.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA
-									+ "> " + ChatColor.DARK_AQUA.toString() + op.getName() + ChatColor.GRAY.toString() + " has " + ChatColor.UNDERLINE + "joined"
-									+ ChatColor.GRAY + " your guild. [INVITE: " + ChatColor.ITALIC + p_inviter + ChatColor.GRAY + "]");
+							pty_mem.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD
+									+ GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA + "> "
+									+ ChatColor.DARK_AQUA.toString() + op.getName() + ChatColor.GRAY.toString()
+									+ " has " + ChatColor.UNDERLINE + "joined" + ChatColor.GRAY
+									+ " your guild. [INVITE: " + ChatColor.ITALIC + p_inviter + ChatColor.GRAY + "]");
 						}
 					}
 
@@ -613,41 +643,49 @@ public class ConnectProtocol implements Runnable {
 					UUID id = UUID.fromString(raw_id);
 					OfflinePlayer op = Bukkit.getOfflinePlayer(id);
 					String g_name = inputLine.substring(inputLine.indexOf(",") + 1, inputLine.indexOf(":"));
-					int rank = Integer.parseInt(inputLine.substring(inputLine.indexOf(":") + 1, inputLine.indexOf("*")));
+					int rank = Integer
+							.parseInt(inputLine.substring(inputLine.indexOf(":") + 1, inputLine.indexOf("*")));
 
 					if (!(GuildMechanics.guild_map.containsKey(g_name))) {
 						in.close();
 						return; // Nothing to do here.
 					}
 
-					if (rank == 1) { // rank == 1 for demotion to member from officer
-						GuildMechanics.setGuildRank(id, rank); 
+					if (rank == 1) { // rank == 1 for demotion to member from
+										// officer
+						GuildMechanics.setGuildRank(id, rank);
 
 						// Tell the world!
 						if (Bukkit.getPlayer(id) != null) {
 							Player demoted = Bukkit.getPlayer(id);
-							demoted.sendMessage(ChatColor.RED + "You have been " + ChatColor.UNDERLINE + "demoted" + ChatColor.RED + " to the rank of "
-									+ ChatColor.BOLD + "GUILD MEMBER" + ChatColor.RED + " in " + g_name);
+							demoted.sendMessage(ChatColor.RED + "You have been " + ChatColor.UNDERLINE + "demoted"
+									+ ChatColor.RED + " to the rank of " + ChatColor.BOLD + "GUILD MEMBER"
+									+ ChatColor.RED + " in " + g_name);
 						}
 
 						for (Player s : GuildMechanics.getOnlineGuildMembers(g_name)) {
-							s.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(g_name)
-							+ ChatColor.DARK_AQUA + ">" + ChatColor.RED + " " + op.getName() + " has been " + ChatColor.UNDERLINE + "demoted" + ChatColor.RED
-							+ " to the rank of " + ChatColor.BOLD + "GUILD MEMBER.");
+							s.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD
+									+ GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA + ">"
+									+ ChatColor.RED + " " + op.getName() + " has been " + ChatColor.UNDERLINE
+									+ "demoted" + ChatColor.RED + " to the rank of " + ChatColor.BOLD
+									+ "GUILD MEMBER.");
 						}
 					} else if (rank == 2) {
 						GuildMechanics.setGuildRank(id, rank);
 						// Tell the world!
 						if (Bukkit.getPlayer(id) != null) {
 							Player demoted = Bukkit.getPlayer(id);
-							demoted.sendMessage(ChatColor.RED + "You have been " + ChatColor.UNDERLINE + "demoted" + ChatColor.RED + " to the rank of "
-									+ ChatColor.BOLD + "GUILD OFFICER" + ChatColor.RED + " in " + g_name);
+							demoted.sendMessage(ChatColor.RED + "You have been " + ChatColor.UNDERLINE + "demoted"
+									+ ChatColor.RED + " to the rank of " + ChatColor.BOLD + "GUILD OFFICER"
+									+ ChatColor.RED + " in " + g_name);
 						}
 
 						for (Player s : GuildMechanics.getOnlineGuildMembers(g_name)) {
-							s.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(g_name)
-							+ ChatColor.DARK_AQUA + ">" + ChatColor.RED + " " + op.getName() + " has been " + ChatColor.UNDERLINE + "demoted" + ChatColor.RED
-							+ " to the rank of " + ChatColor.BOLD + "GUILD OFFICER.");
+							s.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD
+									+ GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA + ">"
+									+ ChatColor.RED + " " + op.getName() + " has been " + ChatColor.UNDERLINE
+									+ "demoted" + ChatColor.RED + " to the rank of " + ChatColor.BOLD
+									+ "GUILD OFFICER.");
 						}
 					}
 				}
@@ -658,8 +696,15 @@ public class ConnectProtocol implements Runnable {
 					UUID id = UUID.fromString(raw_id);
 					OfflinePlayer op = Bukkit.getOfflinePlayer(id);
 					String g_name = inputLine.substring(inputLine.indexOf(",") + 1, inputLine.indexOf(":"));
-					int rank = Integer.parseInt(inputLine.substring(inputLine.indexOf(":") + 1, inputLine.indexOf("*")));
-					String o_name = !inputLine.substring(inputLine.indexOf("*") + 1).equals("") ? inputLine.substring(inputLine.indexOf("*") + 1, inputLine.length()) : ""; // Only used by promote to owner
+					int rank = Integer
+							.parseInt(inputLine.substring(inputLine.indexOf(":") + 1, inputLine.indexOf("*")));
+					String o_name = !inputLine.substring(inputLine.indexOf("*") + 1).equals("")
+							? inputLine.substring(inputLine.indexOf("*") + 1, inputLine.length()) : ""; // Only
+																										// used
+																										// by
+																										// promote
+																										// to
+																										// owner
 
 					if (!(GuildMechanics.guild_map.containsKey(g_name))) {
 						in.close();
@@ -670,41 +715,55 @@ public class ConnectProtocol implements Runnable {
 						GuildMechanics.downloadGuildDataSQL(g_name, false);
 						if (Bukkit.getPlayer(id) != null) {
 							Player promoted = Bukkit.getPlayer(id);
-							promoted.sendMessage(ChatColor.DARK_AQUA + "You have been " + ChatColor.UNDERLINE + "promoted" + ChatColor.DARK_AQUA
-									+ " to the rank of " + ChatColor.BOLD + "GUILD OFFICER" + ChatColor.DARK_AQUA + " in " + GuildMechanics.getGuild(id));
+							promoted.sendMessage(ChatColor.DARK_AQUA + "You have been " + ChatColor.UNDERLINE
+									+ "promoted" + ChatColor.DARK_AQUA + " to the rank of " + ChatColor.BOLD
+									+ "GUILD OFFICER" + ChatColor.DARK_AQUA + " in " + GuildMechanics.getGuild(id));
 						}
 
 						for (Player s : GuildMechanics.getOnlineGuildMembers(g_name)) {
-							s.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(g_name)
-							+ ChatColor.DARK_AQUA + ">" + ChatColor.GREEN + " " + op.getName() + " has been " + ChatColor.UNDERLINE + "promoted"
-							+ ChatColor.GREEN + " to the rank of " + ChatColor.BOLD + "GUILD OFFICER.");
+							s.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD
+									+ GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA + ">"
+									+ ChatColor.GREEN + " " + op.getName() + " has been " + ChatColor.UNDERLINE
+									+ "promoted" + ChatColor.GREEN + " to the rank of " + ChatColor.BOLD
+									+ "GUILD OFFICER.");
 						}
 					} else if (rank == 3) {
 						GuildMechanics.downloadGuildDataSQL(g_name, false);
 						if (Bukkit.getPlayer(id) != null) {
 							Player promoted = Bukkit.getPlayer(id);
-							promoted.sendMessage(ChatColor.DARK_AQUA + "You have been " + ChatColor.UNDERLINE + "promoted" + ChatColor.DARK_AQUA
-									+ " to the rank of " + ChatColor.BOLD + "GUILD CO-OWNER" + ChatColor.DARK_AQUA + " in " + GuildMechanics.getGuild(id));
+							promoted.sendMessage(ChatColor.DARK_AQUA + "You have been " + ChatColor.UNDERLINE
+									+ "promoted" + ChatColor.DARK_AQUA + " to the rank of " + ChatColor.BOLD
+									+ "GUILD CO-OWNER" + ChatColor.DARK_AQUA + " in " + GuildMechanics.getGuild(id));
 						}
 
 						for (Player s : GuildMechanics.getOnlineGuildMembers(g_name)) {
-							s.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(g_name)
-							+ ChatColor.DARK_AQUA + ">" + ChatColor.GREEN + " " + op.getName() + " has been " + ChatColor.UNDERLINE + "promoted"
-							+ ChatColor.GREEN + " to the rank of " + ChatColor.BOLD + "GUILD CO-OWNER.");
+							s.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD
+									+ GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA + ">"
+									+ ChatColor.GREEN + " " + op.getName() + " has been " + ChatColor.UNDERLINE
+									+ "promoted" + ChatColor.GREEN + " to the rank of " + ChatColor.BOLD
+									+ "GUILD CO-OWNER.");
 						}
 					} else if (rank == 4) {
-						if (o_name == "") { in.close(); return; } // Didn't receive sender name
+						if (o_name == "") {
+							in.close();
+							return;
+						} // Didn't receive sender name
 						GuildMechanics.downloadGuildDataSQL(g_name, false);
 						if (Bukkit.getPlayer(id) != null) {
 							Player promoted = Bukkit.getPlayer(id);
-							promoted.sendMessage(ChatColor.GRAY + "You have been promoted to " + ChatColor.AQUA  + "" + ChatColor.BOLD + "GUILD LEADER" + ChatColor.GRAY + " of " + ChatColor.AQUA + "" + ChatColor.UNDERLINE + GuildMechanics.getGuild(id));
+							promoted.sendMessage(ChatColor.GRAY + "You have been promoted to " + ChatColor.AQUA + ""
+									+ ChatColor.BOLD + "GUILD LEADER" + ChatColor.GRAY + " of " + ChatColor.AQUA + ""
+									+ ChatColor.UNDERLINE + GuildMechanics.getGuild(id));
 							GuildMechanics.updateGuildTabList(promoted);
 						}
 
 						for (Player s : GuildMechanics.getOnlineGuildMembers(g_name)) {
 							GuildMechanics.updateGuildTabList(s);
-							s.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(g_name)
-							+ ChatColor.DARK_AQUA + ">" + ChatColor.AQUA + " " + ChatColor.UNDERLINE + o_name + ChatColor.GRAY + " has set " + ChatColor.AQUA  + "" + ChatColor.UNDERLINE + op.getName() + ChatColor.GRAY + " as the " + ChatColor.BOLD + "LEADER" + ChatColor.GRAY + " of your guild.");
+							s.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD
+									+ GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA + ">"
+									+ ChatColor.AQUA + " " + ChatColor.UNDERLINE + o_name + ChatColor.GRAY + " has set "
+									+ ChatColor.AQUA + "" + ChatColor.UNDERLINE + op.getName() + ChatColor.GRAY
+									+ " as the " + ChatColor.BOLD + "LEADER" + ChatColor.GRAY + " of your guild.");
 						}
 					}
 				}
@@ -726,9 +785,10 @@ public class ConnectProtocol implements Runnable {
 					// inconsistancies. FTW.
 
 					for (Player s : GuildMechanics.getOnlineGuildMembers(g_name)) {
-						s.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA
-								+ "> " + ChatColor.DARK_AQUA + op.getName() + ChatColor.GRAY + " has " + ChatColor.UNDERLINE + "left" + ChatColor.GRAY
-								+ " the guild.");
+						s.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD
+								+ GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA + "> "
+								+ ChatColor.DARK_AQUA + op.getName() + ChatColor.GRAY + " has " + ChatColor.UNDERLINE
+								+ "left" + ChatColor.GRAY + " the guild.");
 					}
 				}
 
@@ -750,9 +810,10 @@ public class ConnectProtocol implements Runnable {
 					// inconsistancies. FTW.
 
 					for (Player s : GuildMechanics.getOnlineGuildMembers(g_name)) {
-							s.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA
-									+ "> " + ChatColor.DARK_AQUA + op.getName() + " has been " + ChatColor.UNDERLINE + "kicked" + ChatColor.DARK_AQUA + " by "
-									+ p_kicker + ".");
+						s.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD
+								+ GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA + "> "
+								+ ChatColor.DARK_AQUA + op.getName() + " has been " + ChatColor.UNDERLINE + "kicked"
+								+ ChatColor.DARK_AQUA + " by " + p_kicker + ".");
 					}
 				}
 
@@ -787,20 +848,24 @@ public class ConnectProtocol implements Runnable {
 						}
 
 						/*
-						 * if(CommunityMechanics.socialQuery(g_member, p_name, "CHECK_BUD")){ continue; // They're buddies, let the buddy plugin take care of
-						 * telling them they logged in. }
+						 * if(CommunityMechanics.socialQuery(g_member, p_name,
+						 * "CHECK_BUD")){ continue; // They're buddies, let the
+						 * buddy plugin take care of telling them they logged
+						 * in. }
 						 */
 
-						pl_g_member.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA
-								+ "> " + ChatColor.GRAY + op.getName() + " has logged out of " + server_name + ".");
+						pl_g_member.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD
+								+ GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA + "> "
+								+ ChatColor.GRAY + op.getName() + " has logged out of " + server_name + ".");
 					}
 
 				}
 
 				// [gupdate]guild_name
 				else if (inputLine.startsWith("[gupdate]")) {
-					String g_name = inputLine.substring(inputLine.indexOf("]") +  1, inputLine.length());
-					if (g_name.endsWith(" ")) g_name = g_name.substring(0, g_name.length() -1);
+					String g_name = inputLine.substring(inputLine.indexOf("]") + 1, inputLine.length());
+					if (g_name.endsWith(" "))
+						g_name = g_name.substring(0, g_name.length() - 1);
 					GuildMechanics.updateGuildSQL(g_name);
 					for (Player mem : GuildMechanics.getOnlineGuildMembers(g_name)) {
 						GuildMechanics.updateGuildTabList(mem);
@@ -829,7 +894,7 @@ public class ConnectProtocol implements Runnable {
 						in.close();
 						return; // Nothing to do here.
 					}
-					
+
 					OfflinePlayer op = Bukkit.getOfflinePlayer(id);
 
 					for (UUID g_member : GuildMechanics.getGuildMembers(g_name)) {
@@ -848,45 +913,58 @@ public class ConnectProtocol implements Runnable {
 						}
 
 						/*
-						 * if(CommunityMechanics.socialQuery(g_member, p_name, "CHECK_BUD")){ continue; // They're buddies, let the buddy plugin take care of
-						 * telling them they logged in. }
+						 * if(CommunityMechanics.socialQuery(g_member, p_name,
+						 * "CHECK_BUD")){ continue; // They're buddies, let the
+						 * buddy plugin take care of telling them they logged
+						 * in. }
 						 */
 
-						pl_g_member.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA
-								+ "> " + ChatColor.GRAY + op.getName() + " has joined " + server_name + ".");
+						pl_g_member.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD
+								+ GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA + "> "
+								+ ChatColor.GRAY + op.getName() + " has joined " + server_name + ".");
 
 					}
 
 				}
 
 				else if (inputLine.startsWith("&")) {
-					if (inputLine.substring(inputLine.indexOf("&") + 1, inputLine.indexOf("/")).equalsIgnoreCase("staffchat")) {
-						// packet_data = staffchat/US-O*from: packet_data contents here
+					if (inputLine.substring(inputLine.indexOf("&") + 1, inputLine.indexOf("/"))
+							.equalsIgnoreCase("staffchat")) {
+						// packet_data = staffchat/US-O*from: packet_data
+						// contents here
 						String raw_id = inputLine.substring(inputLine.indexOf("*") + 1, inputLine.indexOf(":"));
 						UUID id = UUID.fromString(raw_id);
 						OfflinePlayer op = Bukkit.getOfflinePlayer(id);
-						String sender_server_name = inputLine.substring(inputLine.indexOf("/") + 1, inputLine.indexOf("*"));
+						String sender_server_name = inputLine.substring(inputLine.indexOf("/") + 1,
+								inputLine.indexOf("*"));
 						String raw_message = inputLine.substring(inputLine.indexOf(":") + 1, inputLine.length());
 
-						if (Bukkit.getOnlinePlayers().size() <= 0) { in.close(); return; } // No one to receive message
+						if (Bukkit.getOnlinePlayers().size() <= 0) {
+							in.close();
+							return;
+						} // No one to receive message
 						for (Player pl : Bukkit.getOnlinePlayers()) {
 							if (PermissionMechanics.isStaff(pl)) {
 								ChatColor pColor = ChatMechanics.getPlayerColor(id, pl.getUniqueId());
 								String prefix = ChatMechanics.getPlayerPrefix(id);
 								String message = raw_message;
 
-								if (ChatMechanics.hasAdultFilter(pl)) message = ChatMechanics.censorMessage(message);
-								if (message.endsWith(" ")) message = message.substring(0, message.length() - 1);
+								if (ChatMechanics.hasAdultFilter(pl))
+									message = ChatMechanics.censorMessage(message);
+								if (message.endsWith(" "))
+									message = message.substring(0, message.length() - 1);
 								message = ChatMechanics.fixCapsLock(message);
 
-								pl.sendMessage(ChatColor.GOLD + "<" + ChatColor.BOLD + "SC" + ChatColor.GOLD  + "> " + sender_server_name + " " + prefix + pColor + op.getName() + ": " + ChatColor.WHITE + message);
+								pl.sendMessage(ChatColor.GOLD + "<" + ChatColor.BOLD + "SC" + ChatColor.GOLD + "> "
+										+ sender_server_name + " " + prefix + pColor + op.getName() + ": "
+										+ ChatColor.WHITE + message);
 							}
 						}
 						// END STAFF CHAT //
 					} else {
 
-
-						// packet_data = to_guild/from@US-0: packet_data contents here
+						// packet_data = to_guild/from@US-0: packet_data
+						// contents here
 						String g_name = inputLine.substring(1, inputLine.indexOf("/"));
 
 						if (!(GuildMechanics.guild_map.containsKey(g_name))) {
@@ -897,7 +975,8 @@ public class ConnectProtocol implements Runnable {
 						String raw_id = inputLine.substring(inputLine.indexOf("/") + 1, inputLine.indexOf("@"));
 						UUID id = UUID.fromString(raw_id);
 						OfflinePlayer op = Bukkit.getOfflinePlayer(id);
-						String sender_server_name = inputLine.substring(inputLine.indexOf("@") + 1, inputLine.indexOf(":"));
+						String sender_server_name = inputLine.substring(inputLine.indexOf("@") + 1,
+								inputLine.indexOf(":"));
 						String raw_msg = inputLine.substring(inputLine.indexOf(":") + 1, inputLine.length());
 
 						for (UUID g_member : GuildMechanics.getGuildMembers(g_name)) {
@@ -924,9 +1003,10 @@ public class ConnectProtocol implements Runnable {
 
 							personal_msg = ChatMechanics.fixCapsLock(personal_msg);
 
-							pl_g_member.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(g_name)
-							+ ChatColor.DARK_AQUA + ">" + " " + ChatColor.GRAY + "" + sender_server_name + " " + prefix + p_color
-							+ op.getName() + ": " + ChatColor.GRAY + personal_msg);
+							pl_g_member.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD
+									+ GuildMechanics.guild_handle_map.get(g_name) + ChatColor.DARK_AQUA + ">" + " "
+									+ ChatColor.GRAY + "" + sender_server_name + " " + prefix + p_color + op.getName()
+									+ ": " + ChatColor.GRAY + personal_msg);
 						}
 					}
 				}
@@ -943,16 +1023,17 @@ public class ConnectProtocol implements Runnable {
 					if (status.equalsIgnoreCase("offline")) {
 						if (Bukkit.getPlayer(p_name_to_tell) != null) {
 							Player p_to_tell = Bukkit.getPlayer(p_name_to_tell);
-							p_to_tell.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + p_name_about + ChatColor.RED + " is OFFLINE.");
+							p_to_tell.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + p_name_about + ChatColor.RED
+									+ " is OFFLINE.");
 						}
 						in.close();
 						return;
 					}
 
 					if (status.equalsIgnoreCase("notells")) {
-						Bukkit.getPlayer(p_name_to_tell).sendMessage(
-								ChatColor.RED + "" + ChatColor.BOLD + p_name_about + ChatColor.RED + " currently has private messages " + ChatColor.UNDERLINE
-								+ "DISABLED.");
+						Bukkit.getPlayer(p_name_to_tell)
+								.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + p_name_about + ChatColor.RED
+										+ " currently has private messages " + ChatColor.UNDERLINE + "DISABLED.");
 						in.close();
 						return;
 					}
@@ -960,10 +1041,11 @@ public class ConnectProtocol implements Runnable {
 					if (status.equalsIgnoreCase("online")) {
 						if (Bukkit.getPlayer(p_name_to_tell) != null) {
 							Player p_to_tell = Bukkit.getPlayer(p_name_to_tell);
-							String server_name = inputLine.substring(inputLine.indexOf(",") + 1, inputLine.indexOf(":"));
+							String server_name = inputLine.substring(inputLine.indexOf(",") + 1,
+									inputLine.indexOf(":"));
 							String message = inputLine.substring(inputLine.indexOf(":") + 1, inputLine.length());
-							p_to_tell.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "TO (" + server_name + ") " + ChatColor.RESET + p_name_about
-									+ ":" + ChatColor.WHITE + message);
+							p_to_tell.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "TO (" + server_name
+									+ ") " + ChatColor.RESET + p_name_about + ":" + ChatColor.WHITE + message);
 						}
 						in.close();
 						return;
@@ -1036,8 +1118,9 @@ public class ConnectProtocol implements Runnable {
 							to_personal_msg = ChatMechanics.censorMessage(message);
 						}
 
-						p_to.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "FROM (" + from_server + ") " + ChatColor.WHITE + guild_prefix
-								+ ChatColor.RESET + from_prefix + c + p_from_name + ":" + ChatColor.WHITE + to_personal_msg);
+						p_to.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "FROM (" + from_server + ") "
+								+ ChatColor.WHITE + guild_prefix + ChatColor.RESET + from_prefix + c + p_from_name + ":"
+								+ ChatColor.WHITE + to_personal_msg);
 
 						if (PlayerManager.getPlayerModel(p_to).getLastReply() == null
 								|| !PlayerManager.getPlayerModel(p_to).getLastReply().equalsIgnoreCase(p_from_name)) {
@@ -1045,10 +1128,12 @@ public class ConnectProtocol implements Runnable {
 							PlayerManager.getPlayerModel(p_to).setLastReply(p_from_name);
 						}
 
-						String result = "#" + p_from_name + "/" + to_prefix + to_c.toString() + p_to_name + "=" + "online,"
-								+ Bukkit.getMotd().substring(0, Bukkit.getMotd().indexOf(" ")) + ":" + message;
+						String result = "#" + p_from_name + "/" + to_prefix + to_c.toString() + p_to_name + "="
+								+ "online," + Bukkit.getMotd().substring(0, Bukkit.getMotd().indexOf(" ")) + ":"
+								+ message;
 						sendResultCrossServer(server_ip, result, server_num);
-						CommunityMechanics.log.info(p_from_name + "@" + from_server + " -> " + p_to_name + " " + message);
+						CommunityMechanics.log
+								.info(p_from_name + "@" + from_server + " -> " + p_to_name + " " + message);
 					} else if (Bukkit.getPlayer(p_to_name) == null) {
 						String result = "#" + p_from_name + "/" + p_to_name + "=" + "offline,";
 						sendResultCrossServer(server_ip, result, server_num);
@@ -1058,7 +1143,8 @@ public class ConnectProtocol implements Runnable {
 			}
 
 			int line = 0;
-			JsonBuilder data = new JsonBuilder("receiving_server", Utils.getShard()).setData("sending_server", sendingIP);
+			JsonBuilder data = new JsonBuilder("receiving_server", Utils.getShard()).setData("sending_server",
+					sendingIP);
 
 			for (String dataLine : receivedData) {
 				line++;

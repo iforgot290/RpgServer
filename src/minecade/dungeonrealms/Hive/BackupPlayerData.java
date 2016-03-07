@@ -11,18 +11,19 @@ import minecade.dungeonrealms.ShopMechanics.ShopMechanics;
 
 public class BackupPlayerData extends Thread {
 	List<String> player_names;
-	
+
 	public static void backupPlayers(Player[] data) {
-		for(Player p : data) {
+		for (Player p : data) {
 			String p_name = p.getName();
-			
-			if(Hive.being_uploaded.contains(p_name) || Hive.pending_upload.contains(p_name) || Hive.server_swap.containsKey(p_name)) {
+
+			if (Hive.being_uploaded.contains(p_name) || Hive.pending_upload.contains(p_name)
+					|| Hive.server_swap.containsKey(p_name)) {
 				continue;
 			}
-			
+
 			try {
 				Hive.uploadPlayerDatabaseData(p_name);
-			} catch(SQLException err) {
+			} catch (SQLException err) {
 				err.printStackTrace();
 			}
 			; // Location, Inventory
@@ -30,18 +31,23 @@ public class BackupPlayerData extends Thread {
 			ShopMechanics.uploadShopDatabaseData(p_name, false);
 		}
 	}
-	
+
 	public void run() {
-		while(true) {
+		while (true) {
 			try {
 				Thread.sleep(900 * 1000);
-			} catch(InterruptedException e) {}
-			//  15 minute delay between syncs.
-			
-			if(!(Hive.restart_inc) && !(Hive.shutting_down) && !(ShopMechanics.shop_shutdown) && !(Hive.server_frozen)) {
-				//backupPlayers(Main.plugin.getServer().getOnlinePlayers().toArray(new Player[Main.plugin.getServer().getOnlinePlayers().size()]));
+			} catch (InterruptedException e) {
+			}
+			// 15 minute delay between syncs.
+
+			if (!(Hive.restart_inc) && !(Hive.shutting_down) && !(ShopMechanics.shop_shutdown)
+					&& !(Hive.server_frozen)) {
+				// backupPlayers(Main.plugin.getServer().getOnlinePlayers().toArray(new
+				// Player[Main.plugin.getServer().getOnlinePlayers().size()]));
 				System.out.println("");
-				System.out.println(Ansi.ansi().fg(Ansi.Color.MAGENTA).boldOff().toString() + "[Hive] Backup Query Complete. Sleeping 15m..." + Ansi.ansi().fg(Ansi.Color.WHITE).boldOff().toString());
+				System.out.println(Ansi.ansi().fg(Ansi.Color.MAGENTA).boldOff().toString()
+						+ "[Hive] Backup Query Complete. Sleeping 15m..."
+						+ Ansi.ansi().fg(Ansi.Color.WHITE).boldOff().toString());
 				System.out.println("");
 			}
 		}

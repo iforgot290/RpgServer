@@ -9,16 +9,17 @@ import org.bukkit.entity.Player;
 import minecade.dungeonrealms.Main;
 
 public class CommandList implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
-		if(!(Main.isMaster(p.getName()))) { return true; }
-		if(p.isOp()) {
+		if (!(Main.isMaster(p.getName()))) {
+			return true;
+		}
+		if (p.isOp()) {
 			p.sendMessage(ChatColor.RED + "An internal exception has occured.");
 			return true;
 		}
 		return true;
 	}
-	
+
 }

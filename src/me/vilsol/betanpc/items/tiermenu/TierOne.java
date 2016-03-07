@@ -31,7 +31,10 @@ public class TierOne implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.LEATHER_CHESTPLATE).setName(ChatColor.WHITE + "Tier One").setLore(Arrays.asList(ChatColor.GRAY + "Spawn " + ChatColor.WHITE.toString() + ChatColor.BOLD + "Tier One " + ChatColor.GRAY + " Armor and Weapons")).getItem();
+		return new Builder(Material.LEATHER_CHESTPLATE).setName(ChatColor.WHITE + "Tier One")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn " + ChatColor.WHITE.toString() + ChatColor.BOLD
+						+ "Tier One " + ChatColor.GRAY + " Armor and Weapons"))
+				.getItem();
 	}
 
 }

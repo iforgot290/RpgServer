@@ -19,7 +19,7 @@ import me.vilsol.menuengine.utils.Builder;
 public class Helmet implements MenuItem, BonusItem<ItemTier> {
 
 	private ItemTier tier;
-	
+
 	@Override
 	public void setBonusData(ItemTier t) {
 		tier = t;
@@ -39,7 +39,9 @@ public class Helmet implements MenuItem, BonusItem<ItemTier> {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(tier.getMaterialFromType(ItemType.HELMET)).setName(tier.getTierColor() + "Get Random " + tier.name() + " Helmet").setLore(Arrays.asList(ChatColor.GRAY + "Spawn Random " + tier.name() + " Helmet")).getItem();
+		return new Builder(tier.getMaterialFromType(ItemType.HELMET))
+				.setName(tier.getTierColor() + "Get Random " + tier.name() + " Helmet")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn Random " + tier.name() + " Helmet")).getItem();
 	}
-	
+
 }

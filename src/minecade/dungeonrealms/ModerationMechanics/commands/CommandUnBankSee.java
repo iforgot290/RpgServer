@@ -11,19 +11,21 @@ import minecade.dungeonrealms.ModerationMechanics.ModerationMechanics;
 import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 
 public class CommandUnBankSee implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if(!(sender instanceof Player)) { return true; }
+		if (!(sender instanceof Player)) {
+			return true;
+		}
 		Player p = (Player) sender;
-		if(!p.isOp()) return true;
-		if(!ModerationMechanics.looking_into_offline_bank.containsKey(p.getName())) {
+		if (!p.isOp())
+			return true;
+		if (!ModerationMechanics.looking_into_offline_bank.containsKey(p.getName())) {
 			p.sendMessage(ChatColor.RED + "You have not loaded anyones bank into memory.");
 			return true;
 		}
 		String p_name = ModerationMechanics.looking_into_offline_bank.get(p.getName());
-		if(Bukkit.getPlayer(p_name) != null) {
-			//They logged on and dont need to be unloaded.
+		if (Bukkit.getPlayer(p_name) != null) {
+			// They logged on and dont need to be unloaded.
 			p.sendMessage(ChatColor.RED + p_name + " has logged in and cannot have their bank unloaded.");
 			ModerationMechanics.looking_into_offline_bank.remove(p.getName());
 			return true;
@@ -35,5 +37,5 @@ public class CommandUnBankSee implements CommandExecutor {
 		p.sendMessage(ChatColor.GRAY + p_name + "'s bank has been unloaded.");
 		return true;
 	}
-	
+
 }

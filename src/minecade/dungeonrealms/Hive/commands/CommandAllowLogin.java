@@ -9,19 +9,18 @@ import minecade.dungeonrealms.Hive.Hive;
 
 public class CommandAllowLogin implements CommandExecutor {
 
-    
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (args.length != 1) {
-            sender.sendMessage(ChatColor.RED + "Invalid Syntax: /allowlogin <name>");
-            return true;
-        }
-        if (!sender.isOp()) {
-            return true;
-        }
-        String name = args[0];
-        Hive.setPlayerCanJoin(name, true);
-        sender.sendMessage(ChatColor.AQUA + name + " join status set to " + ChatColor.GREEN + ChatColor.BOLD + "TRUE");
-        return false;
-    }
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (args.length != 1) {
+			sender.sendMessage(ChatColor.RED + "Invalid Syntax: /allowlogin <name>");
+			return true;
+		}
+		if (!sender.isOp()) {
+			return true;
+		}
+		String name = args[0];
+		Hive.setPlayerCanJoin(name, true);
+		sender.sendMessage(ChatColor.AQUA + name + " join status set to " + ChatColor.GREEN + ChatColor.BOLD + "TRUE");
+		return false;
+	}
 
 }

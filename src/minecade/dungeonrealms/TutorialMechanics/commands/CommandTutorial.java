@@ -6,13 +6,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CommandTutorial implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		final Player p = (Player) sender;
-		if(!(p.isOp())) { return true; }
-		//TODO This does nothing?
+		if (!(p.isOp())) {
+			return true;
+		}
+		// TODO This does nothing?
 		return true;
 	}
-	
+
 }

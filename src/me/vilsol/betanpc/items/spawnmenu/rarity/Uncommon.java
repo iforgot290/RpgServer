@@ -24,7 +24,8 @@ public class Uncommon implements MenuItem {
 	@Override
 	public void execute(Player plr, ClickType click) {
 		ItemSpawnWorker m = (ItemSpawnWorker) DynamicMenuModel.getMenu(plr);
-		plr.getInventory().addItem(new ItemGenerator().setTier(m.tier.getDRTier()).setType(m.type.getDRType()).setRarity(ItemRarity.UNCOMMON).generateItem().getItem());
+		plr.getInventory().addItem(new ItemGenerator().setTier(m.tier.getDRTier()).setType(m.type.getDRType())
+				.setRarity(ItemRarity.UNCOMMON).generateItem().getItem());
 		m.stage = SpawnStage.TYPE_CHOICE;
 		DynamicMenuModel.getMenu(plr).showToPlayer(plr);
 	}
@@ -33,5 +34,5 @@ public class Uncommon implements MenuItem {
 	public ItemStack getItem() {
 		return new Builder(Material.EMERALD).setName(ChatColor.GREEN + "Uncommon").getItem();
 	}
-	
+
 }

@@ -10,7 +10,7 @@ import minecade.dungeonrealms.enums.ItemRarity;
 import minecade.dungeonrealms.enums.ItemTier;
 
 public class ModifierCondition {
-	
+
 	private ItemTier tier;
 	private ItemRarity rarity;
 	private ModifierRange range;
@@ -21,105 +21,109 @@ public class ModifierCondition {
 	private String chosenPrefix;
 	private String chosenSuffix;
 
-	public ModifierCondition(ItemTier tier, ItemRarity rarity, ModifierRange range, int chance){
+	public ModifierCondition(ItemTier tier, ItemRarity rarity, ModifierRange range, int chance) {
 		this.tier = tier;
 		this.rarity = rarity;
 		this.range = range;
 		this.chance = chance;
 		this.cantContain = new ArrayList<Class<? extends ItemModifier>>();
 	}
-	
-	public ModifierCondition(ItemTier tier, ItemRarity rarity, ModifierRange range){
+
+	public ModifierCondition(ItemTier tier, ItemRarity rarity, ModifierRange range) {
 		this.tier = tier;
 		this.rarity = rarity;
 		this.range = range;
 		this.cantContain = new ArrayList<Class<? extends ItemModifier>>();
 	}
-	
-	public void setChosenPrefix(String prefix){
+
+	public void setChosenPrefix(String prefix) {
 		this.chosenPrefix = prefix;
 	}
-	
-	public void setChosenSuffix(String suffix){
+
+	public void setChosenSuffix(String suffix) {
 		this.chosenSuffix = suffix;
 	}
-	
-	public String getChosenPrefix(){
+
+	public String getChosenPrefix() {
 		return chosenPrefix;
 	}
-	
-	public String getChosenSuffix(){
+
+	public String getChosenSuffix() {
 		return chosenSuffix;
 	}
-	
-	public ModifierCondition setBonus(ModifierCondition bonus){
+
+	public ModifierCondition setBonus(ModifierCondition bonus) {
 		this.bonus = bonus;
 		return this;
 	}
-	
-	public ModifierCondition setReplacement(Class<? extends ItemModifier> replacement){
+
+	public ModifierCondition setReplacement(Class<? extends ItemModifier> replacement) {
 		this.replacement = new ArrayList<Class<? extends ItemModifier>>();
 		this.replacement.add(replacement);
 		return this;
 	}
-	
-	public ModifierCondition setReplacement(List<Class<? extends ItemModifier>> replacement){
+
+	public ModifierCondition setReplacement(List<Class<? extends ItemModifier>> replacement) {
 		this.replacement = replacement;
 		return this;
 	}
-	
-	public ModifierCondition setCantContain(Class<? extends ItemModifier> cantContain){
+
+	public ModifierCondition setCantContain(Class<? extends ItemModifier> cantContain) {
 		this.cantContain.add(cantContain);
 		return this;
 	}
-	
-	public ModifierCondition setCantContain(List<Class<? extends ItemModifier>> cantContain){
+
+	public ModifierCondition setCantContain(List<Class<? extends ItemModifier>> cantContain) {
 		this.cantContain = cantContain;
 		return this;
 	}
-	
-	public boolean doesConclude(ItemTier tier, ItemRarity rarity, ItemMeta meta){
-		if(this.tier != null && this.tier != tier) return false;
-		if(this.rarity != null && this.rarity != rarity) return false;
+
+	public boolean doesConclude(ItemTier tier, ItemRarity rarity, ItemMeta meta) {
+		if (this.tier != null && this.tier != tier)
+			return false;
+		if (this.rarity != null && this.rarity != rarity)
+			return false;
 		return true;
 	}
-	
-	public ModifierRange getRange(){
+
+	public ModifierRange getRange() {
 		return range;
 	}
-	
-	public int getChance(){
+
+	public int getChance() {
 		return chance;
 	}
-	
-	public ModifierCondition getBonus(){
+
+	public ModifierCondition getBonus() {
 		return bonus;
 	}
-	
-	public List<Class<? extends ItemModifier>> getReplacement(){
+
+	public List<Class<? extends ItemModifier>> getReplacement() {
 		return replacement;
 	}
-	
+
 	public List<Class<? extends ItemModifier>> getCantContain() {
-	    return cantContain;
+		return cantContain;
 	}
 
 	public boolean canApply(Set<ModifierCondition> conditions) {
-		for(ModifierCondition mc : conditions){
-			if(mc.equals(this)) continue;
-			
-			if(mc.getChosenPrefix() != null){
-				if(mc.getChosenPrefix().equals(getChosenPrefix())){
+		for (ModifierCondition mc : conditions) {
+			if (mc.equals(this))
+				continue;
+
+			if (mc.getChosenPrefix() != null) {
+				if (mc.getChosenPrefix().equals(getChosenPrefix())) {
 					return false;
 				}
 			}
 		}
 		return true;
 	}
-	
+
 	public boolean checkCantContain(Class<? extends ItemModifier> mod) {
-	    if (this.getCantContain().contains(mod)) return false;
-	    return true;
+		if (this.getCantContain().contains(mod))
+			return false;
+		return true;
 	}
-	
+
 }

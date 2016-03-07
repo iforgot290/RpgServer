@@ -9,15 +9,14 @@ import minecade.dungeonrealms.managers.PlayerManager;
 
 public class CommandNotice implements CommandExecutor {
 
-    
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-    	if (!(sender instanceof Player)) {
-    		sender.sendMessage("You must be a player to use this command.");
-    		return true;
-    	}
-        Player p = (Player) sender;
-        PlayerManager.getPlayerModel(p).getPlayerLevel().sendStatNoticeToPlayer(p);
-        return true;
-    }
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (!(sender instanceof Player)) {
+			sender.sendMessage("You must be a player to use this command.");
+			return true;
+		}
+		Player p = (Player) sender;
+		PlayerManager.getPlayerModel(p).getPlayerLevel().sendStatNoticeToPlayer(p);
+		return true;
+	}
 
 }

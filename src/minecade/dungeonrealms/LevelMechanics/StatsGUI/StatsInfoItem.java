@@ -39,24 +39,21 @@ public class StatsInfoItem implements MenuItem, BonusItem<PlayerModel> {
 	}
 
 	@Override
-    public ItemStack getItem() {
-        return new Builder(Material.EXP_BOTTLE)
-                .setName(ChatColor.YELLOW + "Stat Point Info")
-                .setLore(
-                        Arrays.asList(
-                                ChatColor.LIGHT_PURPLE + "Points to Allocate: " + pLevel.getTempFreePoints(),
-                                ChatColor.AQUA + "LCLICK" + ChatColor.GRAY + " to allocate "
-                                        + ChatColor.AQUA.toString() + ChatColor.UNDERLINE + "1" + ChatColor.GRAY
-                                        + " point", ChatColor.AQUA + "RCLICK" + ChatColor.GRAY + " to unallocate "
-                                        + ChatColor.AQUA.toString() + ChatColor.UNDERLINE + "1" + ChatColor.GRAY
-                                        + " point", ChatColor.AQUA + "S-LCLICK" + ChatColor.GRAY + " to allocate "
-                                        + ChatColor.AQUA.toString() + ChatColor.UNDERLINE + "3" + ChatColor.GRAY
-                                        + " points", ChatColor.AQUA + "S-RCLICK" + ChatColor.GRAY + " to unallocate "
-                                        + ChatColor.AQUA.toString() + ChatColor.UNDERLINE + "3" + ChatColor.GRAY
-                                        + " points", ChatColor.AQUA + "MCLICK" + ChatColor.GRAY + " for a "
-                                        + ChatColor.AQUA.toString() + ChatColor.UNDERLINE + "custom" + ChatColor.GRAY
-                                        + " amount")).getItem();
-    }
+	public ItemStack getItem() {
+		return new Builder(Material.EXP_BOTTLE).setName(ChatColor.YELLOW + "Stat Point Info")
+				.setLore(Arrays.asList(ChatColor.LIGHT_PURPLE + "Points to Allocate: " + pLevel.getTempFreePoints(),
+						ChatColor.AQUA + "LCLICK" + ChatColor.GRAY + " to allocate " + ChatColor.AQUA.toString()
+								+ ChatColor.UNDERLINE + "1" + ChatColor.GRAY + " point",
+						ChatColor.AQUA + "RCLICK" + ChatColor.GRAY + " to unallocate " + ChatColor.AQUA.toString()
+								+ ChatColor.UNDERLINE + "1" + ChatColor.GRAY + " point",
+						ChatColor.AQUA + "S-LCLICK" + ChatColor.GRAY + " to allocate " + ChatColor.AQUA.toString()
+								+ ChatColor.UNDERLINE + "3" + ChatColor.GRAY + " points",
+						ChatColor.AQUA + "S-RCLICK" + ChatColor.GRAY + " to unallocate " + ChatColor.AQUA.toString()
+								+ ChatColor.UNDERLINE + "3" + ChatColor.GRAY + " points",
+						ChatColor.AQUA + "MCLICK" + ChatColor.GRAY + " for a " + ChatColor.AQUA.toString()
+								+ ChatColor.UNDERLINE + "custom" + ChatColor.GRAY + " amount"))
+				.getItem();
+	}
 
 	@Override
 	public void setBonusData(PlayerModel player) {

@@ -12,26 +12,28 @@ import minecade.dungeonrealms.GuildMechanics.GuildMechanics;
 
 public class CommandGPromote implements CommandExecutor {
 
-	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		final Player p = (Player) sender;
-		if(args.length != 1) {
-			p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Invalid Syntax. " + ChatColor.RED + "/gpromote <player>");
+		if (args.length != 1) {
+			p.sendMessage(
+					ChatColor.RED + "" + ChatColor.BOLD + "Invalid Syntax. " + ChatColor.RED + "/gpromote <player>");
 			return true;
 		}
 
-		if(!(GuildMechanics.inGuild(p))) {
-			p.sendMessage(ChatColor.RED + "You must be in a " + ChatColor.BOLD + "GUILD" + ChatColor.RED + " to use " + ChatColor.BOLD + "/gpromote.");
+		if (!(GuildMechanics.inGuild(p))) {
+			p.sendMessage(ChatColor.RED + "You must be in a " + ChatColor.BOLD + "GUILD" + ChatColor.RED + " to use "
+					+ ChatColor.BOLD + "/gpromote.");
 			return true;
 		}
 
-		if(!(GuildMechanics.isGuildLeader(p.getName()) || GuildMechanics.isGuildCoOwner(p.getName()))) {
-			p.sendMessage(ChatColor.RED + "You must be the " + ChatColor.BOLD + "GUILD OWNER" + ChatColor.RED + " or " + ChatColor.BOLD + "GUILD CO-OWNER" + ChatColor.RED + " to use " + ChatColor.BOLD + "/gpromote.");
+		if (!(GuildMechanics.isGuildLeader(p.getName()) || GuildMechanics.isGuildCoOwner(p.getName()))) {
+			p.sendMessage(ChatColor.RED + "You must be the " + ChatColor.BOLD + "GUILD OWNER" + ChatColor.RED + " or "
+					+ ChatColor.BOLD + "GUILD CO-OWNER" + ChatColor.RED + " to use " + ChatColor.BOLD + "/gpromote.");
 			return true;
 		}
 
 		String p_name_2promote = args[0];
-		if(Bukkit.getPlayer(p_name_2promote) != null) {
+		if (Bukkit.getPlayer(p_name_2promote) != null) {
 			p_name_2promote = Bukkit.getPlayer(p_name_2promote).getName();
 		} else {
 			p_name_2promote = args[0];
@@ -49,9 +51,10 @@ public class CommandGPromote implements CommandExecutor {
 
 		@SuppressWarnings("deprecation")
 		OfflinePlayer player = Bukkit.getOfflinePlayer(p_name_2promote);
-		
+
 		if (!(GuildMechanics.areGuildies(p.getName(), p_name_2promote))) {
-			p.sendMessage(ChatColor.RED + "" + ChatColor.UNDERLINE + p_name_2promote + ChatColor.RED + " is not in YOUR guild. But in " + ChatColor.UNDERLINE + GuildMechanics.getGuild(player));
+			p.sendMessage(ChatColor.RED + "" + ChatColor.UNDERLINE + p_name_2promote + ChatColor.RED
+					+ " is not in YOUR guild. But in " + ChatColor.UNDERLINE + GuildMechanics.getGuild(player));
 			return true;
 		}
 
@@ -65,11 +68,13 @@ public class CommandGPromote implements CommandExecutor {
 		}
 
 		if (GuildMechanics.isGuildCoOwner(p.getName()) && GuildMechanics.isGuildOfficer(p_name_2promote)) {
-			p.sendMessage(ChatColor.RED + "You aren't allowed to promote others to the rank of " + ChatColor.BOLD + "CO-OWNER");
+			p.sendMessage(ChatColor.RED + "You aren't allowed to promote others to the rank of " + ChatColor.BOLD
+					+ "CO-OWNER");
 			return true;
 		}
 
-		if (GuildMechanics.getTotalCoOwnersCount(GuildMechanics.getGuild(p)) == 2 && GuildMechanics.isGuildLeader(p.getName())) {
+		if (GuildMechanics.getTotalCoOwnersCount(GuildMechanics.getGuild(p)) == 2
+				&& GuildMechanics.isGuildLeader(p.getName())) {
 			p.sendMessage(ChatColor.RED + "You've already set 2 guild co-owners, demote one of them to set another!");
 			return true;
 		}

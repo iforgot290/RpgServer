@@ -9,23 +9,24 @@ import minecade.dungeonrealms.CommunityMechanics.CommunityMechanics;
 import minecade.dungeonrealms.ModerationMechanics.ModerationMechanics;
 
 public class CommandLock implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = null;
-		if(sender instanceof Player) {
+		if (sender instanceof Player) {
 			p = (Player) sender;
 		}
-		
-		if(p != null) {
-			if(!(p.isOp())) { return true; }
+
+		if (p != null) {
+			if (!(p.isOp())) {
+				return true;
+			}
 		}
-		
+
 		String msg = "";
 		msg = "{LOCK}";
-		
-		if(args[0].equalsIgnoreCase("*")) {
-			for(String ip : CommunityMechanics.server_list.values()) {
+
+		if (args[0].equalsIgnoreCase("*")) {
+			for (String ip : CommunityMechanics.server_list.values()) {
 				CommunityMechanics.sendPacketCrossServer(msg, ip);
 				ModerationMechanics.log.info("[ModerationMechanics] Sent server LOCK request to " + ip);
 			}
@@ -34,8 +35,8 @@ public class CommandLock implements CommandExecutor {
 			CommunityMechanics.sendPacketCrossServer(msg, ip);
 			ModerationMechanics.log.info("[ModerationMechanics] Sent server LOCK request to " + ip);
 		}
-		
+
 		return true;
 	}
-	
+
 }

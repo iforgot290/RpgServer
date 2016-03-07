@@ -74,20 +74,20 @@ public class Utils {
 					.sendPacket(new PacketPlayOutEntityEquipment(id, net.minecraft.server.v1_9_R1.EnumItemSlot.MAINHAND,
 							CraftItemStack.asNMSCopy(player.getInventory().getItemInMainHand())));
 			otherGuyC.getHandle().playerConnection
-			.sendPacket(new PacketPlayOutEntityEquipment(id, net.minecraft.server.v1_9_R1.EnumItemSlot.OFFHAND,
-					CraftItemStack.asNMSCopy(player.getInventory().getItemInOffHand())));
+					.sendPacket(new PacketPlayOutEntityEquipment(id, net.minecraft.server.v1_9_R1.EnumItemSlot.OFFHAND,
+							CraftItemStack.asNMSCopy(player.getInventory().getItemInOffHand())));
 			otherGuyC.getHandle().playerConnection
-			.sendPacket(new PacketPlayOutEntityEquipment(id, net.minecraft.server.v1_9_R1.EnumItemSlot.FEET,
-					CraftItemStack.asNMSCopy(player.getInventory().getBoots())));
+					.sendPacket(new PacketPlayOutEntityEquipment(id, net.minecraft.server.v1_9_R1.EnumItemSlot.FEET,
+							CraftItemStack.asNMSCopy(player.getInventory().getBoots())));
 			otherGuyC.getHandle().playerConnection
-			.sendPacket(new PacketPlayOutEntityEquipment(id, net.minecraft.server.v1_9_R1.EnumItemSlot.LEGS,
-					CraftItemStack.asNMSCopy(player.getInventory().getLeggings())));
+					.sendPacket(new PacketPlayOutEntityEquipment(id, net.minecraft.server.v1_9_R1.EnumItemSlot.LEGS,
+							CraftItemStack.asNMSCopy(player.getInventory().getLeggings())));
 			otherGuyC.getHandle().playerConnection
-			.sendPacket(new PacketPlayOutEntityEquipment(id, net.minecraft.server.v1_9_R1.EnumItemSlot.CHEST,
-					CraftItemStack.asNMSCopy(player.getInventory().getChestplate())));
+					.sendPacket(new PacketPlayOutEntityEquipment(id, net.minecraft.server.v1_9_R1.EnumItemSlot.CHEST,
+							CraftItemStack.asNMSCopy(player.getInventory().getChestplate())));
 			otherGuyC.getHandle().playerConnection
-			.sendPacket(new PacketPlayOutEntityEquipment(id, net.minecraft.server.v1_9_R1.EnumItemSlot.HEAD,
-					CraftItemStack.asNMSCopy(player.getInventory().getHelmet())));
+					.sendPacket(new PacketPlayOutEntityEquipment(id, net.minecraft.server.v1_9_R1.EnumItemSlot.HEAD,
+							CraftItemStack.asNMSCopy(player.getInventory().getHelmet())));
 		}
 
 	}

@@ -85,10 +85,10 @@ import minecade.dungeonrealms.Utils;
 import minecade.dungeonrealms.holograms.Hologram;
 
 public class BetaNPC implements Listener {
-	
-	public void onEnable(){
+
+	public void onEnable() {
 		// Register Items
-		
+
 		new ChangeLevel().registerItem();
 		new SpawnGems().registerItem();
 		new SpawnProfessionItem().registerItem();
@@ -147,9 +147,9 @@ public class BetaNPC implements Listener {
 		new Uncommon().registerItem();
 		new Rare().registerItem();
 		new Unique().registerItem();
-		
+
 		// Register Menus
-		
+
 		new MainMenu();
 		new ProfessionMenu();
 		new MiscItemMenu();
@@ -162,60 +162,66 @@ public class BetaNPC implements Listener {
 		new ItemSpawnMenu();
 		new ItemSpawnCommandMenu();
 
-        Bukkit.getServer().getPluginManager().registerEvents(this, Main.plugin);
+		Bukkit.getServer().getPluginManager().registerEvents(this, Main.plugin);
 
-        if (Utils.getShard().equals("US-99") || Utils.isBeta()) {
-            new Hologram(new Location(Bukkit.getServer().getWorlds().get(0), -378, 85, 368), Arrays.asList(
-                    ChatColor.GREEN.toString() + ChatColor.UNDERLINE.toString() + ChatColor.BOLD + "Welcome to the "
-                            + ChatColor.AQUA.toString() + ChatColor.UNDERLINE.toString() + ChatColor.BOLD + "patch 1.9"
-                            + ChatColor.GREEN.toString() + ChatColor.UNDERLINE.toString() + ChatColor.BOLD
-                            + " Public Test Shard!", " ", ChatColor.BOLD + "One of the main changes we have made is ",
-                    ChatColor.BOLD + "that item tier restrictions have changed to ", ChatColor.BOLD
-                            + "10 levels, down from 20. This means you can wear ", ChatColor.BOLD
-                            + "T5 at level 40.  Please test this and everything else!")).show();
-            new Hologram(new Location(Bukkit.getServer().getWorlds().get(0), -388, 85, 368), Arrays.asList(
-                    ChatColor.LIGHT_PURPLE.toString() + ChatColor.UNDERLINE + "New HP/s Food", " ",
-                    ChatColor.BOLD + "Type " + ChatColor.AQUA + ChatColor.BOLD + "/drfood" + ChatColor.WHITE
-                            + ChatColor.BOLD.toString() + " to sample the new HP/s food ", ChatColor.BOLD
-                            + "we are adding in patch 1.9! Also try " + ChatColor.AQUA + ChatColor.BOLD + "/stats"
-                            + ChatColor.WHITE + ChatColor.BOLD + " to view ", ChatColor.BOLD
-                            + "the new stat bonuses from leveling.")).show();
-            new Hologram(new Location(Bukkit.getServer().getWorlds().get(0), -368, 85, 368), Arrays.asList(
-                    ChatColor.LIGHT_PURPLE.toString() + ChatColor.UNDERLINE + "Item Value Rebalancing", " ",
-                    ChatColor.BOLD + "Item values on gear have been rebalanced! They are now ", ChatColor.BOLD
-                            + "similar to the values on items during Closed Beta. Go kill ", ChatColor.BOLD
-                            + "some mobs to see for yourself! Your old items now have a ", ChatColor.GOLD.toString()
-                            + ChatColor.BOLD + "\"LEGACY\"" + ChatColor.WHITE + ChatColor.BOLD + " tag on them."))
-                    .show();
-            new Hologram(new Location(Bukkit.getServer().getWorlds().get(0), -388, 85, 359), Arrays.asList(
-                    ChatColor.LIGHT_PURPLE.toString() + ChatColor.UNDERLINE + "Beta Vendor and Data Transfer", " ",
-                    ChatColor.BOLD + "In the interest of testing, we have mirrored all of ", ChatColor.BOLD
-                            + "the player data from the live shards. This means ", ChatColor.BOLD
-                            + "you have the same items as you do on the live ", ChatColor.BOLD
-                            + "shards, but everything you do on this shard is separate! ", ChatColor.BOLD
-                            + "The beta vendor is also disabled but may be ", ChatColor.BOLD + "added later.")).show();
-            new Hologram(new Location(Bukkit.getServer().getWorlds().get(0), -368, 85, 359), Arrays.asList(
-                    ChatColor.LIGHT_PURPLE.toString() + ChatColor.UNDERLINE + "THINGS WIP", " ", ChatColor.BOLD
-                            + "We have many things that we are working on currently. ", ChatColor.BOLD
-                            + "ATM they are not yet available on the beta shard, ", ChatColor.BOLD
-                            + "but as we finish them, we will release them onto ", ChatColor.BOLD
-                            + "US-100 for player testing! (Mob pathing is coming soon™)")).show();
-        }
+		if (Utils.getShard().equals("US-99") || Utils.isBeta()) {
+			new Hologram(new Location(Bukkit.getServer().getWorlds().get(0), -378, 85, 368), Arrays.asList(
+					ChatColor.GREEN.toString() + ChatColor.UNDERLINE.toString() + ChatColor.BOLD + "Welcome to the "
+							+ ChatColor.AQUA.toString() + ChatColor.UNDERLINE.toString() + ChatColor.BOLD + "patch 1.9"
+							+ ChatColor.GREEN.toString() + ChatColor.UNDERLINE.toString() + ChatColor.BOLD
+							+ " Public Test Shard!",
+					" ", ChatColor.BOLD + "One of the main changes we have made is ",
+					ChatColor.BOLD + "that item tier restrictions have changed to ",
+					ChatColor.BOLD + "10 levels, down from 20. This means you can wear ",
+					ChatColor.BOLD + "T5 at level 40.  Please test this and everything else!")).show();
+			new Hologram(new Location(Bukkit.getServer().getWorlds().get(0), -388, 85, 368),
+					Arrays.asList(ChatColor.LIGHT_PURPLE.toString() + ChatColor.UNDERLINE + "New HP/s Food", " ",
+							ChatColor.BOLD + "Type " + ChatColor.AQUA + ChatColor.BOLD + "/drfood" + ChatColor.WHITE
+									+ ChatColor.BOLD.toString() + " to sample the new HP/s food ",
+							ChatColor.BOLD + "we are adding in patch 1.9! Also try " + ChatColor.AQUA + ChatColor.BOLD
+									+ "/stats" + ChatColor.WHITE + ChatColor.BOLD + " to view ",
+							ChatColor.BOLD + "the new stat bonuses from leveling.")).show();
+			new Hologram(new Location(Bukkit.getServer().getWorlds().get(0), -368, 85, 368),
+					Arrays.asList(ChatColor.LIGHT_PURPLE.toString() + ChatColor.UNDERLINE + "Item Value Rebalancing",
+							" ", ChatColor.BOLD + "Item values on gear have been rebalanced! They are now ",
+							ChatColor.BOLD + "similar to the values on items during Closed Beta. Go kill ",
+							ChatColor.BOLD + "some mobs to see for yourself! Your old items now have a ",
+							ChatColor.GOLD.toString() + ChatColor.BOLD + "\"LEGACY\"" + ChatColor.WHITE + ChatColor.BOLD
+									+ " tag on them.")).show();
+			new Hologram(new Location(Bukkit.getServer().getWorlds().get(0), -388, 85, 359),
+					Arrays.asList(
+							ChatColor.LIGHT_PURPLE.toString() + ChatColor.UNDERLINE + "Beta Vendor and Data Transfer",
+							" ", ChatColor.BOLD + "In the interest of testing, we have mirrored all of ",
+							ChatColor.BOLD + "the player data from the live shards. This means ",
+							ChatColor.BOLD + "you have the same items as you do on the live ",
+							ChatColor.BOLD + "shards, but everything you do on this shard is separate! ",
+							ChatColor.BOLD + "The beta vendor is also disabled but may be ",
+							ChatColor.BOLD + "added later.")).show();
+			new Hologram(new Location(Bukkit.getServer().getWorlds().get(0), -368, 85, 359),
+					Arrays.asList(ChatColor.LIGHT_PURPLE.toString() + ChatColor.UNDERLINE + "THINGS WIP", " ",
+							ChatColor.BOLD + "We have many things that we are working on currently. ",
+							ChatColor.BOLD + "ATM they are not yet available on the beta shard, ",
+							ChatColor.BOLD + "but as we finish them, we will release them onto ",
+							ChatColor.BOLD + "US-100 for player testing! (Mob pathing is coming soon™)")).show();
+		}
 
-    }
-	
+	}
+
 	@EventHandler
 	public void onPlayerClickNPC(PlayerInteractEntityEvent e) {
-		if (!(e.getRightClicked() instanceof Player)) return;
+		if (!(e.getRightClicked() instanceof Player))
+			return;
 		Player trader = (Player) e.getRightClicked();
-		if (!(trader.hasMetadata("NPC"))) return;
-		if (!(ChatColor.stripColor(trader.getName()).equalsIgnoreCase("Beta Vendor"))) return;
-		if(Utils.isBeta() || Bukkit.getMotd().contains("US-99")){
+		if (!(trader.hasMetadata("NPC")))
+			return;
+		if (!(ChatColor.stripColor(trader.getName()).equalsIgnoreCase("Beta Vendor")))
+			return;
+		if (Utils.isBeta() || Bukkit.getMotd().contains("US-99")) {
 			e.setCancelled(true);
 			MenuModel.getMenu(MainMenu.class).getMenu().showToPlayer(e.getPlayer());
-		}else{
+		} else {
 			e.getPlayer().sendMessage(me.vilsol.betanpc.utils.Utils.NPC + "HOW DID YOU FIND ME?");
 		}
 	}
-	
+
 }

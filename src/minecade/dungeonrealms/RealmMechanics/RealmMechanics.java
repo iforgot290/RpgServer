@@ -138,14 +138,18 @@ public class RealmMechanics implements Listener {
 	public static ItemStack divider = ItemMechanics.signCustomItem(Material.THIN_GLASS, (short) 0, " ", "");
 
 	public static ItemStack next_page_1 = ItemMechanics.signCustomItem(Material.ARROW, (short) 0,
-			ChatColor.YELLOW.toString() + "Next Page " + ChatColor.BOLD.toString() + "->", ChatColor.GRAY.toString() + "Page 2/3");
+			ChatColor.YELLOW.toString() + "Next Page " + ChatColor.BOLD.toString() + "->",
+			ChatColor.GRAY.toString() + "Page 2/3");
 	public static ItemStack next_page_2 = ItemMechanics.signCustomItem(Material.ARROW, (short) 0,
-			ChatColor.YELLOW.toString() + "Next Page " + ChatColor.BOLD.toString() + "->", ChatColor.GRAY.toString() + "Page 3/3");
+			ChatColor.YELLOW.toString() + "Next Page " + ChatColor.BOLD.toString() + "->",
+			ChatColor.GRAY.toString() + "Page 3/3");
 
-	public static ItemStack previous_page_2 = ItemMechanics.signCustomItem(Material.ARROW, (short) 0, ChatColor.YELLOW.toString() + ChatColor.BOLD + "<-"
-			+ ChatColor.YELLOW.toString() + " Previous Page ", ChatColor.GRAY.toString() + "Page 1/3");
-	public static ItemStack previous_page_3 = ItemMechanics.signCustomItem(Material.ARROW, (short) 0, ChatColor.YELLOW.toString() + ChatColor.BOLD + "<-"
-			+ ChatColor.YELLOW.toString() + " Previous Page ", ChatColor.GRAY.toString() + "Page 2/3");
+	public static ItemStack previous_page_2 = ItemMechanics.signCustomItem(Material.ARROW, (short) 0,
+			ChatColor.YELLOW.toString() + ChatColor.BOLD + "<-" + ChatColor.YELLOW.toString() + " Previous Page ",
+			ChatColor.GRAY.toString() + "Page 1/3");
+	public static ItemStack previous_page_3 = ItemMechanics.signCustomItem(Material.ARROW, (short) 0,
+			ChatColor.YELLOW.toString() + ChatColor.BOLD + "<-" + ChatColor.YELLOW.toString() + " Previous Page ",
+			ChatColor.GRAY.toString() + "Page 2/3");
 	// }
 
 	public static String rootDir = "";
@@ -160,10 +164,12 @@ public class RealmMechanics implements Listener {
 	// List of realms being currently upgraded.
 
 	public static List<String> uploading_realms = new ArrayList<String>();
-	// Locks users in the list out of local server so the realm can be uploaded w/o interruption.
+	// Locks users in the list out of local server so the realm can be uploaded
+	// w/o interruption.
 
 	static HashMap<Item, String> dropped_item_ownership = new HashMap<Item, String>();
-	// Prevents using realm as a mule for items -- on player death any items with a certain player's ownership are deleted.
+	// Prevents using realm as a mule for items -- on player death any items
+	// with a certain player's ownership are deleted.
 	static HashMap<Item, Long> dropped_item_timer = new HashMap<Item, Long>();
 	// The timer for a dropped item
 	static HashMap<Item, String> dropped_item_owner = new HashMap<Item, String>();
@@ -178,10 +184,12 @@ public class RealmMechanics implements Listener {
 	// ECash or Gems
 
 	public static HashMap<String, Long> recent_movement = new HashMap<String, Long>();
-	// Used to prevent players from placing portals ontop of AFK players. Contains time of last player movement.
+	// Used to prevent players from placing portals ontop of AFK players.
+	// Contains time of last player movement.
 
 	public static HashMap<UUID, Location> saved_locations = new HashMap<UUID, Location>();
-	// Locations of all the places in the REAL world for players in realms. Used to TP them out.
+	// Locations of all the places in the REAL world for players in realms. Used
+	// to TP them out.
 
 	public static ConcurrentHashMap<Location, String> portal_map = new ConcurrentHashMap<Location, String>();
 	// Location, Owner of Realm / Realm Name
@@ -199,7 +207,9 @@ public class RealmMechanics implements Listener {
 	// Cooldown for placing realm portals between servers.
 
 	static HashMap<String, List<Player>> offline_player_realms = new HashMap<String, List<Player>>();
-	// List of players in a realm of a player who has logged out. This list will be referenced in order to kick all the players out / warn them when the owner
+	// List of players in a realm of a player who has logged out. This list will
+	// be referenced in order to kick all the players out / warn them when the
+	// owner
 	// logs out.
 
 	static HashMap<Player, String> realm_upgrade_codes = new HashMap<Player, String>();
@@ -218,10 +228,12 @@ public class RealmMechanics implements Listener {
 	public static HashMap<UUID, Integer> realm_tier = new HashMap<UUID, Integer>();
 
 	public static HashMap<String, Integer> saved_levels = new HashMap<String, Integer>();
-	// Saved player level (HP) for traveling between realms -- fixes a vanilla bug.
+	// Saved player level (HP) for traveling between realms -- fixes a vanilla
+	// bug.
 
 	public static volatile HashMap<String, Boolean> realm_loaded_status = new HashMap<String, Boolean>();
-	// Setup on login, everytime players try to open a realm and this =true, it will update SQL.
+	// Setup on login, everytime players try to open a realm and this =true, it
+	// will update SQL.
 	// TODO: Change this to sockets.
 
 	public static ConcurrentHashMap<String, Long> safe_realms = new ConcurrentHashMap<String, Long>();
@@ -238,14 +250,17 @@ public class RealmMechanics implements Listener {
 	// TODO: Make it permenant?
 
 	public static List<String> ready_worlds = new ArrayList<String>();
-	// Worlds ready for a bunch of misc. tasks such as chunk shortening, item drop managment, etc.
+	// Worlds ready for a bunch of misc. tasks such as chunk shortening, item
+	// drop managment, etc.
 
 	public static List<String> corrupt_world = new ArrayList<String>();
-	// Ensures a realm can attempt to DL/Load at least twice before being condemned as corrupt.
+	// Ensures a realm can attempt to DL/Load at least twice before being
+	// condemned as corrupt.
 
-	public static List<Material> containers = Arrays.asList(Material.CHEST, Material.FURNACE, Material.DISPENSER, Material.DROPPER, Material.HOPPER);
+	public static List<Material> containers = Arrays.asList(Material.CHEST, Material.FURNACE, Material.DISPENSER,
+			Material.DROPPER, Material.HOPPER);
 	// A list of items to be blocked from opening in other people's realms
-	
+
 	public static HashMap<String, Long> player_god_mode = new HashMap<String, Long>();
 	// The player is in god mode, the time they were set to godmode.
 
@@ -294,7 +309,8 @@ public class RealmMechanics implements Listener {
 
 		RealmStatusThread = new RealmStatusThread();
 		RealmStatusThread.start();
-		// Handles all isRealmLoaded() SQL queries and local memory updates for determing realm's loaded server.
+		// Handles all isRealmLoaded() SQL queries and local memory updates for
+		// determing realm's loaded server.
 
 		Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
 			public void run() {
@@ -304,13 +320,13 @@ public class RealmMechanics implements Listener {
 							String realm_name = pl.getWorld().getName();
 
 							if (!(pl.getName().equalsIgnoreCase(pl.getWorld().getName()))) {
-								pl.sendMessage(ChatColor.LIGHT_PURPLE + "You have left " + ChatColor.BOLD + realm_name + "'s" + ChatColor.LIGHT_PURPLE
-										+ " realm.");
+								pl.sendMessage(ChatColor.LIGHT_PURPLE + "You have left " + ChatColor.BOLD + realm_name
+										+ "'s" + ChatColor.LIGHT_PURPLE + " realm.");
 							} else {
-								pl.sendMessage(ChatColor.LIGHT_PURPLE + "You have left " + ChatColor.BOLD + "YOUR" + ChatColor.LIGHT_PURPLE + " realm.");
+								pl.sendMessage(ChatColor.LIGHT_PURPLE + "You have left " + ChatColor.BOLD + "YOUR"
+										+ ChatColor.LIGHT_PURPLE + " realm.");
 							}
-							if(pl.getWorld().getPlayers().size() == 0 && pl.getWorld().getName() != main_world_name)
-							{
+							if (pl.getWorld().getPlayers().size() == 0 && pl.getWorld().getName() != main_world_name) {
 								Bukkit.unloadWorld(pl.getWorld().getName(), true);
 							}
 							player_god_mode.put(pl.getName(), System.currentTimeMillis());
@@ -328,11 +344,12 @@ public class RealmMechanics implements Listener {
 
 							saved_locations.remove(pl.getName());
 
-							Main.plugin.getServer().getScheduler().scheduleAsyncDelayedTask(Main.plugin, new Runnable() {
-								public void run() {
-									player_god_mode.remove(pl.getName());
-								}
-							}, 60L);
+							Main.plugin.getServer().getScheduler().scheduleAsyncDelayedTask(Main.plugin,
+									new Runnable() {
+										public void run() {
+											player_god_mode.remove(pl.getName());
+										}
+									}, 60L);
 
 						} else {
 							if (InstanceMechanics.saved_location_instance.containsKey(pl.getName())) {
@@ -358,7 +375,8 @@ public class RealmMechanics implements Listener {
 						if (Bukkit.getWorld(r_name) != null) {
 							if (Bukkit.getPlayer(r_name) != null) {
 								Player pl = Bukkit.getPlayer(r_name);
-								pl.sendMessage(ChatColor.RED + "Your realm is now once again a " + ChatColor.BOLD + "CHAOTIC" + ChatColor.RED + " zone.");
+								pl.sendMessage(ChatColor.RED + "Your realm is now once again a " + ChatColor.BOLD
+										+ "CHAOTIC" + ChatColor.RED + " zone.");
 							}
 							Location l = getLocationOfPlayerRealm(r_name);
 							List<String> lines = holograms.get(l).getLines();
@@ -370,8 +388,8 @@ public class RealmMechanics implements Listener {
 						if (flying_realms.containsKey(r_name)) {
 							if (Bukkit.getPlayer(r_name) != null) {
 								Player pl = Bukkit.getPlayer(r_name);
-								pl.sendMessage(ChatColor.GRAY + "Due to this, your " + ChatColor.UNDERLINE + "Orb of Flight" + ChatColor.GRAY
-										+ " has also expired.");
+								pl.sendMessage(ChatColor.GRAY + "Due to this, your " + ChatColor.UNDERLINE
+										+ "Orb of Flight" + ChatColor.GRAY + " has also expired.");
 							}
 							flying_realms.remove(r_name);
 							Location l = getLocationOfPlayerRealm(r_name);
@@ -380,18 +398,21 @@ public class RealmMechanics implements Listener {
 								lines.remove(2);
 								holograms.get(l).setLines(lines);
 								if (!Bukkit.getOfflinePlayer(r_name).isOp())
-									holograms.get(l).setLocation(holograms.get(l).getLocation().clone().add(0, -1.5, 0));
+									holograms.get(l)
+											.setLocation(holograms.get(l).getLocation().clone().add(0, -1.5, 0));
 							}
 						}
 					} else {
 						if (Bukkit.getWorld(r_name) != null) {
 							World w = Bukkit.getWorld(r_name);
 							try {
-								ParticleEffect.sendToLocation(ParticleEffect.HAPPY_VILLAGER, w.getSpawnLocation().add(0.5D, 1.5D, 0.5D), 0, 0, 0, 0.02F, 20);
+								ParticleEffect.sendToLocation(ParticleEffect.HAPPY_VILLAGER,
+										w.getSpawnLocation().add(0.5D, 1.5D, 0.5D), 0, 0, 0, 0.02F, 20);
 							} catch (Exception err) {
 								err.printStackTrace();
 							}
-							// w.spawnParticle(w.getSpawnLocation().add(0.5, 1.5, 0.5), Particle.HAPPY_VILLAGER, 0.02F, 20);
+							// w.spawnParticle(w.getSpawnLocation().add(0.5,
+							// 1.5, 0.5), Particle.HAPPY_VILLAGER, 0.02F, 20);
 						}
 					}
 				}
@@ -405,7 +426,8 @@ public class RealmMechanics implements Listener {
 							if (Bukkit.getWorld(r_name) != null) {
 								if (Bukkit.getPlayer(r_name) != null) {
 									Player pl = Bukkit.getPlayer(r_name);
-									pl.sendMessage(ChatColor.RED + "Your " + ChatColor.UNDERLINE + "Orb of Flight" + ChatColor.RED + " effect has expired.");
+									pl.sendMessage(ChatColor.RED + "Your " + ChatColor.UNDERLINE + "Orb of Flight"
+											+ ChatColor.RED + " effect has expired.");
 								}
 								for (Player pl : Bukkit.getWorld(r_name).getPlayers()) {
 									pl.setAllowFlight(false);
@@ -417,7 +439,8 @@ public class RealmMechanics implements Listener {
 									lines.remove(2);
 									holograms.get(l).setLines(lines);
 									if (!Bukkit.getOfflinePlayer(r_name).isOp())
-										holograms.get(l).setLocation(holograms.get(l).getLocation().clone().add(0, -1.5, 0));
+										holograms.get(l)
+												.setLocation(holograms.get(l).getLocation().clone().add(0, -1.5, 0));
 								}
 							}
 
@@ -425,7 +448,8 @@ public class RealmMechanics implements Listener {
 						} else if (Bukkit.getWorld(r_name) != null && Bukkit.getWorld(r_name).getPlayers() != null) {
 							for (Player pl : Bukkit.getWorld(r_name).getPlayers()) {
 								if (pl.getName().equalsIgnoreCase(pl.getWorld().getName())
-										|| (build_list.containsKey(pl.getWorld().getName()) && build_list.get(pl.getWorld().getName()).contains(pl.getName()))) {
+										|| (build_list.containsKey(pl.getWorld().getName())
+												&& build_list.get(pl.getWorld().getName()).contains(pl.getName()))) {
 									if (!(pl.getAllowFlight())) {
 										pl.setAllowFlight(true);
 									}
@@ -434,11 +458,13 @@ public class RealmMechanics implements Listener {
 							if (Bukkit.getWorld(r_name) != null) {
 								World w = Bukkit.getWorld(r_name);
 								try {
-									ParticleEffect.sendToLocation(ParticleEffect.CLOUD, w.getSpawnLocation().add(0.5D, 1.5D, 0.5D), 0, 0, 0, 0.02F, 20);
+									ParticleEffect.sendToLocation(ParticleEffect.CLOUD,
+											w.getSpawnLocation().add(0.5D, 1.5D, 0.5D), 0, 0, 0, 0.02F, 20);
 								} catch (Exception err) {
 									err.printStackTrace();
 								}
-								// w.spawnParticle(w.getSpawnLocation().add(0.5, 1.5, 0.5), Particle.CLOUD, 0.02F, 20);
+								// w.spawnParticle(w.getSpawnLocation().add(0.5,
+								// 1.5, 0.5), Particle.CLOUD, 0.02F, 20);
 							}
 						}
 
@@ -467,31 +493,38 @@ public class RealmMechanics implements Listener {
 							Player pl = Bukkit.getPlayer(p_name);
 							if (pl.isOp()) {
 								try {
-									ParticleEffect.sendToLocation(ParticleEffect.ENCHANTMENT_TABLE, loc.add(0.5D, 2D, 0.5D), 0, 0, 0, 0.25F, 75);
+									ParticleEffect.sendToLocation(ParticleEffect.ENCHANTMENT_TABLE,
+											loc.add(0.5D, 2D, 0.5D), 0, 0, 0, 0.25F, 75);
 								} catch (Exception err) {
 									err.printStackTrace();
 								}
-								// loc.getWorld().spawnParticle(loc.add(0.5, 2, 0.5), Particle.ENCHANTMENT_TABLE, 0.25F, 75);
+								// loc.getWorld().spawnParticle(loc.add(0.5, 2,
+								// 0.5), Particle.ENCHANTMENT_TABLE, 0.25F, 75);
 							}
 							if (!(uploading_realms.contains(pl.getName())) && safe_realms.containsKey(pl.getName())) {
 
 								try {
-									ParticleEffect.sendToLocation(ParticleEffect.HAPPY_VILLAGER, loc.add(0.5D, 1.5D, 0.5D), 0, 0, 0, 0.02F, 20);
+									ParticleEffect.sendToLocation(ParticleEffect.HAPPY_VILLAGER,
+											loc.add(0.5D, 1.5D, 0.5D), 0, 0, 0, 0.02F, 20);
 
 								} catch (Exception err) {
 									err.printStackTrace();
 								}
 								loc.subtract(.5D, 2D, .5D);
-								// loc.getWorld().spawnParticle(loc.add(0.5, 1.5, 0.5), Particle.HAPPY_VILLAGER, 0.02F, 20);
+								// loc.getWorld().spawnParticle(loc.add(0.5,
+								// 1.5, 0.5), Particle.HAPPY_VILLAGER, 0.02F,
+								// 20);
 							}
 							if (!(uploading_realms.contains(pl.getName())) && flying_realms.containsKey(pl.getName())) {
 
 								try {
-									ParticleEffect.sendToLocation(ParticleEffect.CLOUD, loc.add(0.5D, 1.5D, 0.5D), 0, 0, 0, 0.02F, 20);
+									ParticleEffect.sendToLocation(ParticleEffect.CLOUD, loc.add(0.5D, 1.5D, 0.5D), 0, 0,
+											0, 0.02F, 20);
 								} catch (Exception err) {
 									err.printStackTrace();
 								}
-								// loc.getWorld().spawnParticle(loc.add(0.5, 1.5, 0.5), Particle.CLOUD, 0.02F, 20);
+								// loc.getWorld().spawnParticle(loc.add(0.5,
+								// 1.5, 0.5), Particle.CLOUD, 0.02F, 20);
 								loc.subtract(.5D, 1.5D, .5D);
 							}
 						}
@@ -502,7 +535,9 @@ public class RealmMechanics implements Listener {
 							portal_map.put(loc, p_name); // Refresh this.
 						}
 						/*
-						 * if(loc.subtract(0, 1, 0).getBlock().getType() == Material.AIR){ loc.getBlock().setType(Material.PORTAL); }
+						 * if(loc.subtract(0, 1, 0).getBlock().getType() ==
+						 * Material.AIR){
+						 * loc.getBlock().setType(Material.PORTAL); }
 						 */
 						// loc.add(0, 1, 0);
 					} catch (ConcurrentModificationException cme) {
@@ -575,31 +610,27 @@ public class RealmMechanics implements Listener {
 
 			}
 		}, 2 * 20L, 10L);
-			Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
-		    public void run() {
-		    for (World w : Bukkit.getServer().getWorlds()) {
-				if(w.getPlayers().size() == 0 && !w.getName().equalsIgnoreCase("DungeonRealms"))
-				{
+		Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
+			public void run() {
+				for (World w : Bukkit.getServer().getWorlds()) {
+					if (w.getPlayers().size() == 0 && !w.getName().equalsIgnoreCase("DungeonRealms")) {
 						Bukkit.unloadWorld(w, true);
+					}
+					if (w.getName().contains(("DODungeon.")) && w.getPlayers().size() == 0) {
+						File dungeon = new File(w.getName());
+						deletefolder(dungeon);
+					}
+					if (w.getName().contains(("T1Dungeon.")) && w.getPlayers().size() == 0) {
+						File dungeon = new File(w.getName());
+						deletefolder(dungeon);
+					}
+					if (w.getName().contains(("fireydungeon.")) && w.getPlayers().size() == 0) {
+						File dungeon = new File(w.getName());
+						deletefolder(dungeon);
+					}
 				}
-				if(w.getName().contains(("DODungeon.")) && w.getPlayers().size() == 0)
-				{
-					File dungeon = new File(w.getName());
-					deletefolder(dungeon);
-				}
-				if(w.getName().contains(("T1Dungeon.")) && w.getPlayers().size() == 0)
-				{
-					File dungeon = new File(w.getName());
-					deletefolder(dungeon);
-				}
-				if(w.getName().contains(("fireydungeon.")) && w.getPlayers().size() == 0)
-				{
-					File dungeon = new File(w.getName());
-					deletefolder(dungeon);
-				}
-		    }
-		    }
-		    }, 20L * 300, 20L * 300);
+			}
+		}, 20L * 300, 20L * 300);
 		Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
 
 			public void run() {
@@ -628,14 +659,17 @@ public class RealmMechanics implements Listener {
 						continue;
 					}
 
-					if (w.getPlayers().size() <= 0 && ready_worlds.contains(w.getName()) && w.getLoadedChunks().length > 1) {
+					if (w.getPlayers().size() <= 0 && ready_worlds.contains(w.getName())
+							&& w.getLoadedChunks().length > 1) {
 						if (w.getEntities().size() > 0) {
 							for (Entity e : w.getEntities()) {
 								if (e.getType() == EntityType.DROPPED_ITEM) {
 									e.remove();
 									Item i = (Item) e;
 									dropped_item_ownership.remove(i);
-									// Remove all dropped items if realm is empty, prevent abuse of storing mechanics.
+									// Remove all dropped items if realm is
+									// empty, prevent abuse of storing
+									// mechanics.
 								}
 							}
 						}
@@ -671,14 +705,17 @@ public class RealmMechanics implements Listener {
 		Main.plugin.getServer().getScheduler().runTaskTimer(Main.plugin, new Runnable() {
 
 			public void run() {
-				if (Bukkit.getOnlinePlayers().length <= 0) return;
+				if (Bukkit.getOnlinePlayers().length <= 0)
+					return;
 				for (Player pl : Bukkit.getOnlinePlayers()) {
-					if (pl == null) continue; // If somehow they went offline
+					if (pl == null)
+						continue; // If somehow they went offline
 					if (inRealm(pl)) {
 						if (safe_realms.containsKey(pl.getWorld().getName())) {
 							if (KarmaMechanics.getAlignment(pl.getName()).equalsIgnoreCase("evil")) {
 								pl.teleport(Bukkit.getWorld(main_world_name).getSpawnLocation());
-								pl.sendMessage(ChatColor.RED + "You were kicked from this peaceful realm due to your " + ChatColor.BOLD + "CHAOTIC" + ChatColor.RED + " allignment!");
+								pl.sendMessage(ChatColor.RED + "You were kicked from this peaceful realm due to your "
+										+ ChatColor.BOLD + "CHAOTIC" + ChatColor.RED + " allignment!");
 							}
 						}
 					}
@@ -688,12 +725,15 @@ public class RealmMechanics implements Listener {
 		}, 20L * 4, 20L * 2);
 
 		/*
-		 * Thread realm_backup = new Thread(new Runnable(){ public void run(){ while(true){ try { Thread.sleep(120 * 1000); } catch (InterruptedException e)
-		 * {e.printStackTrace();}
+		 * Thread realm_backup = new Thread(new Runnable(){ public void run(){
+		 * while(true){ try { Thread.sleep(120 * 1000); } catch
+		 * (InterruptedException e) {e.printStackTrace();}
 		 *
-		 * for(World w : getServer().getWorlds()){ if(Hive.server_frozen == true){ return; }
+		 * for(World w : getServer().getWorlds()){ if(Hive.server_frozen ==
+		 * true){ return; }
 		 *
-		 * if(w.getName().equalsIgnoreCase(RealmMechanics.main_world_name)){ continue; // Main world, idc. }
+		 * if(w.getName().equalsIgnoreCase(RealmMechanics.main_world_name)){
+		 * continue; // Main world, idc. }
 		 *
 		 * if(InstanceMechanics.isInstance(w.getName())){ continue; }
 		 *
@@ -701,9 +741,11 @@ public class RealmMechanics implements Listener {
 		 *
 		 * w.save();
 		 *
-		 * try { File prev_backup = new File(rootDir + "/realms/backup/" + w.getName() + ".zip"); if(prev_backup.exists()){ prev_backup.delete(); }
-		 * zipDirectory(new File(w.getName()), new File(rootDir + "/realms/backup/" + w.getName() + ".zip")); } catch (IOException e) { e.printStackTrace();
-		 * continue; }
+		 * try { File prev_backup = new File(rootDir + "/realms/backup/" +
+		 * w.getName() + ".zip"); if(prev_backup.exists()){
+		 * prev_backup.delete(); } zipDirectory(new File(w.getName()), new
+		 * File(rootDir + "/realms/backup/" + w.getName() + ".zip")); } catch
+		 * (IOException e) { e.printStackTrace(); continue; }
 		 *
 		 * } } } });
 		 *
@@ -720,9 +762,12 @@ public class RealmMechanics implements Listener {
 		int attempts = 0;
 
 		/*
-		 * while(uploading_realms.size() > 0 && attempts <= 200){ // Try for 20 seconds. log.info("[RealmMechanics] WORLDS LOADED: " +
-		 * Bukkit.getWorlds().size()); log.info("[RealmMechanics] REALMS LOADED: " + uploading_realms.size()); attempts++; try { Thread.sleep(100); } catch
-		 * (InterruptedException e) { e.printStackTrace(); } }
+		 * while(uploading_realms.size() > 0 && attempts <= 200){ // Try for 20
+		 * seconds. log.info("[RealmMechanics] WORLDS LOADED: " +
+		 * Bukkit.getWorlds().size()); log.info(
+		 * "[RealmMechanics] REALMS LOADED: " + uploading_realms.size());
+		 * attempts++; try { Thread.sleep(100); } catch (InterruptedException e)
+		 * { e.printStackTrace(); } }
 		 */
 
 		if (uploading_realms.size() > 0 || Bukkit.getWorlds().size() > 1) {
@@ -771,26 +816,35 @@ public class RealmMechanics implements Listener {
 		for (File f : files) {
 			String name = f.getName().replace(".dat", "");
 			if (f.isDirectory()) {
-				if (name.equalsIgnoreCase("logs") || name.equalsIgnoreCase("plugins") || name.contains("DungeonRealms") || name.contains("players_backup")
-						|| name.contains("plugins.old") || name.contains("realms") || name.equalsIgnoreCase("template") || name.equalsIgnoreCase("key")) {
+				if (name.equalsIgnoreCase("logs") || name.equalsIgnoreCase("plugins") || name.contains("DungeonRealms")
+						|| name.contains("players_backup") || name.contains("plugins.old") || name.contains("realms")
+						|| name.equalsIgnoreCase("template") || name.equalsIgnoreCase("key")) {
 					continue;
 					// Don't delete these.
 				}
-				//deletefolder(f); sexy delete
+				// deletefolder(f); sexy delete
 				log.info("[RealmMechanics] Cleaned up directory: " + name + " ... deleted.");
 			}
 		}
 	}
 
 	/*
-	 * public void fakePlayerMoveEvent(){ for(String s : inv_portal_map.keySet()){ if(Bukkit.getPlayer(s) != null){ Player p = Bukkit.getPlayer(s);
-	 * if(p.getWorld().getName().equalsIgnoreCase(Bukkit.getWorlds().get(0).getName()) || InstanceMechanics.isInstance(p.getWorld().getName())){ // They're in
-	 * the main world. if(inv_portal_map.containsKey(p.getName())){ Location portal_loc = inv_portal_map.get(p.getName()); Location p_loc = p.getLocation();
-	 * if(p_loc.distanceSquared(portal_loc) > 1024){ portal_map.remove(portal_loc); inv_portal_map.remove(p.getName());
-	 * portal_loc.getBlock().setType(Material.AIR); portal_loc.add(0, 1, 0).getBlock().setType(Material.AIR);
+	 * public void fakePlayerMoveEvent(){ for(String s :
+	 * inv_portal_map.keySet()){ if(Bukkit.getPlayer(s) != null){ Player p =
+	 * Bukkit.getPlayer(s);
+	 * if(p.getWorld().getName().equalsIgnoreCase(Bukkit.getWorlds().get(0).
+	 * getName()) || InstanceMechanics.isInstance(p.getWorld().getName())){ //
+	 * They're in the main world. if(inv_portal_map.containsKey(p.getName())){
+	 * Location portal_loc = inv_portal_map.get(p.getName()); Location p_loc =
+	 * p.getLocation(); if(p_loc.distanceSquared(portal_loc) > 1024){
+	 * portal_map.remove(portal_loc); inv_portal_map.remove(p.getName());
+	 * portal_loc.getBlock().setType(Material.AIR); portal_loc.add(0, 1,
+	 * 0).getBlock().setType(Material.AIR);
 	 *
-	 * p.sendMessage(ChatColor.LIGHT_PURPLE + "Your realm entrance portal has closed because you've traveled " + ChatColor.BOLD + ">32 blocks" +
-	 * ChatColor.LIGHT_PURPLE + " away."); has_portal.remove(p.getName()); } } } } } }
+	 * p.sendMessage(ChatColor.LIGHT_PURPLE +
+	 * "Your realm entrance portal has closed because you've traveled " +
+	 * ChatColor.BOLD + ">32 blocks" + ChatColor.LIGHT_PURPLE + " away.");
+	 * has_portal.remove(p.getName()); } } } } } }
 	 */
 
 	public static void setRealmLoadStatusSQL(String p_name, boolean loaded) {
@@ -799,8 +853,8 @@ public class RealmMechanics implements Listener {
 			load_var = 1;
 		}
 
-		Hive.sql_query.add("INSERT INTO player_database (p_name, realm_loaded)" + " VALUES" + "('" + p_name + "', '" + load_var
-				+ "') ON DUPLICATE KEY UPDATE realm_loaded = '" + load_var + "'");
+		Hive.sql_query.add("INSERT INTO player_database (p_name, realm_loaded)" + " VALUES" + "('" + p_name + "', '"
+				+ load_var + "') ON DUPLICATE KEY UPDATE realm_loaded = '" + load_var + "'");
 
 	}
 
@@ -916,8 +970,12 @@ public class RealmMechanics implements Listener {
 		mat_shop_2.setItem(17, new ItemStack(111, 15));
 
 		/*
-		 * mat_shop_2.setItem(18, new ItemStack(Material.JUKEBOX, 64, (short)1200)); mat_shop_2.setItem(19, new ItemStack(Material.RECORD_3, 64, (short)500));
-		 * mat_shop_2.setItem(20, new ItemStack(Material.RECORD_4, 64, (short)500)); mat_shop_2.setItem(21, new ItemStack(Material.RECORD_5, 64, (short)500));
+		 * mat_shop_2.setItem(18, new ItemStack(Material.JUKEBOX, 64,
+		 * (short)1200)); mat_shop_2.setItem(19, new
+		 * ItemStack(Material.RECORD_3, 64, (short)500)); mat_shop_2.setItem(20,
+		 * new ItemStack(Material.RECORD_4, 64, (short)500));
+		 * mat_shop_2.setItem(21, new ItemStack(Material.RECORD_5, 64,
+		 * (short)500));
 		 */
 
 		mat_shop_2.setItem(18, new ItemStack(Material.STAINED_CLAY, 8, (short) 11));
@@ -925,8 +983,10 @@ public class RealmMechanics implements Listener {
 		mat_shop_2.setItem(20, new ItemStack(Material.STAINED_CLAY, 8, (short) 13));
 		mat_shop_2.setItem(21, new ItemStack(Material.STAINED_CLAY, 8, (short) 14));
 
-		// mat_shop_2.setItem(22, new ItemStack(Material.PISTON_BASE, 64, (short)80));
-		// mat_shop_2.setItem(23, new ItemStack(Material.PISTON_STICKY_BASE, 64, (short)120));
+		// mat_shop_2.setItem(22, new ItemStack(Material.PISTON_BASE, 64,
+		// (short)80));
+		// mat_shop_2.setItem(23, new ItemStack(Material.PISTON_STICKY_BASE, 64,
+		// (short)120));
 		mat_shop_2.setItem(22, new ItemStack(Material.SAPLING, 15, (short) 1));
 		mat_shop_2.setItem(23, new ItemStack(Material.SAPLING, 15, (short) 2));
 		mat_shop_2.setItem(24, new ItemStack(Material.SAPLING, 15, (short) 3));
@@ -947,7 +1007,8 @@ public class RealmMechanics implements Listener {
 		mat_shop_2.setItem(36, new ItemStack(Material.HARD_CLAY, 55, (short) 0));
 		mat_shop_2.setItem(37, new ItemStack(Material.COAL_BLOCK, 45, (short) 0));
 		mat_shop_2.setItem(38, new ItemStack(Material.DAYLIGHT_DETECTOR, 200, (short) 0));
-		// mat_shop_2.setItem(39, new ItemStack(Material.FLOWER_POT_ITEM, 45, (short) 0));
+		// mat_shop_2.setItem(39, new ItemStack(Material.FLOWER_POT_ITEM, 45,
+		// (short) 0));
 		mat_shop_2.setItem(40, new ItemStack(Material.REDSTONE_LAMP_OFF, 55, (short) 0));
 		mat_shop_2.setItem(41, new ItemStack(Material.VINE, 50, (short) 0));
 		mat_shop_2.setItem(42, new ItemStack(Material.STAINED_CLAY, 8, (short) 0));
@@ -996,15 +1057,22 @@ public class RealmMechanics implements Listener {
 		mat_shop_3.setItem(28, new ItemStack(Material.STAINED_GLASS, 6, (short) 15));
 		mat_shop_3.setItem(29, new ItemStack(Material.PACKED_ICE, 4, (short) 0));
 		mat_shop_3.setItem(30, new ItemStack(Material.getMaterial(3), 8, (short) 2));
-		mat_shop_3.setItem(31, new ItemStack(Material.PISTON_BASE, 64, (short)80));
-		mat_shop_3.setItem(32, new ItemStack(Material.PISTON_STICKY_BASE, 64, (short)120));
-		// mat_shop_3.setItem(8, new ItemStack(Material.COAL_ORE, 10, (short)0));
-		// mat_shop_3.setItem(9, new ItemStack(Material.IRON_ORE, 15, (short)0));
-		// mat_shop_3.setItem(10, new ItemStack(Material.EMERALD_ORE, 20, (short)0));
-		// mat_shop_3.setItem(11, new ItemStack(Material.DIAMOND_ORE, 30, (short)0));
-		// mat_shop_3.setItem(12, new ItemStack(Material.GOLD_ORE, 50, (short)0));
-		// mat_shop_3.setItem(13, new ItemStack(Material.REDSTONE_ORE, 20, (short)0));
-		// mat_shop_3.setItem(14, new ItemStack(Material.BEDROCK, 60, (short)0));
+		mat_shop_3.setItem(31, new ItemStack(Material.PISTON_BASE, 64, (short) 80));
+		mat_shop_3.setItem(32, new ItemStack(Material.PISTON_STICKY_BASE, 64, (short) 120));
+		// mat_shop_3.setItem(8, new ItemStack(Material.COAL_ORE, 10,
+		// (short)0));
+		// mat_shop_3.setItem(9, new ItemStack(Material.IRON_ORE, 15,
+		// (short)0));
+		// mat_shop_3.setItem(10, new ItemStack(Material.EMERALD_ORE, 20,
+		// (short)0));
+		// mat_shop_3.setItem(11, new ItemStack(Material.DIAMOND_ORE, 30,
+		// (short)0));
+		// mat_shop_3.setItem(12, new ItemStack(Material.GOLD_ORE, 50,
+		// (short)0));
+		// mat_shop_3.setItem(13, new ItemStack(Material.REDSTONE_ORE, 20,
+		// (short)0));
+		// mat_shop_3.setItem(14, new ItemStack(Material.BEDROCK, 60,
+		// (short)0));
 	}
 
 	public void convertMatShop() {
@@ -1192,10 +1260,13 @@ public class RealmMechanics implements Listener {
 	}
 
 	public static boolean isOrbOfPeace(ItemStack is) {
-		// public static ItemStack orb_of_peace = ItemMechanics.signNewCustomItem(Material.ENDER_PEARL, (short)1, ChatColor.AQUA.toString() +
-		// "" + "Orb of Peace", ChatColor.GRAY.toString() + "Turns realm non-PVP for 1 hour(s).");
-		if (is.getType() == Material.ENDER_PEARL && is.hasItemMeta() && is.getItemMeta().hasDisplayName()
-				&& is.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GREEN.toString() + "" + "Orb of Peace")) {
+		// public static ItemStack orb_of_peace =
+		// ItemMechanics.signNewCustomItem(Material.ENDER_PEARL, (short)1,
+		// ChatColor.AQUA.toString() +
+		// "" + "Orb of Peace", ChatColor.GRAY.toString() + "Turns realm non-PVP
+		// for 1 hour(s).");
+		if (is.getType() == Material.ENDER_PEARL && is.hasItemMeta() && is.getItemMeta().hasDisplayName() && is
+				.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GREEN.toString() + "" + "Orb of Peace")) {
 			return true;
 		}
 		return false;
@@ -1203,10 +1274,13 @@ public class RealmMechanics implements Listener {
 
 	@SuppressWarnings("deprecation")
 	public static boolean isOrbOfFlight(ItemStack is) {
-		// public static ItemStack orb_of_peace = ItemMechanics.signNewCustomItem(Material.ENDER_PEARL, (short)1, ChatColor.AQUA.toString() +
-		// "" + "Orb of Peace", ChatColor.GRAY.toString() + "Turns realm non-PVP for 1 hour(s).");
-		if (is.getTypeId() == 402 && is.hasItemMeta() && is.getItemMeta().hasDisplayName()
-				&& is.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.AQUA.toString() + "" + "Orb of Flight")) {
+		// public static ItemStack orb_of_peace =
+		// ItemMechanics.signNewCustomItem(Material.ENDER_PEARL, (short)1,
+		// ChatColor.AQUA.toString() +
+		// "" + "Orb of Peace", ChatColor.GRAY.toString() + "Turns realm non-PVP
+		// for 1 hour(s).");
+		if (is.getTypeId() == 402 && is.hasItemMeta() && is.getItemMeta().hasDisplayName() && is.getItemMeta()
+				.getDisplayName().equalsIgnoreCase(ChatColor.AQUA.toString() + "" + "Orb of Flight")) {
 			return true;
 		}
 		return false;
@@ -1233,7 +1307,8 @@ public class RealmMechanics implements Listener {
 			}
 			try {
 				String realm_name = f.getName().replaceAll(".zip", "");
-				URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + realm_name + ".zip");
+				URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP
+						+ Config.realmPath + realm_name + ".zip");
 				URLConnection urlc;
 
 				urlc = url.openConnection();
@@ -1300,7 +1375,9 @@ public class RealmMechanics implements Listener {
 		long last_login = CommunityMechanics.getLastLogin(pname, false);
 		long currentTime = System.currentTimeMillis();
 
-		if ((currentTime - last_login) < (140 * 1000)) { // Last login was within 2 minutes ago.
+		if ((currentTime - last_login) < (140 * 1000)) { // Last login was
+															// within 2 minutes
+															// ago.
 			portal_cooldown.put(pname, (currentTime - last_login));
 		} else {
 			portal_cooldown.remove(pname);
@@ -1324,7 +1401,8 @@ public class RealmMechanics implements Listener {
 
 	public String getItemName(ItemStack i) {
 		// CraftItemStack css = new CraftItemStack(i);
-		// String name = css.getHandle().getTag().getCompound("display").getString("Name");
+		// String name =
+		// css.getHandle().getTag().getCompound("display").getString("Name");
 		String name = i.getItemMeta().getDisplayName();
 		if (name.contains(ChatColor.WHITE.toString())) {
 			name.replaceAll(ChatColor.WHITE.toString(), "");
@@ -1363,12 +1441,14 @@ public class RealmMechanics implements Listener {
 					return; // World ain't loaded anymore.
 				}
 				if (!offline_player_realms.containsKey(p_name)) {
-					// The owner of the realm has logged back in, therfore this function is no longer necessary. Goodbye.
+					// The owner of the realm has logged back in, therfore this
+					// function is no longer necessary. Goodbye.
 					return;
 				}
 
 				uploading_realms.add(p_name);
-				// Lock the player out of server at this point, so he can't fuck anything up durring the upload.
+				// Lock the player out of server at this point, so he can't fuck
+				// anything up durring the upload.
 
 				World p_realm = Bukkit.getWorld(p_name);
 
@@ -1386,7 +1466,7 @@ public class RealmMechanics implements Listener {
 
 				Thread t = new Thread(new Runnable() {
 					public void run() {
-						//uploadWorld(p_realm_name); mumoxx was here
+						// uploadWorld(p_realm_name); mumoxx was here
 					}
 				});
 
@@ -1397,11 +1477,13 @@ public class RealmMechanics implements Listener {
 	}
 
 	public boolean isShopBlock(Material m) {
-		if (m == Material.DIRT || m == Material.SAND || m == Material.WOOL || m == Material.STONE || m == Material.LOG || m == Material.SANDSTONE
-				|| m == Material.GLOWSTONE || m == Material.ICE || m == Material.LOG || m == Material.CLAY || m == Material.OBSIDIAN
-				|| m == Material.LAPIS_BLOCK || m == Material.MOSSY_COBBLESTONE || m == Material.SMOOTH_BRICK || m == Material.SNOW_BLOCK
-				|| m == Material.PUMPKIN || m == Material.NETHER_BRICK || m == Material.MELON_BLOCK || m == Material.MYCEL || m == Material.SOUL_SAND
-				|| m == Material.NETHER_BRICK || m == Material.SPONGE) {
+		if (m == Material.DIRT || m == Material.SAND || m == Material.WOOL || m == Material.STONE || m == Material.LOG
+				|| m == Material.SANDSTONE || m == Material.GLOWSTONE || m == Material.ICE || m == Material.LOG
+				|| m == Material.CLAY || m == Material.OBSIDIAN || m == Material.LAPIS_BLOCK
+				|| m == Material.MOSSY_COBBLESTONE || m == Material.SMOOTH_BRICK || m == Material.SNOW_BLOCK
+				|| m == Material.PUMPKIN || m == Material.NETHER_BRICK || m == Material.MELON_BLOCK
+				|| m == Material.MYCEL || m == Material.SOUL_SAND || m == Material.NETHER_BRICK
+				|| m == Material.SPONGE) {
 			return true;
 		}
 		return false;
@@ -1410,7 +1492,8 @@ public class RealmMechanics implements Listener {
 	/**
 	 * Is the player in a realm?
 	 * 
-	 * @param pl The player
+	 * @param pl
+	 *            The player
 	 * @return boolean True/False in realm
 	 */
 	public static boolean inRealm(Player pl) {
@@ -1420,14 +1503,14 @@ public class RealmMechanics implements Listener {
 		return true;
 	}
 
-
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onBlockBreak(BlockBreakEvent e) {
 		Player p = e.getPlayer();
 		if (p.getGameMode() == GameMode.CREATIVE) {
 			return;
 		}
-		if (p.getWorld().getName().equalsIgnoreCase(main_world_name) || InstanceMechanics.isInstance(p.getWorld().getName())) {
+		if (p.getWorld().getName().equalsIgnoreCase(main_world_name)
+				|| InstanceMechanics.isInstance(p.getWorld().getName())) {
 			return;
 		}
 		if (!p.getWorld().getName().equalsIgnoreCase(p.getName())) {
@@ -1438,8 +1521,8 @@ public class RealmMechanics implements Listener {
 			if (!(build_list.containsKey(realm_owner) && build_list.get(realm_owner).contains(p.getName()))
 					&& !(p.getWorld().getName().equalsIgnoreCase(main_world_name))) {
 				p.sendMessage(ChatColor.RED + "You aren't authorized to build in " + realm_owner + "'s realm.");
-				p.sendMessage(ChatColor.GRAY + realm_owner + " will have to " + ChatColor.UNDERLINE + "Sneak Left Click" + ChatColor.GRAY
-						+ " you with their Realm Portal Rune to add you to their builder list.");
+				p.sendMessage(ChatColor.GRAY + realm_owner + " will have to " + ChatColor.UNDERLINE + "Sneak Left Click"
+						+ ChatColor.GRAY + " you with their Realm Portal Rune to add you to their builder list.");
 				return;
 			}
 		}
@@ -1494,11 +1577,13 @@ public class RealmMechanics implements Listener {
 
 		if (!doesWorldExistLocal(p.getName())) {
 			return;
-			// If the player doesn't have a realm, we don't need to do anything else.
+			// If the player doesn't have a realm, we don't need to do anything
+			// else.
 		}
 
 		if (isWorldLoaded(p.getName())) {
-			// The player has a world and it's loaded, so we need to unload/process it before doing anything else.
+			// The player has a world and it's loaded, so we need to
+			// unload/process it before doing anything else.
 			upgrading_realms.remove(p.getName());
 			realm_percent.remove(p.getName());
 			block_process_list.remove(p.getName());
@@ -1523,7 +1608,8 @@ public class RealmMechanics implements Listener {
 			zipDirectory(new File(world_name), new File(rootDir + "/realms/up/" + world_name + ".zip"));
 			log.info("[RealmMechanics] " + world_name + "'s realm is now uploading...");
 
-			URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + world_name + ".zip");
+			URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP
+					+ Config.realmPath + world_name + ".zip");
 			URLConnection urlc = url.openConnection();
 			OutputStream out = urlc.getOutputStream();
 
@@ -1568,9 +1654,12 @@ public class RealmMechanics implements Listener {
 
 		String p_realm_name = "";
 		if (p_realm != null) {
-			p_realm_name = p_realm.getName(); // Need to store the world name since we're going to unload it.
+			p_realm_name = p_realm.getName(); // Need to store the world name
+												// since we're going to unload
+												// it.
 			if (p_realm.getPlayers().size() >= 1 && Hive.shutting_down == false) {
-				// There are some players left in the realm, we give them a 2 minute grace period.
+				// There are some players left in the realm, we give them a 2
+				// minute grace period.
 				if (!offline_player_realms.containsKey(p_name) && shutting_down == false) {
 					handle2MinCD(p_name, p_realm);
 					return;
@@ -1591,10 +1680,12 @@ public class RealmMechanics implements Listener {
 		if (shutting_down == false) {
 			try {
 				// Thread.sleep(1000);
-				zipDirectory(new File(rootDir + "/" + p_safe_realm_name), new File(rootDir + "/realms/up/" + p_safe_realm_name + ".zip"));
+				zipDirectory(new File(rootDir + "/" + p_safe_realm_name),
+						new File(rootDir + "/realms/up/" + p_safe_realm_name + ".zip"));
 				log.info("[RealmMechanics] " + p_safe_realm_name + "'s realm is now uploading...");
 
-				URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + p_safe_realm_name + ".zip");
+				URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP
+						+ Config.realmPath + p_safe_realm_name + ".zip");
 				System.out.println(url.getPath());
 				URLConnection urlc = url.openConnection();
 				OutputStream out = urlc.getOutputStream();
@@ -1612,7 +1703,8 @@ public class RealmMechanics implements Listener {
 				is.close();
 
 				new File(rootDir + "/realms/down/" + p_safe_realm_name + ".zip").delete();
-				// We can delete this if the server isn't offline, cause it will have been uploaded.
+				// We can delete this if the server isn't offline, cause it will
+				// have been uploaded.
 
 				log.info("[RealmMechanics] Uploaded realm for " + p_safe_realm_name);
 
@@ -1626,10 +1718,12 @@ public class RealmMechanics implements Listener {
 
 		if (shutting_down == true) {
 			try {
-				zipDirectory(new File(rootDir + "/" + p_safe_realm_name), new File(rootDir + "/realms/up/" + p_safe_realm_name + ".zip"));
+				zipDirectory(new File(rootDir + "/" + p_safe_realm_name),
+						new File(rootDir + "/realms/up/" + p_safe_realm_name + ".zip"));
 				log.info("[RealmMechanics] " + p_safe_realm_name + "'s realm is now uploading...");
 
-				URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + p_safe_realm_name + ".zip");
+				URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP
+						+ Config.realmPath + p_safe_realm_name + ".zip");
 				URLConnection urlc = url.openConnection();
 				OutputStream out = urlc.getOutputStream();
 
@@ -1674,7 +1768,8 @@ public class RealmMechanics implements Listener {
 			return;
 		}
 
-		if (!p.isOp() && (e.getBlock().getType() == Material.TRAPPED_CHEST || e.getBlock().getType() == Material.GOLD_BLOCK)) {
+		if (!p.isOp() && (e.getBlock().getType() == Material.TRAPPED_CHEST
+				|| e.getBlock().getType() == Material.GOLD_BLOCK)) {
 			if (e.getBlock().getType() == Material.TRAPPED_CHEST) {
 				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " place this "
 						+ e.getBlock().getType().name().toUpperCase() + " as it is an illegal item.");
@@ -1684,7 +1779,8 @@ public class RealmMechanics implements Listener {
 			return;
 		}
 
-		if (block_world_name.equalsIgnoreCase(main_world_name) || InstanceMechanics.isInstance(p.getWorld().getName())) {
+		if (block_world_name.equalsIgnoreCase(main_world_name)
+				|| InstanceMechanics.isInstance(p.getWorld().getName())) {
 			return;// RestrictionMechanics.
 		}
 
@@ -1693,7 +1789,8 @@ public class RealmMechanics implements Listener {
 		}
 
 		String realm_owner = block_world_name;
-		if (block_world_name.equalsIgnoreCase(p.getName()) || (build_list.containsKey(realm_owner) && build_list.get(realm_owner).contains(p.getName()))) {
+		if (block_world_name.equalsIgnoreCase(p.getName())
+				|| (build_list.containsKey(realm_owner) && build_list.get(realm_owner).contains(p.getName()))) {
 			if (upgrading_realms.contains(block_world_name)) {
 				e.setCancelled(true);
 				p.updateInventory();
@@ -1702,13 +1799,25 @@ public class RealmMechanics implements Listener {
 			}
 			// Their own realm.
 			int realm_tier = getRealmTier(block_world_name);
-			int max_size = getRealmSizeDimensions(realm_tier) + 16; // Add 16, because the default chunk (0,0) is never used, and 16 is lowest you can be.
+			int max_size = getRealmSizeDimensions(realm_tier) + 16; // Add 16,
+																	// because
+																	// the
+																	// default
+																	// chunk
+																	// (0,0) is
+																	// never
+																	// used, and
+																	// 16 is
+																	// lowest
+																	// you can
+																	// be.
 
 			int max_y = 128; // + (max_size / 2)
 			Block b = e.getBlock();
 			if (!(p.isOp())) {
-				if (Math.round(b.getX() - 0.5) > max_size || Math.round(b.getX() - 0.5) < 16 || Math.round(b.getZ() - 0.5) > max_size
-						|| Math.round(b.getZ() - 0.5) < 16 || (b.getY() > (max_y + (max_size) + 1)) || (b.getY() < (max_y - (max_size) - 1))) {
+				if (Math.round(b.getX() - 0.5) > max_size || Math.round(b.getX() - 0.5) < 16
+						|| Math.round(b.getZ() - 0.5) > max_size || Math.round(b.getZ() - 0.5) < 16
+						|| (b.getY() > (max_y + (max_size) + 1)) || (b.getY() < (max_y - (max_size) - 1))) {
 					e.setCancelled(true);
 					p.updateInventory();
 					return;
@@ -1742,8 +1851,9 @@ public class RealmMechanics implements Listener {
 
 		if (!(p.getWorld().getName().equalsIgnoreCase(main_world_name))) {
 			p.sendMessage(ChatColor.RED + "You aren't authorized to build in " + block_world_name + "'s realm.");
-			p.sendMessage(ChatColor.GRAY + block_world_name + " will have to " + ChatColor.UNDERLINE + "Sneak Left Click" + ChatColor.GRAY
-					+ " you with their Realm Portal Rune to add you to their builder list.");
+			p.sendMessage(
+					ChatColor.GRAY + block_world_name + " will have to " + ChatColor.UNDERLINE + "Sneak Left Click"
+							+ ChatColor.GRAY + " you with their Realm Portal Rune to add you to their builder list.");
 		}
 
 	}
@@ -1762,7 +1872,8 @@ public class RealmMechanics implements Listener {
 			new_tier = Integer.parseInt(auth_code.substring(0, 1));
 			int cost = getRealmUpgradeCost(new_tier);
 			if (!(doTheyHaveEnoughMoney(p, cost))) {
-				p.sendMessage(ChatColor.RED + "You do not have enough GEM(s) to purchase this upgrade. Upgrade cancelled.");
+				p.sendMessage(
+						ChatColor.RED + "You do not have enough GEM(s) to purchase this upgrade. Upgrade cancelled.");
 				p.sendMessage(ChatColor.RED + "COST: " + cost + " Gem(s)");
 				realm_upgrade_codes.remove(p);
 				return;
@@ -1780,7 +1891,9 @@ public class RealmMechanics implements Listener {
 			realm_upgrade_codes.remove(p);
 			p.sendMessage("");
 			/*
-			 * p.sendMessage(ChatColor.LIGHT_PURPLE + "*** REALM UPGRADE TO TIER " + new_tier + " ACTIVATED ***"); p.sendMessage(ChatColor.GRAY + "0%");
+			 * p.sendMessage(ChatColor.LIGHT_PURPLE +
+			 * "*** REALM UPGRADE TO TIER " + new_tier + " ACTIVATED ***");
+			 * p.sendMessage(ChatColor.GRAY + "0%");
 			 */
 			upgrading_realms.add(p.getWorld().getName());
 		} else {
@@ -1820,14 +1933,14 @@ public class RealmMechanics implements Listener {
 		}
 
 		if (amount_to_buy > 64) {
-			p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " buy MORE than " + ChatColor.BOLD + "64x" + ChatColor.RED
-					+ " of a material per transaction.");
+			p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " buy MORE than "
+					+ ChatColor.BOLD + "64x" + ChatColor.RED + " of a material per transaction.");
 			return;
 		}
 
 		if (amount_to_buy <= 0) {
-			p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " buy LESS than " + ChatColor.BOLD + "1x" + ChatColor.RED
-					+ " of a material per transaction.");
+			p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " buy LESS than "
+					+ ChatColor.BOLD + "1x" + ChatColor.RED + " of a material per transaction.");
 			return;
 		}
 
@@ -1851,15 +1964,18 @@ public class RealmMechanics implements Listener {
 
 			if (!doTheyHaveEnoughMoney(p, total_price)) {
 				p.sendMessage(ChatColor.RED + "You do not have enough GEM(s) to complete this purchase.");
-				p.sendMessage(ChatColor.GRAY + "" + amount_to_buy + " X " + price_per + " gem(s)/ea = " + total_price + " gem(s).");
+				p.sendMessage(ChatColor.GRAY + "" + amount_to_buy + " X " + price_per + " gem(s)/ea = " + total_price
+						+ " gem(s).");
 				return;
 			}
 
 			subtractMoney(p, total_price);
-			p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "-" + ChatColor.RED + total_price + ChatColor.BOLD + "G");
+			p.sendMessage(
+					ChatColor.RED + "" + ChatColor.BOLD + "-" + ChatColor.RED + total_price + ChatColor.BOLD + "G");
 			p.sendMessage(ChatColor.GREEN + "Transaction successful.");
 
-			p.getInventory().setItem(p.getInventory().firstEmpty(), new ItemStack(i.getType(), amount_to_buy, i.getDurability()));
+			p.getInventory().setItem(p.getInventory().firstEmpty(),
+					new ItemStack(i.getType(), amount_to_buy, i.getDurability()));
 		} else if (currency.equalsIgnoreCase("ecash")) {
 			double price_per = Hive.getECASHPrice(i);
 			double per_ecash = 1;
@@ -1871,7 +1987,8 @@ public class RealmMechanics implements Listener {
 
 			if (!Hive.doTheyHaveEnoughECASH(p.getName(), total_price)) {
 				p.sendMessage(ChatColor.RED + "You do not have enough E-CASH to complete this purchase.");
-				p.sendMessage(ChatColor.GRAY + "" + amount_to_buy + " X " + price_per + " EC/ea = " + total_price + " EC.");
+				p.sendMessage(
+						ChatColor.GRAY + "" + amount_to_buy + " X " + price_per + " EC/ea = " + total_price + " EC.");
 				p.sendMessage(ChatColor.GRAY + "Purchase more at store.dungeonrealms.net -- instant delivery!");
 				return;
 			}
@@ -1885,7 +2002,8 @@ public class RealmMechanics implements Listener {
 			}
 
 			if (needed_slots > available_slots) {
-				p.sendMessage(ChatColor.RED + "Not enough space available in inventory. Type 'cancel' or clear some room.");
+				p.sendMessage(
+						ChatColor.RED + "Not enough space available in inventory. Type 'cancel' or clear some room.");
 				p.sendMessage(ChatColor.GRAY + "You will need " + needed_slots + " slots.");
 				return;
 			}
@@ -1900,22 +2018,29 @@ public class RealmMechanics implements Listener {
 
 			EcashMechanics.setECASH_SQL(fp_name, fnet_ecash);
 			/*
-			 * Thread t = new Thread(new Runnable(){ public void run(){ DonationMechanics.setECASH_SQL(fp_name, fnet_ecash); } }); t.start();
+			 * Thread t = new Thread(new Runnable(){ public void run(){
+			 * DonationMechanics.setECASH_SQL(fp_name, fnet_ecash); } });
+			 * t.start();
 			 */
 
-			p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "-" + ChatColor.RED + total_price + ChatColor.BOLD + " E-CASH");
+			p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "-" + ChatColor.RED + total_price + ChatColor.BOLD
+					+ " E-CASH");
 			p.sendMessage(ChatColor.GREEN + "Transaction successful.");
 
 			while (amount_to_buy > 64) {
 				amount_to_buy -= 64;
-				p.getInventory().setItem(p.getInventory().firstEmpty(), makeUntradeable(new ItemStack(i.getType(), 64, i.getDurability())));
+				p.getInventory().setItem(p.getInventory().firstEmpty(),
+						makeUntradeable(new ItemStack(i.getType(), 64, i.getDurability())));
 			}
 			if (amount_to_buy > 0) {
-				p.getInventory().setItem(p.getInventory().firstEmpty(), makeUntradeable(new ItemStack(i.getType(), amount_to_buy, i.getDurability())));
+				p.getInventory().setItem(p.getInventory().firstEmpty(),
+						makeUntradeable(new ItemStack(i.getType(), amount_to_buy, i.getDurability())));
 			}
 		}
 
-		// p.getInventory().setItem(p.getInventory().firstEmpty(), makeUntradeable(new ItemStack(i.getType(), amount_to_buy, i.getDurability())));
+		// p.getInventory().setItem(p.getInventory().firstEmpty(),
+		// makeUntradeable(new ItemStack(i.getType(), amount_to_buy,
+		// i.getDurability())));
 
 		current_item_being_bought.remove(p.getName());
 		shop_currency.remove(p.getName());
@@ -1964,7 +2089,8 @@ public class RealmMechanics implements Listener {
 		if (p.getGameMode() == GameMode.CREATIVE) {
 			return;
 		}
-		if (p.getWorld().getName().equalsIgnoreCase(main_world_name) || InstanceMechanics.isInstance(p.getWorld().getName())) {
+		if (p.getWorld().getName().equalsIgnoreCase(main_world_name)
+				|| InstanceMechanics.isInstance(p.getWorld().getName())) {
 			return;
 		}
 		if (!p.getWorld().getName().equalsIgnoreCase(p.getName())) {
@@ -1974,16 +2100,20 @@ public class RealmMechanics implements Listener {
 
 			if (!(build_list.containsKey(realm_owner) && build_list.get(realm_owner).contains(p.getName()))
 					&& !(p.getWorld().getName().equalsIgnoreCase(main_world_name))) {
-				// p.sendMessage(ChatColor.RED + "You aren't authorized to build in " + realm_owner + "'s realm.");
-				// p.sendMessage(ChatColor.GRAY + realm_owner + " will have to " + ChatColor.UNDERLINE + "Sneak Left Click" + ChatColor.GRAY +
-				// " you with their Realm Portal Rune to add you to their builder list.");
+				// p.sendMessage(ChatColor.RED + "You aren't authorized to build
+				// in " + realm_owner + "'s realm.");
+				// p.sendMessage(ChatColor.GRAY + realm_owner + " will have to "
+				// + ChatColor.UNDERLINE + "Sneak Left Click" + ChatColor.GRAY +
+				// " you with their Realm Portal Rune to add you to their
+				// builder list.");
 				return;
 			}
 		}
 		Block b = e.getClickedBlock();
 		if (upgrading_realms.contains(p.getWorld().getName())) {
 			e.setCancelled(true);
-			// p.sendMessage(ChatColor.YELLOW + "Block events are disabled while your realm upgrades.");
+			// p.sendMessage(ChatColor.YELLOW + "Block events are disabled while
+			// your realm upgrades.");
 			return; // Let the block break event deal with it.
 		}
 
@@ -1993,7 +2123,8 @@ public class RealmMechanics implements Listener {
 			return;
 		}
 		ItemStack loot = (new ItemStack(b.getType(), 1, b.getData()));
-		// ItemStack loot = makeUntradeable(new ItemStack(b.getType(), 1, b.getData()));
+		// ItemStack loot = makeUntradeable(new ItemStack(b.getType(), 1,
+		// b.getData()));
 
 		if (b.getType() == Material.WATER || b.getType() == Material.STATIONARY_WATER || b.getType() == Material.LAVA
 				|| b.getType() == Material.STATIONARY_LAVA) {
@@ -2004,13 +2135,17 @@ public class RealmMechanics implements Listener {
 			return;
 		}
 
-		if (b.getType() == Material.CHEST) { // || b.getType() == Material.TRAPPED_CHEST - Idiots abused a bug to get infinite trapped chests.
+		if (b.getType() == Material.CHEST) { // || b.getType() ==
+												// Material.TRAPPED_CHEST -
+												// Idiots abused a bug to get
+												// infinite trapped chests.
 			Chest c = (Chest) b.getState();
 			Inventory c_inv = c.getInventory();
 			int in_chest = getUsedSlots(c_inv);
 			int available_on_player = getAvailableSlots(p.getInventory());
 			if (in_chest > available_on_player) {
-				p.sendMessage(ChatColor.RED + "You do not have enough room in your inventory for all the items in this chest.");
+				p.sendMessage(ChatColor.RED
+						+ "You do not have enough room in your inventory for all the items in this chest.");
 				p.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + "REQ: " + in_chest + " slots");
 				return;
 			}
@@ -2112,13 +2247,12 @@ public class RealmMechanics implements Listener {
 			loot.setTypeId(356);
 		}
 
-		Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(b.getLocation().getX()), (int) Math.round(b.getLocation().getY()),
-				(int) Math.round(b.getLocation().getZ()), b.getTypeId(), false);
-		((CraftServer) Main.plugin.getServer())
-		.getServer()
-		.getPlayerList()
-		.sendPacketNearby(b.getLocation().getX(), b.getLocation().getY(), b.getLocation().getZ(), 24,
-				((CraftWorld) b.getWorld()).getHandle().dimension, particles);
+		Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(b.getLocation().getX()),
+				(int) Math.round(b.getLocation().getY()), (int) Math.round(b.getLocation().getZ()), b.getTypeId(),
+				false);
+		((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(b.getLocation().getX(),
+				b.getLocation().getY(), b.getLocation().getZ(), 24, ((CraftWorld) b.getWorld()).getHandle().dimension,
+				particles);
 
 		b.setType(Material.AIR);
 
@@ -2167,46 +2301,49 @@ public class RealmMechanics implements Listener {
 			e.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onContainerInteract(PlayerInteractEvent e) {
 		final Player pl = e.getPlayer();
 		String pl_name = pl.getName();
 		String r_name = pl.getWorld().getName();
-		
-		if (r_name.equalsIgnoreCase(main_world_name) || r_name.contains("Dungeon")) 
+
+		if (r_name.equalsIgnoreCase(main_world_name) || r_name.contains("Dungeon"))
 			return;
-		
+
 		if (r_name.equalsIgnoreCase(pl_name) || PermissionMechanics.isGM(pl_name) || pl.isOp())
 			return;
-		
-		if (build_list.containsKey(r_name) && !build_list.get(r_name).isEmpty() && build_list.get(r_name).contains(pl_name))
+
+		if (build_list.containsKey(r_name) && !build_list.get(r_name).isEmpty()
+				&& build_list.get(r_name).contains(pl_name))
 			return;
-		
+
 		if (e.hasBlock() && !e.isCancelled() && containers.contains(e.getClickedBlock().getType())) {
 			e.setCancelled(true);
 			pl.sendMessage(ChatColor.RED + "That container is locked.");
 			return;
 		}
- 	}
+	}
 
 	@EventHandler
 	public void onOrbUse(PlayerInteractEvent e) {
 		Player pl = e.getPlayer();
 
-		if (isOrbOfFlight(pl.getItemInHand()) && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+		if (isOrbOfFlight(pl.getItemInHand())
+				&& (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
 			e.setCancelled(true);
 			e.setUseItemInHand(Result.DENY);
 			if (!pl.getWorld().getName().equalsIgnoreCase(pl.getName())) {
 				// Trying to use in a realm that isn't theirs.
-				pl.sendMessage(ChatColor.RED + "You may only use an " + ChatColor.UNDERLINE + "Orb of Flight" + ChatColor.RED + " in your OWN realm.");
+				pl.sendMessage(ChatColor.RED + "You may only use an " + ChatColor.UNDERLINE + "Orb of Flight"
+						+ ChatColor.RED + " in your OWN realm.");
 				pl.updateInventory();
 				return;
 			}
 
 			if (!(safe_realms.containsKey(pl.getWorld().getName()))) {
-				pl.sendMessage(ChatColor.RED + "You can only use an " + ChatColor.UNDERLINE + "Orb of Flight" + ChatColor.RED
-						+ " in a realm with an active ORB OF PEACE effect.");
+				pl.sendMessage(ChatColor.RED + "You can only use an " + ChatColor.UNDERLINE + "Orb of Flight"
+						+ ChatColor.RED + " in a realm with an active ORB OF PEACE effect.");
 				pl.updateInventory();
 				return;
 			}
@@ -2225,9 +2362,10 @@ public class RealmMechanics implements Listener {
 
 			flying_realms.put(pl.getName(), System.currentTimeMillis());
 			pl.sendMessage("");
-			pl.sendMessage(ChatColor.AQUA + "Your realm will now be a " + ChatColor.BOLD + "FLY ENABLED ZONE" + ChatColor.AQUA
-					+ " for 30 minute(s), or until logout.");
-			pl.sendMessage(ChatColor.GRAY + "Only YOU and anyone you add to your build list will be able to fly in your realm.");
+			pl.sendMessage(ChatColor.AQUA + "Your realm will now be a " + ChatColor.BOLD + "FLY ENABLED ZONE"
+					+ ChatColor.AQUA + " for 30 minute(s), or until logout.");
+			pl.sendMessage(ChatColor.GRAY
+					+ "Only YOU and anyone you add to your build list will be able to fly in your realm.");
 			pl.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "FLYING ENABLED");
 			pl.setAllowFlight(true);
 
@@ -2258,23 +2396,28 @@ public class RealmMechanics implements Listener {
 			}
 
 			/*
-			 * pl.getWorld().spawnParticle(pl.getLocation().add(0, 1, 0), Particle.CLOUD, 0.05F, 20);
-			 * pl.getWorld().spawnParticle(pl.getWorld().getSpawnLocation().add(0.5, 1.5, 0.5), Particle.CLOUD, 0.05F, 20);
+			 * pl.getWorld().spawnParticle(pl.getLocation().add(0, 1, 0),
+			 * Particle.CLOUD, 0.05F, 20);
+			 * pl.getWorld().spawnParticle(pl.getWorld().getSpawnLocation().add(
+			 * 0.5, 1.5, 0.5), Particle.CLOUD, 0.05F, 20);
 			 */
 		}
 
-		if (isOrbOfPeace(pl.getItemInHand()) && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+		if (isOrbOfPeace(pl.getItemInHand())
+				&& (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
 			e.setCancelled(true);
 			e.setUseItemInHand(Result.DENY);
 
 			if (KarmaMechanics.getRawAlignment(pl.getName()).equalsIgnoreCase("evil")) {
-				pl.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " use an orb of peace while chaotic.");
+				pl.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+						+ " use an orb of peace while chaotic.");
 				return;
 			}
 
 			if (!pl.getWorld().getName().equalsIgnoreCase(pl.getName())) {
 				// Trying to use in a realm that isn't theres'.
-				pl.sendMessage(ChatColor.RED + "You may only use an " + ChatColor.UNDERLINE + "Orb of Peace" + ChatColor.RED + " in your OWN realm.");
+				pl.sendMessage(ChatColor.RED + "You may only use an " + ChatColor.UNDERLINE + "Orb of Peace"
+						+ ChatColor.RED + " in your OWN realm.");
 				pl.updateInventory();
 				return;
 			}
@@ -2294,7 +2437,8 @@ public class RealmMechanics implements Listener {
 			safe_realms.put(pl.getName(), System.currentTimeMillis());
 			DuelMechanics.setPvPOff(pl.getWorld());
 			pl.sendMessage("");
-			pl.sendMessage(ChatColor.GREEN + "Your realm will now be a " + ChatColor.BOLD + "SAFE ZONE" + ChatColor.GREEN + " for 1 hour(s), or until logout.");
+			pl.sendMessage(ChatColor.GREEN + "Your realm will now be a " + ChatColor.BOLD + "SAFE ZONE"
+					+ ChatColor.GREEN + " for 1 hour(s), or until logout.");
 			pl.sendMessage(ChatColor.GRAY + "All damage in your realm will be disabled for this time period.");
 			pl.getWorld().playEffect(pl.getLocation(), Effect.ENDER_SIGNAL, 10);
 
@@ -2304,11 +2448,13 @@ public class RealmMechanics implements Listener {
 			holograms.get(l).setLines(lines);
 
 			try {
-				ParticleEffect.sendToLocation(ParticleEffect.HAPPY_VILLAGER, pl.getWorld().getSpawnLocation().add(0.5, 1.5, 0.5), 0, 0, 0, 0.05F, 20);
+				ParticleEffect.sendToLocation(ParticleEffect.HAPPY_VILLAGER,
+						pl.getWorld().getSpawnLocation().add(0.5, 1.5, 0.5), 0, 0, 0, 0.05F, 20);
 			} catch (Exception err) {
 				err.printStackTrace();
 			}
-			// pl.getWorld().spawnParticle(pl.getWorld().getSpawnLocation().add(0.5, 1.5, 0.5), Particle.HAPPY_VILLAGER, 0.05F, 20);
+			// pl.getWorld().spawnParticle(pl.getWorld().getSpawnLocation().add(0.5,
+			// 1.5, 0.5), Particle.HAPPY_VILLAGER, 0.05F, 20);
 		}
 	}
 
@@ -2316,8 +2462,10 @@ public class RealmMechanics implements Listener {
 	public void onPlayerInteractEvent(PlayerInteractEvent e) {
 		final Player p = e.getPlayer();
 
-		if (!(e.isCancelled()) && e.hasBlock() && e.getClickedBlock().getType() == Material.PORTAL && e.getAction() == Action.RIGHT_CLICK_BLOCK
-				&& (p.getWorld().getName().equalsIgnoreCase(Bukkit.getWorlds().get(0).getName()) || InstanceMechanics.isInstance(p.getWorld().getName()))) {
+		if (!(e.isCancelled()) && e.hasBlock() && e.getClickedBlock().getType() == Material.PORTAL
+				&& e.getAction() == Action.RIGHT_CLICK_BLOCK
+				&& (p.getWorld().getName().equalsIgnoreCase(Bukkit.getWorlds().get(0).getName())
+						|| InstanceMechanics.isInstance(p.getWorld().getName()))) {
 			Block portal = e.getClickedBlock();
 			String realm_owner = "";
 			for (Entry<Location, String> entry : portal_map.entrySet()) {
@@ -2331,18 +2479,20 @@ public class RealmMechanics implements Listener {
 				}
 			}
 
-			p.sendMessage(ChatColor.LIGHT_PURPLE + "This portal teleports to " + ChatColor.BOLD + ChatMechanics.getPlayerPrefix(realm_owner, true)
-					+ realm_owner + "'s" + ChatColor.LIGHT_PURPLE + " Realm");
+			p.sendMessage(ChatColor.LIGHT_PURPLE + "This portal teleports to " + ChatColor.BOLD
+					+ ChatMechanics.getPlayerPrefix(realm_owner, true) + realm_owner + "'s" + ChatColor.LIGHT_PURPLE
+					+ " Realm");
 
 			if (safe_realms.containsKey(realm_owner)) {
 
 				if (flying_realms.containsKey(realm_owner)) {
-					p.sendMessage(ChatColor.GRAY.toString() + "Realm Type: " + ChatColor.GREEN + "SAFE " + ChatColor.GRAY + "for "
-							+ getSecondsOfWildernessLeft(realm_owner) + "s │ " + ChatColor.GRAY + "Flying " + ChatColor.AQUA + "" + ChatColor.UNDERLINE
-							+ "ENABLED" + ChatColor.GRAY + " for " + getSecondsOfFlyingLeft(realm_owner) + "s");
+					p.sendMessage(ChatColor.GRAY.toString() + "Realm Type: " + ChatColor.GREEN + "SAFE "
+							+ ChatColor.GRAY + "for " + getSecondsOfWildernessLeft(realm_owner) + "s │ "
+							+ ChatColor.GRAY + "Flying " + ChatColor.AQUA + "" + ChatColor.UNDERLINE + "ENABLED"
+							+ ChatColor.GRAY + " for " + getSecondsOfFlyingLeft(realm_owner) + "s");
 				} else {
-					p.sendMessage(ChatColor.GRAY.toString() + "Realm Type: " + ChatColor.GREEN + "SAFE " + ChatColor.GRAY + "for "
-							+ getSecondsOfWildernessLeft(realm_owner) + "s");
+					p.sendMessage(ChatColor.GRAY.toString() + "Realm Type: " + ChatColor.GREEN + "SAFE "
+							+ ChatColor.GRAY + "for " + getSecondsOfWildernessLeft(realm_owner) + "s");
 				}
 				// getSecondsOfWildernessLeft
 			} else {
@@ -2351,9 +2501,11 @@ public class RealmMechanics implements Listener {
 			}
 
 			if (Bukkit.getWorld(realm_owner) != null) {
-				p.sendMessage(ChatColor.GRAY + "Realm Population: " + Bukkit.getWorld(realm_owner).getPlayers().size() + " player(s)");
+				p.sendMessage(ChatColor.GRAY + "Realm Population: " + Bukkit.getWorld(realm_owner).getPlayers().size()
+						+ " player(s)");
 			}
-			if (realm_title.containsKey(realm_owner) && !(realm_title.get(realm_owner) == null) && !realm_title.get(realm_owner).equalsIgnoreCase("null")) {
+			if (realm_title.containsKey(realm_owner) && !(realm_title.get(realm_owner) == null)
+					&& !realm_title.get(realm_owner).equalsIgnoreCase("null")) {
 				p.sendMessage(ChatColor.GRAY + realm_title.get(realm_owner));
 			} else {
 				p.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "No description.");
@@ -2364,29 +2516,32 @@ public class RealmMechanics implements Listener {
 			return;
 		}
 
-		if (e.hasBlock() && e.getClickedBlock().getType() == Material.PORTAL && e.getAction() == Action.LEFT_CLICK_BLOCK) {
+		if (e.hasBlock() && e.getClickedBlock().getType() == Material.PORTAL
+				&& e.getAction() == Action.LEFT_CLICK_BLOCK) {
 			Block portal = e.getClickedBlock();
 			Location portal_l = inv_portal_map.get(p.getName());
 
 			/*
-			 * for(Entry<Location, String> data : portal_map.entrySet()){ Location loc = data.getKey(); if(loc.distanceSquared(portal_l) <= 4){
+			 * for(Entry<Location, String> data : portal_map.entrySet()){
+			 * Location loc = data.getKey(); if(loc.distanceSquared(portal_l) <=
+			 * 4){
 			 *
 			 * } }
 			 */
 
 			if (portal_l == null || !portal.getWorld().getName().equalsIgnoreCase(portal_l.getWorld().getName())
 					|| portal.getLocation().distanceSquared(portal_l) > 4) {
-				Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(portal.getLocation().getX()), (int) Math.round(portal.getLocation()
-						.getY()), (int) Math.round(portal.getLocation().getZ()), 90, false);
-				((CraftServer) Main.plugin.getServer())
-				.getServer()
-				.getPlayerList()
-				.sendPacketNearby(portal.getLocation().getX(), portal.getLocation().getY(), portal.getLocation().getZ(), 24,
+				Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(portal.getLocation().getX()),
+						(int) Math.round(portal.getLocation().getY()), (int) Math.round(portal.getLocation().getZ()),
+						90, false);
+				((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
+						portal.getLocation().getX(), portal.getLocation().getY(), portal.getLocation().getZ(), 24,
 						((CraftWorld) portal.getWorld()).getHandle().dimension, particles);
 				return;
 			}
 
-			if (portal_l.getWorld().getName().equalsIgnoreCase(p.getWorld().getName()) && portal.getLocation().distanceSquared(portal_l) <= 4) {
+			if (portal_l.getWorld().getName().equalsIgnoreCase(p.getWorld().getName())
+					&& portal.getLocation().distanceSquared(portal_l) <= 4) {
 				Location l = portal_l;
 
 				has_portal.remove(p.getName());
@@ -2413,7 +2568,8 @@ public class RealmMechanics implements Listener {
 				holograms.get(l).destroy();
 				holograms.remove(l);
 
-				// p.sendMessage(ChatColor.RED + "Portal " + ChatColor.BOLD + "CLOSED");
+				// p.sendMessage(ChatColor.RED + "Portal " + ChatColor.BOLD +
+				// "CLOSED");
 				return;
 			}
 			return;
@@ -2432,8 +2588,11 @@ public class RealmMechanics implements Listener {
 				&& (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR)) {
 
 			String m = Bukkit.getMotd();
-			if(m.contains("US-100") || m.contains("US-101") || m.contains("US-102") || m.contains("US-103") || m.contains("US-104") || m.contains("US-105") || m.contains("US-106") || m.contains("US-107") || m.contains("US-108") || m.contains("US-108") || m.contains("US-109") || m.contains("US-110")){
-				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " do this on the " + ChatColor.UNDERLINE + "Beta Servers" + ChatColor.RED + "!");
+			if (m.contains("US-100") || m.contains("US-101") || m.contains("US-102") || m.contains("US-103")
+					|| m.contains("US-104") || m.contains("US-105") || m.contains("US-106") || m.contains("US-107")
+					|| m.contains("US-108") || m.contains("US-108") || m.contains("US-109") || m.contains("US-110")) {
+				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+						+ " do this on the " + ChatColor.UNDERLINE + "Beta Servers" + ChatColor.RED + "!");
 				return;
 			}
 
@@ -2463,29 +2622,37 @@ public class RealmMechanics implements Listener {
 			generateUpgradeAuthenticationCode(p, String.valueOf(next_realm_tier));
 
 			p.sendMessage("");
-			p.sendMessage(ChatColor.DARK_GRAY + "           *** " + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "Realm Upgrade Confirmation"
-					+ ChatColor.DARK_GRAY + " ***");
-			p.sendMessage(ChatColor.DARK_GRAY + "FROM Tier " + ChatColor.LIGHT_PURPLE + realm_tier + ChatColor.DARK_GRAY + " TO " + ChatColor.LIGHT_PURPLE
-					+ next_realm_tier);
-			p.sendMessage(ChatColor.DARK_GRAY + "Upgrade Cost: " + ChatColor.LIGHT_PURPLE + "" + upgrade_cost + " Gem(s)");
+			p.sendMessage(ChatColor.DARK_GRAY + "           *** " + ChatColor.LIGHT_PURPLE + ChatColor.BOLD
+					+ "Realm Upgrade Confirmation" + ChatColor.DARK_GRAY + " ***");
+			p.sendMessage(ChatColor.DARK_GRAY + "FROM Tier " + ChatColor.LIGHT_PURPLE + realm_tier + ChatColor.DARK_GRAY
+					+ " TO " + ChatColor.LIGHT_PURPLE + next_realm_tier);
+			p.sendMessage(
+					ChatColor.DARK_GRAY + "Upgrade Cost: " + ChatColor.LIGHT_PURPLE + "" + upgrade_cost + " Gem(s)");
 			p.sendMessage("");
-			p.sendMessage(ChatColor.LIGHT_PURPLE + "Enter the code " + ChatColor.BOLD + getUpgradeAuthenticationCode(p) + ChatColor.LIGHT_PURPLE
-					+ " to confirm your upgrade.");
+			p.sendMessage(ChatColor.LIGHT_PURPLE + "Enter the code " + ChatColor.BOLD + getUpgradeAuthenticationCode(p)
+					+ ChatColor.LIGHT_PURPLE + " to confirm your upgrade.");
 			p.sendMessage("");
-			p.sendMessage("" + ChatColor.RED + ChatColor.BOLD + "WARNING:" + ChatColor.RED + " Realm upgrades are " + ChatColor.BOLD + ChatColor.RED + "NOT"
-					+ ChatColor.RED + " reversible or refundable. Type 'cancel' to void this upgrade request.");
+			p.sendMessage("" + ChatColor.RED + ChatColor.BOLD + "WARNING:" + ChatColor.RED + " Realm upgrades are "
+					+ ChatColor.BOLD + ChatColor.RED + "NOT" + ChatColor.RED
+					+ " reversible or refundable. Type 'cancel' to void this upgrade request.");
 			p.sendMessage("");
 			return;
 		}
 
-		if ((e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) && e.getItem().getType() == Material.NETHER_STAR) {
+		if ((e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK)
+				&& e.getItem().getType() == Material.NETHER_STAR) {
 			/*
-			 * if(!(p.isSneaking()) && p.getWorld().getName().equalsIgnoreCase(main_world_name)){ if(e.getAction() == Action.LEFT_CLICK_BLOCK){
-			 * p.sendMessage(ChatColor.RED + "You cannot open the realm shop outside of your realm."); } return; // They can open it anywhere but main world. }
+			 * if(!(p.isSneaking()) &&
+			 * p.getWorld().getName().equalsIgnoreCase(main_world_name)){
+			 * if(e.getAction() == Action.LEFT_CLICK_BLOCK){
+			 * p.sendMessage(ChatColor.RED +
+			 * "You cannot open the realm shop outside of your realm."); }
+			 * return; // They can open it anywhere but main world. }
 			 */
 			if (current_item_being_bought.containsKey(p.getName())) {
-				p.sendMessage(ChatColor.RED + "You have a " + ChatColor.UNDERLINE + "pending" + ChatColor.RED + " Realm Shop transaction, type '"
-						+ ChatColor.GRAY + "cancel" + ChatColor.RED + "' and try again.");
+				p.sendMessage(ChatColor.RED + "You have a " + ChatColor.UNDERLINE + "pending" + ChatColor.RED
+						+ " Realm Shop transaction, type '" + ChatColor.GRAY + "cancel" + ChatColor.RED
+						+ "' and try again.");
 				return;
 			}
 			if (p.isSneaking()) {
@@ -2499,8 +2666,9 @@ public class RealmMechanics implements Listener {
 
 				Player target = getTarget(p);
 				if (target == null) {
-					p.sendMessage(ChatColor.RED + "To allow a player to build in your realm, you need to " + ChatColor.UNDERLINE + "SNEAK LEFT CLICK"
-							+ ChatColor.RED + " them with this Realm Portal Rune.");
+					p.sendMessage(ChatColor.RED + "To allow a player to build in your realm, you need to "
+							+ ChatColor.UNDERLINE + "SNEAK LEFT CLICK" + ChatColor.RED
+							+ " them with this Realm Portal Rune.");
 					p.sendMessage(ChatColor.GRAY
 							+ "Once enabled, they will be able to modify your realm for the rest of your current game session, or until you logout.");
 					return;
@@ -2517,10 +2685,12 @@ public class RealmMechanics implements Listener {
 					lbuild_list.remove(target.getName());
 					build_list.put(p.getName(), lbuild_list);
 
-					p.sendMessage(ChatColor.RED + "" + ChatColor.UNDERLINE + "REMOVED " + ChatColor.RED + "" + ChatColor.BOLD + target.getName()
-							+ ChatColor.RED + " from your realm builder list.");
-					p.sendMessage(ChatColor.GRAY + target.getName() + " can no longer place/destroy blocks in your realm.");
-					target.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "REMOVED " + ChatColor.RED + "from " + p.getName() + "'s builder list.");
+					p.sendMessage(ChatColor.RED + "" + ChatColor.UNDERLINE + "REMOVED " + ChatColor.RED + ""
+							+ ChatColor.BOLD + target.getName() + ChatColor.RED + " from your realm builder list.");
+					p.sendMessage(
+							ChatColor.GRAY + target.getName() + " can no longer place/destroy blocks in your realm.");
+					target.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "REMOVED " + ChatColor.RED + "from "
+							+ p.getName() + "'s builder list.");
 					target.sendMessage(ChatColor.GRAY + "You can no longer place/destroy blocks in their realm.");
 					target.setAllowFlight(false);
 					return;
@@ -2528,8 +2698,8 @@ public class RealmMechanics implements Listener {
 					// Add.
 					if (!(CommunityMechanics.isPlayerOnBuddyList(p, target.getName()))) {
 						p.sendMessage(ChatColor.RED + "Cannot add a non-buddy to realm build list.");
-						p.sendMessage(ChatColor.GRAY + "Type '" + ChatColor.BOLD + "/add " + target.getName() + ChatColor.GRAY
-								+ "' to add them to your buddy list.");
+						p.sendMessage(ChatColor.GRAY + "Type '" + ChatColor.BOLD + "/add " + target.getName()
+								+ ChatColor.GRAY + "' to add them to your buddy list.");
 						return;
 					}
 					List<String> lbuild_list = new ArrayList<String>();
@@ -2538,16 +2708,19 @@ public class RealmMechanics implements Listener {
 					}
 					lbuild_list.add(target.getName());
 					build_list.put(p.getName(), lbuild_list);
-					p.sendMessage(ChatColor.GREEN + "" + ChatColor.UNDERLINE + "ADDED " + ChatColor.GREEN + "" + ChatColor.BOLD + target.getName()
-							+ ChatColor.GREEN + " to your realm builder list.");
+					p.sendMessage(ChatColor.GREEN + "" + ChatColor.UNDERLINE + "ADDED " + ChatColor.GREEN + ""
+							+ ChatColor.BOLD + target.getName() + ChatColor.GREEN + " to your realm builder list.");
 					p.sendMessage(ChatColor.GRAY + target.getName()
 							+ " can now place/destroy blocks in your realm until you logout of your current game session.");
-					target.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "ADDED" + ChatColor.GREEN + " to " + p.getName() + "'s build list.");
-					target.sendMessage(ChatColor.GRAY + "You can now place/destroy blocks in their realm until the end of their game session.");
+					target.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "ADDED" + ChatColor.GREEN + " to "
+							+ p.getName() + "'s build list.");
+					target.sendMessage(ChatColor.GRAY
+							+ "You can now place/destroy blocks in their realm until the end of their game session.");
 
 					AchievementMechanics.addAchievement(p.getName(), "Creative Companion");
 
-					if (flying_realms.containsKey(p.getWorld().getName()) && DuelMechanics.isDamageDisabled(p.getWorld().getSpawnLocation())
+					if (flying_realms.containsKey(p.getWorld().getName())
+							&& DuelMechanics.isDamageDisabled(p.getWorld().getSpawnLocation())
 							&& safe_realms.containsKey(p.getWorld().getName())) {
 						target.setAllowFlight(true);
 						target.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "FLYING ENABLED");
@@ -2558,8 +2731,10 @@ public class RealmMechanics implements Listener {
 				return; // Damage event to add user to build list.
 			} else if (!(p.isSneaking())) {
 				if (HealthMechanics.in_combat.containsKey(p.getName())) {
-					p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " open the realm shop while in combat.");
-					p.sendMessage(ChatColor.GRAY + "Wait " + ChatColor.UNDERLINE + "a few seconds" + ChatColor.GRAY + " and try again.");
+					p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+							+ " open the realm shop while in combat.");
+					p.sendMessage(ChatColor.GRAY + "Wait " + ChatColor.UNDERLINE + "a few seconds" + ChatColor.GRAY
+							+ " and try again.");
 					return;
 				}
 
@@ -2584,15 +2759,19 @@ public class RealmMechanics implements Listener {
 			e.setCancelled(true);
 
 			String m = Bukkit.getMotd();
-			if(m.contains("US-100") || m.contains("US-101") || m.contains("US-102") || m.contains("US-103") || m.contains("US-104") || m.contains("US-105") || m.contains("US-106") || m.contains("US-107") || m.contains("US-108") || m.contains("US-108") || m.contains("US-109") || m.contains("US-110")){
-				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " do this on the " + ChatColor.UNDERLINE + "Beta Servers" + ChatColor.RED + "!");
+			if (m.contains("US-100") || m.contains("US-101") || m.contains("US-102") || m.contains("US-103")
+					|| m.contains("US-104") || m.contains("US-105") || m.contains("US-106") || m.contains("US-107")
+					|| m.contains("US-108") || m.contains("US-108") || m.contains("US-109") || m.contains("US-110")) {
+				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+						+ " do this on the " + ChatColor.UNDERLINE + "Beta Servers" + ChatColor.RED + "!");
 				return;
 			}
 
 			boolean loaded = false;
 			PreparedStatement pst;
 			try {
-				pst = ConnectionPool.getConnection().prepareStatement("SELECT realm_loaded FROM player_database WHERE p_name='" + p.getName() + "'");
+				pst = ConnectionPool.getConnection().prepareStatement(
+						"SELECT realm_loaded FROM player_database WHERE p_name='" + p.getName() + "'");
 				pst.execute();
 				ResultSet rs = pst.getResultSet();
 				rs.next();
@@ -2612,20 +2791,23 @@ public class RealmMechanics implements Listener {
 				return;
 			}
 
-			if (!(block_world_name.equalsIgnoreCase(main_world_name)) && !(block_world_name.equalsIgnoreCase(p.getName()))) {
+			if (!(block_world_name.equalsIgnoreCase(main_world_name))
+					&& !(block_world_name.equalsIgnoreCase(p.getName()))) {
 				if (InstanceMechanics.isInstance(block_world_name)) {
 					p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
 							+ " open your realm portal while inside a dungeon instance.");
 				} else {
-					p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " open your realm portal inside another realm.");
+					p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+							+ " open your realm portal inside another realm.");
 				}
 				return;
 			}
 
 			if (!(block_world_name.equalsIgnoreCase(p.getName()))
-					&& (isTherePortalLocationNear(e.getClickedBlock().getLocation().add(0, 1, 0), 5) || isThereAPortalNear(e.getClickedBlock().getLocation()
-							.add(0, 1, 0).getBlock(), 5))) {
-				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " open a realm portal so close to another."); // Too
+					&& (isTherePortalLocationNear(e.getClickedBlock().getLocation().add(0, 1, 0), 5)
+							|| isThereAPortalNear(e.getClickedBlock().getLocation().add(0, 1, 0).getBlock(), 5))) {
+				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+						+ " open a realm portal so close to another."); // Too
 				// close
 				// to
 				// another
@@ -2635,24 +2817,30 @@ public class RealmMechanics implements Listener {
 			}
 
 			if (Hive.hive_ddos == true) {
-				p.sendMessage(ChatColor.RED + "The hive server is currently offline, and no cached version of your realm is available.");
-				p.sendMessage(ChatColor.GRAY + "You'll be able to access your realm again once the hive server is back online.");
+				p.sendMessage(ChatColor.RED
+						+ "The hive server is currently offline, and no cached version of your realm is available.");
+				p.sendMessage(ChatColor.GRAY
+						+ "You'll be able to access your realm again once the hive server is back online.");
 				return;
 			}
 
 			final Location portal_location = e.getClickedBlock().getLocation();
 
-			if (!(portal_location.add(0, 1, 0).getBlock().getType() == Material.AIR) || !(portal_location.add(0, 1, 0).getBlock().getType() == Material.AIR)
+			if (!(portal_location.add(0, 1, 0).getBlock().getType() == Material.AIR)
+					|| !(portal_location.add(0, 1, 0).getBlock().getType() == Material.AIR)
 					|| e.getClickedBlock().getLocation().getBlock().getType() == Material.CHEST
 					|| e.getClickedBlock().getLocation().getBlock().getType() == Material.ENDER_CHEST
 					|| e.getClickedBlock().getLocation().getBlock().getType() == Material.PORTAL
 					|| e.getClickedBlock().getLocation().getBlock().getType() == Material.ANVIL) {
-				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " open a realm portal here.");
+				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+						+ " open a realm portal here.");
 				return;
 			}
 
-			if (!(block_world_name.equalsIgnoreCase(p.getName())) && LootMechanics.loot_spawns.containsKey(e.getClickedBlock().getLocation().add(0, 1, 0))) {
-				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " open a realm portal here.");
+			if (!(block_world_name.equalsIgnoreCase(p.getName()))
+					&& LootMechanics.loot_spawns.containsKey(e.getClickedBlock().getLocation().add(0, 1, 0))) {
+				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+						+ " open a realm portal here.");
 				return;
 			}
 
@@ -2665,21 +2853,25 @@ public class RealmMechanics implements Listener {
 			}
 
 			if (HealthMechanics.in_combat.containsKey(p.getName())) {
-				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " place a realm portal while in combat.");
-				p.sendMessage(ChatColor.GRAY + "Wait " + ChatColor.UNDERLINE + "a few seconds" + ChatColor.GRAY + " and try again.");
+				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+						+ " place a realm portal while in combat.");
+				p.sendMessage(ChatColor.GRAY + "Wait " + ChatColor.UNDERLINE + "a few seconds" + ChatColor.GRAY
+						+ " and try again.");
 				return;
 			}
 
 			if (!p.isOp()) {
 				if (!(block_world_name.equalsIgnoreCase(p.getName())) && TradeMechanics.getTarget(p) != null
 						|| MoneyMechanics.isThereABankChestNear(e.getClickedBlock(), 10)) {
-					p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " place your realm portal here.");
+					p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+							+ " place your realm portal here.");
 					return;
 				}
 			}
 
 			if (ShopMechanics.isThereALadderNear(e.getClickedBlock(), 2)) {
-				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " place your realm portal here.");
+				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+						+ " place your realm portal here.");
 				return;
 			}
 
@@ -2692,7 +2884,8 @@ public class RealmMechanics implements Listener {
 					continue;
 				}
 				if (pl.getLocation().distanceSquared(portal_loc) <= 2) {
-					p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " place your realm portal here.");
+					p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+							+ " place your realm portal here.");
 					return;
 				}
 			}
@@ -2712,7 +2905,8 @@ public class RealmMechanics implements Listener {
 					holograms.get(old_portal).destroy();
 					holograms.remove(old_portal);
 				}
-				Bukkit.getWorld(block_world_name).setSpawnLocation(new_portal.getBlockX(), new_portal.getBlockY() + 1, new_portal.getBlockZ());
+				Bukkit.getWorld(block_world_name).setSpawnLocation(new_portal.getBlockX(), new_portal.getBlockY() + 1,
+						new_portal.getBlockZ());
 				new_portal.getBlock().setType(Material.PORTAL);
 				new_portal.add(0, 1, 0).getBlock().setType(Material.PORTAL);
 				return;
@@ -2740,9 +2934,11 @@ public class RealmMechanics implements Listener {
 			has_portal.put(p.getName(), true);
 			p.setItemInHand(makeTeleportRune(p));
 			makePortal(p.getName(), portal_location.subtract(0, 2, 0), 60);
-			if (new_realm == true) { // We don't need to load the world if we're just moving the portal.
+			if (new_realm == true) { // We don't need to load the world if we're
+										// just moving the portal.
 				/*
-				 * Thread t = new Thread(new Runnable() { public void run() { realmHandler(p, p.getName()); } });
+				 * Thread t = new Thread(new Runnable() { public void run() {
+				 * realmHandler(p, p.getName()); } });
 				 *
 				 * t.start();
 				 */
@@ -2785,7 +2981,8 @@ public class RealmMechanics implements Listener {
 				ex = loc.getX();
 				ey = loc.getY();
 				ez = loc.getZ();
-				if ((bx - .75 <= ex && ex <= bx + 1.75) && (bz - .75 <= ez && ez <= bz + 1.75) && (by - 1 <= ey && ey <= by + 2.5)) {
+				if ((bx - .75 <= ex && ex <= bx + 1.75) && (bz - .75 <= ez && ez <= bz + 1.75)
+						&& (by - 1 <= ey && ey <= by + 2.5)) {
 					// entity is close enough, set target and stop
 					target = (Player) e;
 					break;
@@ -2807,7 +3004,8 @@ public class RealmMechanics implements Listener {
 
 		if (p.isFlying() && p.getAllowFlight() == true && !p.getWorld().getName().equalsIgnoreCase(main_world_name)
 				&& !(InstanceMechanics.isInstance(p.getWorld().getName()))) {
-			// They can fly, they're in a realm where they're allowed to fly, don't let them fly into void plz.
+			// They can fly, they're in a realm where they're allowed to fly,
+			// don't let them fly into void plz.
 			Location to = e.getTo();
 			Location safe_loc = e.getFrom();
 
@@ -2816,11 +3014,27 @@ public class RealmMechanics implements Listener {
 			} catch (Exception err) {
 				err.printStackTrace();
 			}
-			// p.getWorld().spawnParticle(p.getLocation(), Particle.CLOUD, 0.05F, 20);
+			// p.getWorld().spawnParticle(p.getLocation(), Particle.CLOUD,
+			// 0.05F, 20);
 
 			if (!(p.isOp())) {
 				int realm_tier = getRealmTier(p.getWorld().getName());
-				int max_size = getRealmSizeDimensions(realm_tier) + 16; // Add 16, because the default chunk (0,0) is never used, and 16 is lowest you can be.
+				int max_size = getRealmSizeDimensions(realm_tier) + 16; // Add
+																		// 16,
+																		// because
+																		// the
+																		// default
+																		// chunk
+																		// (0,0)
+																		// is
+																		// never
+																		// used,
+																		// and
+																		// 16 is
+																		// lowest
+																		// you
+																		// can
+																		// be.
 
 				int max_y = 128; // + (max_size / 2)
 				Block b = to.getBlock();
@@ -2829,8 +3043,9 @@ public class RealmMechanics implements Listener {
 					return; // no worries.
 				}
 
-				if (Math.round(b.getX() - 0.5) > max_size || Math.round(b.getX() - 0.5) < 16 || Math.round(b.getZ() - 0.5) > max_size
-						|| Math.round(b.getZ() - 0.5) < 16 || (b.getY() > (max_y + (max_size) + 1)) || (b.getY() < (max_y - (max_size) - 1))) {
+				if (Math.round(b.getX() - 0.5) > max_size || Math.round(b.getX() - 0.5) < 16
+						|| Math.round(b.getZ() - 0.5) > max_size || Math.round(b.getZ() - 0.5) < 16
+						|| (b.getY() > (max_y + (max_size) + 1)) || (b.getY() < (max_y - (max_size) - 1))) {
 					e.setCancelled(true);
 					p.teleport(safe_loc);
 					return;
@@ -2863,8 +3078,8 @@ public class RealmMechanics implements Listener {
 
 	public void removePistonHeads(Player pl) {
 		for (ItemStack is : pl.getInventory().getContents()) {
-			if (is != null && is.getType() == Material.THIN_GLASS && is.hasItemMeta() && is.getItemMeta().hasDisplayName()
-					&& is.getItemMeta().getDisplayName().equalsIgnoreCase(" ")) {
+			if (is != null && is.getType() == Material.THIN_GLASS && is.hasItemMeta()
+					&& is.getItemMeta().hasDisplayName() && is.getItemMeta().getDisplayName().equalsIgnoreCase(" ")) {
 				pl.getInventory().removeItem(is);
 			}
 		}
@@ -2886,7 +3101,7 @@ public class RealmMechanics implements Listener {
 			File world_root = new File(p.getName());
 			deletefolder(world_root);
 			log.info("[RealmMechanics] Found a realm that should't be on here. Deleting for player " + p.getName());
-			//removing sexy world
+			// removing sexy world
 		}
 
 		if (offline_player_realms.containsKey(p.getName())) {
@@ -2904,7 +3119,8 @@ public class RealmMechanics implements Listener {
 		if (p.getInventory().all(Material.NETHER_STAR).size() > 1) {
 			for (Entry<Integer, ? extends ItemStack> data : p.getInventory().all(Material.NETHER_STAR).entrySet()) {
 				p.getInventory().remove(data.getValue());
-				log.info("[RealmMechanics] Player " + p.getName() + " had more than one realm rune, removed all but 1!");
+				log.info(
+						"[RealmMechanics] Player " + p.getName() + " had more than one realm rune, removed all but 1!");
 			}
 		}
 
@@ -2936,9 +3152,12 @@ public class RealmMechanics implements Listener {
 	public void onInventoryCloseEvent(InventoryCloseEvent e) {
 		Player p = (Player) e.getPlayer();
 
-		if (e.getInventory().getName().equalsIgnoreCase("container.chest") || e.getInventory().getName().equalsIgnoreCase("container.chestDouble")
-				|| e.getInventory().getName().equalsIgnoreCase("container.minecart") || e.getInventory().getName().equalsIgnoreCase("container.dispenser")
-				|| e.getInventory().getName().equalsIgnoreCase("container.dropper") || e.getInventory().getName().equalsIgnoreCase("container.hopper")) {
+		if (e.getInventory().getName().equalsIgnoreCase("container.chest")
+				|| e.getInventory().getName().equalsIgnoreCase("container.chestDouble")
+				|| e.getInventory().getName().equalsIgnoreCase("container.minecart")
+				|| e.getInventory().getName().equalsIgnoreCase("container.dispenser")
+				|| e.getInventory().getName().equalsIgnoreCase("container.dropper")
+				|| e.getInventory().getName().equalsIgnoreCase("container.hopper")) {
 
 			if (p.isOp()) {
 				return;
@@ -2950,12 +3169,13 @@ public class RealmMechanics implements Listener {
 				if (is == null || is.getType() == Material.AIR) {
 					continue;
 				}
-				if (!(isItemTradeable(is)) || PetMechanics.isPermUntradeable(is) || ItemMechanics.isSoulbound(is) || CommunityMechanics.isSocialBook(is)
-						|| is.getType() == Material.NETHER_STAR) {
+				if (!(isItemTradeable(is)) || PetMechanics.isPermUntradeable(is) || ItemMechanics.isSoulbound(is)
+						|| CommunityMechanics.isSocialBook(is) || is.getType() == Material.NETHER_STAR) {
 					to_remove.add(is);
 				}
-				if (ItemMechanics.isArmor(is) || !ItemMechanics.getDamageData(is).equalsIgnoreCase("no") || is.getType() == Material.EMERALD
-						|| is.getType() == Material.PAPER || MoneyMechanics.isGemPouch(is)) {
+				if (ItemMechanics.isArmor(is) || !ItemMechanics.getDamageData(is).equalsIgnoreCase("no")
+						|| is.getType() == Material.EMERALD || is.getType() == Material.PAPER
+						|| MoneyMechanics.isGemPouch(is)) {
 					to_drop.add(is);
 				}
 			}
@@ -2973,7 +3193,8 @@ public class RealmMechanics implements Listener {
 			}
 
 			if (to_remove.size() > 0) {
-				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " deposit weapons, armor, or gems in realm blocks.");
+				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+						+ " deposit weapons, armor, or gems in realm blocks.");
 				p.sendMessage(ChatColor.GRAY + "Deposit those items in your BANK CHEST.");
 			}
 		}
@@ -2984,25 +3205,25 @@ public class RealmMechanics implements Listener {
 		int dimensions = getRealmSizeDimensions(tier);
 		if (dimensions == 0) {
 			dimensions = 16;
-			return genCustomItem(
-					Material.NETHER_STAR,
-					(short) 0,
+			return genCustomItem(Material.NETHER_STAR, (short) 0,
 					ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "Realm Portal Rune",
-					ChatColor.GRAY.toString() + "Tier: " + tier + "/7 [" + dimensions + "x" + dimensions + "x" + dimensions + "],"
-							+ ChatColor.LIGHT_PURPLE.toString() + "Right-Click:" + ChatColor.GRAY.toString() + " Generate Realm" + ","
-							+ ChatColor.GRAY.toString() + "Walk through the portal you create to go to" + "," + ChatColor.GRAY.toString()
-							+ "your Player Owned Realm. Here you can build a" + "," + ChatColor.GRAY.toString() + "perfect haven for your character." + ","
-							+ ChatColor.GRAY.toString() + "Let your creativity go wild.");
+					ChatColor.GRAY.toString() + "Tier: " + tier + "/7 [" + dimensions + "x" + dimensions + "x"
+							+ dimensions + "]," + ChatColor.LIGHT_PURPLE.toString() + "Right-Click:"
+							+ ChatColor.GRAY.toString() + " Generate Realm" + "," + ChatColor.GRAY.toString()
+							+ "Walk through the portal you create to go to" + "," + ChatColor.GRAY.toString()
+							+ "your Player Owned Realm. Here you can build a" + "," + ChatColor.GRAY.toString()
+							+ "perfect haven for your character." + "," + ChatColor.GRAY.toString()
+							+ "Let your creativity go wild.");
 		} else {
-			return genCustomItem(
-					Material.NETHER_STAR,
-					(short) 0,
+			return genCustomItem(Material.NETHER_STAR, (short) 0,
 					ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "Realm Portal Rune",
-					ChatColor.GRAY.toString() + "Tier: " + tier + "/7 [" + dimensions + "x" + dimensions + "x" + dimensions + "],"
-							+ ChatColor.LIGHT_PURPLE.toString() + "Right Click:" + ChatColor.GRAY.toString() + " Open Portal,"
-							+ ChatColor.LIGHT_PURPLE.toString() + "Left Click:" + ChatColor.GRAY.toString() + " Realm Shop,"
-							+ ChatColor.LIGHT_PURPLE.toString() + "Sneak-Right Click:" + ChatColor.GRAY.toString() + " Upgrade Realm,"
-							+ ChatColor.LIGHT_PURPLE.toString() + "Sneak-Left Click: " + ChatColor.GRAY + "Add Builder");
+					ChatColor.GRAY.toString() + "Tier: " + tier + "/7 [" + dimensions + "x" + dimensions + "x"
+							+ dimensions + "]," + ChatColor.LIGHT_PURPLE.toString() + "Right Click:"
+							+ ChatColor.GRAY.toString() + " Open Portal," + ChatColor.LIGHT_PURPLE.toString()
+							+ "Left Click:" + ChatColor.GRAY.toString() + " Realm Shop,"
+							+ ChatColor.LIGHT_PURPLE.toString() + "Sneak-Right Click:" + ChatColor.GRAY.toString()
+							+ " Upgrade Realm," + ChatColor.LIGHT_PURPLE.toString() + "Sneak-Left Click: "
+							+ ChatColor.GRAY + "Add Builder");
 		}
 	}
 
@@ -3324,7 +3545,8 @@ public class RealmMechanics implements Listener {
 
 		base_name = base_name.replaceAll("_", "");
 
-		String formal_name = base_name.substring(0, 1).toUpperCase() + base_name.substring(1, base_name.length()).toLowerCase();
+		String formal_name = base_name.substring(0, 1).toUpperCase()
+				+ base_name.substring(1, base_name.length()).toLowerCase();
 		return formal_name;
 	}
 
@@ -3378,13 +3600,19 @@ public class RealmMechanics implements Listener {
 		return true;
 
 		/*
-		 * try{ if(i.hasItemMeta() && i.getItemMeta().hasLore()){ for(String s : i.getItemMeta().getLore()){
-		 * if(ChatColor.stripColor(s).toLowerCase().equalsIgnoreCase("untradeable") ||
-		 * ChatColor.stripColor(s).toLowerCase().equalsIgnoreCase("permanent untradeable")){ return false; } } }
+		 * try{ if(i.hasItemMeta() && i.getItemMeta().hasLore()){ for(String s :
+		 * i.getItemMeta().getLore()){
+		 * if(ChatColor.stripColor(s).toLowerCase().equalsIgnoreCase(
+		 * "untradeable") ||
+		 * ChatColor.stripColor(s).toLowerCase().equalsIgnoreCase(
+		 * "permanent untradeable")){ return false; } } }
 		 *
-		 * NBTTagList description = CraftItemStack.asNMSCopy(i).getTag().getCompound("display").getList("Lore", 0);
+		 * NBTTagList description =
+		 * CraftItemStack.asNMSCopy(i).getTag().getCompound("display").getList(
+		 * "Lore", 0);
 		 *
-		 * if(description.get(description.size() - 1).toString().contains("Untradeable")){ return false; }
+		 * if(description.get(description.size() -
+		 * 1).toString().contains("Untradeable")){ return false; }
 		 *
 		 * } catch (Exception e) { return true; } return true;
 		 */
@@ -3417,7 +3645,7 @@ public class RealmMechanics implements Listener {
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
 
 		new BukkitRunnable() {
-			
+
 			public void run() {
 				DataWatcher dwReal = ((CraftLivingEntity) entity).getHandle().getDataWatcher();
 				dw.watch(8, dwReal.getByte(8));
@@ -3434,8 +3662,10 @@ public class RealmMechanics implements Listener {
 
 		Inventory top = p.getOpenInventory().getTopInventory();
 
-		if (!top.getName().contains("E-Cash Storage") && !top.getName().contains(" Merchant") && !top.getName().startsWith("Bank Chest")
-				&& !(top.getName().equalsIgnoreCase("Collection Bin")) && !(top.getName().equalsIgnoreCase("container.crafting"))) { // Some interaction
+		if (!top.getName().contains("E-Cash Storage") && !top.getName().contains(" Merchant")
+				&& !top.getName().startsWith("Bank Chest") && !(top.getName().equalsIgnoreCase("Collection Bin"))
+				&& !(top.getName().equalsIgnoreCase("container.crafting"))) { // Some
+																				// interaction
 			// occuring in the top
 			// inventory section.
 
@@ -3446,9 +3676,11 @@ public class RealmMechanics implements Listener {
 					if (!(isItemTradeable(is)) && !(is.getType() == Material.PAPER) || ItemMechanics.isSoulbound(is)) {
 						e.setCancelled(true);
 						p.updateInventory();
-						p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " perform this action with an "
-								+ ChatColor.ITALIC + "untradeable" + ChatColor.RED + " item.");
-						// Prevent untradeable items from being put in other inventories.
+						p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+								+ " perform this action with an " + ChatColor.ITALIC + "untradeable" + ChatColor.RED
+								+ " item.");
+						// Prevent untradeable items from being put in other
+						// inventories.
 					}
 				}
 			} else if (!(e.isShiftClick())) {
@@ -3457,9 +3689,11 @@ public class RealmMechanics implements Listener {
 					if (!(isItemTradeable(is)) && !(is.getType() == Material.PAPER) || ItemMechanics.isSoulbound(is)) {
 						e.setCancelled(true);
 						p.updateInventory();
-						p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " perform this action with an "
-								+ ChatColor.ITALIC + "untradeable" + ChatColor.RED + " item.");
-						// Prevent untradeable items from being put in other inventories.
+						p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+								+ " perform this action with an " + ChatColor.ITALIC + "untradeable" + ChatColor.RED
+								+ " item.");
+						// Prevent untradeable items from being put in other
+						// inventories.
 					}
 				}
 			}
@@ -3484,7 +3718,8 @@ public class RealmMechanics implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onItemDropEvent(PlayerDropItemEvent e) {
 		Player p = e.getPlayer();
-		if (!p.getWorld().getName().equalsIgnoreCase(main_world_name) && !InstanceMechanics.isInstance(p.getWorld().getName())) {
+		if (!p.getWorld().getName().equalsIgnoreCase(main_world_name)
+				&& !InstanceMechanics.isInstance(p.getWorld().getName())) {
 			Item it = e.getItemDrop();
 			dropped_item_ownership.put(it, p.getName());
 		}
@@ -3550,7 +3785,8 @@ public class RealmMechanics implements Listener {
 			if (i == null) {
 				continue;
 			}
-			if ((!PetMechanics.isPermUntradeable(i) && !isItemTradeable(i)) || i.getType() == Material.NETHER_STAR || CommunityMechanics.isSocialBook(i)) {
+			if ((!PetMechanics.isPermUntradeable(i) && !isItemTradeable(i)) || i.getType() == Material.NETHER_STAR
+					|| CommunityMechanics.isSocialBook(i)) {
 				if (i.hasItemMeta() && i.getItemMeta() instanceof LeatherArmorMeta && saved_armor < 4) {
 					if (i.getItemMeta().getLore().contains("ARMOR") || i.getItemMeta().getLore().contains("DPS")) {
 						if (armor_names.contains(i.getItemMeta().getDisplayName())) {
@@ -3576,7 +3812,8 @@ public class RealmMechanics implements Listener {
 			for (Entity ent : Bukkit.getWorld(p.getName()).getEntities()) {
 				if (ent instanceof Item) {
 					Item i = (Item) ent;
-					if (dropped_item_ownership.containsKey(i) && dropped_item_ownership.get(i).equalsIgnoreCase(p.getName())) {
+					if (dropped_item_ownership.containsKey(i)
+							&& dropped_item_ownership.get(i).equalsIgnoreCase(p.getName())) {
 						ent.remove();
 						dropped_item_ownership.remove(i);
 					}
@@ -3636,7 +3873,8 @@ public class RealmMechanics implements Listener {
 			e.setCancelled(true);
 			if (e.getCurrentItem() != null) {
 				// Material m = e.getCurrentItem().getType();
-				// String format_name = getFormalMatName(m, e.getCurrentItem().getDurability());
+				// String format_name = getFormalMatName(m,
+				// e.getCurrentItem().getDurability());
 				double price = ShopMechanics.getPrice(e.getCurrentItem());
 				double ecash_price = Hive.getECASHPrice(e.getCurrentItem());
 
@@ -3671,12 +3909,14 @@ public class RealmMechanics implements Listener {
 				}, 2L);
 
 				if (e.isLeftClick()) {
-					p.sendMessage(ChatColor.GREEN + "Enter the " + ChatColor.BOLD + "QUANTITY" + ChatColor.GREEN + " (1-64) you'd like to purchase.");
+					p.sendMessage(ChatColor.GREEN + "Enter the " + ChatColor.BOLD + "QUANTITY" + ChatColor.GREEN
+							+ " (1-64) you'd like to purchase.");
 					p.sendMessage(ChatColor.GRAY + "This material costs " + ChatColor.GREEN + price + "G/each.");
 					shop_currency.put(p.getName(), "gems");
 				}
 				if (e.isRightClick()) {
-					p.sendMessage(ChatColor.GREEN + "Enter the " + ChatColor.BOLD + "QUANTITY" + ChatColor.GREEN + " (1-64) you'd like to purchase.");
+					p.sendMessage(ChatColor.GREEN + "Enter the " + ChatColor.BOLD + "QUANTITY" + ChatColor.GREEN
+							+ " (1-64) you'd like to purchase.");
 					p.sendMessage(ChatColor.GRAY + "This material costs " + ChatColor.GOLD + ecash_price + "EC/each.");
 					double per_ecash = ecash_price;
 					if (ecash_price < 1) {
@@ -3706,7 +3946,9 @@ public class RealmMechanics implements Listener {
 					for (int x = 0; x < mat_shop_1.getSize(); x++) {
 						p.getOpenInventory().getTopInventory().setItem(x, mat_shop_1.getItem(x));
 					}
-					p.playSound(p.getLocation(), Sound.BAT_TAKEOFF, 1F, 1.2F); // Page turn sound.
+					p.playSound(p.getLocation(), Sound.BAT_TAKEOFF, 1F, 1.2F); // Page
+																				// turn
+																				// sound.
 				}
 			}, 2L);
 		} else if (e.getCurrentItem().getItemMeta().getLore().get(0).contains("2/3")) {
@@ -3714,7 +3956,8 @@ public class RealmMechanics implements Listener {
 			p.updateInventory();
 			Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 				public void run() {
-					// p.closeInventory(); Doesnt need to close first just looks bad
+					// p.closeInventory(); Doesnt need to close first just looks
+					// bad
 					if (p.getOpenInventory() == null) {
 						p.openInventory(mat_shop_2);
 						return;
@@ -3722,7 +3965,9 @@ public class RealmMechanics implements Listener {
 					for (int x = 0; x < mat_shop_2.getSize(); x++) {
 						p.getOpenInventory().getTopInventory().setItem(x, mat_shop_2.getItem(x));
 					}
-					p.playSound(p.getLocation(), Sound.BAT_TAKEOFF, 1F, 1.2F); // Page turn sound.
+					p.playSound(p.getLocation(), Sound.BAT_TAKEOFF, 1F, 1.2F); // Page
+																				// turn
+																				// sound.
 				}
 			}, 2L);
 		} else if (e.getCurrentItem().getItemMeta().getLore().get(0).contains("3/3")) {
@@ -3738,7 +3983,9 @@ public class RealmMechanics implements Listener {
 					for (int x = 0; x < mat_shop_3.getSize(); x++) {
 						p.getOpenInventory().getTopInventory().setItem(x, mat_shop_3.getItem(x));
 					}
-					p.playSound(p.getLocation(), Sound.BAT_TAKEOFF, 1F, 1.2F); // Page turn sound.
+					p.playSound(p.getLocation(), Sound.BAT_TAKEOFF, 1F, 1.2F); // Page
+																				// turn
+																				// sound.
 				}
 			}, 2L);
 		}
@@ -3754,10 +4001,12 @@ public class RealmMechanics implements Listener {
 			return;
 		}
 
-		if (e.getCurrentItem().getType() == Material.NETHER_STAR && !p.getOpenInventory().getTopInventory().getName().equalsIgnoreCase("container.crafting")) {
+		if (e.getCurrentItem().getType() == Material.NETHER_STAR
+				&& !p.getOpenInventory().getTopInventory().getName().equalsIgnoreCase("container.crafting")) {
 			e.setCancelled(true);
 		}
-		if (e.getCursor().getType() == Material.NETHER_STAR && !p.getOpenInventory().getTopInventory().getName().equalsIgnoreCase("container.crafting")) {
+		if (e.getCursor().getType() == Material.NETHER_STAR
+				&& !p.getOpenInventory().getTopInventory().getName().equalsIgnoreCase("container.crafting")) {
 			e.setCancelled(true);
 		}
 	}
@@ -3767,9 +4016,11 @@ public class RealmMechanics implements Listener {
 	public void onInventoryClickEvent(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
 
-		if (!e.getInventory().getName().equalsIgnoreCase("container.chest") && !e.getInventory().getName().equalsIgnoreCase("container.chestDouble")
+		if (!e.getInventory().getName().equalsIgnoreCase("container.chest")
+				&& !e.getInventory().getName().equalsIgnoreCase("container.chestDouble")
 				&& !(e.getInventory().getName().equalsIgnoreCase("container.minecart"))
-				&& !(e.getInventory().getName().equalsIgnoreCase("container.dispenser")) && !(e.getInventory().getName().equalsIgnoreCase("container.hopper"))
+				&& !(e.getInventory().getName().equalsIgnoreCase("container.dispenser"))
+				&& !(e.getInventory().getName().equalsIgnoreCase("container.hopper"))
 				&& !(e.getInventory().getName().equalsIgnoreCase("container.dropper"))) {
 			return;
 		}
@@ -3778,10 +4029,12 @@ public class RealmMechanics implements Listener {
 			return;
 		}
 
-		if (!(e.getInventory().getName().equalsIgnoreCase("container.hopper")) && e.getAction() == InventoryAction.PICKUP_ALL && p != null) {
+		if (!(e.getInventory().getName().equalsIgnoreCase("container.hopper"))
+				&& e.getAction() == InventoryAction.PICKUP_ALL && p != null) {
 			// Trying to grab all items from a chest in a realm.
 			String realm_name = p.getWorld().getName();
-			if (!(realm_name.equalsIgnoreCase(p.getName()) || (build_list.containsKey(realm_name) && build_list.get(realm_name).contains(p.getName())))) {
+			if (!(realm_name.equalsIgnoreCase(p.getName())
+					|| (build_list.containsKey(realm_name) && build_list.get(realm_name).contains(p.getName())))) {
 				e.setCancelled(true);
 				e.setResult(Result.DENY);
 				return;
@@ -3802,12 +4055,14 @@ public class RealmMechanics implements Listener {
 			if (e.getCursor() != null) {
 				// They're placing an item into the chest.
 				ItemStack cursor = e.getCursor();
-				if (ItemMechanics.isArmor(cursor) || !ItemMechanics.getDamageData(cursor).equalsIgnoreCase("no") || cursor.getType() == Material.EMERALD
-						|| cursor.getType() == Material.PAPER || MoneyMechanics.isGemPouch(cursor)) {
+				if (ItemMechanics.isArmor(cursor) || !ItemMechanics.getDamageData(cursor).equalsIgnoreCase("no")
+						|| cursor.getType() == Material.EMERALD || cursor.getType() == Material.PAPER
+						|| MoneyMechanics.isGemPouch(cursor)) {
 					e.setCancelled(true);
 					e.setCursor(cursor);
 					p.updateInventory();
-					p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " deposit weapons, armor, or gems in realm blocks.");
+					p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+							+ " deposit weapons, armor, or gems in realm blocks.");
 					p.sendMessage(ChatColor.GRAY + "Deposit those items in your BANK CHEST.");
 				}
 			}
@@ -3815,12 +4070,14 @@ public class RealmMechanics implements Listener {
 			// Clicking in own inventory.
 			if (e.isShiftClick()) {
 				ItemStack in_slot = e.getCurrentItem();
-				if (ItemMechanics.isArmor(in_slot) || !ItemMechanics.getDamageData(in_slot).equalsIgnoreCase("no") || in_slot.getType() == Material.EMERALD
-						|| in_slot.getType() == Material.PAPER || MoneyMechanics.isGemPouch(in_slot)) {
+				if (ItemMechanics.isArmor(in_slot) || !ItemMechanics.getDamageData(in_slot).equalsIgnoreCase("no")
+						|| in_slot.getType() == Material.EMERALD || in_slot.getType() == Material.PAPER
+						|| MoneyMechanics.isGemPouch(in_slot)) {
 					e.setCancelled(true);
 					e.setCurrentItem(in_slot);
 					p.updateInventory();
-					p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " deposit weapons, armor, or gems in realm blocks.");
+					p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+							+ " deposit weapons, armor, or gems in realm blocks.");
 					p.sendMessage(ChatColor.GRAY + "Deposit those items in your BANK CHEST.");
 				}
 			}
@@ -3845,7 +4102,8 @@ public class RealmMechanics implements Listener {
 			return;
 		}
 
-		if (p.getWorld().getName().equalsIgnoreCase(main_world_name) || InstanceMechanics.isInstance(p.getWorld().getName())) {
+		if (p.getWorld().getName().equalsIgnoreCase(main_world_name)
+				|| InstanceMechanics.isInstance(p.getWorld().getName())) {
 			return;
 		}
 		String realm_name = p.getWorld().getName();
@@ -3874,13 +4132,15 @@ public class RealmMechanics implements Listener {
 		}
 
 		if (!(p.getName().equalsIgnoreCase(p.getWorld().getName()))) {
-			p.sendMessage(ChatColor.LIGHT_PURPLE + "You have left " + ChatColor.BOLD + realm_name + "'s" + ChatColor.LIGHT_PURPLE + " realm.");
+			p.sendMessage(ChatColor.LIGHT_PURPLE + "You have left " + ChatColor.BOLD + realm_name + "'s"
+					+ ChatColor.LIGHT_PURPLE + " realm.");
 		} else {
-			p.sendMessage(ChatColor.LIGHT_PURPLE + "You have left " + ChatColor.BOLD + "YOUR" + ChatColor.LIGHT_PURPLE + " realm.");
+			p.sendMessage(ChatColor.LIGHT_PURPLE + "You have left " + ChatColor.BOLD + "YOUR" + ChatColor.LIGHT_PURPLE
+					+ " realm.");
 		}
 
 		new BukkitRunnable() {
-			
+
 			public void run() {
 				p.closeInventory();
 			}
@@ -3907,7 +4167,8 @@ public class RealmMechanics implements Listener {
 	public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent e) {
 		final World from = e.getFrom();
 		final Player p = e.getPlayer();
-		if (from.getName().equalsIgnoreCase(Bukkit.getWorlds().get(0).getName()) && !(InstanceMechanics.isInstance(p.getWorld().getName()))) {
+		if (from.getName().equalsIgnoreCase(Bukkit.getWorlds().get(0).getName())
+				&& !(InstanceMechanics.isInstance(p.getWorld().getName()))) {
 			player_god_mode.put(p.getName(), System.currentTimeMillis());
 
 			p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "INVINCIBILITY (15s)");
@@ -3917,7 +4178,8 @@ public class RealmMechanics implements Listener {
 			Main.plugin.getServer().getScheduler().scheduleAsyncDelayedTask(Main.plugin, new Runnable() {
 				public void run() {
 					if (!p.getWorld().getName().equalsIgnoreCase(main_world_name)
-							&& (p.getLocation().getBlock().getType() == Material.PORTAL || p.getLocation().add(0, 1, 0).getBlock().getType() == Material.PORTAL)) {
+							&& (p.getLocation().getBlock().getType() == Material.PORTAL
+									|| p.getLocation().add(0, 1, 0).getBlock().getType() == Material.PORTAL)) {
 						Location out = p.getLocation();
 						out.setY(-10);
 						p.teleport(out);
@@ -3935,7 +4197,8 @@ public class RealmMechanics implements Listener {
 						return;
 					}
 					if (!p.getWorld().getName().equalsIgnoreCase(main_world_name)
-							&& (p.getLocation().getBlock().getType() == Material.PORTAL || p.getLocation().add(0, 1, 0).getBlock().getType() == Material.PORTAL)) {
+							&& (p.getLocation().getBlock().getType() == Material.PORTAL
+									|| p.getLocation().add(0, 1, 0).getBlock().getType() == Material.PORTAL)) {
 						Location out = p.getLocation();
 						out.setY(-10);
 						p.teleport(out);
@@ -3950,7 +4213,9 @@ public class RealmMechanics implements Listener {
 			Main.plugin.getServer().getScheduler().scheduleAsyncDelayedTask(Main.plugin, new Runnable() {
 				public void run() {
 					/*
-					 * if(saved_levels.containsKey(p.getName())){ p.setLevel(saved_levels.get(p.getName())); HealthMechanics.setPlayerHP(p.getName(),
+					 * if(saved_levels.containsKey(p.getName())){
+					 * p.setLevel(saved_levels.get(p.getName()));
+					 * HealthMechanics.setPlayerHP(p.getName(),
 					 * saved_levels.get(p.getName())); }
 					 */
 
@@ -3971,7 +4236,8 @@ public class RealmMechanics implements Listener {
 					p.setFallDistance(0.0F);
 
 					/*
-					 * if(saved_levels.containsKey(p.getName())){ p.setLevel(saved_levels.get(p.getName())); }
+					 * if(saved_levels.containsKey(p.getName())){
+					 * p.setLevel(saved_levels.get(p.getName())); }
 					 */
 
 					p.setExp(1F);
@@ -4047,12 +4313,13 @@ public class RealmMechanics implements Listener {
 				}
 			}
 
-
 			if (to_realm == null) {
 				e.setCancelled(true);
 				// TODO: Better error message here.
-				p.sendMessage(ChatColor.RED + "This realm portal is " + ChatColor.UNDERLINE + "not" + ChatColor.RED + " linked to a destination.");
-				p.sendMessage(ChatColor.GRAY + "If this is your portal, please try to replace it with your Realm Portal Rune.");
+				p.sendMessage(ChatColor.RED + "This realm portal is " + ChatColor.UNDERLINE + "not" + ChatColor.RED
+						+ " linked to a destination.");
+				p.sendMessage(ChatColor.GRAY
+						+ "If this is your portal, please try to replace it with your Realm Portal Rune.");
 				if (port_loc == null) {
 					port_loc = p.getLocation();
 				}
@@ -4060,10 +4327,14 @@ public class RealmMechanics implements Listener {
 					portal_map_coords.remove(p.getName());
 					portal_map.remove(port_loc);
 					inv_portal_map.remove(realm_name);
-					if (port_loc.getBlock().getType() == Material.PORTAL && port_loc.getBlock().getRelative(BlockFace.EAST).getType() != Material.PORTAL && port_loc.getBlock().getRelative(BlockFace.WEST).getType() != Material.PORTAL) {
+					if (port_loc.getBlock().getType() == Material.PORTAL
+							&& port_loc.getBlock().getRelative(BlockFace.EAST).getType() != Material.PORTAL
+							&& port_loc.getBlock().getRelative(BlockFace.WEST).getType() != Material.PORTAL) {
 						port_loc.getBlock().setType(Material.AIR);
 					}
-					if (port_loc.add(0, 1, 0).getBlock().getType() == Material.PORTAL && port_loc.getBlock().getRelative(BlockFace.EAST).getType() != Material.PORTAL && port_loc.getBlock().getRelative(BlockFace.WEST).getType() != Material.PORTAL) {
+					if (port_loc.add(0, 1, 0).getBlock().getType() == Material.PORTAL
+							&& port_loc.getBlock().getRelative(BlockFace.EAST).getType() != Material.PORTAL
+							&& port_loc.getBlock().getRelative(BlockFace.WEST).getType() != Material.PORTAL) {
 						port_loc.getBlock().setType(Material.AIR);
 					}
 				}
@@ -4084,20 +4355,25 @@ public class RealmMechanics implements Listener {
 
 			if (HealthMechanics.in_combat.containsKey(p.getName())) {
 				e.setCancelled(true);
-				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " place a realm portal while in combat.");
-				p.sendMessage(ChatColor.GRAY + "Wait " + ChatColor.UNDERLINE + "a few seconds" + ChatColor.GRAY + " and try again.");
+				p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
+						+ " place a realm portal while in combat.");
+				p.sendMessage(ChatColor.GRAY + "Wait " + ChatColor.UNDERLINE + "a few seconds" + ChatColor.GRAY
+						+ " and try again.");
 				return;
 			}
 
 			if (realm_percent.containsKey(to_realm.getName())) {
 				e.setCancelled(true);
 				String percent_done = realm_percent.get(to_realm.getName());
-				p.sendMessage(ChatColor.RED + "This realm is currently UPGRADING. " + ChatColor.BOLD + percent_done + "% Complete.");
+				p.sendMessage(ChatColor.RED + "This realm is currently UPGRADING. " + ChatColor.BOLD + percent_done
+						+ "% Complete.");
 				return;
 			}
 
-			if (KarmaMechanics.getRawAlignment(p.getName()).equalsIgnoreCase("evil") && safe_realms.containsKey(to_realm.getName())) {
-				p.sendMessage(ChatColor.RED + "Due to your CHAOTIC alignment, you " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED + " enter this realm.");
+			if (KarmaMechanics.getRawAlignment(p.getName()).equalsIgnoreCase("evil")
+					&& safe_realms.containsKey(to_realm.getName())) {
+				p.sendMessage(ChatColor.RED + "Due to your CHAOTIC alignment, you " + ChatColor.UNDERLINE + "cannot"
+						+ ChatColor.RED + " enter this realm.");
 				e.setCancelled(true);
 				return;
 			}
@@ -4112,7 +4388,7 @@ public class RealmMechanics implements Listener {
 			in_realm.add(0, 1, 0);
 
 			new BukkitRunnable() {
-				
+
 				public void run() {
 					p.closeInventory();
 				}
@@ -4121,21 +4397,23 @@ public class RealmMechanics implements Listener {
 			// final String f_realm_name = to_realm.getName();
 
 			if (!(p.getName().equalsIgnoreCase(to_realm.getName()))) {
-				p.sendMessage(ChatColor.LIGHT_PURPLE + "You have entered " + ChatColor.BOLD + ChatMechanics.getPlayerPrefix(to_realm.getName(), true)
-						+ to_realm.getName() + "'s" + ChatColor.LIGHT_PURPLE + " realm.");
+				p.sendMessage(ChatColor.LIGHT_PURPLE + "You have entered " + ChatColor.BOLD
+						+ ChatMechanics.getPlayerPrefix(to_realm.getName(), true) + to_realm.getName() + "'s"
+						+ ChatColor.LIGHT_PURPLE + " realm.");
 				if (realm_title.containsKey(to_realm.getName()) && realm_title.get(to_realm.getName()) != null) {
 					p.sendMessage(ChatColor.GRAY + realm_title.get(to_realm.getName()));
 				}
 			} else {
-				p.sendMessage(ChatColor.LIGHT_PURPLE + "You have returned to " + ChatColor.BOLD + "YOUR" + ChatColor.LIGHT_PURPLE + " realm.");
+				p.sendMessage(ChatColor.LIGHT_PURPLE + "You have returned to " + ChatColor.BOLD + "YOUR"
+						+ ChatColor.LIGHT_PURPLE + " realm.");
 				if (realm_title.containsKey(to_realm.getName()) && realm_title.get(to_realm.getName()) != null) {
 					p.sendMessage(ChatColor.GRAY + realm_title.get(to_realm.getName()));
 				}
 			}
 
 			if (flying_realms.containsKey(to_realm.getName()) && safe_realms.containsKey(to_realm.getName())) {
-				if (p.getName().equalsIgnoreCase(to_realm.getName())
-						|| (build_list.containsKey(to_realm.getName()) && build_list.get(to_realm.getName()).contains(p.getName()))) {
+				if (p.getName().equalsIgnoreCase(to_realm.getName()) || (build_list.containsKey(to_realm.getName())
+						&& build_list.get(to_realm.getName()).contains(p.getName()))) {
 					p.setAllowFlight(true);
 					p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "FLYING ENABLED");
 					// Builder or owner == they can fly.
@@ -4144,7 +4422,8 @@ public class RealmMechanics implements Listener {
 
 		}
 
-		if (!(p.getWorld().getName().equalsIgnoreCase(main_world_name)) && !(InstanceMechanics.isInstance(p.getWorld().getName()))) {
+		if (!(p.getWorld().getName().equalsIgnoreCase(main_world_name))
+				&& !(InstanceMechanics.isInstance(p.getWorld().getName()))) {
 			// Bring them back home.
 			p.setAllowFlight(false);
 
@@ -4153,15 +4432,17 @@ public class RealmMechanics implements Listener {
 				final Location home = saved_locations.get(p.getName());
 
 				if (!(p.getName().equalsIgnoreCase(p.getWorld().getName()))) {
-					p.sendMessage(ChatColor.LIGHT_PURPLE + "You have left " + ChatColor.BOLD + ChatMechanics.getPlayerPrefix(realm_name, true) + realm_name
-							+ "'s" + ChatColor.LIGHT_PURPLE + " realm.");
+					p.sendMessage(ChatColor.LIGHT_PURPLE + "You have left " + ChatColor.BOLD
+							+ ChatMechanics.getPlayerPrefix(realm_name, true) + realm_name + "'s"
+							+ ChatColor.LIGHT_PURPLE + " realm.");
 				} else {
-					p.sendMessage(ChatColor.LIGHT_PURPLE + "You have left " + ChatColor.BOLD + "YOUR" + ChatColor.LIGHT_PURPLE + " realm.");
+					p.sendMessage(ChatColor.LIGHT_PURPLE + "You have left " + ChatColor.BOLD + "YOUR"
+							+ ChatColor.LIGHT_PURPLE + " realm.");
 				}
 
 				p.teleport(home);
 				new BukkitRunnable() {
-					
+
 					public void run() {
 						p.closeInventory();
 					}
@@ -4190,7 +4471,8 @@ public class RealmMechanics implements Listener {
 		String owner = getOwner(l);
 		if (Bukkit.getOfflinePlayer(owner).isOp())
 			height = 2.5;
-		holograms.put(l, new Hologram(l.clone().add(0.5, height, 0.5), Arrays.asList(owner, safe_realms.contains(owner) ? ChatColor.GREEN + "Peaceful" : ChatColor.RED + "Chaotic")));
+		holograms.put(l, new Hologram(l.clone().add(0.5, height, 0.5), Arrays.asList(owner,
+				safe_realms.contains(owner) ? ChatColor.GREEN + "Peaceful" : ChatColor.RED + "Chaotic")));
 		holograms.get(l).show();
 	}
 
@@ -4272,7 +4554,8 @@ public class RealmMechanics implements Listener {
 					chunk_lim = 8;
 				}
 
-				chunk_lim++; // Fix for player not loading into realm after first person due to chunk errors.
+				chunk_lim++; // Fix for player not loading into realm after
+								// first person due to chunk errors.
 
 				if ((zchunk < -chunk_lim || zchunk > chunk_lim) || (xchunk < -chunk_lim || xchunk > chunk_lim)) {
 					if (c.isLoaded()) {
@@ -4295,7 +4578,8 @@ public class RealmMechanics implements Listener {
 
 	public static boolean doesWorldExistGlobal(String wname) {
 		try {
-			URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + wname + ".zip");
+			URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP
+					+ Config.realmPath + wname + ".zip");
 			URLConnection urlc;
 			urlc = url.openConnection();
 			InputStream is = urlc.getInputStream();
@@ -4467,13 +4751,17 @@ public class RealmMechanics implements Listener {
 			pl.setNoDamageTicks(20);
 			pl.setFallDistance(0.0F);
 			pl.teleport(l);
-			if (!pl.getName().equalsIgnoreCase(p.getName())) { // Realm resident.
-				pl.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + p.getName() + ChatColor.LIGHT_PURPLE + "'s realm is currently UPGRADING to "
-						+ ChatColor.BOLD + new_bottom_y + "x" + new_bottom_y + ChatColor.LIGHT_PURPLE
+			if (!pl.getName().equalsIgnoreCase(p.getName())) { // Realm
+																// resident.
+				pl.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + p.getName() + ChatColor.LIGHT_PURPLE
+						+ "'s realm is currently UPGRADING to " + ChatColor.BOLD + new_bottom_y + "x" + new_bottom_y
+						+ ChatColor.LIGHT_PURPLE
 						+ ", you have been kicked out of the realm while the upgrade takes place.");
-			} else if (pl.getName().equalsIgnoreCase(p.getName())) { // Realm owner.
-				pl.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "YOUR" + ChatColor.LIGHT_PURPLE + " realm is currently UPGRADING to "
-						+ ChatColor.BOLD + new_bottom_y + "x" + new_bottom_y + ChatColor.LIGHT_PURPLE
+			} else if (pl.getName().equalsIgnoreCase(p.getName())) { // Realm
+																		// owner.
+				pl.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "YOUR" + ChatColor.LIGHT_PURPLE
+						+ " realm is currently UPGRADING to " + ChatColor.BOLD + new_bottom_y + "x" + new_bottom_y
+						+ ChatColor.LIGHT_PURPLE
 						+ ", you have been kicked out of the realm while the upgrade takes place.");
 			}
 			saved_locations.remove(pl.getName());
@@ -4536,7 +4824,8 @@ public class RealmMechanics implements Listener {
 	@SuppressWarnings("deprecation")
 	public static boolean isThereAPortalNear(Block b, int maxradius) {
 		BlockFace[] faces = { BlockFace.UP, BlockFace.NORTH, BlockFace.EAST };
-		BlockFace[][] orth = { { BlockFace.NORTH, BlockFace.EAST }, { BlockFace.UP, BlockFace.EAST }, { BlockFace.NORTH, BlockFace.UP } };
+		BlockFace[][] orth = { { BlockFace.NORTH, BlockFace.EAST }, { BlockFace.UP, BlockFace.EAST },
+				{ BlockFace.NORTH, BlockFace.UP } };
 		for (int r = 0; r <= maxradius; r++) {
 			for (int s = 0; s < 6; s++) {
 				BlockFace f = faces[s % 3];
@@ -4559,7 +4848,8 @@ public class RealmMechanics implements Listener {
 		return false;
 	}
 
-	public void generateRealmBlocks(final World w, final int o_limx, final int o_limy, final int o_limz, final int o_oldy) {
+	public void generateRealmBlocks(final World w, final int o_limx, final int o_limy, final int o_limz,
+			final int o_oldy) {
 
 		Thread t = new Thread(new Runnable() {
 			public void run() {
@@ -4572,7 +4862,8 @@ public class RealmMechanics implements Listener {
 				int oldx = o_oldy;
 				int oldz = o_oldy;
 				int limy = (128 - o_limy);
-				int oldy = (128 - o_oldy) - 1; // Subtract an extra 1 for bedrock border area.
+				int oldy = (128 - o_oldy) - 1; // Subtract an extra 1 for
+												// bedrock border area.
 
 				// BEDROCK
 				for (x = 16; x < limx; x++) {
@@ -4620,16 +4911,20 @@ public class RealmMechanics implements Listener {
 		}
 		if (doesWorldExistLocal(realm_name) && !(isWorldLoaded(realm_name))) {
 			Bukkit.createWorld(new WorldCreator(realm_name));
-			p.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "                   " + "* Realm Portal OPENED *");
-			if (realm_title.containsKey(p.getName()) && realm_title.get(p.getName()) != null && !(realm_title.get(p.getName()).equalsIgnoreCase("null"))) {
-				p.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + "Description: " + ChatColor.GRAY + realm_title.get(p.getName()));
+			p.sendMessage(
+					ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "                   " + "* Realm Portal OPENED *");
+			if (realm_title.containsKey(p.getName()) && realm_title.get(p.getName()) != null
+					&& !(realm_title.get(p.getName()).equalsIgnoreCase("null"))) {
+				p.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + "Description: " + ChatColor.GRAY
+						+ realm_title.get(p.getName()));
 			} else {
-				p.sendMessage(ChatColor.GRAY + "Type /realm <TITLE> to set the description of your realm, it will be displayed to all visitors.");
+				p.sendMessage(ChatColor.GRAY
+						+ "Type /realm <TITLE> to set the description of your realm, it will be displayed to all visitors.");
 			}
 			final String safe_realm_name = realm_name;
 
 			new BukkitRunnable() {
-				
+
 				public void run() {
 					ready_worlds.add(safe_realm_name);
 				}
@@ -4638,11 +4933,15 @@ public class RealmMechanics implements Listener {
 			return;
 		}
 		if (isWorldLoaded(realm_name)) {
-			p.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "                   " + "* Realm Portal OPENED *");
-			if (realm_title.containsKey(p.getName()) && realm_title.get(p.getName()) != null && !(realm_title.get(p.getName()).equalsIgnoreCase("null"))) {
-				p.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + "Description: " + ChatColor.GRAY + realm_title.get(p.getName()));
+			p.sendMessage(
+					ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "                   " + "* Realm Portal OPENED *");
+			if (realm_title.containsKey(p.getName()) && realm_title.get(p.getName()) != null
+					&& !(realm_title.get(p.getName()).equalsIgnoreCase("null"))) {
+				p.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + "Description: " + ChatColor.GRAY
+						+ realm_title.get(p.getName()));
 			} else {
-				p.sendMessage(ChatColor.GRAY + "Type /realm <TITLE> to set the description of your realm, it will be displayed to all visitors.");
+				p.sendMessage(ChatColor.GRAY
+						+ "Type /realm <TITLE> to set the description of your realm, it will be displayed to all visitors.");
 			}
 
 			return;
@@ -4651,15 +4950,18 @@ public class RealmMechanics implements Listener {
 		if (doesWorldExistGlobal(realm_name)) {
 			// Download it.
 			safe_realms.remove(realm_name); // Remove old safe data.
-			// p.sendMessage(ChatColor.GRAY + "DOWNLOADING your realm data from hive, please wait...");
-			downloadRealm(realm_name, p); // Downloads, Makes World File, Extracts.
+			// p.sendMessage(ChatColor.GRAY + "DOWNLOADING your realm data from
+			// hive, please wait...");
+			downloadRealm(realm_name, p); // Downloads, Makes World File,
+											// Extracts.
 
 			WorldCreator wc = new WorldCreator(p.getName());
 			wc.type(WorldType.FLAT);
 			wc.generateStructures(false);
 			World w = Bukkit.createWorld(wc);
 
-			if (w.getBlockAt(new Location(w, w.getSpawnLocation().getX(), 0, w.getSpawnLocation().getZ())).getType() == Material.BEDROCK) {
+			if (w.getBlockAt(new Location(w, w.getSpawnLocation().getX(), 0, w.getSpawnLocation().getZ()))
+					.getType() == Material.BEDROCK) {
 				// Glitched realm.
 				if (!(corrupt_world.contains(p.getName()))) {
 					p.sendMessage(ChatColor.RED + "Your realm did NOT load.");
@@ -4680,7 +4982,8 @@ public class RealmMechanics implements Listener {
 			}
 
 			int p_realm_tier = realm_tier.get(p.getName());
-			if (p_realm_tier == 0 || p_realm_tier == 1) { // p_realm_tier == 1 ||
+			if (p_realm_tier == 0 || p_realm_tier == 1) { // p_realm_tier == 1
+															// ||
 				// Possibly fucked up realm index.
 				boolean set = false;
 				if (w.getBlockAt(new Location(w, 36, 120, 36)).getType() != Material.AIR) {
@@ -4719,17 +5022,21 @@ public class RealmMechanics implements Listener {
 				}
 			}
 
-			p.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "                   " + "* Realm Portal OPENED *");
-			if (realm_title.containsKey(p.getName()) && realm_title.get(p.getName()) != null && !(realm_title.get(p.getName()).equalsIgnoreCase("null"))) {
-				p.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + "Description: " + ChatColor.GRAY + realm_title.get(p.getName()));
+			p.sendMessage(
+					ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "                   " + "* Realm Portal OPENED *");
+			if (realm_title.containsKey(p.getName()) && realm_title.get(p.getName()) != null
+					&& !(realm_title.get(p.getName()).equalsIgnoreCase("null"))) {
+				p.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + "Description: " + ChatColor.GRAY
+						+ realm_title.get(p.getName()));
 			} else {
-				p.sendMessage(ChatColor.GRAY + "Type /realm <TITLE> to set the description of your realm, it will be displayed to all visitors.");
+				p.sendMessage(ChatColor.GRAY
+						+ "Type /realm <TITLE> to set the description of your realm, it will be displayed to all visitors.");
 			}
 
 			final String safe_realm_name = p.getName();
 
 			new BukkitRunnable() {
-				
+
 				public void run() {
 					ready_worlds.add(safe_realm_name);
 				}
@@ -4744,16 +5051,19 @@ public class RealmMechanics implements Listener {
 			p.sendMessage(ChatColor.GRAY + "Generating blank realm...");
 			p.sendMessage("");
 			p.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "                " + "* REALM CREATED *");
-			if (realm_title.containsKey(p.getName()) && realm_title.get(p.getName()) != null && !(realm_title.get(p.getName()).equalsIgnoreCase("null"))) {
-				p.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + "Description: " + ChatColor.GRAY + realm_title.get(p.getName()));
+			if (realm_title.containsKey(p.getName()) && realm_title.get(p.getName()) != null
+					&& !(realm_title.get(p.getName()).equalsIgnoreCase("null"))) {
+				p.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + "Description: " + ChatColor.GRAY
+						+ realm_title.get(p.getName()));
 			} else {
-				p.sendMessage(ChatColor.GRAY + "Type /realm <TITLE> to set the description of your realm, it will be displayed to all visitors.");
+				p.sendMessage(ChatColor.GRAY
+						+ "Type /realm <TITLE> to set the description of your realm, it will be displayed to all visitors.");
 			}
 
 			final String safe_realm_name = realm_name;
 
 			new BukkitRunnable() {
-				
+
 				public void run() {
 					ready_worlds.add(safe_realm_name);
 				}
@@ -4796,7 +5106,8 @@ public class RealmMechanics implements Listener {
 	public static void downloadRealm(String realm_name, Player p) {
 		new File(rootDir + "/realms/down/" + p.getName() + ".zip").delete();
 		try {
-			URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP + Config.realmPath + realm_name + ".zip");
+			URL url = new URL("ftp://" + Config.ftp_user + ":" + Config.ftp_pass + "@" + Config.Hive_IP
+					+ Config.realmPath + realm_name + ".zip");
 			URLConnection urlc;
 
 			urlc = url.openConnection();
@@ -4815,7 +5126,8 @@ public class RealmMechanics implements Listener {
 			is.close();
 
 		} catch (IOException first_login) {
-			log.info("[RealmMechanics] Fatal error occured, realm " + realm_name + " does not exist when it said it did!");
+			log.info("[RealmMechanics] Fatal error occured, realm " + realm_name
+					+ " does not exist when it said it did!");
 			return;
 		}
 
@@ -4827,9 +5139,10 @@ public class RealmMechanics implements Listener {
 	}
 
 	/**
-	 * Is the user the current realms owner? 
+	 * Is the user the current realms owner?
 	 * 
-	 * @param p The player to check
+	 * @param p
+	 *            The player to check
 	 * @return boolean Is the player the current realms owner
 	 */
 	public boolean isRealmOwner(Player p) {
@@ -4936,15 +5249,15 @@ public class RealmMechanics implements Listener {
 		zip(directory, directory, zos);
 		zos.close();
 	}
-	
-	public static final void zipFile(File file, File dest) throws IOException{
+
+	public static final void zipFile(File file, File dest) throws IOException {
 		ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(dest));
 		byte[] buffer = new byte[8192];
 		int read = 0;
 		FileInputStream in = new FileInputStream(file);
 		ZipEntry entry = new ZipEntry(file.getName());
 		zos.putNextEntry(entry);
-		while (-1 != (read = in.read(buffer))){
+		while (-1 != (read = in.read(buffer))) {
 			zos.write(buffer, 0, read);
 		}
 		in.close();

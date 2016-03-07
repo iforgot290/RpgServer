@@ -9,11 +9,12 @@ import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.MonsterMechanics.MonsterMechanics;
 
 public class CommandBenchmark implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if(sender instanceof Player) { return true; }
-		
+		if (sender instanceof Player) {
+			return true;
+		}
+
 		Main.log.info("MonsterMechanics.loaded_mobs = " + MonsterMechanics.loaded_mobs.size());
 		Main.log.info("MonsterMechanics.mob_health = " + MonsterMechanics.mob_health.size());
 		Main.log.info("MonsterMechanics.mob_target = " + MonsterMechanics.mob_target.size());
@@ -27,5 +28,5 @@ public class CommandBenchmark implements CommandExecutor {
 		Main.log.info("MonsterMechanics.no_delay = " + MonsterMechanics.no_delay_kills.size());
 		return true;
 	}
-	
+
 }

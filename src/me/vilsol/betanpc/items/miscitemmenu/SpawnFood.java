@@ -25,19 +25,22 @@ public class SpawnFood implements MenuItem {
 	public void execute(Player plr, ClickType click) {
 		ItemStack fish = new ItemStack(Material.COOKED_FISH);
 		ItemMeta m = fish.getItemMeta();
-        m.setDisplayName(ChatColor.YELLOW.toString() + "Gigantic Shark");
-        List<String> fish_lore = new ArrayList<String>();
-        fish_lore.add(ChatColor.RED + "-50% HUNGER " + ChatColor.GRAY.toString() + "(instant)");
-        fish_lore.add(ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "A terrifying and massive predator.");
-        m.setLore(fish_lore);
-        fish.setItemMeta(m);
-        fish.setAmount(64);
-        plr.getInventory().addItem(fish);
+		m.setDisplayName(ChatColor.YELLOW.toString() + "Gigantic Shark");
+		List<String> fish_lore = new ArrayList<String>();
+		fish_lore.add(ChatColor.RED + "-50% HUNGER " + ChatColor.GRAY.toString() + "(instant)");
+		fish_lore.add(ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "A terrifying and massive predator.");
+		m.setLore(fish_lore);
+		fish.setItemMeta(m);
+		fish.setAmount(64);
+		plr.getInventory().addItem(fish);
 	}
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.COOKED_FISH).setName(ChatColor.YELLOW + "Spawn 64x T5 Fish").setLore(Arrays.asList(ChatColor.GRAY + "Will give you " + ChatColor.BOLD + "64x " + ChatColor.YELLOW + "T5 Fish")).getItem();
+		return new Builder(Material.COOKED_FISH).setName(ChatColor.YELLOW + "Spawn 64x T5 Fish")
+				.setLore(Arrays.asList(
+						ChatColor.GRAY + "Will give you " + ChatColor.BOLD + "64x " + ChatColor.YELLOW + "T5 Fish"))
+				.getItem();
 	}
 
 }

@@ -107,27 +107,30 @@ public class FatigueMechanics implements Listener {
 			}
 		}, 2 * 20L, 25L);
 
-		// Remove energy for sprinting. AND Handles starving player visual effects.
+		// Remove energy for sprinting. AND Handles starving player visual
+		// effects.
 		new BukkitRunnable() {
 
 			public void run() {
-				for(Player p : Bukkit.getOnlinePlayers()) {
-					if(p.isSprinting()) {
-						if(DuelMechanics.isDamageDisabled(p.getLocation()) && !(DuelMechanics.duel_map.containsKey(p.getName())) && !(TutorialMechanics.onIsland.contains(p.getName()))) {
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					if (p.isSprinting()) {
+						if (DuelMechanics.isDamageDisabled(p.getLocation())
+								&& !(DuelMechanics.duel_map.containsKey(p.getName()))
+								&& !(TutorialMechanics.onIsland.contains(p.getName()))) {
 							continue;
 						}
 						removeEnergy(p, 0.15F); // ORIGINAL: 0.15F
 					}
 
 				}
-				for(Player p : starving) {
+				for (Player p : starving) {
 					p.removePotionEffect(PotionEffectType.HUNGER);
-					if(p.getFoodLevel() <= 0) {
+					if (p.getFoodLevel() <= 0) {
 						p.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 40, 0)); // 80
 					} else {
 						starving.remove(p.getName());
 					}
-					//p.setFoodLevel(0);
+					// p.setFoodLevel(0);
 				}
 			}
 		}.runTaskTimerAsynchronously(Main.plugin, 2 * 20L, 10L);
@@ -140,14 +143,16 @@ public class FatigueMechanics implements Listener {
 	}
 
 	public void blockSprinting() {
-		for(Player p : fatigue_effect.keySet()) {
+		for (Player p : fatigue_effect.keySet()) {
 			p.setSprinting(false);
 		}
 	}
 
 	public ItemStack clearModifiers(ItemStack item) {
 		net.minecraft.server.v1_9_R1.ItemStack is = CraftItemStack.asNMSCopy(item);
-		if(!is.hasTag()) { return item; }
+		if (!is.hasTag()) {
+			return item;
+		}
 
 		NBTTagCompound tag = is.getTag();
 		tag.remove("AttributeModifiers");
@@ -158,7 +163,7 @@ public class FatigueMechanics implements Listener {
 
 	public static void updateEnergyRegenData(Player p, boolean echo) {
 		int old_total_regen = 0;
-		if(energy_regen_data.containsKey(p.getName())) {
+		if (energy_regen_data.containsKey(p.getName())) {
 			old_total_regen = (int) (100 * energy_regen_data.get(p.getName())) - 10;
 		}
 
@@ -166,22 +171,24 @@ public class FatigueMechanics implements Listener {
 		int i_new_total_regen = (int) (new_total_regen * 100) - 10;
 		energy_regen_data.put(p.getUniqueId(), new_total_regen);
 
-		if((old_total_regen != i_new_total_regen) && echo == true) {
-			if(old_total_regen > i_new_total_regen) {
-				p.sendMessage(ChatColor.RED + "-" + (old_total_regen - i_new_total_regen) + "% ENERGY REGEN [" + (i_new_total_regen + 100) + "%]");
+		if ((old_total_regen != i_new_total_regen) && echo == true) {
+			if (old_total_regen > i_new_total_regen) {
+				p.sendMessage(ChatColor.RED + "-" + (old_total_regen - i_new_total_regen) + "% ENERGY REGEN ["
+						+ (i_new_total_regen + 100) + "%]");
 			} else {
-				p.sendMessage(ChatColor.GREEN + "+" + (i_new_total_regen - old_total_regen) + "% ENERGY REGEN [" + (i_new_total_regen + 100) + "%]");
+				p.sendMessage(ChatColor.GREEN + "+" + (i_new_total_regen - old_total_regen) + "% ENERGY REGEN ["
+						+ (i_new_total_regen + 100) + "%]");
 			}
 		}
 	}
 
 	public void ClearFatiguePlayers() {
 		HashMap<Player, Integer> fatigue_effect_mirror = new HashMap<Player, Integer>(fatigue_effect);
-		for(Entry<Player, Integer> entry : fatigue_effect_mirror.entrySet()) {
+		for (Entry<Player, Integer> entry : fatigue_effect_mirror.entrySet()) {
 			Player p = entry.getKey();
 			int i = entry.getValue();
 
-			if(i >= 1) {
+			if (i >= 1) {
 				p.removePotionEffect(PotionEffectType.SLOW_DIGGING);
 				fatigue_effect.remove(p);
 				p.setExp(0.10F);
@@ -197,10 +204,10 @@ public class FatigueMechanics implements Listener {
 	public static void updatePlayerLevel(Player p) {
 		float exp = p.getExp();
 		double percent = exp * 100.0D;
-		if(percent > 100) {
+		if (percent > 100) {
 			percent = 100;
 		}
-		if(percent < 0) {
+		if (percent < 0) {
 			percent = 0;
 		}
 		p.setLevel((int) percent);
@@ -212,27 +219,34 @@ public class FatigueMechanics implements Listener {
 
 	public void addEnergy(Player p, float add) {
 		float current_xp = getEnergyPercent(p);
-		if(current_xp == 1) { return; }
+		if (current_xp == 1) {
+			return;
+		}
 		p.setExp(getEnergyPercent(p) + add);
 		updatePlayerLevel(p);
 	}
 
 	public static void removeEnergy(Player p, float remove) {
-		if(p.isOp())return;
-		if(p.hasMetadata("last_energy")) {
-			if((System.currentTimeMillis() - p.getMetadata("last_energy").get(0).asLong()) < 75) { return; // Less than 100ms since last energy taken, skip.
+		if (p.isOp())
+			return;
+		if (p.hasMetadata("last_energy")) {
+			if ((System.currentTimeMillis() - p.getMetadata("last_energy").get(0).asLong()) < 75) {
+				return; // Less than 100ms since last energy taken, skip.
 			}
 		}
 		p.setMetadata("last_energy", new FixedMetadataValue(Main.plugin, System.currentTimeMillis()));
 
 		float current_xp = getEnergyPercent(p);
 		old_energy.put(p.getName(), current_xp);
-		if(current_xp <= 0) { return; }
-		if((getEnergyPercent(p) - remove) <= 0) {
+		if (current_xp <= 0) {
+			return;
+		}
+		if ((getEnergyPercent(p) - remove) <= 0) {
 			fatigue_effect.put(p, 0);
 			p.setExp(0.0F);
 			updatePlayerLevel(p);
-			//sendPotionPacket(p, new PotionEffect(PotionEffectType.SLOW_DIGGING, 50, 4));
+			// sendPotionPacket(p, new
+			// PotionEffect(PotionEffectType.SLOW_DIGGING, 50, 4));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 50, 4));
 			// Add slow swing
 			return;
@@ -242,33 +256,34 @@ public class FatigueMechanics implements Listener {
 	}
 
 	public void replenishEnergy() {
-		for(Player p : Bukkit.getServer().getOnlinePlayers()) {
-			if(p.getPlayerListName().equalsIgnoreCase("")) {
+		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+			if (p.getPlayerListName().equalsIgnoreCase("")) {
 				continue;
 			}
-			if(p.hasMetadata("NPC")) {
+			if (p.hasMetadata("NPC")) {
 				continue;
 			}
 
-			if(getEnergyPercent(p) == 1.0F) {
+			if (getEnergyPercent(p) == 1.0F) {
 				continue;
 			}
-			if(getEnergyPercent(p) > 1.0F) {
+			if (getEnergyPercent(p) > 1.0F) {
 				p.setExp(1.0F);
 				updatePlayerLevel(p);
 				continue;
 			}
 
-			if(!fatigue_effect.containsKey(p)) { // If they don't have the 2 second 'no regen' delay.
+			if (!fatigue_effect.containsKey(p)) { // If they don't have the 2
+													// second 'no regen' delay.
 				float res_amount = getEnergyRegainPercent(p);
-				if(starving.contains(p)) {
+				if (starving.contains(p)) {
 					res_amount = 0.05F;
 					// They're starving, static, slow regen rate.
 				}
 
 				res_amount = res_amount / 6.3F; // 6.3, 5.8, 5
 
-				if(ProfessionMechanics.fish_energy_regen.containsKey(p.getName())) {
+				if (ProfessionMechanics.fish_energy_regen.containsKey(p.getName())) {
 					res_amount += (ProfessionMechanics.fish_energy_regen.get(p.getName()) / 400.0F);
 				}
 
@@ -279,21 +294,21 @@ public class FatigueMechanics implements Listener {
 
 	public float getEnergyRegainPercent(Player player) {
 		UUID id = player.getUniqueId();
-		if(!energy_regen_data.containsKey(id)) {
+		if (!energy_regen_data.containsKey(id)) {
 			energy_regen_data.put(id, 0.10F);
 		}
 
 		float energy_regen = energy_regen_data.get(id);
 
-		if(ItemMechanics.int_data.containsKey(id) && (ItemMechanics.int_data.get(id) > 0)) {
+		if (ItemMechanics.int_data.containsKey(id) && (ItemMechanics.int_data.get(id) > 0)) {
 			double int_mod = ItemMechanics.int_data.get(id);
 			String dmg_data = ItemMechanics.getDamageData(player.getInventory().getItemInMainHand());
-			if(dmg_data.contains("int=")) {
+			if (dmg_data.contains("int=")) {
 				int_mod += Double.parseDouble(dmg_data.split("int=")[1].split(":")[0]);
 			}
 
-
-			//energy_regen += (int)(double)((double)energy_regen * (double)(((int_mod * 0.015)/100.0D)));
+			// energy_regen += (int)(double)((double)energy_regen *
+			// (double)(((int_mod * 0.015)/100.0D)));
 			energy_regen += (float) ((float) (((int_mod * 0.015F) / 100.0F)));
 		}
 
@@ -302,8 +317,9 @@ public class FatigueMechanics implements Listener {
 
 	public float getEnergyRegenVal(ItemStack i) {
 		String armor_data = getArmorData(i);
-		if(armor_data.contains("energy_regen")) {
-			int energy_regen_val = Integer.parseInt(armor_data.substring(armor_data.indexOf("energy_regen=") + 13, armor_data.indexOf("@energy_regen_split@")));
+		if (armor_data.contains("energy_regen")) {
+			int energy_regen_val = Integer.parseInt(armor_data.substring(armor_data.indexOf("energy_regen=") + 13,
+					armor_data.indexOf("@energy_regen_split@")));
 			float f_total_regen = ((float) energy_regen_val / 100.0F);
 			f_total_regen = f_total_regen + 0.10F;
 			return f_total_regen;
@@ -314,19 +330,20 @@ public class FatigueMechanics implements Listener {
 	public static float generateEnergyRegenAmount(Player p) {
 		ItemStack[] is = p.getInventory().getArmorContents();
 		int total_regen = 0;
-		for(ItemStack armor : is) {
-			if(armor.getType() == Material.AIR) {
+		for (ItemStack armor : is) {
+			if (armor.getType() == Material.AIR) {
 				continue;
 			}
 			String armor_data = getArmorData(armor);
-			if(armor_data.contains("energy_regen")) {
-				int energy_regen_val = Integer.parseInt(armor_data.substring(armor_data.indexOf("energy_regen=") + 13, armor_data.indexOf("@energy_regen_split@")));
+			if (armor_data.contains("energy_regen")) {
+				int energy_regen_val = Integer.parseInt(armor_data.substring(armor_data.indexOf("energy_regen=") + 13,
+						armor_data.indexOf("@energy_regen_split@")));
 				total_regen += energy_regen_val;
 			}
 		}
 
 		// TODO: Uncomment 0.10F on 1.1
-		float f_total_regen = ((float) total_regen / 100.0F); //* 0.50F;
+		float f_total_regen = ((float) total_regen / 100.0F); // * 0.50F;
 		f_total_regen = f_total_regen + 0.10F;
 
 		return f_total_regen;
@@ -339,39 +356,92 @@ public class FatigueMechanics implements Listener {
 	public static float getEnergyCost(ItemStack i) {
 		Material m = i.getType();
 
-		if(m == Material.AIR) { return 0.05F; }
+		if (m == Material.AIR) {
+			return 0.05F;
+		}
 
-		if(m == Material.WOOD_SWORD) { return 0.06F; }
-		if(m == Material.STONE_SWORD) { return 0.071F; }
-		if(m == Material.IRON_SWORD) { return 0.0833F; }
-		if(m == Material.DIAMOND_SWORD) { return 0.125F; }
-		if(m == Material.GOLD_SWORD) { return 0.135F; }
+		if (m == Material.WOOD_SWORD) {
+			return 0.06F;
+		}
+		if (m == Material.STONE_SWORD) {
+			return 0.071F;
+		}
+		if (m == Material.IRON_SWORD) {
+			return 0.0833F;
+		}
+		if (m == Material.DIAMOND_SWORD) {
+			return 0.125F;
+		}
+		if (m == Material.GOLD_SWORD) {
+			return 0.135F;
+		}
 
-		if(m == Material.WOOD_AXE) { return 0.0721F * 1.1F; }
-		if(m == Material.STONE_AXE) { return 0.0833F * 1.1F; }
-		if(m == Material.IRON_AXE) { return 0.10F * 1.1F; }
-		if(m == Material.DIAMOND_AXE) { return 0.125F * 1.1F; }
-		if(m == Material.GOLD_AXE) { return 0.135F * 1.1F; }
+		if (m == Material.WOOD_AXE) {
+			return 0.0721F * 1.1F;
+		}
+		if (m == Material.STONE_AXE) {
+			return 0.0833F * 1.1F;
+		}
+		if (m == Material.IRON_AXE) {
+			return 0.10F * 1.1F;
+		}
+		if (m == Material.DIAMOND_AXE) {
+			return 0.125F * 1.1F;
+		}
+		if (m == Material.GOLD_AXE) {
+			return 0.135F * 1.1F;
+		}
 
-		if(m == Material.WOOD_SPADE) { return 0.0721F; }
-		if(m == Material.STONE_SPADE) { return 0.0833F; }
-		if(m == Material.IRON_SPADE) { return 0.10F; }
-		if(m == Material.DIAMOND_SPADE) { return 0.125F; }
-		if(m == Material.GOLD_SPADE) { return 0.135F; }
+		if (m == Material.WOOD_SPADE) {
+			return 0.0721F;
+		}
+		if (m == Material.STONE_SPADE) {
+			return 0.0833F;
+		}
+		if (m == Material.IRON_SPADE) {
+			return 0.10F;
+		}
+		if (m == Material.DIAMOND_SPADE) {
+			return 0.125F;
+		}
+		if (m == Material.GOLD_SPADE) {
+			return 0.135F;
+		}
 
-		if(m == Material.WOOD_HOE) { return 0.10F / 1.1F; }
-		if(m == Material.STONE_HOE) { return 0.12F / 1.1F; }
-		if(m == Material.IRON_HOE) { return 0.13F / 1.1F; }
-		if(m == Material.DIAMOND_HOE) { return 0.14F / 1.1F; }
-		if(m == Material.GOLD_HOE) { return 0.15F / 1.1F; }
+		if (m == Material.WOOD_HOE) {
+			return 0.10F / 1.1F;
+		}
+		if (m == Material.STONE_HOE) {
+			return 0.12F / 1.1F;
+		}
+		if (m == Material.IRON_HOE) {
+			return 0.13F / 1.1F;
+		}
+		if (m == Material.DIAMOND_HOE) {
+			return 0.14F / 1.1F;
+		}
+		if (m == Material.GOLD_HOE) {
+			return 0.15F / 1.1F;
+		}
 
-		if(m == Material.BOW) { // Arrow shooting. Bow punch will be addressed at event level.
+		if (m == Material.BOW) { // Arrow shooting. Bow punch will be addressed
+									// at event level.
 			int tier = ItemMechanics.getItemTier(i);
-			if(tier == 1) { return 0.08F; }
-			if(tier == 2) { return 0.10F; }
-			if(tier == 3) { return 0.11F; }
-			if(tier == 4) { return 0.13F; }
-			if(tier == 5) { return 0.15F; }
+			if (tier == 1) {
+				return 0.08F;
+			}
+			if (tier == 2) {
+				return 0.10F;
+			}
+			if (tier == 3) {
+				return 0.11F;
+			}
+			if (tier == 4) {
+				return 0.13F;
+			}
+			if (tier == 5) {
+				return 0.15F;
+			}
 		}
 
 		return 0.10F;
@@ -389,8 +459,8 @@ public class FatigueMechanics implements Listener {
 		List<Entity> nearbyE = pl.getNearbyEntities(4.0D, 4.0D, 4.0D);
 		ArrayList<LivingEntity> livingE = new ArrayList<LivingEntity>();
 
-		for(Entity e : nearbyE) {
-			if(e instanceof LivingEntity) {
+		for (Entity e : nearbyE) {
+			if (e instanceof LivingEntity) {
 				livingE.add((LivingEntity) e);
 			}
 		}
@@ -399,7 +469,7 @@ public class FatigueMechanics implements Listener {
 		BlockIterator bItr = null;
 		try {
 			bItr = new BlockIterator(pl, 4);
-		} catch(IllegalStateException ise) {
+		} catch (IllegalStateException ise) {
 			return null;
 		}
 		Block block;
@@ -407,21 +477,22 @@ public class FatigueMechanics implements Listener {
 		int bx, by, bz;
 		double ex, ey, ez;
 		// loop through player's line of sight
-		while(bItr.hasNext()) {
+		while (bItr.hasNext()) {
 			block = bItr.next();
 			bx = block.getX();
 			by = block.getY();
 			bz = block.getZ();
 			// check for entities near this block in the line of sight
-			for(LivingEntity e : livingE) {
-				if(!MonsterMechanics.mob_health.containsKey(e) && !(e instanceof Player)) {
+			for (LivingEntity e : livingE) {
+				if (!MonsterMechanics.mob_health.containsKey(e) && !(e instanceof Player)) {
 					continue; // Not something we'll be damaging.
 				}
 				loc = e.getLocation();
 				ex = loc.getX();
 				ey = loc.getY();
 				ez = loc.getZ();
-				if((bx - .75 <= ex && ex <= bx + 1.75) && (bz - .75 <= ez && ez <= bz + 1.75) && (by - 1 <= ey && ey <= by + 2.5)) {
+				if ((bx - .75 <= ex && ex <= bx + 1.75) && (bz - .75 <= ez && ez <= bz + 1.75)
+						&& (by - 1 <= ey && ey <= by + 2.5)) {
 					// entity is close enough, set target and stop
 					target = (LivingEntity) e;
 					break;
@@ -436,8 +507,8 @@ public class FatigueMechanics implements Listener {
 		List<Entity> nearbyE = trader.getNearbyEntities(2.0D, 2.0D, 2.0D);
 		ArrayList<Player> livingE = new ArrayList<Player>();
 
-		for(Entity e : nearbyE) {
-			if(e.getType() == EntityType.PLAYER) {
+		for (Entity e : nearbyE) {
+			if (e.getType() == EntityType.PLAYER) {
 				livingE.add((Player) e);
 			}
 		}
@@ -446,7 +517,7 @@ public class FatigueMechanics implements Listener {
 		BlockIterator bItr = null;
 		try {
 			bItr = new BlockIterator(trader, 2);
-		} catch(IllegalStateException ise) {
+		} catch (IllegalStateException ise) {
 			return null;
 		}
 		Block block;
@@ -454,18 +525,19 @@ public class FatigueMechanics implements Listener {
 		int bx, by, bz;
 		double ex, ey, ez;
 		// loop through player's line of sight
-		while(bItr.hasNext()) {
+		while (bItr.hasNext()) {
 			block = bItr.next();
 			bx = block.getX();
 			by = block.getY();
 			bz = block.getZ();
 			// check for entities near this block in the line of sight
-			for(LivingEntity e : livingE) {
+			for (LivingEntity e : livingE) {
 				loc = e.getLocation();
 				ex = loc.getX();
 				ey = loc.getY();
 				ez = loc.getZ();
-				if((bx - .75 <= ex && ex <= bx + 1.75) && (bz - .75 <= ez && ez <= bz + 1.75) && (by - 1 <= ey && ey <= by + 2.5)) {
+				if ((bx - .75 <= ex && ex <= bx + 1.75) && (bz - .75 <= ez && ez <= bz + 1.75)
+						&& (by - 1 <= ey && ey <= by + 2.5)) {
 					// entity is close enough, set target and stop
 					target = (Player) e;
 					break;
@@ -482,108 +554,119 @@ public class FatigueMechanics implements Listener {
 
 		ItemStack weapon = e.getItem();
 
-		if(weapon == null || !e.hasItem()) {
+		if (weapon == null || !e.hasItem()) {
 			weapon = new ItemStack(Material.AIR);
 		}
 
-		if(!(e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK)) { return; }
+		if (!(e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK)) {
+			return;
+		}
 
-		if(p.getWorld().getName().equalsIgnoreCase(main_world_name) && e.hasBlock() && (e.getClickedBlock().getType() == Material.LONG_GRASS)) {
+		if (p.getWorld().getName().equalsIgnoreCase(main_world_name) && e.hasBlock()
+				&& (e.getClickedBlock().getType() == Material.LONG_GRASS)) {
 			e.setCancelled(true);
 			e.setUseItemInHand(Result.DENY);
 			return;
 		}
 
-		if(ItemMechanics.getDamageData(weapon).equalsIgnoreCase("no") && (weapon.getType() != Material.AIR || (weapon.getType() == Material.AIR && !p.getWorld().getName().equalsIgnoreCase(main_world_name)))) {
+		if (ItemMechanics.getDamageData(weapon).equalsIgnoreCase("no") && (weapon.getType() != Material.AIR
+				|| (weapon.getType() == Material.AIR && !p.getWorld().getName().equalsIgnoreCase(main_world_name)))) {
 			// Not a weapon, who cares. Will do 1 DMG.
 			return;
 		}
 
-		if(ProfessionMechanics.isSkillItem(weapon)) { return; // It's a skill item.
+		if (ProfessionMechanics.isSkillItem(weapon)) {
+			return; // It's a skill item.
 		}
 
-		//if(getTarget(p) != null || (!p.getWorld().getName().equalsIgnoreCase(main_world_name) && !InstanceMechanics.isInstance(p.getWorld().getName()))){return;} // They have a target. The energy will be taken on damage event thingy.
+		// if(getTarget(p) != null ||
+		// (!p.getWorld().getName().equalsIgnoreCase(main_world_name) &&
+		// !InstanceMechanics.isInstance(p.getWorld().getName()))){return;} //
+		// They have a target. The energy will be taken on damage event thingy.
 		// TODO: Make all swings take energy, beware of mining!!
-		/*Block b = null;
-		Material m = null;
-		try{
-			b = p.getTargetBlock(ProfessionMechanics.transparent, 4);
-			m = b.getType();
-		} catch(IllegalStateException ise){
-			m = Material.AIR;
-			//return; // Don't take away energy.
-		}
-		if(m == Material.LONG_GRASS){return;} // They might have a target, they might not, but they're hitting a solid block. (right click anvil fix).*/
+		/*
+		 * Block b = null; Material m = null; try{ b =
+		 * p.getTargetBlock(ProfessionMechanics.transparent, 4); m =
+		 * b.getType(); } catch(IllegalStateException ise){ m = Material.AIR;
+		 * //return; // Don't take away energy. } if(m ==
+		 * Material.LONG_GRASS){return;} // They might have a target, they might
+		 * not, but they're hitting a solid block. (right click anvil fix).
+		 */
 
-		/*Iif(ItemMechanics.getDamageData(weapon).equalsIgnoreCase("no") && weapon.getType() != Material.AIR){
-			// Not a weapon, who cares. Will do 1 DMG.
-			return;
-		}*/
+		/*
+		 * Iif(ItemMechanics.getDamageData(weapon).equalsIgnoreCase("no") &&
+		 * weapon.getType() != Material.AIR){ // Not a weapon, who cares. Will
+		 * do 1 DMG. return; }
+		 */
 
 		float energy_cost = getEnergyCost(weapon);
 
-		if(weapon.getType() == Material.BOW) {
-			energy_cost = energy_cost + 0.15F; // Add 15% more for a bow punch than arrow.
+		if (weapon.getType() == Material.BOW) {
+			energy_cost = energy_cost + 0.15F; // Add 15% more for a bow punch
+												// than arrow.
 			p.playSound(p.getLocation(), Sound.BLOCK_PISTON_EXTEND, 1F, 1.5F);
 			// TODO: Knockback!
 		}
 
-		if(fatigue_effect.containsKey(p)) {
+		if (fatigue_effect.containsKey(p)) {
 			e.setUseItemInHand(Result.DENY);
 			e.setCancelled(true);
-			if(p.getWorld().getName().equalsIgnoreCase(Bukkit.getWorlds().get(0).getName()) || InstanceMechanics.isInstance(p.getWorld().getName())) {
-				//p.playEffect(EntityEffect.HURT);
+			if (p.getWorld().getName().equalsIgnoreCase(Bukkit.getWorlds().get(0).getName())
+					|| InstanceMechanics.isInstance(p.getWorld().getName())) {
+				// p.playEffect(EntityEffect.HURT);
 				p.playSound(p.getLocation(), Sound.ENTITY_WOLF_PANT, 10F, 1.5F);
 			}
 			return;
 		}
 
-		if(last_attack.containsKey(p.getName()) && (System.currentTimeMillis() - last_attack.get(p.getName())) < 100) {
+		if (last_attack.containsKey(p.getName()) && (System.currentTimeMillis() - last_attack.get(p.getName())) < 100) {
 			// Less than 100ms since last attack. -- Don't take any energy.
 			e.setUseItemInHand(Result.DENY);
 			e.setCancelled(true);
 			return;
 		}
 
-		//if(getTarget(p, true) == null){ // If not null, take on damage event.
+		// if(getTarget(p, true) == null){ // If not null, take on damage event.
 		removeEnergy(p, energy_cost);
-		//}
+		// }
 
-		/*if(b == null || m == Material.AIR){
-			removeEnergy(p, energy_cost);
-		}
-		else{
-			if(getTarget(p, true) == null){
-				// Hitting a block -- animation event is called 3x cause minecraft sucks,
-				energy_cost = (energy_cost / 3);
-			}
-			removeEnergy(p, energy_cost);
-		}*/
+		/*
+		 * if(b == null || m == Material.AIR){ removeEnergy(p, energy_cost); }
+		 * else{ if(getTarget(p, true) == null){ // Hitting a block -- animation
+		 * event is called 3x cause minecraft sucks, energy_cost = (energy_cost
+		 * / 3); } removeEnergy(p, energy_cost); }
+		 */
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
-		if(e.getDamager() instanceof Player) {
-			if(e.getCause() == DamageCause.CUSTOM) { return; }
+		if (e.getDamager() instanceof Player) {
+			if (e.getCause() == DamageCause.CUSTOM) {
+				return;
+			}
 			Player p = (Player) e.getDamager();
 			ItemStack weapon = p.getInventory().getItemInMainHand();
 
 			float energy_cost = getEnergyCost(weapon);
 
-			if(weapon.getType() == Material.BOW) {
-				energy_cost = energy_cost + 0.15F; // Add 15% more for a bow punch than arrow.
+			if (weapon.getType() == Material.BOW) {
+				energy_cost = energy_cost + 0.15F; // Add 15% more for a bow
+													// punch than arrow.
 				// TODO: Knockback!
 			}
 
-			if(fatigue_effect.containsKey(p)) {
+			if (fatigue_effect.containsKey(p)) {
 				e.setCancelled(true);
-				if(p.getWorld().getName().equalsIgnoreCase(Bukkit.getWorlds().get(0).getName()) || InstanceMechanics.isInstance(p.getWorld().getName())) {
-					//p.playEffect(EntityEffect.HURT);
+				if (p.getWorld().getName().equalsIgnoreCase(Bukkit.getWorlds().get(0).getName())
+						|| InstanceMechanics.isInstance(p.getWorld().getName())) {
+					// p.playEffect(EntityEffect.HURT);
 					p.playSound(p.getLocation(), Sound.ENTITY_WOLF_PANT, 12F, 1.5F);
-					if(!(e.getEntity() instanceof Player)) {
+					if (!(e.getEntity() instanceof Player)) {
 						try {
-							ParticleEffect.sendToLocation(ParticleEffect.CRIT, e.getEntity().getLocation().add(0, 1, 0), new Random().nextFloat(), new Random().nextFloat(), new Random().nextFloat(), 0.75F, 40);
-						} catch(Exception e1) {
+							ParticleEffect.sendToLocation(ParticleEffect.CRIT, e.getEntity().getLocation().add(0, 1, 0),
+									new Random().nextFloat(), new Random().nextFloat(), new Random().nextFloat(), 0.75F,
+									40);
+						} catch (Exception e1) {
 							e1.printStackTrace();
 						}
 					}
@@ -591,9 +674,10 @@ public class FatigueMechanics implements Listener {
 				return;
 			}
 
-			if(last_attack.containsKey(p.getName()) && (System.currentTimeMillis() - last_attack.get(p.getName())) < 100) {
+			if (last_attack.containsKey(p.getName())
+					&& (System.currentTimeMillis() - last_attack.get(p.getName())) < 100) {
 				// Less than 100ms since last attack.
-				if(!(ItemMechanics.processing_proj_event.contains(p.getName()))) {
+				if (!(ItemMechanics.processing_proj_event.contains(p.getName()))) {
 					e.setCancelled(true);
 					e.setDamage(0);
 					return;
@@ -602,20 +686,35 @@ public class FatigueMechanics implements Listener {
 
 			last_attack.put(p.getName(), System.currentTimeMillis());
 
-			if(!ItemMechanics.processing_proj_event.contains(p.getName()) && (!ItemMechanics.getDamageData(weapon).equalsIgnoreCase("no") || (p.getWorld().getName().equalsIgnoreCase(main_world_name)))) {
+			if (!ItemMechanics.processing_proj_event.contains(p.getName())
+					&& (!ItemMechanics.getDamageData(weapon).equalsIgnoreCase("no")
+							|| (p.getWorld().getName().equalsIgnoreCase(main_world_name)))) {
 				// Remove energy.
 				removeEnergy(p, energy_cost);
 			}
 
-			if(!e.isCancelled() && e.getDamage() > 0 && p.getInventory().getItemInMainHand() != null && p.getInventory().getItemInMainHand().getType() != Material.AIR) {
+			if (!e.isCancelled() && e.getDamage() > 0 && p.getInventory().getItemInMainHand() != null
+					&& p.getInventory().getItemInMainHand().getType() != Material.AIR) {
 				ItemStack in_hand = p.getInventory().getItemInMainHand();
-				if(in_hand.getType() == Material.WOOD_SWORD || in_hand.getType() == Material.STONE_SWORD || in_hand.getType() == Material.IRON_SWORD || in_hand.getType() == Material.DIAMOND_SWORD || in_hand.getType() == Material.GOLD_SWORD || in_hand.getType() == Material.WOOD_AXE || in_hand.getType() == Material.STONE_AXE || in_hand.getType() == Material.IRON_AXE || in_hand.getType() == Material.DIAMOND_AXE || in_hand.getType() == Material.GOLD_AXE || in_hand.getType() == Material.WOOD_SPADE || in_hand.getType() == Material.STONE_SPADE || in_hand.getType() == Material.IRON_SPADE || in_hand.getType() == Material.DIAMOND_SPADE || in_hand.getType() == Material.GOLD_SPADE || in_hand.getType() == Material.BOW) {
+				if (in_hand.getType() == Material.WOOD_SWORD || in_hand.getType() == Material.STONE_SWORD
+						|| in_hand.getType() == Material.IRON_SWORD || in_hand.getType() == Material.DIAMOND_SWORD
+						|| in_hand.getType() == Material.GOLD_SWORD || in_hand.getType() == Material.WOOD_AXE
+						|| in_hand.getType() == Material.STONE_AXE || in_hand.getType() == Material.IRON_AXE
+						|| in_hand.getType() == Material.DIAMOND_AXE || in_hand.getType() == Material.GOLD_AXE
+						|| in_hand.getType() == Material.WOOD_SPADE || in_hand.getType() == Material.STONE_SPADE
+						|| in_hand.getType() == Material.IRON_SPADE || in_hand.getType() == Material.DIAMOND_SPADE
+						|| in_hand.getType() == Material.GOLD_SPADE || in_hand.getType() == Material.BOW) {
 					// It's a weapon!
-					if(DuelMechanics.isDamageDisabled(p.getLocation())) { return; } // No durabillity loss in safe zones.
-					if(DuelMechanics.duel_map.containsKey(p.getName())) { return; }
+					if (DuelMechanics.isDamageDisabled(p.getLocation())) {
+						return;
+					} // No durabillity loss in safe zones.
+					if (DuelMechanics.duel_map.containsKey(p.getName())) {
+						return;
+					}
 
 					RepairMechanics.subtractCustomDurability(p, in_hand, 1, "wep");
-					//log.info(String.valueOf(getCustomDurability(in_hand, "wep")));
+					// log.info(String.valueOf(getCustomDurability(in_hand,
+					// "wep")));
 				}
 
 			}
@@ -624,16 +723,19 @@ public class FatigueMechanics implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void FoodLevelChange(FoodLevelChangeEvent event) {
-		if(!(event.getEntity() instanceof Player)) { return; }
+		if (!(event.getEntity() instanceof Player)) {
+			return;
+		}
 		Player p = (Player) event.getEntity();
-		if(event.getFoodLevel() < p.getFoodLevel()) { // Make sure they're loosing food level.
+		if (event.getFoodLevel() < p.getFoodLevel()) { // Make sure they're
+														// loosing food level.
 			int r = new Random().nextInt(4); // 0, 1, 2, 3
-			if(r >= 1) { // Cancel 75% of the time.
+			if (r >= 1) { // Cancel 75% of the time.
 				event.setCancelled(true);
 				return;
 			}
 		}
-		if(event.getFoodLevel() > 0 && starving.contains(p)) {
+		if (event.getFoodLevel() > 0 && starving.contains(p)) {
 			starving.remove(p);
 			p.removePotionEffect(PotionEffectType.HUNGER);
 		}
@@ -652,12 +754,13 @@ public class FatigueMechanics implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		final Player p = e.getPlayer();
-		if(p.getFoodLevel() <= 0) {
-			if(!(starving.contains(p))) {
+		if (p.getFoodLevel() <= 0) {
+			if (!(starving.contains(p))) {
 				starving.add(p);
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 					public void run() {
-						p.sendMessage(ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "                        *STARVING*");
+						p.sendMessage(
+								ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "                        *STARVING*");
 					}
 				}, 20L);
 			}
@@ -673,29 +776,24 @@ public class FatigueMechanics implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEntityDamage(EntityDamageEvent e) {
-		/*if(e.getCause() == DamageCause.POISON){
-			if(e.getEntity() instanceof Player){
-				Player p = (Player)e.getEntity();
-				if(starving.contains(p)){
-					e.setCancelled(true);
-					e.setDamage(0);
-					return;
-				}
-			}
-		}*/
-		if(e.getCause() == DamageCause.STARVATION) {
+		/*
+		 * if(e.getCause() == DamageCause.POISON){ if(e.getEntity() instanceof
+		 * Player){ Player p = (Player)e.getEntity(); if(starving.contains(p)){
+		 * e.setCancelled(true); e.setDamage(0); return; } } }
+		 */
+		if (e.getCause() == DamageCause.STARVATION) {
 			e.setCancelled(true);
 			e.setDamage(0);
 
 			Player p = (Player) e.getEntity();
-			if(!(p.hasPotionEffect(PotionEffectType.HUNGER))) {
+			if (!(p.hasPotionEffect(PotionEffectType.HUNGER))) {
 				p.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 40, 0)); // 50
-				if(!(starving.contains(p))) {
+				if (!(starving.contains(p))) {
 					starving.add(p);
 					p.sendMessage(ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "                        *STARVING*");
 				}
 			}
-			//removeEnergy(p, 0.20F);
+			// removeEnergy(p, 0.20F);
 		}
 	}
 
@@ -705,12 +803,12 @@ public class FatigueMechanics implements Listener {
 
 		boolean dmg_disabled = DuelMechanics.isDamageDisabled(p.getLocation());
 
-		if(p.getExp() <= 0.0F && (!dmg_disabled || TutorialMechanics.onIsland.contains(p.getName()))) { //fatigue_effect.containsKey(p)
+		if (p.getExp() <= 0.0F && (!dmg_disabled || TutorialMechanics.onIsland.contains(p.getName()))) { // fatigue_effect.containsKey(p)
 			disableSprint(p);
 			sprinting.remove(p);
-		} else if(e.isSprinting()) {
+		} else if (e.isSprinting()) {
 			sprinting.add(p);
-			if(!dmg_disabled || TutorialMechanics.onIsland.contains(p.getName())) {
+			if (!dmg_disabled || TutorialMechanics.onIsland.contains(p.getName())) {
 				removeEnergy(p, 0.15F);
 			}
 		} else {
@@ -720,13 +818,15 @@ public class FatigueMechanics implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerFireBow(EntityShootBowEvent e) {
-		if(!(e.getEntity().getType() == EntityType.PLAYER)) { return; }
+		if (!(e.getEntity().getType() == EntityType.PLAYER)) {
+			return;
+		}
 		Player p = (Player) e.getEntity();
 		ItemStack i = p.getInventory().getItemInMainHand();
 
 		float energy_cost = getEnergyCost(i);
 
-		if(p.getExp() <= 0.0F) { //fatigue_effect.containsKey(p)
+		if (p.getExp() <= 0.0F) { // fatigue_effect.containsKey(p)
 			e.setCancelled(true);
 			return;
 		}
@@ -737,16 +837,17 @@ public class FatigueMechanics implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void onEntityDamageEntity(EntityDamageByEntityEvent e) {
 
-		if(e.getDamager().getType() == EntityType.PLAYER) {
+		if (e.getDamager().getType() == EntityType.PLAYER) {
 			Player p = (Player) e.getDamager();
 
 			float energy = p.getExp();
-			if(old_energy.containsKey(p.getName())) {
-				energy = old_energy.get(p.getName()); // Fix for player interact taking the energy.
+			if (old_energy.containsKey(p.getName())) {
+				energy = old_energy.get(p.getName()); // Fix for player interact
+														// taking the energy.
 			}
 
-			if(p.getExp() <= 0.0F) {
-				if(energy <= 0.0F) {
+			if (p.getExp() <= 0.0F) {
+				if (energy <= 0.0F) {
 					e.setCancelled(true);
 					e.setDamage(0);
 					return;

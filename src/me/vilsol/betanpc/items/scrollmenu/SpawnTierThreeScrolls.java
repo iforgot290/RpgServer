@@ -21,22 +21,25 @@ public class SpawnTierThreeScrolls implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-        ItemStack i1 = EnchantMechanics.t3_white_scroll.clone();
-        ItemStack i2 = EnchantMechanics.t3_armor_scroll.clone();
-        ItemStack i3 = EnchantMechanics.t3_wep_scroll.clone();
+		ItemStack i1 = EnchantMechanics.t3_white_scroll.clone();
+		ItemStack i2 = EnchantMechanics.t3_armor_scroll.clone();
+		ItemStack i3 = EnchantMechanics.t3_wep_scroll.clone();
 
-        i1.setAmount(64);
-        i2.setAmount(64);
-        i3.setAmount(64);
+		i1.setAmount(64);
+		i2.setAmount(64);
+		i3.setAmount(64);
 
-        plr.getInventory().addItem(i1);
-        plr.getInventory().addItem(i2);
-        plr.getInventory().addItem(i3);
+		plr.getInventory().addItem(i1);
+		plr.getInventory().addItem(i2);
+		plr.getInventory().addItem(i3);
 	}
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.EMPTY_MAP).setName(ChatColor.AQUA + "Spawn " + ChatColor.BOLD + "Tier 3 " + ChatColor.AQUA + "Scrolls").setLore(Arrays.asList(ChatColor.GRAY + "Adds a stack of Armor, Weapon and Protection Scrolls")).getItem();
+		return new Builder(Material.EMPTY_MAP)
+				.setName(ChatColor.AQUA + "Spawn " + ChatColor.BOLD + "Tier 3 " + ChatColor.AQUA + "Scrolls")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Adds a stack of Armor, Weapon and Protection Scrolls"))
+				.getItem();
 	}
 
 }

@@ -19,8 +19,8 @@ public class ScrollMenu extends MenuModel {
 		getMenu().addItem(SpawnTierThreeScrolls.class, 2);
 		getMenu().addItem(SpawnTierFourScrolls.class, 3);
 		getMenu().addItem(SpawnTierFiveScrolls.class, 4);
-		
+
 		getMenu().addItem(BackToMainMenu.class, 8);
 	}
-	
+
 }

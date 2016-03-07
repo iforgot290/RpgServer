@@ -11,5 +11,5 @@ public class DynamicFoodVendor extends DynamicMenu {
 		super(size, parent, owner);
 		this.name = "Food Vendor";
 	}
-	
+
 }

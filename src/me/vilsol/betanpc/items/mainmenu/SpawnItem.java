@@ -27,7 +27,10 @@ public class SpawnItem implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.DIAMOND_CHESTPLATE).setName(ChatColor.LIGHT_PURPLE + "Spawn Items").setLore(Arrays.asList(ChatColor.GRAY + "Spawn in " + ChatColor.BOLD + "Armor/Weapons " + ChatColor.GRAY + " of any Tier.")).getItem();
+		return new Builder(Material.DIAMOND_CHESTPLATE).setName(ChatColor.LIGHT_PURPLE + "Spawn Items")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn in " + ChatColor.BOLD + "Armor/Weapons " + ChatColor.GRAY
+						+ " of any Tier."))
+				.getItem();
 	}
-	
+
 }

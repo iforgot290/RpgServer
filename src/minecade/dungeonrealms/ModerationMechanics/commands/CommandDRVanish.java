@@ -10,20 +10,21 @@ import org.bukkit.entity.Player;
 import minecade.dungeonrealms.ModerationMechanics.ModerationMechanics;
 
 public class CommandDRVanish implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = null;
-		if(sender instanceof Player) {
+		if (sender instanceof Player) {
 			p = (Player) sender;
 		}
-		
-		if(!(p.isOp())) { return true; }
-		
-		if(ModerationMechanics.isPlayerVanished(p.getName())) {
+
+		if (!(p.isOp())) {
+			return true;
+		}
+
+		if (ModerationMechanics.isPlayerVanished(p.getName())) {
 			ModerationMechanics.unvanishPlayer(p.getName());
-			for(Player pl : Bukkit.getServer().getOnlinePlayers()) {
-				if(pl.getName().equalsIgnoreCase(p.getName())) {
+			for (Player pl : Bukkit.getServer().getOnlinePlayers()) {
+				if (pl.getName().equalsIgnoreCase(p.getName())) {
 					continue;
 				}
 				pl.showPlayer(p);
@@ -33,8 +34,8 @@ public class CommandDRVanish implements CommandExecutor {
 			ModerationMechanics.vanishPlayer(p.getName());
 			p.sendMessage(ChatColor.GREEN + "You are now " + ChatColor.BOLD + "invisible.");
 		}
-		
+
 		return true;
 	}
-	
+
 }

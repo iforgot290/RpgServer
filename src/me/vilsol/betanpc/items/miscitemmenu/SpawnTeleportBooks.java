@@ -27,7 +27,8 @@ public class SpawnTeleportBooks implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.BOOK).setName(ChatColor.DARK_AQUA + "Spawn Teleport Books").setLore(Arrays.asList(ChatColor.GRAY + "Spawn in Teleportation books to any location.")).getItem();
+		return new Builder(Material.BOOK).setName(ChatColor.DARK_AQUA + "Spawn Teleport Books")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn in Teleportation books to any location.")).getItem();
 	}
 
 }

@@ -13,9 +13,9 @@ public class ItemSpawnWorker extends DynamicMenu {
 	public ItemType type;
 	public ItemTier tier = ItemTier.T1;
 	public SpawnStage stage = SpawnStage.TYPE_CHOICE;
-	
+
 	public ItemSpawnWorker(int size, DynamicMenuModel parent, Player owner) {
 		super(size, parent, owner);
 	}
-	
+
 }

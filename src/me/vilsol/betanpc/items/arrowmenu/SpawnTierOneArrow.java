@@ -23,12 +23,15 @@ public class SpawnTierOneArrow implements MenuItem {
 	public void execute(Player plr, ClickType click) {
 		ItemStack arrow = ItemMechanics.t1_arrow.clone();
 		arrow.setAmount(64);
-        plr.getInventory().addItem(arrow);
+		plr.getInventory().addItem(arrow);
 	}
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.ARROW).setName(ChatColor.WHITE + "Spawn Tier 1 Arrow").setLore(Arrays.asList(ChatColor.GRAY + "Spawn in " + ChatColor.BOLD + "64x " + ChatColor.WHITE + "Tier 1 Arrows.")).getItem();
+		return new Builder(Material.ARROW).setName(ChatColor.WHITE + "Spawn Tier 1 Arrow")
+				.setLore(Arrays.asList(
+						ChatColor.GRAY + "Spawn in " + ChatColor.BOLD + "64x " + ChatColor.WHITE + "Tier 1 Arrows."))
+				.getItem();
 	}
-	
+
 }

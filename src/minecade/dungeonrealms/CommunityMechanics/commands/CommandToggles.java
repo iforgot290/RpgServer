@@ -15,34 +15,36 @@ import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.managers.PlayerManager;
 
 public class CommandToggles implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		final Player p = (Player) sender;
-		
-		if(cmd.getName().equalsIgnoreCase("crypt")) {
-			if(p != null) {
-				if(!(p.isOp())) { return true; }
+
+		if (cmd.getName().equalsIgnoreCase("crypt")) {
+			if (p != null) {
+				if (!(p.isOp())) {
+					return true;
+				}
 			}
-			
+
 			return true;
 		}
-		
-		if(!(args.length == 0)) {
+
+		if (!(args.length == 0)) {
 			p.sendMessage(ChatColor.RED + "Invalid Command.");
 			p.sendMessage(ChatColor.GRAY + "Usage: /toggles");
 			p.sendMessage(ChatColor.GRAY + "Description: Displays currently active toggles.");
 			return true;
 		}
-		
+
 		int toggle_count = 17;
 		Inventory toggle_menu = Bukkit.createInventory(null, 18, "Toggle Menu");
 		ItemStack divider = ItemMechanics.signCustomItem(Material.THIN_GLASS, (short) 0, " ", "");
-		
-		if(PlayerManager.getPlayerModel(p).getToggleList() == null || PlayerManager.getPlayerModel(p).getToggleList().size() == 0){
+
+		if (PlayerManager.getPlayerModel(p).getToggleList() == null
+				|| PlayerManager.getPlayerModel(p).getToggleList().size() == 0) {
 			// No toggles, show all red.
 			int x = -1;
-			while(x < (toggle_count - 1)) {
+			while (x < (toggle_count - 1)) {
 				x++;
 				String toggle = CommunityMechanics.toggle_map.get(x);
 				toggle_menu.setItem(x, CommunityMechanics.generateToggleButton(toggle, false));
@@ -50,28 +52,30 @@ public class CommandToggles implements CommandExecutor {
 		} else {
 			// Some toggles.
 			int x = -1;
-			while(x < (toggle_count - 1)) {
+			while (x < (toggle_count - 1)) {
 				x++;
 				String toggle = CommunityMechanics.toggle_map.get(x);
-				if(toggle.equalsIgnoreCase("toggletradechat")) {
-					toggle_menu.setItem(x, CommunityMechanics.generateToggleButton(toggle, PlayerManager.getPlayerModel(p).getToggleList().contains("tchat")));
+				if (toggle.equalsIgnoreCase("toggletradechat")) {
+					toggle_menu.setItem(x, CommunityMechanics.generateToggleButton(toggle,
+							PlayerManager.getPlayerModel(p).getToggleList().contains("tchat")));
 				} else {
-					toggle_menu.setItem(x, CommunityMechanics.generateToggleButton(toggle, PlayerManager.getPlayerModel(p).getToggleList().contains(toggle.replaceAll("toggle", ""))));
+					toggle_menu.setItem(x, CommunityMechanics.generateToggleButton(toggle,
+							PlayerManager.getPlayerModel(p).getToggleList().contains(toggle.replaceAll("toggle", ""))));
 				}
-				
+
 			}
 		}
-		
+
 		int x = -1;
-		while(x < (toggle_menu.getSize() - 1)) {
+		while (x < (toggle_menu.getSize() - 1)) {
 			x++;
-			if(toggle_menu.getItem(x) == null || toggle_menu.getItem(x).getType() == Material.AIR) {
+			if (toggle_menu.getItem(x) == null || toggle_menu.getItem(x).getType() == Material.AIR) {
 				toggle_menu.setItem(x, divider);
 			}
 		}
-		
+
 		p.openInventory(toggle_menu);
 		return true;
 	}
-	
+
 }

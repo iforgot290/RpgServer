@@ -24,14 +24,18 @@ public class SpawnTierFourPotion implements MenuItem {
 
 	@Override
 	public void execute(Player plr, ClickType click) {
-        ItemStack pot = MerchantMechanics.t4_pot.clone();
-        pot.setAmount(64);
-        plr.getInventory().addItem(pot);
+		ItemStack pot = MerchantMechanics.t4_pot.clone();
+		pot.setAmount(64);
+		plr.getInventory().addItem(pot);
 	}
 
 	@Override
 	public ItemStack getItem() {
-		ItemStack item = new Builder(Material.POTION).setName(ChatColor.LIGHT_PURPLE + "Spawn " + ChatColor.BOLD + "Tier 4 " + ChatColor.LIGHT_PURPLE + "Potion").setLore(Arrays.asList(ChatColor.GRAY + "Spawn a potion that heals " + ChatColor.BOLD + "750hp")).getItem();
+		ItemStack item = new Builder(Material.POTION)
+				.setName(ChatColor.LIGHT_PURPLE + "Spawn " + ChatColor.BOLD + "Tier 4 " + ChatColor.LIGHT_PURPLE
+						+ "Potion")
+				.setLore(Arrays.asList(ChatColor.GRAY + "Spawn a potion that heals " + ChatColor.BOLD + "750hp"))
+				.getItem();
 		new Potion(PotionType.INSTANT_DAMAGE).apply(item);
 		return Utils.removePotionLore(item);
 	}

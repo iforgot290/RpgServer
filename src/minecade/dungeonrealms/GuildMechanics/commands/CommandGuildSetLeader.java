@@ -12,11 +12,11 @@ import minecade.dungeonrealms.PermissionMechanics.PermissionMechanics;
 
 public class CommandGuildSetLeader implements CommandExecutor {
 
-	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player pl = (Player)sender;
+		Player pl = (Player) sender;
 
-		if (pl == null) return true;
+		if (pl == null)
+			return true;
 
 		if (!GuildMechanics.inGuild(pl) && !(pl.isOp() || PermissionMechanics.isGM(pl))) {
 			pl.sendMessage(ChatColor.RED + "You must be part of a guild to do this.");
@@ -25,9 +25,11 @@ public class CommandGuildSetLeader implements CommandExecutor {
 
 		if (args.length < 1) {
 			if (!pl.isOp()) {
-				pl.sendMessage(ChatColor.RED + "Invalid syntax. You must supply a player! /gsetleader <PLAYER> - <PLAYER> must be online!");
+				pl.sendMessage(ChatColor.RED
+						+ "Invalid syntax. You must supply a player! /gsetleader <PLAYER> - <PLAYER> must be online!");
 			} else {
-				pl.sendMessage(ChatColor.RED + "Invalid syntax. You must supply a player and/or guild! /gsetleader <PLAYER> [GUILD]");
+				pl.sendMessage(ChatColor.RED
+						+ "Invalid syntax. You must supply a player and/or guild! /gsetleader <PLAYER> [GUILD]");
 			}
 			return true;
 		}
@@ -37,7 +39,8 @@ public class CommandGuildSetLeader implements CommandExecutor {
 				Player targ = Bukkit.getPlayer(args[0]);
 				String g_name = "";
 				String p_name = targ != null ? targ.getName() : args[0];
-				for(String s : args) g_name += s + " ";
+				for (String s : args)
+					g_name += s + " ";
 				g_name = g_name.substring(args[0].length(), g_name.length() - 1);
 				g_name = g_name.substring(1, g_name.length());
 				if (GuildMechanics.guild_map.containsKey(g_name)) {
@@ -47,7 +50,8 @@ public class CommandGuildSetLeader implements CommandExecutor {
 				}
 				return true;
 			}
-			pl.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "can't" + ChatColor.RED + " change other guilds' leaders!");
+			pl.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "can't" + ChatColor.RED
+					+ " change other guilds' leaders!");
 			return true;
 		}
 
@@ -57,7 +61,8 @@ public class CommandGuildSetLeader implements CommandExecutor {
 			GuildMechanics.promoteToOwnerInOwnGuild(pl, to_pro_name);
 			return true;
 		}
-		pl.sendMessage(ChatColor.RED + "You must be the " + ChatColor.BOLD + "GUILD LEADER" + ChatColor.RED + " to change your guild's owner.");
+		pl.sendMessage(ChatColor.RED + "You must be the " + ChatColor.BOLD + "GUILD LEADER" + ChatColor.RED
+				+ " to change your guild's owner.");
 		return true;
 	}
 

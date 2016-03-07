@@ -27,7 +27,10 @@ public class SpawnScrolls implements MenuItem {
 
 	@Override
 	public ItemStack getItem() {
-		return new Builder(Material.EMPTY_MAP).setName(ChatColor.RED + "Spawn Scrolls").setLore(Arrays.asList(ChatColor.GRAY + "Spawn in " + ChatColor.UNDERLINE + "Enchants/Protection Scrolls " + ChatColor.GRAY + "of any Tier.")).getItem();
+		return new Builder(Material.EMPTY_MAP)
+				.setName(ChatColor.RED + "Spawn Scrolls").setLore(Arrays.asList(ChatColor.GRAY + "Spawn in "
+						+ ChatColor.UNDERLINE + "Enchants/Protection Scrolls " + ChatColor.GRAY + "of any Tier."))
+				.getItem();
 	}
 
 }

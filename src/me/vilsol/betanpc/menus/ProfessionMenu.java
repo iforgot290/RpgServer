@@ -13,8 +13,8 @@ public class ProfessionMenu extends MenuModel {
 		super(9, ChatColor.GOLD.toString() + ChatColor.BOLD + "Spawn Profession Items");
 		getMenu().addItem(SpawnPickaxe.class, 0);
 		getMenu().addItem(SpawnFishingRod.class, 1);
-		
+
 		getMenu().addItem(BackToMainMenu.class, 8);
 	}
-	
+
 }

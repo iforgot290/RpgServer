@@ -10,20 +10,21 @@ import minecade.dungeonrealms.Utils;
 import minecade.dungeonrealms.HealthMechanics.HealthMechanics;
 
 public class CommandDRFood implements CommandExecutor {
-	
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player pl = (Player)sender;
-		
-		if (!pl.isOp() && !Utils.isBeta()) return true;   // enable for testing on beta shard
-		
+		Player pl = (Player) sender;
+
+		if (!pl.isOp() && !Utils.isBeta())
+			return true; // enable for testing on beta shard
+
 		for (int i = 0; i < HealthMechanics.HP_regen_food.length; i++) {
-		    pl.getInventory().addItem(HealthMechanics.HP_regen_food[i]);
+			pl.getInventory().addItem(HealthMechanics.HP_regen_food[i]);
 		}
-		
+
 		pl.sendMessage(ChatColor.GREEN + "Added 1 of each HP regen food to your inventory.");
-		
+
 		return true;
 	}
-	
+
 }

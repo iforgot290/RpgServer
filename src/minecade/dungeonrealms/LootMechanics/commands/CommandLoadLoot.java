@@ -9,15 +9,15 @@ import org.bukkit.entity.Player;
 import minecade.dungeonrealms.LootMechanics.LootMechanics;
 
 public class CommandLoadLoot implements CommandExecutor {
-	
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
-		if(!p.isOp()) return true;
+		if (!p.isOp())
+			return true;
 		LootMechanics.loadlootSpawnTemplates();
 		LootMechanics.loadGameWorldlootSpawnerData();
 		p.sendMessage(ChatColor.GREEN + "Loaded all loot spawn templates into memory.");
 		return true;
 	}
-	
+
 }

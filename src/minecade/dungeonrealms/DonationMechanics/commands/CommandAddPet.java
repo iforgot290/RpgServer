@@ -15,29 +15,30 @@ import minecade.dungeonrealms.PermissionMechanics.PermissionMechanics;
 
 public class CommandAddPet implements CommandExecutor {
 
-
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
 		Player p = null;
-		if(sender instanceof Player) {
+		if (sender instanceof Player) {
 			p = (Player) sender;
-			if(!(PermissionMechanics.isGM(p))) { return true; }
+			if (!(PermissionMechanics.isGM(p))) {
+				return true;
+			}
 		}
 
-		if(args.length != 2) {
+		if (args.length != 2) {
 			sender.sendMessage("Incorrect Syntax. /addpet <player> <pet>");
 			return true;
 		}
 
 		final String pname = args[0];
 		final String pet = args[1];
-		
+
 		sender.sendMessage("Added pet '" + pet + "' to player " + pname + ".");
 
-		new BukkitRunnable(){
+		new BukkitRunnable() {
 
 			@Override
-			public void run(){
+			public void run() {
 
 				@SuppressWarnings("deprecation")
 				OfflinePlayer player = Bukkit.getOfflinePlayer(pname);

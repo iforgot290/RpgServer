@@ -9,48 +9,49 @@ import minecade.dungeonrealms.database.ConnectionPool;
 import minecade.dungeonrealms.models.LogModel;
 
 public class ThreadPool extends Thread {
-	
+
 	public void run() {
-		while(true) {
+		while (true) {
 			try {
 				Thread.sleep(250);
-			} catch(InterruptedException e) {}
-			for(String query : Hive.sql_query) {
+			} catch (InterruptedException e) {
+			}
+			for (String query : Hive.sql_query) {
 				Connection con = null;
 				PreparedStatement pst = null;
-				
+
 				try {
 					pst = ConnectionPool.getConnection().prepareStatement(query);
 					pst.executeUpdate();
-					
+
 					Hive.log.info("[Hive] ASYNC Executed query: " + query);
-					
-				} catch(SQLException ex) {
+
+				} catch (SQLException ex) {
 					Hive.log.log(Level.SEVERE, ex.getMessage(), ex);
-					
+
 				} finally {
 					try {
-						if(pst != null) {
+						if (pst != null) {
 							pst.close();
 						}
-						if(con != null) {
+						if (con != null) {
 							con.close();
 						}
-						
-					} catch(SQLException ex) {
+
+					} catch (SQLException ex) {
 						Hive.log.log(Level.WARNING, ex.getMessage(), ex);
 					}
 				}
-				
+
 				Hive.sql_query.remove(query);
 			}
 
 			String log_example = "INSERT INTO logs (type, player, time, data) VALUES (?, ?, ?, ?);";
-			
-			for(LogModel log : Hive.logs) {
+
+			for (LogModel log : Hive.logs) {
 				Connection con = null;
 				PreparedStatement pst = null;
-				
+
 				try {
 					pst = ConnectionPool.getConnection().prepareStatement(log_example);
 					pst.setString(1, log.type.name());
@@ -58,23 +59,23 @@ public class ThreadPool extends Thread {
 					pst.setLong(3, log.time);
 					pst.setString(4, (log.data != null) ? log.data.toString() : "");
 					pst.executeUpdate();
-				} catch(SQLException ex) {
+				} catch (SQLException ex) {
 					Hive.log.log(Level.SEVERE, ex.getMessage(), ex);
-					
+
 				} finally {
 					try {
-						if(pst != null) {
+						if (pst != null) {
 							pst.close();
 						}
-						if(con != null) {
+						if (con != null) {
 							con.close();
 						}
-						
-					} catch(SQLException ex) {
+
+					} catch (SQLException ex) {
 						Hive.log.log(Level.WARNING, ex.getMessage(), ex);
 					}
 				}
-				
+
 				Hive.logs.remove(log);
 			}
 		}

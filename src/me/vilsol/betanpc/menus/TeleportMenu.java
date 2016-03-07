@@ -27,5 +27,5 @@ public class TeleportMenu extends MenuModel {
 		getMenu().addItem(TeleportToCrestguard.class, 7);
 		getMenu().addItem(BackToMainMenu.class, 8);
 	}
-	
+
 }

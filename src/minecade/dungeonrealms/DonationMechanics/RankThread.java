@@ -10,43 +10,46 @@ import java.util.logging.Level;
 import minecade.dungeonrealms.database.ConnectionPool;
 
 public class RankThread extends Thread {
-	
+
 	public void run() {
-		while(true) {
+		while (true) {
 			try {
 				Thread.sleep(1000);
-			} catch(Exception err) {}
-			for(Entry<UUID, String> data : DonationMechanics.async_set_rank.entrySet()) {
+			} catch (Exception err) {
+			}
+			for (Entry<UUID, String> data : DonationMechanics.async_set_rank.entrySet()) {
 				UUID id = data.getKey();
 				String rank = data.getValue();
-				
+
 				Connection con = null;
 				PreparedStatement pst = null;
-				
+
 				try {
 					con = ConnectionPool.getConnection();
-					pst = con.prepareStatement("INSERT INTO player_database (p_name, rank)" + " VALUES" + "('" + id.toString() + "', '" + rank + "') ON DUPLICATE KEY UPDATE rank='" + rank + "'");
-					
+					pst = con.prepareStatement("INSERT INTO player_database (p_name, rank)" + " VALUES" + "('"
+							+ id.toString() + "', '" + rank + "') ON DUPLICATE KEY UPDATE rank='" + rank + "'");
+
 					pst.executeUpdate();
-					DonationMechanics.log.info("[DonationMechanics] Set rank of player " + id.toString() + " to " + rank);
-					
-				} catch(SQLException ex) {
+					DonationMechanics.log
+							.info("[DonationMechanics] Set rank of player " + id.toString() + " to " + rank);
+
+				} catch (SQLException ex) {
 					DonationMechanics.log.log(Level.SEVERE, ex.getMessage(), ex);
-					
+
 				} finally {
 					try {
-						if(pst != null) {
+						if (pst != null) {
 							pst.close();
 						}
-						if(con != null) {
+						if (con != null) {
 							con.close();
 						}
-						
-					} catch(SQLException ex) {
+
+					} catch (SQLException ex) {
 						DonationMechanics.log.log(Level.WARNING, ex.getMessage(), ex);
 					}
 				}
-				
+
 				DonationMechanics.async_set_rank.remove(id);
 			}
 		}

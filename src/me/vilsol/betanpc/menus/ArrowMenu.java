@@ -19,8 +19,8 @@ public class ArrowMenu extends MenuModel {
 		getMenu().addItem(SpawnTierThreeArrow.class, 2);
 		getMenu().addItem(SpawnTierFourArrow.class, 3);
 		getMenu().addItem(SpawnTierFiveArrow.class, 4);
-		
+
 		getMenu().addItem(BackToMainMenu.class, 8);
 	}
-	
+
 }
