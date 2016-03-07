@@ -252,24 +252,26 @@ public class GuildMechanics implements Listener {
 		// Handles guild invite expiration/timeout.
 		Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(Main.plugin, new Runnable() {
 			public void run() {
-				for (Entry<String, Long> data : guild_invite_time.entrySet()) {
-					String p_name = data.getKey();
+				for (Entry<UUID, Long> data : guild_invite_time.entrySet()) {
+					UUID id = data.getKey();
 					long time = data.getValue();
 
 					if ((System.currentTimeMillis() - time) >= (30 * 1000)) {
 						// 30s invite timeout.
-						String party_owner = guild_invite.get(p_name);
-						guild_invite.remove(p_name);
-						guild_inviter.remove(p_name);
-						guild_invite_time.remove(p_name);
-						if (Bukkit.getPlayer(p_name) != null) {
-							Player pl = Bukkit.getPlayer(p_name);
+						UUID party_owner = guild_inviter.get(id);
+						guild_invite.remove(id);
+						guild_inviter.remove(id);
+						guild_invite_time.remove(id);
+						if (Bukkit.getPlayer(id) != null) {
+							Player pl = Bukkit.getPlayer(id);
 							pl.sendMessage(ChatColor.RED + "Guild invite from " + ChatColor.BOLD + party_owner
 									+ ChatColor.RED + " expired.");
 						}
+						//TODO isnt this the guild name?
 						if (Bukkit.getPlayer(party_owner) != null) {
 							Player pl = Bukkit.getPlayer(party_owner);
-							pl.sendMessage(ChatColor.RED + "Guild invite to " + ChatColor.BOLD + p_name + ChatColor.RED
+							OfflinePlayer op = Bukkit.getOfflinePlayer(id);
+							pl.sendMessage(ChatColor.RED + "Guild invite to " + ChatColor.BOLD + op.getName() + ChatColor.RED
 									+ " has expired.");
 						}
 					}
@@ -295,12 +297,16 @@ public class GuildMechanics implements Listener {
 		log.info("[GuildMechanics] has been DISABLED.");
 	}
 
+	/**
+	 * Handles sending motd and updating tablist for everyone in guild
+	 * @param e Bukkit join event
+	 */
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		final Player pl = e.getPlayer();
-		if (inGuild(pl.getName())) {
+		if (inGuild(pl)) {
 			guildMemberJoin(pl); // Sends player join message to all guildies.
-			final String g_name = getGuild(pl.getName());
+			final String g_name = getGuild(pl);
 
 			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 				public void run() {
@@ -315,11 +321,10 @@ public class GuildMechanics implements Listener {
 								+ "No message of the day set. Use /gmotd <motd> to create one.");
 					}
 
-					for (String s : getOnlineGuildMembers(getGuild(pl.getName()))) {
+					for (Player s : getOnlineGuildMembers(getGuild(pl))) {
 						// For each online guild member, update their guild tab
 						// list.
-						ChatColor.stripColor(s);
-						updateGuildTabList(Bukkit.getPlayer(s));
+						updateGuildTabList(s);
 					}
 				}
 			}, 10L);
@@ -330,8 +335,8 @@ public class GuildMechanics implements Listener {
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		Player pl = e.getPlayer();
 		final String p_name = pl.getName();
-		if (inGuild(pl.getName())) {
-			final String g_name = getGuild(pl.getName());
+		if (inGuild(pl)) {
+			final String g_name = getGuild(pl);
 			guildMemberQuit(pl);
 
 			// Remove local guild data from them.
@@ -364,11 +369,10 @@ public class GuildMechanics implements Listener {
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 					public void run() {
 						if (guild_map.containsKey(p_name)) {
-							for (String s : getOnlineGuildMembers(g_name)) {
+							for (Player s : getOnlineGuildMembers(g_name)) {
 								// For each online guild member, update their
 								// guild tab list.
-								ChatColor.stripColor(s);
-								updateGuildTabList(Bukkit.getPlayer(s));
+								updateGuildTabList(s);
 							}
 						}
 					}
@@ -376,9 +380,9 @@ public class GuildMechanics implements Listener {
 
 			}
 
-			player_guilds.remove(pl.getName());
-			guild_only.remove(pl.getName());
-			player_guild_rank.remove(pl.getName());
+			player_guilds.remove(pl.getUniqueId());
+			guild_only.remove(pl.getUniqueId());
+			player_guild_rank.remove(pl.getUniqueId());
 		}
 		// TODO: Remove local guild data if no more guildies are online.
 	}
