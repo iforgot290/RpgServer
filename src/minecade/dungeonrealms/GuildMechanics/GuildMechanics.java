@@ -406,7 +406,7 @@ public class GuildMechanics implements Listener {
 			}
 			if (msg.equalsIgnoreCase("confirm")) {
 				// TODO: SQL, tell guild, etc.
-				setGuildBIO(getGuild(pl.getName()), bio);
+				setGuildBIO(getGuild(pl), bio);
 				guild_bio_dynamic.remove(pl.getName());
 				return;
 			}
@@ -437,25 +437,22 @@ public class GuildMechanics implements Listener {
 			String msg = ChatColor.stripColor(e.getMessage());
 			if (msg.equalsIgnoreCase("y")) {
 				pl.sendMessage(ChatColor.RED + "You have " + ChatColor.BOLD + "QUIT" + ChatColor.RED + " your guild.");
-				String g_name = getGuild(pl.getName());
-				leaveGuild(pl.getName());
+				String g_name = getGuild(pl);
+				leaveGuild(pl);
 
 				if (!guild_map.containsKey(g_name)) {
 					guild_quit_confirm.remove(pl.getName());
 					return;
 				}
 
-				for (String s : getGuildMembers(g_name)) {
-					if (Bukkit.getPlayer(ChatColor.stripColor(s)) == null) {
-						continue;
-					}
+				for (UUID s : getGuildMembers(g_name)) {
 					Player guildie = Bukkit.getPlayer(s);
 					guildie.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
 							+ ChatColor.DARK_AQUA + "> " + ChatColor.DARK_AQUA + pl.getName() + ChatColor.GRAY + " has "
 							+ ChatColor.UNDERLINE + "left" + ChatColor.GRAY + " the guild.");
 				}
 
-				String message_to_send = "[gquit]" + pl.getName() + "," + g_name;
+				String message_to_send = "[gquit]" + pl.getUniqueId().toString() + "," + g_name;
 				sendGuildMessageCrossServer(message_to_send);
 
 				guild_quit_confirm.remove(pl.getName());
@@ -497,7 +494,7 @@ public class GuildMechanics implements Listener {
 						guild_creation_name_check.remove(pl.getName());
 						return;
 					}
-					if (inGuild(pl.getName())) {
+					if (inGuild(pl)) {
 						pl.sendMessage(ChatColor.GRAY + "Guild Registrar: " + ChatColor.WHITE
 								+ "You are already part of a guild. You'll need to /gquit before creating another.");
 						guild_creation.remove(pl.getName());
@@ -730,8 +727,8 @@ public class GuildMechanics implements Listener {
 					guild_colors.put(guild_name, c);
 					guild_handle_map.put(guild_name, guild_handle);
 
-					player_guilds.put(pl.getName(), guild_name);
-					player_guild_rank.put(pl.getName(), 4); // 4 = founder, 3 =
+					player_guilds.put(pl.getUniqueId(), guild_name);
+					player_guild_rank.put(pl.getUniqueId(), 4); // 4 = founder, 3 =
 															// Co-Owner, 2 =
 															// Officer, 1 =
 															// Member
@@ -1218,7 +1215,7 @@ public class GuildMechanics implements Listener {
 					if (!(RealmMechanics.isItemTradeable(e.getCurrentItem()))) {
 						return; // Don't allow dye on already dyed armor.
 					}
-					if (!(inGuild(pl.getName()))) {
+					if (!(inGuild(pl))) {
 						// e.setCancelled(true);
 						pl.sendMessage(ChatColor.RED + "You cannot dye your armor unless you are in an "
 								+ ChatColor.UNDERLINE + "active guild.");
@@ -1589,9 +1586,8 @@ public class GuildMechanics implements Listener {
 
 	public static int getOnlineGuildCount(String g_name) {
 		int count = 0;
-		for (String s : getOnlineGuildMembers(g_name)) {
-			if (getGuildRank(ChatColor.stripColor(s), g_name) == 1
-					&& (s.contains(ChatColor.YELLOW.toString()) || s.contains(ChatColor.GREEN.toString()))) {
+		for (Player s : getOnlineGuildMembers(g_name)) {
+			if (getGuildRank(s.getUniqueId(), g_name) == 1) {
 				count++;
 			}
 		}
@@ -1600,12 +1596,8 @@ public class GuildMechanics implements Listener {
 
 	public static int getGuildMemberCount(String g_name) {
 		int count = 0;
-		for (String s : getOnlineGuildMembers(g_name)) {
-			if (s.contains(" ")) {
-				// They're on another server.
-				s = s.substring(s.indexOf(" ") + 1, s.length());
-			}
-			if (getGuildRank(ChatColor.stripColor(s), g_name) == 1) {
+		for (UUID s : getGuildMembers(g_name)) {
+			if (getGuildRank(s, g_name) == 1) {
 				count++;
 			}
 		}
@@ -1670,8 +1662,8 @@ public class GuildMechanics implements Listener {
 		if (pl == null) {
 			return;
 		}
-		String g_name = getGuild(pl.getName());
-		if (pl == null || !(inGuild(pl.getName())) || g_name == null) {
+		String g_name = getGuild(pl);
+		if (pl == null || !(inGuild(pl)) || g_name == null) {
 			TabAPI.setTabString(Main.plugin, pl, 0, 0, ChatColor.GRAY + "*------------");
 			TabAPI.setTabString(Main.plugin, pl, 0, 1, ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "    Guild UI");
 			TabAPI.setTabString(Main.plugin, pl, 0, 2, ChatColor.GRAY + "  ----------*");
@@ -1682,7 +1674,7 @@ public class GuildMechanics implements Listener {
 			TabAPI.setTabString(Main.plugin, pl, 17, 1,
 					ChatColor.DARK_AQUA + "Shard " + ChatColor.GRAY.toString() + getLocalServerName(), 0);
 
-			int online_players = Bukkit.getOnlinePlayers().length;
+			int online_players = Bukkit.getOnlinePlayers().size();
 			int max_players = Bukkit.getMaxPlayers();
 
 			// online_players = (int) Math.round(online_players * 2.5D);
@@ -1693,15 +1685,15 @@ public class GuildMechanics implements Listener {
 				online_players = max_players - (new Random().nextInt(15 - 5) + 5);
 			}
 
-			if (Bukkit.getOnlinePlayers().length + 10 >= max_players) {
+			if (Bukkit.getOnlinePlayers().size() + 10 >= max_players) {
 				// Ok, now if the actual length+10 more is > maximum, we're full
 				// for real, so no more spoofing is needed.
-				online_players = Bukkit.getOnlinePlayers().length;
+				online_players = Bukkit.getOnlinePlayers().size();
 			}
 
-			if (Bukkit.getOnlinePlayers().length <= 5) {
+			if (Bukkit.getOnlinePlayers().size() <= 5) {
 				// Less than 5 people on, don't spoof. 5 -> 6 / 13
-				online_players = Bukkit.getOnlinePlayers().length;
+				online_players = Bukkit.getOnlinePlayers().size();
 			}
 
 			TabAPI.setTabString(Main.plugin, pl, 18, 1,
@@ -1742,7 +1734,7 @@ public class GuildMechanics implements Listener {
 		TabAPI.setTabString(Main.plugin, pl, 17, 1,
 				ChatColor.DARK_AQUA + "Shard " + ChatColor.GRAY.toString() + getLocalServerName(), 0);
 
-		int online_players = Bukkit.getOnlinePlayers().length;
+		int online_players = Bukkit.getOnlinePlayers().size();
 		int max_players = Bukkit.getMaxPlayers();
 
 		if (online_players > max_players) {
@@ -1751,15 +1743,15 @@ public class GuildMechanics implements Listener {
 			online_players = max_players - (new Random().nextInt(15 - 5) + 5);
 		}
 
-		if (Bukkit.getOnlinePlayers().length + 10 >= max_players) {
+		if (Bukkit.getOnlinePlayers().size() + 10 >= max_players) {
 			// Ok, now if the actual length+10 more is > maximum, we're full for
 			// real, so no more spoofing is needed.
-			online_players = Bukkit.getOnlinePlayers().length;
+			online_players = Bukkit.getOnlinePlayers().size();
 		}
 
-		if (Bukkit.getOnlinePlayers().length <= 5) {
+		if (Bukkit.getOnlinePlayers().size() <= 5) {
 			// Less than 5 people on, don't spoof. 5 -> 6 / 13
-			online_players = Bukkit.getOnlinePlayers().length;
+			online_players = Bukkit.getOnlinePlayers().size();
 		}
 
 		TabAPI.setTabString(Main.plugin, pl, 18, 1, ChatColor.GRAY.toString() + online_players + " / " + max_players,
@@ -1776,12 +1768,12 @@ public class GuildMechanics implements Listener {
 				ChatColor.DARK_AQUA + "[" + getOnlineCoOwnersCount(g_name) + "/" + getTotalCoOwnersCount(g_name) + "]",
 				0);
 
-		List<String> members = getOnlineGuildMembers(g_name);
+		List<Player> members = getOnlineGuildMembers(g_name);
 		List<String> pruned_members = new ArrayList<String>();
 		List<String> to_remove_mem = new ArrayList<String>();
 		// pruned_members = a list of 10 members, prioritizing online first.
 
-		for (String s : members) {
+		for (Player s : members) {
 			String s_copy = s;
 			if (pruned_members.size() >= 16) {
 				break;
@@ -2022,7 +2014,7 @@ public class GuildMechanics implements Listener {
 		// team.setAllowFriendlyFire(false);
 	}
 
-	public static void setupGuildData(String p_name, String guild_name) {
+	public static void setupGuildData(UUID id, String guild_name) {
 		if (guild_name == null || guild_name.equalsIgnoreCase("") || guild_name.length() <= 0) {
 			return;
 		}
@@ -2037,15 +2029,15 @@ public class GuildMechanics implements Listener {
 			log.info("[GuildMechanics] DOWNLOADING guild data for guild: '" + guild_name + "'");
 			if (downloadGuildDataSQL(guild_name, false) == false) {
 				// Failed to download guild data, does not exist.
-				log.info("[GuildMechanics] Guild " + guild_name + " does not exist, removing " + p_name
+				log.info("[GuildMechanics] Guild " + guild_name + " does not exist, removing " + id.toString()
 						+ " from guild.");
 				return;
 			}
 			setupGuildTeam(guild_name);
 		}
 
-		player_guilds.put(p_name, guild_name);
-		player_guild_rank.put(p_name, getGuildRank(p_name));
+		player_guilds.put(id, guild_name);
+		player_guild_rank.put(id, getGuildRank(id));
 	}
 
 	public static String getPlayerGuildSQL(String p_name) {
@@ -2479,13 +2471,13 @@ public class GuildMechanics implements Listener {
 		 */
 	}
 
-	public static void setPlayerGuildSQL(final String p_name, final String g_name, final boolean none) {
+	public static void setPlayerGuildSQL(final UUID id, final String g_name, final boolean none) {
 
 		if (none == true) {
-			Hive.sql_query.add("INSERT INTO player_database (p_name, guild_name) VALUES('" + p_name
+			Hive.sql_query.add("INSERT INTO player_database (p_name, guild_name) VALUES('" + id.toString()
 					+ "', '') ON DUPLICATE KEY UPDATE guild_name = '" + null + "'");
 		} else if (none == false) {
-			Hive.sql_query.add("INSERT INTO player_database (p_name, guild_name) VALUES('" + p_name + "', '" + g_name
+			Hive.sql_query.add("INSERT INTO player_database (p_name, guild_name) VALUES('" + id.toString() + "', '" + g_name
 					+ "') ON DUPLICATE KEY UPDATE guild_name = '" + g_name + "'");
 		}
 
@@ -2601,6 +2593,10 @@ public class GuildMechanics implements Listener {
 		player_guild_rank.put(id, rank_num);
 		guild_map.put(getGuild(id), new_guild_data);
 	}
+	
+	public static void leaveGuild(Player player){
+		leaveGuild(player.getUniqueId());
+	}
 
 	public static void leaveGuild(UUID id) {
 		String g_name = player_guilds.get(id);
@@ -2715,7 +2711,7 @@ public class GuildMechanics implements Listener {
 		// Send message to guildies on all servers that they've logged in.
 		String g_name = player_guilds.get(pl.getName());
 		List<Player> local_online = new ArrayList<Player>();
-		for (String s : getGuildMembers(g_name)) {
+		for (UUID s : getGuildMembers(g_name)) {
 			if (Bukkit.getPlayer(s) != null) {
 				// Online locally.
 				local_online.add(Bukkit.getPlayer(s));
@@ -2726,8 +2722,8 @@ public class GuildMechanics implements Listener {
 			if (guildie.getName().equalsIgnoreCase(pl.getName())) {
 				continue; // Same person.
 			}
-			if (CommunityMechanics.socialQuery(pl.getName(), guildie.getName(), "CHECK_BUD")
-					&& CommunityMechanics.socialQuery(guildie.getName(), pl.getName(), "CHECK_BUD")) {
+			if (CommunityMechanics.socialQuery(pl.getUniqueId(), guildie.getUniqueId(), "CHECK_BUD")
+					&& CommunityMechanics.socialQuery(guildie.getUniqueId(), pl.getUniqueId(), "CHECK_BUD")) {
 				continue; // No need, they get buddy notification.
 			}
 			guildie.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
@@ -2751,7 +2747,7 @@ public class GuildMechanics implements Listener {
 		// Send message to guildies on all servers that they've logged out.
 		String g_name = player_guilds.get(pl.getName());
 		List<Player> local_online = new ArrayList<Player>();
-		for (String s : getGuildMembers(g_name)) {
+		for (UUID s : getGuildMembers(g_name)) {
 			if (Bukkit.getPlayer(s) != null) {
 				// Online locally.
 				local_online.add(Bukkit.getPlayer(s));
@@ -2762,8 +2758,8 @@ public class GuildMechanics implements Listener {
 			if (guildie.getName().equalsIgnoreCase(pl.getName())) {
 				continue; // Same person.
 			}
-			if (CommunityMechanics.socialQuery(pl.getName(), guildie.getName(), "CHECK_BUD")
-					&& CommunityMechanics.socialQuery(guildie.getName(), pl.getName(), "CHECK_BUD")) {
+			if (CommunityMechanics.socialQuery(pl.getUniqueId(), guildie.getUniqueId(), "CHECK_BUD")
+					&& CommunityMechanics.socialQuery(guildie.getUniqueId(), pl.getUniqueId(), "CHECK_BUD")) {
 				continue; // No need, they get buddy notification.
 			}
 			guildie.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
@@ -2772,7 +2768,7 @@ public class GuildMechanics implements Listener {
 
 		String server_name = Bukkit.getMotd().substring(0, Bukkit.getMotd().indexOf(" "));
 
-		final String packet_data = "[quit]" + pl.getName() + "," + g_name + "@" + server_name;
+		final String packet_data = "[quit]" + pl.getUniqueId().toString() + "," + g_name + "@" + server_name;
 
 		Thread t = new Thread(new Runnable() {
 			public void run() {
@@ -2787,7 +2783,7 @@ public class GuildMechanics implements Listener {
 		// Local only, it's what sockets will run.
 		guild_motd.put(g_name, motd);
 
-		for (String s : getGuildMembers(g_name)) {
+		for (UUID s : getGuildMembers(g_name)) {
 			if (Bukkit.getPlayer(s) != null) {
 				Player pl = Bukkit.getPlayer(s);
 				pl.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
@@ -2800,7 +2796,7 @@ public class GuildMechanics implements Listener {
 		// Local only, it's what sockets will run.
 		guild_bio.put(g_name, bio);
 
-		for (String s : getGuildMembers(g_name)) {
+		for (UUID s : getGuildMembers(g_name)) {
 			if (Bukkit.getPlayer(s) != null) {
 				Player pl = Bukkit.getPlayer(s);
 				pl.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
@@ -2856,16 +2852,15 @@ public class GuildMechanics implements Listener {
 		return 0; // Not in guild.
 	}
 
-	public static int getGuildRank(String p_name, String g_name) {
-		if (player_guild_rank.containsKey(p_name)) {
-			return player_guild_rank.get(p_name);
+	public static int getGuildRank(UUID id, String g_name) {
+		if (player_guild_rank.containsKey(id)) {
+			return player_guild_rank.get(id);
 		}
 
 		List<String> member_list = guild_map.get(g_name);
 
-		p_name = p_name.toLowerCase();
 		for (String s : member_list) {
-			if (s.toLowerCase().contains(p_name)) {
+			if (s.contains(id.toString())) {
 				int rank = Integer.parseInt(s.split(":")[1]);
 				return rank;
 			}
@@ -2970,8 +2965,12 @@ public class GuildMechanics implements Listener {
 	public static String getGuildPrefix(OfflinePlayer player) {
 		return getGuildPrefix(player.getUniqueId());
 	}
+	
+	public static boolean areGuildies(Player p1, Player p2){
+		return areGuildies(p1.getUniqueId(), p2.getUniqueId());
+	}
 
-	public static boolean areGuildies(String p1, String p2) {
+	public static boolean areGuildies(UUID p1, UUID p2) {
 		if (!(inGuild(p1)) || !(inGuild(p2))) {
 			return false;
 			// One of them is not even in a guild.
@@ -2986,14 +2985,14 @@ public class GuildMechanics implements Listener {
 		return false;
 	}
 
-	public static boolean inSpecificGuild(String p_name, String g_name) {
+	public static boolean inSpecificGuild(UUID id, String g_name) {
 		if (!guild_map.containsKey(g_name)) {
 			return false;
 		}
 
-		String[] members = getGuildMembers(g_name);
-		for (String s : members) {
-			if (s.equalsIgnoreCase(p_name)) {
+		List<UUID> members = getGuildMembers(g_name);
+		for (UUID s : members) {
+			if (s.equals(id)) {
 				return true;
 			}
 		}

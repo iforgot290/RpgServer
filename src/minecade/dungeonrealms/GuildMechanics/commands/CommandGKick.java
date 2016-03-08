@@ -37,26 +37,25 @@ public class CommandGKick implements CommandExecutor {
 		}
 
 		String p_to_kick = args[0];
+		@SuppressWarnings("deprecation")
+		OfflinePlayer op = Bukkit.getOfflinePlayer(p_to_kick);
 
 		if (!(GuildMechanics.inSpecificGuild(p_to_kick, g_name))) {
 			p.sendMessage(ChatColor.RED + p_to_kick + " is not in your guild.");
 			return true;
 		}
 
-		if (GuildMechanics.getGuildRank(p_to_kick, g_name) == 2
+		if (GuildMechanics.getGuildRank(op.getUniqueId(), g_name) == 2
 				&& !(GuildMechanics.isGuildLeader(p.getName()) || GuildMechanics.isGuildCoOwner(p.getName()))) {
 			p.sendMessage(ChatColor.RED
 					+ "You cannot kick a fellow guild officer. Only the guild leader or co-owner can do that.");
 			return true;
 		}
 
-		if (GuildMechanics.getGuildRank(p_to_kick, g_name) >= 3) {
+		if (GuildMechanics.getGuildRank(op.getUniqueId(), g_name) >= 3) {
 			p.sendMessage(ChatColor.RED + "You cannot kick someone who has equal or greater power than you.");
 			return true;
 		}
-
-		@SuppressWarnings("deprecation")
-		OfflinePlayer op = Bukkit.getOfflinePlayer(p_to_kick);
 
 		GuildMechanics.leaveGuild(op.getUniqueId(), g_name, true); // Kick them
 																	// from
