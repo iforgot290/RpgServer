@@ -314,11 +314,11 @@ public class GuildMechanics implements Listener {
 					if (guild_motd.containsKey(g_name) && guild_motd.get(g_name) != null) {
 						String motd = guild_motd.get(g_name);
 						pl.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
-								+ ChatColor.DARK_AQUA + "> " + ChatColor.BOLD + "MOTD: " + ChatColor.DARK_AQUA + motd);
+						+ ChatColor.DARK_AQUA + "> " + ChatColor.BOLD + "MOTD: " + ChatColor.DARK_AQUA + motd);
 					} else {
 						pl.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
-								+ ChatColor.DARK_AQUA + "> " + ChatColor.BOLD + "MOTD: " + ChatColor.DARK_AQUA
-								+ "No message of the day set. Use /gmotd <motd> to create one.");
+						+ ChatColor.DARK_AQUA + "> " + ChatColor.BOLD + "MOTD: " + ChatColor.DARK_AQUA
+						+ "No message of the day set. Use /gmotd <motd> to create one.");
 					}
 
 					for (Player s : getOnlineGuildMembers(getGuild(pl))) {
@@ -345,7 +345,7 @@ public class GuildMechanics implements Listener {
 				if (pl.getName().equalsIgnoreCase(online.getName())) {
 					continue; // Same person.
 				}
-				if (areGuildies(pl.getName(), online.getName())) {
+				if (areGuildies(pl, online)) {
 					members_online = true;
 					break;
 				}
@@ -429,7 +429,7 @@ public class GuildMechanics implements Listener {
 
 			guild_bio_dynamic.put(pl.getName(), bio);
 			pl.sendMessage(ChatColor.GREEN + "Biography appended. " + ChatColor.BOLD.toString() + bio.length()
-					+ "/512 characters.");
+			+ "/512 characters.");
 		}
 
 		if (guild_quit_confirm.contains(pl.getName())) {
@@ -448,8 +448,8 @@ public class GuildMechanics implements Listener {
 				for (UUID s : getGuildMembers(g_name)) {
 					Player guildie = Bukkit.getPlayer(s);
 					guildie.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
-							+ ChatColor.DARK_AQUA + "> " + ChatColor.DARK_AQUA + pl.getName() + ChatColor.GRAY + " has "
-							+ ChatColor.UNDERLINE + "left" + ChatColor.GRAY + " the guild.");
+					+ ChatColor.DARK_AQUA + "> " + ChatColor.DARK_AQUA + pl.getName() + ChatColor.GRAY + " has "
+					+ ChatColor.UNDERLINE + "left" + ChatColor.GRAY + " the guild.");
 				}
 
 				String message_to_send = "[gquit]" + pl.getUniqueId().toString() + "," + g_name;
@@ -465,7 +465,7 @@ public class GuildMechanics implements Listener {
 		}
 
 		if (guild_creation.containsKey(pl.getName())) { // We're making a guild,
-														// woo!
+			// woo!
 			e.setCancelled(true);
 			String msg = ChatColor.stripColor(e.getMessage());
 
@@ -543,8 +543,8 @@ public class GuildMechanics implements Listener {
 								+ "' already exists. Please choose a different name.");
 						guild_creation_name_check.remove(pl.getName());
 						guild_creation_data.remove(pl.getName()); // No longer
-																	// need name
-																	// cached.
+						// need name
+						// cached.
 						return;
 					} else if (guild_creation_name_check.get(pl.getName()) == 1) {
 						// Woot!
@@ -582,7 +582,7 @@ public class GuildMechanics implements Listener {
 				}
 
 				guild_creation_name_check.put(pl.getName(), 0); // Check is NOT
-																// complete.
+				// complete.
 				pl.sendMessage(ChatColor.GRAY + "Guild Registrar: " + ChatColor.WHITE
 						+ "Before we move on, I'll need to check my records to ensure no other guilds on other shards already have the name '"
 						+ guild_name + "'. " + ChatColor.UNDERLINE + "Please talk to me again in a few seconds.");
@@ -622,10 +622,10 @@ public class GuildMechanics implements Listener {
 						List<String> guild_data = guild_creation_data.get(pl.getName());
 						guild_data.remove(1);
 						guild_creation_data.put(pl.getName(), guild_data); // No
-																			// longer
-																			// need
-																			// handle
-																			// cached.
+						// longer
+						// need
+						// handle
+						// cached.
 						return;
 
 					} else if (guild_creation_name_check.get(pl.getName()) == 1) {
@@ -681,7 +681,7 @@ public class GuildMechanics implements Listener {
 				 * ); guild_creation.put(pl.getName(), 3);
 				 */
 				guild_creation_name_check.put(pl.getName(), 0); // Check is NOT
-																// complete.
+				// complete.
 				pl.sendMessage(ChatColor.GRAY + "Guild Registrar: " + ChatColor.WHITE
 						+ "Once again, I'll need to check my records to ensure no other guilds on other shards already have the tag '"
 						+ guild_handle + "'. " + ChatColor.UNDERLINE + "Please speak to me again in a few seconds.");
@@ -699,7 +699,7 @@ public class GuildMechanics implements Listener {
 			}
 
 			if (step == 4) { // Colors given, summary given, check if they
-								// confirm creation & process.
+				// confirm creation & process.
 				if (e.getMessage().equalsIgnoreCase(getUpgradeAuthenticationCode(pl.getName()))) {
 
 					if (!RealmMechanics.doTheyHaveEnoughMoney(pl, 5000)) {
@@ -729,9 +729,9 @@ public class GuildMechanics implements Listener {
 
 					player_guilds.put(pl.getUniqueId(), guild_name);
 					player_guild_rank.put(pl.getUniqueId(), 4); // 4 = founder, 3 =
-															// Co-Owner, 2 =
-															// Officer, 1 =
-															// Member
+					// Co-Owner, 2 =
+					// Officer, 1 =
+					// Member
 
 					pl.sendMessage("");
 					pl.sendMessage(ChatColor.GRAY + "Guild Registrar: " + ChatColor.WHITE
@@ -746,7 +746,7 @@ public class GuildMechanics implements Listener {
 
 					setupGuildTeam(guild_name);
 					KarmaMechanics.sendAlignColor(pl, pl); // Update overhead
-															// name.
+					// name.
 					createGuildSQL(guild_name, guild_handle, c.asBGR(), pl.getName());
 					updateGuildTabList(pl);
 				} else {
@@ -817,8 +817,8 @@ public class GuildMechanics implements Listener {
 								+ "' already exists. Please choose a different name.");
 						guild_creation_name_check.remove(pl.getName());
 						guild_creation_data.remove(pl.getName()); // No longer
-																	// need name
-																	// cached.
+						// need name
+						// cached.
 						return;
 
 					} else if (guild_creation_name_check.get(pl.getName()) == 1) {
@@ -864,10 +864,10 @@ public class GuildMechanics implements Listener {
 						List<String> guild_data = guild_creation_data.get(pl.getName());
 						guild_data.remove(1);
 						guild_creation_data.put(pl.getName(), guild_data); // No
-																			// longer
-																			// need
-																			// handle
-																			// cached.
+						// longer
+						// need
+						// handle
+						// cached.
 						return;
 
 					} else if (guild_creation_name_check.get(pl.getName()) == 1) {
@@ -939,8 +939,8 @@ public class GuildMechanics implements Listener {
 					pl.sendMessage(ChatColor.GRAY + "Cost: " + ChatColor.GREEN + "5,000G");
 					pl.sendMessage("");
 					pl.sendMessage(ChatColor.GRAY + "Enter the code " + ChatColor.DARK_AQUA + ChatColor.BOLD.toString()
-							+ getUpgradeAuthenticationCode(pl.getName()) + ChatColor.GRAY
-							+ " to confirm your guild creation.");
+					+ getUpgradeAuthenticationCode(pl.getName()) + ChatColor.GRAY
+					+ " to confirm your guild creation.");
 					pl.sendMessage("");
 					pl.sendMessage("" + ChatColor.RED + ChatColor.BOLD + "WARNING:" + ChatColor.RED
 							+ " Guild creation is " + ChatColor.BOLD + ChatColor.RED + "NOT" + ChatColor.RED
@@ -991,7 +991,7 @@ public class GuildMechanics implements Listener {
 		}
 
 		if (e.getRawSlot() > 44) { // They're accessing their own inventory, no
-									// reason to.
+			// reason to.
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
 			pl.updateInventory();
@@ -999,7 +999,7 @@ public class GuildMechanics implements Listener {
 		}
 
 		if (e.getCurrentItem() != null && e.getCurrentItem().getType() == Material.PISTON_MOVING_PIECE) { // Blocker
-																											// item.
+			// item.
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
 			pl.updateInventory();
@@ -1008,10 +1008,10 @@ public class GuildMechanics implements Listener {
 
 		if ((e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.INK_SACK
 				&& e.getCurrentItem().getType() != Material.AIR)) { // Trying to
-																	// move
-																	// anything
-																	// but the
-																	// dyes.
+			// move
+			// anything
+			// but the
+			// dyes.
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
 			pl.updateInventory();
@@ -1022,7 +1022,7 @@ public class GuildMechanics implements Listener {
 			// Update leather armor.
 			ItemStack i_dye = null;
 			if (e.getCursor().getType() == Material.INK_SACK) { // Placing a new
-																// dye in slots.
+				// dye in slots.
 				e.setCancelled(true);
 
 				i_dye = e.getCursor();
@@ -1172,8 +1172,8 @@ public class GuildMechanics implements Listener {
 					pl.sendMessage(ChatColor.GRAY + "Cost: " + ChatColor.DARK_AQUA + "5,000" + ChatColor.BOLD + "G");
 					pl.sendMessage("");
 					pl.sendMessage(ChatColor.GRAY + "Enter the code " + ChatColor.DARK_AQUA + ChatColor.BOLD.toString()
-							+ getUpgradeAuthenticationCode(pl.getName()) + ChatColor.GRAY
-							+ " to confirm your guild creation.");
+					+ getUpgradeAuthenticationCode(pl.getName()) + ChatColor.GRAY
+					+ " to confirm your guild creation.");
 					pl.sendMessage("");
 					pl.sendMessage("" + ChatColor.RED + ChatColor.BOLD + "WARNING:" + ChatColor.RED
 							+ " Guild creation is " + ChatColor.BOLD + ChatColor.RED + "NOT" + ChatColor.RED
@@ -1258,7 +1258,7 @@ public class GuildMechanics implements Listener {
 					}
 
 					LeatherArmorMeta lam = (LeatherArmorMeta) n_armor.getItemMeta();
-					lam.setColor(getGuildColor(pl.getName()));
+					lam.setColor(getGuildColor(pl));
 					n_armor.setItemMeta(lam);
 
 					e.setCancelled(true);
@@ -1403,7 +1403,7 @@ public class GuildMechanics implements Listener {
 				Player attacker = (Player) edbee.getDamager();
 				Player hurt = (Player) e.getEntity();
 
-				if (areGuildies(attacker.getName(), hurt.getName())) {
+				if (areGuildies(attacker, hurt)) {
 					if (DuelMechanics.duel_map.containsKey(attacker.getName())
 							&& DuelMechanics.duel_map.containsKey(hurt.getName())) {
 						return;
@@ -1425,7 +1425,7 @@ public class GuildMechanics implements Listener {
 					Player shooter = (Player) a.getShooter();
 					Player hurt = (Player) e.getEntity();
 
-					if (areGuildies(shooter.getName(), hurt.getName())) {
+					if (areGuildies(shooter, hurt)) {
 						if (DuelMechanics.duel_map.containsKey(shooter.getName())
 								&& DuelMechanics.duel_map.containsKey(hurt.getName())) {
 							return;
@@ -1761,7 +1761,7 @@ public class GuildMechanics implements Listener {
 				+ getOnlineOfficerCount(g_name) + "/" + getTotalOfficerCount(g_name) + "]", 0);
 
 		TabAPI.setTabString(Main.plugin, pl, 2, 2, ChatColor.DARK_AQUA + "" + "Members [" + getOnlineGuildCount(g_name)
-				+ "/" + getGuildMemberCount(g_name) + "]", 0);
+		+ "/" + getGuildMemberCount(g_name) + "]", 0);
 
 		TabAPI.setTabString(Main.plugin, pl, 8, 1, ChatColor.DARK_AQUA + "" + "Co-Owners", 0);
 		TabAPI.setTabString(Main.plugin, pl, 9, 1,
@@ -1769,60 +1769,46 @@ public class GuildMechanics implements Listener {
 				0);
 
 		List<Player> members = getOnlineGuildMembers(g_name);
-		List<String> pruned_members = new ArrayList<String>();
-		List<String> to_remove_mem = new ArrayList<String>();
+		List<Player> pruned_members = new ArrayList<Player>();
+		List<Player> to_remove_mem = new ArrayList<Player>();
 		// pruned_members = a list of 10 members, prioritizing online first.
 
 		for (Player s : members) {
-			String s_copy = s;
 			if (pruned_members.size() >= 16) {
 				break;
 			}
-			if (s_copy.contains(" ")) {
-				// THey're on another server.
-				s_copy = s.substring(s.indexOf(" ") + 1, s.length());
-			}
-			if (getGuildRank(ChatColor.stripColor(s_copy), g_name) != 1) {
+			if (getGuildRank(s, g_name) != 1) {
 				continue;
 			}
-			if (s.contains(ChatColor.GREEN.toString())) {
-				to_remove_mem.add(s);
-				pruned_members.add(s);
-			}
+			to_remove_mem.add(s);
+			pruned_members.add(s);
 		}
 
-		for (String s : to_remove_mem) {
+		for (Player s : to_remove_mem) {
 			members.remove(s);
 		}
 
-		for (String s : members) {
-			String s_copy = s;
+		for (Player s : members) {
 			if (pruned_members.size() >= 16) {
 				break;
 			}
-			if (s_copy.contains(" ")) {
-				// THey're on another server.
-				s_copy = s.substring(s.indexOf(" ") + 1, s.length());
-			}
-			if (getGuildRank(ChatColor.stripColor(s_copy), g_name) != 1) {
+			if (getGuildRank(s, g_name) != 1) {
 				continue;
 			}
-			if (s.contains(ChatColor.YELLOW.toString())) {
-				to_remove_mem.add(s);
-				pruned_members.add(s);
-			}
+			to_remove_mem.add(s);
+			pruned_members.add(s);
 		}
 
-		for (String s : to_remove_mem) {
+		for (Player s : to_remove_mem) {
 			members.remove(s);
 		}
 
 		if (pruned_members.size() < 16) {
-			for (String s : members) {
+			for (Player s : members) {
 				if (pruned_members.size() >= 16) {
 					break;
 				}
-				if (getGuildRank(ChatColor.stripColor(s), g_name) != 1) {
+				if (getGuildRank(s, g_name) != 1) {
 					continue;
 				}
 				pruned_members.add(s);
@@ -1830,23 +1816,13 @@ public class GuildMechanics implements Listener {
 		}
 
 		int x = 2;
-		for (String s : pruned_members) {
+		for (Player pruned : pruned_members) {
 			x++;
 			if (x >= 20) {
 				break;
 			}
-			if (s.contains(ChatColor.GREEN.toString()) || s.contains(ChatColor.YELLOW.toString())) {
-				if (s.contains(ChatColor.YELLOW.toString())) {
-					// Change to (gray) US-0 (green) Username
-					s = ChatColor.stripColor(s);
-					s.replaceAll(ChatColor.YELLOW.toString(), "");
-					s = ChatColor.GRAY.toString() + s.substring(0, s.indexOf(" ")) + " " + ChatColor.GREEN.toString()
-							+ s.substring(s.indexOf(" ") + 1, s.length());
-				}
-				TabAPI.setTabString(Main.plugin, pl, x, 2, s, 50);
-			} else {
-				TabAPI.setTabString(Main.plugin, pl, x, 2, s, 9999999);
-			}
+			String s = pruned.getName();
+			TabAPI.setTabString(Main.plugin, pl, x, 2, s, 9999999);
 		}
 
 		if (pruned_members.size() == 0) {
@@ -1914,7 +1890,7 @@ public class GuildMechanics implements Listener {
 					s = ChatColor.stripColor(s);
 					s.replaceAll(ChatColor.YELLOW.toString(), "");
 					s = ChatColor.GRAY.toString() + s.substring(0, s.indexOf(" ")) + " " + ChatColor.GREEN.toString()
-							+ s.substring(s.indexOf(" ") + 1, s.length());
+					+ s.substring(s.indexOf(" ") + 1, s.length());
 				}
 				TabAPI.setTabString(Main.plugin, pl, x, 0, s, 50);
 			} else {
@@ -1987,7 +1963,7 @@ public class GuildMechanics implements Listener {
 					s = ChatColor.stripColor(s);
 					s.replaceAll(ChatColor.YELLOW.toString(), "");
 					s = ChatColor.GRAY.toString() + s.substring(0, s.indexOf(" ")) + " " + ChatColor.GREEN.toString()
-							+ s.substring(s.indexOf(" ") + 1, s.length());
+					+ s.substring(s.indexOf(" ") + 1, s.length());
 				}
 				TabAPI.setTabString(Main.plugin, pl, x, 1, s, 50);
 			} else {
@@ -2030,7 +2006,7 @@ public class GuildMechanics implements Listener {
 			if (downloadGuildDataSQL(guild_name, false) == false) {
 				// Failed to download guild data, does not exist.
 				log.info("[GuildMechanics] Guild " + guild_name + " does not exist, removing " + id.toString()
-						+ " from guild.");
+				+ " from guild.");
 				return;
 			}
 			setupGuildTeam(guild_name);
@@ -2083,9 +2059,9 @@ public class GuildMechanics implements Listener {
 			final String guild_owner) {
 
 		Hive.sql_query
-				.add("INSERT INTO guilds (guild_name, guild_handle, guild_color, members, guild_server_num) VALUES('"
-						+ guild_name + "', '" + guild_handle + "', '" + guild_color + "', '" + guild_owner + ":4,"
-						+ "', '" + "-1" + "')");
+		.add("INSERT INTO guilds (guild_name, guild_handle, guild_color, members, guild_server_num) VALUES('"
+				+ guild_name + "', '" + guild_handle + "', '" + guild_color + "', '" + guild_owner + ":4,"
+				+ "', '" + "-1" + "')");
 		Hive.sql_query.add("INSERT INTO player_database (p_name, guild_name) VALUES('" + guild_owner + "', '"
 				+ guild_name + "') ON DUPLICATE KEY UPDATE guild_name='" + guild_name + "'");
 
@@ -2431,10 +2407,10 @@ public class GuildMechanics implements Listener {
 		}
 
 		Hive.sql_query
-				.add("INSERT INTO guilds (guild_name, guild_handle, guild_color, members, guild_server_num) VALUES('"
-						+ guild_name + "', '" + guild_handle + "', '" + guild_color + "', '" + member_string + "', '"
-						+ home_server + "')" + " ON DUPLICATE KEY UPDATE members='" + member_string
-						+ "', guild_server_num='" + home_server + "'");
+		.add("INSERT INTO guilds (guild_name, guild_handle, guild_color, members, guild_server_num) VALUES('"
+				+ guild_name + "', '" + guild_handle + "', '" + guild_color + "', '" + member_string + "', '"
+				+ home_server + "')" + " ON DUPLICATE KEY UPDATE members='" + member_string
+				+ "', guild_server_num='" + home_server + "'");
 
 		/*
 		 * Thread t = new Thread(new Runnable() { public void run() { String
@@ -2475,7 +2451,7 @@ public class GuildMechanics implements Listener {
 
 		if (none == true) {
 			Hive.sql_query.add("INSERT INTO player_database (p_name, guild_name) VALUES('" + id.toString()
-					+ "', '') ON DUPLICATE KEY UPDATE guild_name = '" + null + "'");
+			+ "', '') ON DUPLICATE KEY UPDATE guild_name = '" + null + "'");
 		} else if (none == false) {
 			Hive.sql_query.add("INSERT INTO player_database (p_name, guild_name) VALUES('" + id.toString() + "', '" + g_name
 					+ "') ON DUPLICATE KEY UPDATE guild_name = '" + g_name + "'");
@@ -2593,7 +2569,7 @@ public class GuildMechanics implements Listener {
 		player_guild_rank.put(id, rank_num);
 		guild_map.put(getGuild(id), new_guild_data);
 	}
-	
+
 	public static void leaveGuild(Player player){
 		leaveGuild(player.getUniqueId());
 	}
@@ -2727,7 +2703,7 @@ public class GuildMechanics implements Listener {
 				continue; // No need, they get buddy notification.
 			}
 			guildie.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
-					+ ChatColor.DARK_AQUA + "> " + ChatColor.GRAY + pl.getName() + " has joined your server.");
+			+ ChatColor.DARK_AQUA + "> " + ChatColor.GRAY + pl.getName() + " has joined your server.");
 		}
 
 		String server_name = Bukkit.getMotd().substring(0, Bukkit.getMotd().indexOf(" "));
@@ -2763,7 +2739,7 @@ public class GuildMechanics implements Listener {
 				continue; // No need, they get buddy notification.
 			}
 			guildie.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
-					+ ChatColor.DARK_AQUA + "> " + ChatColor.GRAY + pl.getName() + " has logged out.");
+			+ ChatColor.DARK_AQUA + "> " + ChatColor.GRAY + pl.getName() + " has logged out.");
 		}
 
 		String server_name = Bukkit.getMotd().substring(0, Bukkit.getMotd().indexOf(" "));
@@ -2787,7 +2763,7 @@ public class GuildMechanics implements Listener {
 			if (Bukkit.getPlayer(s) != null) {
 				Player pl = Bukkit.getPlayer(s);
 				pl.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
-						+ ChatColor.DARK_AQUA + "> " + ChatColor.BOLD + "MOTD: " + ChatColor.DARK_AQUA + motd);
+				+ ChatColor.DARK_AQUA + "> " + ChatColor.BOLD + "MOTD: " + ChatColor.DARK_AQUA + motd);
 			}
 		}
 	}
@@ -2800,8 +2776,8 @@ public class GuildMechanics implements Listener {
 			if (Bukkit.getPlayer(s) != null) {
 				Player pl = Bukkit.getPlayer(s);
 				pl.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
-						+ ChatColor.DARK_AQUA + "> " + ChatColor.BOLD + "A new " + ChatColor.UNDERLINE
-						+ "guild biography" + ChatColor.DARK_AQUA + " has been written. Type /gbio to view it.");
+				+ ChatColor.DARK_AQUA + "> " + ChatColor.BOLD + "A new " + ChatColor.UNDERLINE
+				+ "guild biography" + ChatColor.DARK_AQUA + " has been written. Type /gbio to view it.");
 			}
 		}
 	}
@@ -2850,6 +2826,10 @@ public class GuildMechanics implements Listener {
 		}
 
 		return 0; // Not in guild.
+	}
+
+	public static int getGuildRank(Player player, String g_name){
+		return getGuildRank(player.getUniqueId(), g_name);
 	}
 
 	public static int getGuildRank(UUID id, String g_name) {
@@ -2965,7 +2945,7 @@ public class GuildMechanics implements Listener {
 	public static String getGuildPrefix(OfflinePlayer player) {
 		return getGuildPrefix(player.getUniqueId());
 	}
-	
+
 	public static boolean areGuildies(Player p1, Player p2){
 		return areGuildies(p1.getUniqueId(), p2.getUniqueId());
 	}
@@ -3010,41 +2990,61 @@ public class GuildMechanics implements Listener {
 		return all_members;
 	}
 
-	public static int getRankNum(String p_name) {
+	public static int getRankNum(Player player){
+		return getRankNum(player.getUniqueId());
+	}
+
+	public static int getRankNum(UUID id) {
 		// 1 = member
 		// 2 = officer
 		// 3 = founder
-		if (!(inGuild(p_name))) {
+		if (!(inGuild(id))) {
 			return 0;
 		}
-		return getGuildRank(p_name);
+		return getGuildRank(id);
 	}
 
-	public static boolean isGuildLeader(String p_name) {
-		if (getRankNum(p_name) == 4) {
+	public static boolean isGuildLeader(Player player){
+		return isGuildLeader(player.getUniqueId());
+	}
+
+	public static boolean isGuildLeader(UUID id) {
+		if (getRankNum(id) == 4) {
 			return true;
 		}
 		return false;
 	}
 
-	public static boolean isGuildCoOwner(String p_name) {
-		if (getRankNum(p_name) == 3)
+	public static boolean isGuildCoOwner(Player player){
+		return isGuildCoOwner(player.getUniqueId());
+	}
+
+	public static boolean isGuildCoOwner(UUID id) {
+		if (getRankNum(id) == 3)
 			return true;
 		return false;
 	}
 
-	public static boolean isGuildOfficer(String p_name) {
-		if (getRankNum(p_name) == 2) {
+	public static boolean isGuildOfficer(Player player){
+		return isGuildOfficer(player.getUniqueId());
+	}
+
+	public static boolean isGuildOfficer(UUID id) {
+		if (getRankNum(id) == 2) {
 			return true;
 		}
 		return false;
 	}
 
-	public Color getGuildColor(String p_name) {
-		if (!(inGuild(p_name))) {
+	public Color getGuildColor(Player player){
+		return getGuildColor(player.getUniqueId());
+	}
+
+	public Color getGuildColor(UUID id) {
+		if (!(inGuild(id))) {
 			return null;
 		}
-		return guild_colors.get(getGuild(p_name));
+		return guild_colors.get(getGuild(id));
 		// Returns NBT_INT value to be assigned to "color" for chestplate
 	}
 
@@ -3064,7 +3064,7 @@ public class GuildMechanics implements Listener {
 				// Need to check if they're in another guild and if colors
 				// match/don't match.
 				LeatherArmorMeta lam = (LeatherArmorMeta) is.getItemMeta();
-				if (inGuild(pl.getName())) {
+				if (inGuild(pl)) {
 					try {
 						Color g_color = guild_colors.get(pl.getName());
 						if (lam.getColor().asBGR() == g_color.asBGR()) {
@@ -3161,7 +3161,7 @@ public class GuildMechanics implements Listener {
 				// Need to check if they're in another guild and if colors
 				// match/don't match.
 				LeatherArmorMeta lam = (LeatherArmorMeta) is.getItemMeta();
-				if (inGuild(pl.getName())) {
+				if (inGuild(pl)) {
 					try {
 						Color g_color = guild_colors.get(pl.getName());
 						if (lam.getColor().asBGR() == g_color.asBGR()) {
@@ -3251,159 +3251,175 @@ public class GuildMechanics implements Listener {
 		}
 	}
 
-	public static void promoteToOfficer(String s_to_promote, Player p_owner) {
+	public static void promoteToOfficer(Player player, Player p_owner){
+		promoteToOfficer(player.getName(), player.getUniqueId(), p_owner);
+	}
+
+	public static void promoteToOfficer(String name, UUID idToPromote, Player p_owner) {
 		// We've already performed all necessary checks at this point.
-		if (!(areGuildies(s_to_promote, p_owner.getName()))) {
+		if (!(areGuildies(idToPromote, p_owner.getUniqueId()))) {
 			// Just incase they quit at an exact moment or something.
-			p_owner.sendMessage(ChatColor.RED + s_to_promote + " is no longer in your guild.");
+			p_owner.sendMessage(ChatColor.RED + name + " is no longer in your guild.");
 			return;
 		}
 
-		setGuildRank(s_to_promote, 2);
-		player_guild_rank.put(s_to_promote, 2);
+		setGuildRank(idToPromote, 2);
+		player_guild_rank.put(idToPromote, 2);
 
 		// Tell the world!
 		p_owner.sendMessage(ChatColor.DARK_AQUA + "You have " + ChatColor.UNDERLINE + "promoted" + ChatColor.DARK_AQUA
-				+ " " + s_to_promote + " to the rank of " + ChatColor.BOLD + "GUILD OFFICER" + ChatColor.GREEN + ".");
-		if (Bukkit.getPlayer(s_to_promote) != null) {
-			Player to_promote = Bukkit.getPlayer(s_to_promote);
+				+ " " + name + " to the rank of " + ChatColor.BOLD + "GUILD OFFICER" + ChatColor.GREEN + ".");
+		if (Bukkit.getPlayer(idToPromote) != null) {
+			Player to_promote = Bukkit.getPlayer(idToPromote);
 			to_promote.sendMessage(ChatColor.DARK_AQUA + "You have been " + ChatColor.UNDERLINE + "promoted"
 					+ ChatColor.DARK_AQUA + " to the rank of " + ChatColor.BOLD + "GUILD OFFICER" + ChatColor.DARK_AQUA
-					+ " in " + getGuild(s_to_promote));
+					+ " in " + getGuild(idToPromote));
 		}
-		String g_name = getGuild(s_to_promote);
+		String g_name = getGuild(idToPromote);
 
-		for (String mem : getGuildMembers(getGuild(s_to_promote))) {
+		for (UUID mem : getGuildMembers(getGuild(idToPromote))) {
 			// TODO: Cross-server congratulations.
 			if (Bukkit.getPlayer(mem) != null) {
 				Player p_mem = Bukkit.getPlayer(mem);
 				p_mem.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
-						+ ChatColor.DARK_AQUA + ">" + ChatColor.GREEN + " " + s_to_promote + " has been "
-						+ ChatColor.UNDERLINE + "promoted" + ChatColor.GREEN + " to the rank of " + ChatColor.BOLD
-						+ "GUILD OFFICER" + ChatColor.GREEN + ".");
+				+ ChatColor.DARK_AQUA + ">" + ChatColor.GREEN + " " + name + " has been "
+				+ ChatColor.UNDERLINE + "promoted" + ChatColor.GREEN + " to the rank of " + ChatColor.BOLD
+				+ "GUILD OFFICER" + ChatColor.GREEN + ".");
 			}
 		}
 
-		String message_to_send = "[gpromote]" + s_to_promote + "," + g_name + ":2*";
+		String message_to_send = "[gpromote]" + idToPromote.toString() + "," + g_name + ":2*";
 		sendGuildMessageCrossServer(message_to_send);
 
 		// Now we need to update the guild data in SQL.
 		updateGuildSQL(g_name);
 	}
 
-	public static void demoteOfficer(String s_to_demote, Player p_owner) {
+	public static void demoteOfficer(Player player, Player p_owner){
+		demoteOfficer(player.getName(), player.getUniqueId(), p_owner);
+	}
+
+	public static void demoteOfficer(String name, UUID id, Player p_owner) {
 		// We've already performed all necessary checks at this point.
-		if (!(areGuildies(s_to_demote, p_owner.getName()))) {
+		if (!(areGuildies(id, p_owner.getUniqueId()))) {
 			// Just incase they quit at an exact moment or something.
-			p_owner.sendMessage(ChatColor.RED + s_to_demote + " is no longer in your guild.");
+			p_owner.sendMessage(ChatColor.RED + name + " is no longer in your guild.");
 			return;
 		}
 
-		setGuildRank(s_to_demote, 1);
+		setGuildRank(id, 1);
 
 		// Tell the world!
 		p_owner.sendMessage(ChatColor.RED + "You have " + ChatColor.UNDERLINE + "demoted" + ChatColor.RED + " "
-				+ s_to_demote + " to the rank of " + ChatColor.BOLD + "GUILD MEMBER.");
-		if (Bukkit.getPlayer(s_to_demote) != null) {
-			Bukkit.getPlayer(s_to_demote)
-					.sendMessage(ChatColor.RED + "You have been " + ChatColor.UNDERLINE + "demoted" + ChatColor.RED
-							+ " to the rank of " + ChatColor.BOLD + "GUILD MEMBER" + ChatColor.RED + " in "
-							+ getGuild(s_to_demote));
+				+ name + " to the rank of " + ChatColor.BOLD + "GUILD MEMBER.");
+		if (Bukkit.getPlayer(id) != null) {
+			Bukkit.getPlayer(id)
+			.sendMessage(ChatColor.RED + "You have been " + ChatColor.UNDERLINE + "demoted" + ChatColor.RED
+					+ " to the rank of " + ChatColor.BOLD + "GUILD MEMBER" + ChatColor.RED + " in "
+					+ getGuild(id));
 		}
 
-		String g_name = getGuild(s_to_demote);
+		String g_name = getGuild(id);
 
-		for (String mem : getGuildMembers(getGuild(s_to_demote))) {
+		for (UUID mem : getGuildMembers(getGuild(id))) {
 			if (Bukkit.getPlayer(mem) != null) {
 				Player p_mem = Bukkit.getPlayer(mem);
 				p_mem.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
-						+ ChatColor.DARK_AQUA + ">" + ChatColor.RED + " " + s_to_demote + " has been "
-						+ ChatColor.UNDERLINE + "demoted" + ChatColor.RED + " to the rank of " + ChatColor.BOLD
-						+ "GUILD MEMBER.");
+				+ ChatColor.DARK_AQUA + ">" + ChatColor.RED + " " + name + " has been "
+				+ ChatColor.UNDERLINE + "demoted" + ChatColor.RED + " to the rank of " + ChatColor.BOLD
+				+ "GUILD MEMBER.");
 			}
 		}
 
-		String message_to_send = "[gdemote]" + s_to_demote + "," + g_name + ":1*";
+		String message_to_send = "[gdemote]" + id.toString() + "," + g_name + ":1*";
 		sendGuildMessageCrossServer(message_to_send);
 
 		// Now we need to update the guild data in SQL.
 		updateGuildSQL(g_name);
 	}
+	
+	public static void promoteToCoOwner(Player player, Player p_owner){
+		promoteToCoOwner(player.getName(), player.getUniqueId(), p_owner);
+	}
 
-	public static void promoteToCoOwner(String s_to_promote, Player p_owner) {
-		if (!(areGuildies(s_to_promote, p_owner.getName()))) {
+	public static void promoteToCoOwner(String name, UUID id, Player p_owner) {
+		if (!(areGuildies(id, p_owner.getUniqueId()))) {
 			// Just incase they quit at an exact moment or something.
-			p_owner.sendMessage(ChatColor.RED + s_to_promote + " is no longer in your guild.");
+			p_owner.sendMessage(ChatColor.RED + name + " is no longer in your guild.");
 			return;
 		}
 
-		setGuildRank(s_to_promote, 3);
-		player_guild_rank.put(s_to_promote, 3);
+		setGuildRank(id, 3);
+		player_guild_rank.put(id, 3);
 
 		// Tell the world!
 		p_owner.sendMessage(ChatColor.DARK_AQUA + "You have " + ChatColor.UNDERLINE + "promoted" + ChatColor.DARK_AQUA
-				+ " " + s_to_promote + " to the rank of " + ChatColor.BOLD + "GUILD CO-OWNER" + ChatColor.GREEN + ".");
-		if (Bukkit.getPlayer(s_to_promote) != null) {
-			Player to_promote = Bukkit.getPlayer(s_to_promote);
+				+ " " + name + " to the rank of " + ChatColor.BOLD + "GUILD CO-OWNER" + ChatColor.GREEN + ".");
+		if (Bukkit.getPlayer(id) != null) {
+			Player to_promote = Bukkit.getPlayer(id);
 			to_promote.sendMessage(ChatColor.DARK_AQUA + "You have been " + ChatColor.UNDERLINE + "promoted"
-					+ ChatColor.DARK_AQUA + " " + s_to_promote + " to the rank of " + ChatColor.BOLD + "GUILD CO-OWNER"
-					+ ChatColor.DARK_AQUA + " in " + getGuild(s_to_promote));
+					+ ChatColor.DARK_AQUA + " " + name + " to the rank of " + ChatColor.BOLD + "GUILD CO-OWNER"
+					+ ChatColor.DARK_AQUA + " in " + getGuild(id));
 		}
-		String g_name = getGuild(s_to_promote);
+		String g_name = getGuild(id);
 
-		for (String mem : getGuildMembers(getGuild(s_to_promote))) {
+		for (UUID mem : getGuildMembers(getGuild(id))) {
 			// TODO: Cross-server congratulations.
 			if (Bukkit.getPlayer(mem) != null) {
 				Player p_mem = Bukkit.getPlayer(mem);
 				p_mem.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
-						+ ChatColor.DARK_AQUA + ">" + ChatColor.GREEN + " " + s_to_promote + " has been "
-						+ ChatColor.UNDERLINE + "promoted" + ChatColor.GREEN + " to the rank of " + ChatColor.BOLD
-						+ "GUILD CO-OWNER" + ChatColor.GREEN + ".");
+				+ ChatColor.DARK_AQUA + ">" + ChatColor.GREEN + " " + name + " has been "
+				+ ChatColor.UNDERLINE + "promoted" + ChatColor.GREEN + " to the rank of " + ChatColor.BOLD
+				+ "GUILD CO-OWNER" + ChatColor.GREEN + ".");
 			}
 		}
 
-		String message_to_send = "[gpromote]" + s_to_promote + "," + g_name + ":3*";
+		String message_to_send = "[gpromote]" + id.toString() + "," + g_name + ":3*";
 		sendGuildMessageCrossServer(message_to_send);
 
 		// Now we need to update the guild data in SQL.
 		updateGuildSQL(g_name);
 	}
+	
+	public static void demoteCoOwner(Player player, Player p_owner){
+		demoteCoOwner(player.getName(), player.getUniqueId(), p_owner);
+	}
 
-	public static void demoteCoOwner(String s_to_demote, Player p_owner) { // Demotes
-																			// to
-																			// officer
+	public static void demoteCoOwner(String name, UUID id, Player p_owner) { // Demotes
+		// to
+		// officer
 		// We've already performed all necessary checks at this point.
-		if (!(areGuildies(s_to_demote, p_owner.getName()))) {
+		if (!(areGuildies(id, p_owner.getUniqueId()))) {
 			// Just incase they quit at an exact moment or something.
-			p_owner.sendMessage(ChatColor.RED + s_to_demote + " is no longer in your guild.");
+			p_owner.sendMessage(ChatColor.RED + name + " is no longer in your guild.");
 			return;
 		}
 
-		setGuildRank(s_to_demote, 2);
+		setGuildRank(id, 2);
 
 		// Tell the world!
-		p_owner.sendMessage(ChatColor.RED + "You have " + ChatColor.UNDERLINE + "demoted" + ChatColor.RED + s_to_demote
+		p_owner.sendMessage(ChatColor.RED + "You have " + ChatColor.UNDERLINE + "demoted" + ChatColor.RED + name
 				+ " to the rank of " + ChatColor.BOLD + "GUILD OFFICER.");
-		if (Bukkit.getPlayer(s_to_demote) != null) {
-			Bukkit.getPlayer(s_to_demote)
-					.sendMessage(ChatColor.RED + "You have been " + ChatColor.UNDERLINE + "demoted" + ChatColor.RED
-							+ " to the rank of " + ChatColor.BOLD + "GUILD OFFICER" + ChatColor.RED + " in "
-							+ getGuild(s_to_demote));
+		if (Bukkit.getPlayer(id) != null) {
+			Bukkit.getPlayer(id)
+			.sendMessage(ChatColor.RED + "You have been " + ChatColor.UNDERLINE + "demoted" + ChatColor.RED
+					+ " to the rank of " + ChatColor.BOLD + "GUILD OFFICER" + ChatColor.RED + " in "
+					+ getGuild(id));
 		}
 
-		String g_name = getGuild(s_to_demote);
+		String g_name = getGuild(id);
 
-		for (String mem : getGuildMembers(getGuild(s_to_demote))) {
+		for (UUID mem : getGuildMembers(getGuild(id))) {
 			if (Bukkit.getPlayer(mem) != null) {
 				Player p_mem = Bukkit.getPlayer(mem);
 				p_mem.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
-						+ ChatColor.DARK_AQUA + ">" + ChatColor.RED + " " + s_to_demote + " has been "
-						+ ChatColor.UNDERLINE + "demoted" + ChatColor.RED + " to the rank of " + ChatColor.BOLD
-						+ "GUILD OFFICER.");
+				+ ChatColor.DARK_AQUA + ">" + ChatColor.RED + " " + name + " has been "
+				+ ChatColor.UNDERLINE + "demoted" + ChatColor.RED + " to the rank of " + ChatColor.BOLD
+				+ "GUILD OFFICER.");
 			}
 		}
 
-		String message_to_send = "[gdemote]" + s_to_demote + "," + g_name + ":2*";
+		String message_to_send = "[gdemote]" + id.toString() + "," + g_name + ":2*";
 		sendGuildMessageCrossServer(message_to_send);
 
 		// Now we need to update the guild data in SQL.
@@ -3422,10 +3438,10 @@ public class GuildMechanics implements Listener {
 				if (pl != null) {
 					pl.sendMessage(
 							ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(guild_name)
-									+ ChatColor.DARK_AQUA + ">" + ChatColor.AQUA + " " + ChatColor.UNDERLINE
-									+ sender.getName() + ChatColor.GRAY + " has set " + ChatColor.AQUA + ""
-									+ ChatColor.UNDERLINE + user_to_set_owner + ChatColor.GRAY + " as the "
-									+ ChatColor.BOLD + "LEADER" + ChatColor.GRAY + " of your guild.");
+							+ ChatColor.DARK_AQUA + ">" + ChatColor.AQUA + " " + ChatColor.UNDERLINE
+							+ sender.getName() + ChatColor.GRAY + " has set " + ChatColor.AQUA + ""
+							+ ChatColor.UNDERLINE + user_to_set_owner + ChatColor.GRAY + " as the "
+							+ ChatColor.BOLD + "LEADER" + ChatColor.GRAY + " of your guild.");
 				}
 				continue;
 			}
@@ -3437,7 +3453,7 @@ public class GuildMechanics implements Listener {
 		if (!inGuild(user_to_set_owner)) {
 			addPlayerToGuild(user_to_set_owner, guild_name);
 			setGuildRank(getGuildOwner(guild_name), 2); // Leave original owner
-														// as officer
+			// as officer
 			setGuildRank(user_to_set_owner, 4);
 
 			sender.sendMessage(ChatColor.GRAY + "You set " + ChatColor.AQUA + "" + ChatColor.UNDERLINE + guild_name
@@ -3447,10 +3463,10 @@ public class GuildMechanics implements Listener {
 				if (pl != null) {
 					pl.sendMessage(
 							ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(guild_name)
-									+ ChatColor.DARK_AQUA + ">" + ChatColor.AQUA + " " + ChatColor.UNDERLINE
-									+ sender.getName() + ChatColor.GRAY + " has set " + ChatColor.AQUA + ""
-									+ ChatColor.UNDERLINE + user_to_set_owner + ChatColor.GRAY + " as the "
-									+ ChatColor.BOLD + "LEADER" + ChatColor.GRAY + " of your guild.");
+							+ ChatColor.DARK_AQUA + ">" + ChatColor.AQUA + " " + ChatColor.UNDERLINE
+							+ sender.getName() + ChatColor.GRAY + " has set " + ChatColor.AQUA + ""
+							+ ChatColor.UNDERLINE + user_to_set_owner + ChatColor.GRAY + " as the "
+							+ ChatColor.BOLD + "LEADER" + ChatColor.GRAY + " of your guild.");
 				}
 				continue;
 			}
@@ -3464,8 +3480,8 @@ public class GuildMechanics implements Listener {
 	public static void promoteToOwnerInOwnGuild(Player owner, String new_owner) {
 		if (areGuildies(owner.getName(), new_owner)) {
 			setGuildRank(owner.getName(), 2); // Let's not completely remove the
-												// original owner from power and
-												// leave him as officer.
+			// original owner from power and
+			// leave him as officer.
 			setGuildRank(new_owner, 4);
 
 			owner.sendMessage(ChatColor.GREEN + "You promoted " + ChatColor.UNDERLINE + new_owner + ChatColor.GREEN
@@ -3487,13 +3503,13 @@ public class GuildMechanics implements Listener {
 			sendGuildMessageCrossServer(message_to_send);
 			updateGuildSQL(getGuild(new_owner));
 			Main.log.info("<" + GuildMechanics.guild_handle_map.get(getGuild(owner.getName())) + "> " + owner.getName()
-					+ " set " + new_owner + " as leader of the guild " + getGuild(owner.getName()));
+			+ " set " + new_owner + " as leader of the guild " + getGuild(owner.getName()));
 			return;
 		}
 		owner.sendMessage(ChatColor.RED + "The user " + ChatColor.UNDERLINE + new_owner + ChatColor.RED
 				+ " is not in your guild.");
 		Main.log.info("<" + GuildMechanics.guild_handle_map.get(getGuild(owner.getName())) + "> " + owner.getName()
-				+ " tried to set " + new_owner + " as leader of the guild " + getGuild(owner.getName()));
+		+ " tried to set " + new_owner + " as leader of the guild " + getGuild(owner.getName()));
 	}
 
 	public static void inviteToGuild(Player to_invite, Player p_owner) {
@@ -3556,12 +3572,10 @@ public class GuildMechanics implements Listener {
 
 		String g_name = player_guilds.get(sender.getName());
 
-		for (String mem : getGuildMembers(player_guilds.get(sender.getName()))) {
-			if (Bukkit.getPlayer(mem) != null && !(sender.getName().equalsIgnoreCase(mem))) {
+		for (UUID mem : getGuildMembers(player_guilds.get(sender.getName()))) {
+			if (Bukkit.getPlayer(mem) != null && !(sender.getUniqueId().equals(mem))) {
 				Player pmem = Bukkit.getPlayer(mem);
-				if (pmem.getName().equalsIgnoreCase(mem)) {
-					to_send_local.add(pmem);
-				}
+				to_send_local.add(pmem);
 				// They're online locally.
 			}
 		}
@@ -3570,10 +3584,10 @@ public class GuildMechanics implements Listener {
 
 		for (Player pl : to_send_local) {
 			ChatColor p_color = ChatMechanics.getPlayerColor(sender, pl);
-			String prefix = ChatMechanics.getPlayerPrefix(sender.getName(), false);
+			String prefix = ChatMechanics.getPlayerPrefix(sender, false);
 
 			String personal_msg = raw_msg;
-			if (ChatMechanics.hasAdultFilter(pl.getName())) {
+			if (ChatMechanics.hasAdultFilter(pl)) {
 				personal_msg = ChatMechanics.censorMessage(personal_msg);
 			}
 
@@ -3584,8 +3598,8 @@ public class GuildMechanics implements Listener {
 			personal_msg = ChatMechanics.fixCapsLock(personal_msg);
 
 			pl.sendMessage(ChatColor.DARK_AQUA.toString() + "<" + ChatColor.BOLD + guild_handle_map.get(g_name)
-					+ ChatColor.DARK_AQUA + ">" + ChatColor.GRAY + " " + prefix + p_color + sender.getName() + ": "
-					+ ChatColor.GRAY + personal_msg);
+			+ ChatColor.DARK_AQUA + ">" + ChatColor.GRAY + " " + prefix + p_color + sender.getName() + ": "
+			+ ChatColor.GRAY + personal_msg);
 		}
 
 		// TODO: Send packet to all online servers, has servers check if any
