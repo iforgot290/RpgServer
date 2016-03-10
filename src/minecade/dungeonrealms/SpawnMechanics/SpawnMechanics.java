@@ -104,6 +104,10 @@ public class SpawnMechanics implements Listener {
 
 		log.info("[SpawnMechanics] " + count + " SPAWN LOCATIONS have been SAVED.");
 	}
+	
+	public static Location getRandomSpawnPoint(Player player){
+		return getRandomSpawnPoint(player.getUniqueId());
+	}
 
 	public static Location getRandomSpawnPoint(UUID p_id) {
 		Location respawn_location = new Location(Bukkit.getWorlds().get(0), -367, 83, 390); // Default

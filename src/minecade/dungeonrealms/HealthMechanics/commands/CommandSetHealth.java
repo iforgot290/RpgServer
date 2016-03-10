@@ -37,7 +37,7 @@ public class CommandSetHealth implements CommandExecutor {
 				pl.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + args[1] + ChatColor.RED + " is not a number!");
 				return true;
 			}
-			HealthMechanics.health_data.put(target.getName(), Integer.parseInt(args[1]));
+			HealthMechanics.health_data.put(target.getUniqueId(), Integer.parseInt(args[1]));
 			HealthMechanics.setPlayerHP(target.getName(), Integer.parseInt(args[1]));
 			pl.sendMessage(ChatColor.GREEN + "You changed " + ChatColor.BOLD + target.getName() + ChatColor.GREEN
 					+ "'s health to " + ChatColor.UNDERLINE + args[1]);
@@ -46,7 +46,7 @@ public class CommandSetHealth implements CommandExecutor {
 				pl.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + args[0] + ChatColor.RED + " is not a number!");
 				return true;
 			}
-			HealthMechanics.health_data.put(pl.getName(), Integer.parseInt(args[0]));
+			HealthMechanics.health_data.put(pl.getUniqueId(), Integer.parseInt(args[0]));
 			HealthMechanics.setPlayerHP(pl.getName(), Integer.parseInt(args[0]));
 			pl.sendMessage(ChatColor.GREEN + "You set your HP to " + ChatColor.BOLD + args[0]);
 		}
