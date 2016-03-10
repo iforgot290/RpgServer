@@ -55,7 +55,7 @@ public class CommandGAccept implements CommandExecutor {
 		String message_to_send = "[gadd]" + p.getUniqueId().toString() + "," + guild_name + ":" + inviter;
 		GuildMechanics.sendGuildMessageCrossServer(message_to_send);
 
-		GuildMechanics.setPlayerGuildSQL(p.getName(), guild_name, false);
+		GuildMechanics.setPlayerGuildSQL(p.getUniqueId(), guild_name, false);
 		GuildMechanics.updateGuildSQL(guild_name);
 
 		AchievementMechanics.addAchievement(p, "Guildmember");

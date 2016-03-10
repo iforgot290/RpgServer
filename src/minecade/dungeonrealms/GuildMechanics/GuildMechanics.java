@@ -1508,18 +1508,12 @@ public class GuildMechanics implements Listener {
 		return officers;
 	}
 
-	public static String getGuildOwner(String g_name) {
+	public static UUID getGuildOwner(String g_name) {
 		for (String s : guild_map.get(g_name)) {
-			String p_name = s.substring(0, s.indexOf(":"));
+			String rawId = s.substring(0, s.indexOf(":"));
 			int rank = Integer.parseInt(s.substring(s.indexOf(":") + 1, s.length()));
 			if (rank == 4) {
-				if (Bukkit.getPlayer(p_name) != null) {
-					return ChatColor.GREEN.toString() + p_name;
-				} else if (guild_member_server.containsKey(p_name)) {
-					return ChatColor.YELLOW.toString() + guild_member_server.get(p_name) + " " + p_name;
-				} else {
-					return ChatColor.GRAY.toString() + p_name;
-				}
+				return UUID.fromString(rawId);
 			}
 		}
 
@@ -1704,7 +1698,8 @@ public class GuildMechanics implements Listener {
 		}
 
 		clearGuildTabList(pl, false);
-		String guild_owner = getGuildOwner(g_name);
+		UUID guild_owner_id = getGuildOwner(g_name);
+		OfflinePlayer guild_owner = Bukkit.getOfflinePlayer(guild_owner_id);
 
 		TabAPI.setPriority(Main.plugin, pl, 1);
 
@@ -1716,20 +1711,7 @@ public class GuildMechanics implements Listener {
 		TabAPI.setTabString(Main.plugin, pl, 3, 1, ChatColor.GRAY + g_name);
 
 		TabAPI.setTabString(Main.plugin, pl, 5, 1, ChatColor.DARK_AQUA + "" + "Guild Owner", 0);
-
-		if (guild_owner.contains(ChatColor.GREEN.toString()) || guild_owner.contains(ChatColor.YELLOW.toString())) {
-			if (guild_owner.contains(ChatColor.YELLOW.toString())) {
-				// Change to (gray) US-0 (green) Username
-				guild_owner = ChatColor.stripColor(guild_owner);
-				guild_owner.replaceAll(ChatColor.YELLOW.toString(), "");
-				guild_owner = ChatColor.GRAY.toString() + guild_owner.substring(0, guild_owner.indexOf(" ")) + " "
-						+ ChatColor.GREEN.toString()
-						+ guild_owner.substring(guild_owner.indexOf(" ") + 1, guild_owner.length());
-			}
-			TabAPI.setTabString(Main.plugin, pl, 6, 1, guild_owner, 0);
-		} else {
-			TabAPI.setTabString(Main.plugin, pl, 6, 1, guild_owner, 9999999);
-		}
+		TabAPI.setTabString(Main.plugin, pl, 6, 1, guild_owner.getName(), 0);
 
 		TabAPI.setTabString(Main.plugin, pl, 17, 1,
 				ChatColor.DARK_AQUA + "Shard " + ChatColor.GRAY.toString() + getLocalServerName(), 0);
@@ -3337,7 +3319,7 @@ public class GuildMechanics implements Listener {
 		// Now we need to update the guild data in SQL.
 		updateGuildSQL(g_name);
 	}
-	
+
 	public static void promoteToCoOwner(Player player, Player p_owner){
 		promoteToCoOwner(player.getName(), player.getUniqueId(), p_owner);
 	}
@@ -3380,7 +3362,7 @@ public class GuildMechanics implements Listener {
 		// Now we need to update the guild data in SQL.
 		updateGuildSQL(g_name);
 	}
-	
+
 	public static void demoteCoOwner(Player player, Player p_owner){
 		demoteCoOwner(player.getName(), player.getUniqueId(), p_owner);
 	}
@@ -3426,103 +3408,93 @@ public class GuildMechanics implements Listener {
 		updateGuildSQL(g_name);
 	}
 
-	public static void promoteToOwnerInSpecificGuild(Player sender, String user_to_set_owner, String guild_name) {
-		if (inGuild(user_to_set_owner) && getGuild(user_to_set_owner).equals(guild_name)) {
-			setGuildRank(getGuildOwner(guild_name), 2);
-			setGuildRank(user_to_set_owner, 4);
+	public static void promoteToOwnerInSpecificGuild(Player sender, Player owner, String guild){
+		promoteToOwnerInSpecificGuild(sender, owner.getName(), owner.getUniqueId(), guild);
+	}
 
-			sender.sendMessage(ChatColor.GRAY + "You set " + ChatColor.AQUA + "" + ChatColor.UNDERLINE + guild_name
-					+ ChatColor.GRAY + "'s leader to " + ChatColor.AQUA + "" + ChatColor.UNDERLINE + user_to_set_owner);
-			for (String on_mems : getOnlineGuildMembers(guild_name)) {
-				Player pl = Bukkit.getPlayer(ChatColor.stripColor(on_mems));
-				if (pl != null) {
-					pl.sendMessage(
-							ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(guild_name)
-							+ ChatColor.DARK_AQUA + ">" + ChatColor.AQUA + " " + ChatColor.UNDERLINE
-							+ sender.getName() + ChatColor.GRAY + " has set " + ChatColor.AQUA + ""
-							+ ChatColor.UNDERLINE + user_to_set_owner + ChatColor.GRAY + " as the "
-							+ ChatColor.BOLD + "LEADER" + ChatColor.GRAY + " of your guild.");
-				}
-				continue;
+	public static void promoteToOwnerInSpecificGuild(Player sender, String name, UUID id, String guild) {
+		if (inGuild(id) && getGuild(id).equals(guild)) {
+			setGuildRank(getGuildOwner(guild), 2);
+			setGuildRank(id, 4);
+
+			sender.sendMessage(ChatColor.GRAY + "You set " + ChatColor.AQUA + "" + ChatColor.UNDERLINE + guild
+					+ ChatColor.GRAY + "'s leader to " + ChatColor.AQUA + "" + ChatColor.UNDERLINE + name);
+			for (Player pl : getOnlineGuildMembers(guild)) {
+				pl.sendMessage(
+						ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(guild)
+						+ ChatColor.DARK_AQUA + ">" + ChatColor.AQUA + " " + ChatColor.UNDERLINE
+						+ sender.getName() + ChatColor.GRAY + " has set " + ChatColor.AQUA + ""
+						+ ChatColor.UNDERLINE + name + ChatColor.GRAY + " as the "
+						+ ChatColor.BOLD + "LEADER" + ChatColor.GRAY + " of your guild.");
 			}
-			String packet_data = "[gpromote]" + user_to_set_owner + "," + guild_name + ":4*" + sender.getName();
+			String packet_data = "[gpromote]" + id.toString() + "," + guild + ":4*" + sender.getName();
 			sendGuildMessageCrossServer(packet_data);
-			updateGuildSQL(guild_name);
+			updateGuildSQL(guild);
 			return;
 		}
-		if (!inGuild(user_to_set_owner)) {
-			addPlayerToGuild(user_to_set_owner, guild_name);
-			setGuildRank(getGuildOwner(guild_name), 2); // Leave original owner
+		if (!inGuild(id)) {
+			addPlayerToGuild(id, guild);
+			setGuildRank(getGuildOwner(guild), 2); // Leave original owner
 			// as officer
-			setGuildRank(user_to_set_owner, 4);
+			setGuildRank(id, 4);
 
-			sender.sendMessage(ChatColor.GRAY + "You set " + ChatColor.AQUA + "" + ChatColor.UNDERLINE + guild_name
-					+ ChatColor.GRAY + "'s leader to " + ChatColor.AQUA + "" + ChatColor.UNDERLINE + user_to_set_owner);
-			for (String on_mems : getOnlineGuildMembers(guild_name)) {
-				Player pl = Bukkit.getPlayer(ChatColor.stripColor(on_mems));
-				if (pl != null) {
+			sender.sendMessage(ChatColor.GRAY + "You set " + ChatColor.AQUA + "" + ChatColor.UNDERLINE + guild
+					+ ChatColor.GRAY + "'s leader to " + ChatColor.AQUA + "" + ChatColor.UNDERLINE + name);
+			for (Player pl : getOnlineGuildMembers(guild)) {
 					pl.sendMessage(
-							ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(guild_name)
+							ChatColor.DARK_AQUA + "<" + ChatColor.BOLD + GuildMechanics.guild_handle_map.get(guild)
 							+ ChatColor.DARK_AQUA + ">" + ChatColor.AQUA + " " + ChatColor.UNDERLINE
 							+ sender.getName() + ChatColor.GRAY + " has set " + ChatColor.AQUA + ""
-							+ ChatColor.UNDERLINE + user_to_set_owner + ChatColor.GRAY + " as the "
+							+ ChatColor.UNDERLINE + name + ChatColor.GRAY + " as the "
 							+ ChatColor.BOLD + "LEADER" + ChatColor.GRAY + " of your guild.");
-				}
-				continue;
 			}
-			String packet_data = "[gpromote]" + user_to_set_owner + "," + guild_name + ":4*" + sender.getName();
+			String packet_data = "[gpromote]" + id.toString() + "," + guild + ":4*" + sender.getName();
 			sendGuildMessageCrossServer(packet_data);
-			updateGuildSQL(guild_name);
+			updateGuildSQL(guild);
 			return;
 		}
 	}
 
-	public static void promoteToOwnerInOwnGuild(Player owner, String new_owner) {
-		if (areGuildies(owner.getName(), new_owner)) {
-			setGuildRank(owner.getName(), 2); // Let's not completely remove the
+	public static void promoteToOwnerInOwnGuild(Player owner, Player new_owner) {
+		if (areGuildies(owner, new_owner)) {
+			setGuildRank(owner.getUniqueId(), 2); // Let's not completely remove the
 			// original owner from power and
 			// leave him as officer.
-			setGuildRank(new_owner, 4);
+			setGuildRank(new_owner.getUniqueId(), 4);
 
-			owner.sendMessage(ChatColor.GREEN + "You promoted " + ChatColor.UNDERLINE + new_owner + ChatColor.GREEN
+			owner.sendMessage(ChatColor.GREEN + "You promoted " + ChatColor.UNDERLINE + new_owner.getName() + ChatColor.GREEN
 					+ " to guild owner of your guild.");
-			for (String members : getOnlineGuildMembers(getGuild(owner.getName()))) {
-				Player pl = Bukkit.getPlayer(ChatColor.stripColor(members));
-				if (pl != null) {
+			for (Player pl : getOnlineGuildMembers(getGuild(owner))) {
 					pl.sendMessage(ChatColor.DARK_AQUA + "<" + ChatColor.BOLD
-							+ GuildMechanics.guild_handle_map.get(getGuild(owner.getName())) + ChatColor.DARK_AQUA + ">"
+							+ GuildMechanics.guild_handle_map.get(getGuild(owner)) + ChatColor.DARK_AQUA + ">"
 							+ ChatColor.AQUA + " " + ChatColor.UNDERLINE + owner.getName() + ChatColor.GRAY
-							+ " has set " + ChatColor.AQUA + "" + ChatColor.UNDERLINE + new_owner + ChatColor.GRAY
+							+ " has set " + ChatColor.AQUA + "" + ChatColor.UNDERLINE + new_owner.getName() + ChatColor.GRAY
 							+ " as the " + ChatColor.BOLD + "LEADER" + ChatColor.GRAY + " of your guild.");
-				}
-				continue;
 			}
-			String message_to_send = "[gpromote]" + new_owner + "," + getGuild(owner.getName()) + ":4*"
-					+ owner.getName();
+			String message_to_send = "[gpromote]" + new_owner.getUniqueId().toString() + "," + getGuild(owner) + ":4*"
+					+ owner.getUniqueId();
 
 			sendGuildMessageCrossServer(message_to_send);
 			updateGuildSQL(getGuild(new_owner));
-			Main.log.info("<" + GuildMechanics.guild_handle_map.get(getGuild(owner.getName())) + "> " + owner.getName()
-			+ " set " + new_owner + " as leader of the guild " + getGuild(owner.getName()));
+			Main.log.info("<" + GuildMechanics.guild_handle_map.get(getGuild(owner)) + "> " + owner.getName()
+			+ " set " + new_owner.getName() + " as leader of the guild " + getGuild(owner));
 			return;
 		}
 		owner.sendMessage(ChatColor.RED + "The user " + ChatColor.UNDERLINE + new_owner + ChatColor.RED
 				+ " is not in your guild.");
-		Main.log.info("<" + GuildMechanics.guild_handle_map.get(getGuild(owner.getName())) + "> " + owner.getName()
-		+ " tried to set " + new_owner + " as leader of the guild " + getGuild(owner.getName()));
 	}
 
 	public static void inviteToGuild(Player to_invite, Player p_owner) {
-		if (getRankNum(p_owner.getName()) < 2) {
+		if (getRankNum(p_owner) < 2) {
 			p_owner.sendMessage(ChatColor.RED.toString() + "You are NOT an officer / founder of the "
-					+ ChatColor.BOLD.toString() + player_guilds.get(p_owner.getName()) + " guild.");
+					+ ChatColor.BOLD.toString() + player_guilds.get(p_owner.getUniqueId()) + " guild.");
 			p_owner.sendMessage(ChatColor.GRAY.toString() + "Type " + ChatColor.BOLD.toString() + "/gquit"
 					+ ChatColor.GRAY + " to quit your current guild.");
 			return;
 		}
 
-		if (player_guilds.containsKey(to_invite.getName())) {
-			if (areGuildies(to_invite.getName(), p_owner.getName())) {
+		if (player_guilds.containsKey(to_invite.getUniqueId())) {
+			if (areGuildies(to_invite, p_owner)) {
 				p_owner.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + to_invite.getName() + ChatColor.RED
 						+ " is already in your guild.");
 				p_owner.sendMessage(ChatColor.GRAY + "Type /gkick " + to_invite.getName() + " to kick them out.");
@@ -3532,23 +3504,23 @@ public class GuildMechanics implements Listener {
 			}
 			return;
 		}
-		if (guild_invite.containsKey(to_invite.getName())) {
+		if (guild_invite.containsKey(to_invite.getUniqueId())) {
 			p_owner.sendMessage(ChatColor.RED + to_invite.getName() + " has a pending guild invite.");
 			return;
 		}
 
 		to_invite.sendMessage("");
 		to_invite.sendMessage(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + p_owner.getName() + ChatColor.GRAY
-				+ " has invited you to join their guild, " + ChatColor.DARK_AQUA + getGuild(p_owner.getName())
+				+ " has invited you to join their guild, " + ChatColor.DARK_AQUA + getGuild(p_owner)
 				+ ChatColor.GRAY + ". To accept, type " + ChatColor.DARK_AQUA.toString() + "/gaccept" + ChatColor.GRAY
 				+ " to decline, type " + ChatColor.DARK_AQUA.toString() + "/gdecline");
 		to_invite.sendMessage("");
 		p_owner.sendMessage(ChatColor.GRAY + "You have invited " + ChatColor.BOLD.toString() + ChatColor.DARK_AQUA
 				+ to_invite.getName() + ChatColor.GRAY + " to join your guild.");
 
-		guild_invite.put(to_invite.getName(), getGuild(p_owner.getName()));
-		guild_inviter.put(to_invite.getName(), p_owner.getName());
-		guild_invite_time.put(to_invite.getName(), System.currentTimeMillis());
+		guild_invite.put(to_invite.getUniqueId(), getGuild(p_owner));
+		guild_inviter.put(to_invite.getUniqueId(), p_owner.getUniqueId());
+		guild_invite_time.put(to_invite.getUniqueId(), System.currentTimeMillis());
 	}
 
 	public static String nextSessionId() {

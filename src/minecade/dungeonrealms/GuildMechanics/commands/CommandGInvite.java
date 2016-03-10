@@ -22,7 +22,7 @@ public class CommandGInvite implements CommandExecutor {
 			return true;
 		}
 
-		int g_rank = GuildMechanics.getRankNum(p.getName());
+		int g_rank = GuildMechanics.getRankNum(p);
 		if (g_rank < 2) { // 2 = officer, 3 = co-owner, 4 = owner -> 1 is just a
 							// member.
 			p.sendMessage(ChatColor.RED + "You must be at least a guild " + ChatColor.BOLD + "OFFICER" + ChatColor.RED
@@ -33,7 +33,7 @@ public class CommandGInvite implements CommandExecutor {
 		if (args.length != 1) {
 			p.sendMessage(
 					ChatColor.RED + "" + ChatColor.BOLD + "Invalid Syntax. " + ChatColor.RED + "/ginvite <player>");
-			if (GuildMechanics.isGuildLeader(p.getName()) || GuildMechanics.isGuildCoOwner(p.getName())) {
+			if (GuildMechanics.isGuildLeader(p) || GuildMechanics.isGuildCoOwner(p)) {
 				p.sendMessage(ChatColor.GRAY + "You can also " + ChatColor.UNDERLINE + "LEFT CLICK" + ChatColor.GRAY
 						+ " players with your " + ChatColor.ITALIC + "Guild Emblem" + ChatColor.GRAY
 						+ " to invite them.");

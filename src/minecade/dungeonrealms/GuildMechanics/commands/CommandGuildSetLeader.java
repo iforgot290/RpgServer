@@ -2,6 +2,7 @@ package minecade.dungeonrealms.GuildMechanics.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,15 +37,15 @@ public class CommandGuildSetLeader implements CommandExecutor {
 
 		if (args.length > 1) {
 			if (pl.isOp() || PermissionMechanics.isGM(pl)) {
-				Player targ = Bukkit.getPlayer(args[0]);
+				@SuppressWarnings("deprecation")
+				OfflinePlayer targ = Bukkit.getOfflinePlayer(args[0]);
 				String g_name = "";
-				String p_name = targ != null ? targ.getName() : args[0];
 				for (String s : args)
 					g_name += s + " ";
 				g_name = g_name.substring(args[0].length(), g_name.length() - 1);
 				g_name = g_name.substring(1, g_name.length());
 				if (GuildMechanics.guild_map.containsKey(g_name)) {
-					GuildMechanics.promoteToOwnerInSpecificGuild(pl, p_name, g_name);
+					GuildMechanics.promoteToOwnerInSpecificGuild(pl, targ.getName(), targ.getUniqueId(), g_name);
 				} else {
 					pl.sendMessage(ChatColor.RED + "No guild exists by the name of " + ChatColor.UNDERLINE + g_name);
 				}
@@ -55,10 +56,13 @@ public class CommandGuildSetLeader implements CommandExecutor {
 			return true;
 		}
 
-		if (GuildMechanics.isGuildLeader(pl.getName())) {
+		if (GuildMechanics.isGuildLeader(pl)) {
 			Player to_promote = Bukkit.getPlayer(args[0]);
-			String to_pro_name = to_promote != null ? to_promote.getName() : args[0];
-			GuildMechanics.promoteToOwnerInOwnGuild(pl, to_pro_name);
+			if (to_promote != null){
+				GuildMechanics.promoteToOwnerInOwnGuild(pl, to_promote);
+				return true;
+			}
+			pl.sendMessage(ChatColor.RED + "Player is not online");
 			return true;
 		}
 		pl.sendMessage(ChatColor.RED + "You must be the " + ChatColor.BOLD + "GUILD LEADER" + ChatColor.RED

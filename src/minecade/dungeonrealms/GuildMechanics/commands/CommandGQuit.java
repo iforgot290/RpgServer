@@ -28,7 +28,7 @@ public class CommandGQuit implements CommandExecutor {
 				+ ChatColor.GRAY + "' - This cannot be undone. " + "(" + ChatColor.GREEN.toString() + ChatColor.BOLD
 				+ "Y" + ChatColor.GRAY + " / " + ChatColor.RED.toString() + ChatColor.BOLD + "N" + ChatColor.GRAY
 				+ ")");
-		if (GuildMechanics.isGuildLeader(p.getName())) {
+		if (GuildMechanics.isGuildLeader(p)) {
 			p.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD.toString() + "WARNING: " + ChatColor.GRAY
 					+ "You are the " + ChatColor.UNDERLINE + "GUILD LEADER" + ChatColor.GRAY
 					+ ", if you leave this guild it will be " + ChatColor.BOLD + "PERMENANTLY DELETED" + ChatColor.GRAY

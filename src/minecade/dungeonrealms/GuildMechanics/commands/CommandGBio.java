@@ -21,7 +21,7 @@ public class CommandGBio implements CommandExecutor {
 		if (args.length == 0) {
 			String g_name = GuildMechanics.getGuild(p);
 
-			if (!(GuildMechanics.isGuildLeader(p.getName()) || GuildMechanics.isGuildCoOwner(p.getName()))) {
+			if (!(GuildMechanics.isGuildLeader(p) || GuildMechanics.isGuildCoOwner(p))) {
 				// TODO: Display the biography if it exists.
 				if ((!(GuildMechanics.guild_bio.containsKey(GuildMechanics.getGuild(p))))
 						|| GuildMechanics.guild_bio.get(GuildMechanics.getGuild(p)) == null) {

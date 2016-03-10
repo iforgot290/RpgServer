@@ -26,7 +26,7 @@ public class CommandGKick implements CommandExecutor {
 			return true;
 		}
 
-		int g_rank = GuildMechanics.getRankNum(p.getName());
+		int g_rank = GuildMechanics.getRankNum(p);
 		String g_name = GuildMechanics.getGuild(p);
 
 		if (g_rank < 2) { // 2 = officer, 3 = co-owner, 4 = owner, -> 1 is just
@@ -40,13 +40,13 @@ public class CommandGKick implements CommandExecutor {
 		@SuppressWarnings("deprecation")
 		OfflinePlayer op = Bukkit.getOfflinePlayer(p_to_kick);
 
-		if (!(GuildMechanics.inSpecificGuild(p_to_kick, g_name))) {
+		if (!(GuildMechanics.inSpecificGuild(op.getUniqueId(), g_name))) {
 			p.sendMessage(ChatColor.RED + p_to_kick + " is not in your guild.");
 			return true;
 		}
 
 		if (GuildMechanics.getGuildRank(op.getUniqueId(), g_name) == 2
-				&& !(GuildMechanics.isGuildLeader(p.getName()) || GuildMechanics.isGuildCoOwner(p.getName()))) {
+				&& !(GuildMechanics.isGuildLeader(p) || GuildMechanics.isGuildCoOwner(p))) {
 			p.sendMessage(ChatColor.RED
 					+ "You cannot kick a fellow guild officer. Only the guild leader or co-owner can do that.");
 			return true;

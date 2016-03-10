@@ -38,7 +38,7 @@ public class CommandGMotd implements CommandExecutor {
 		if (args.length >= 1) {
 			// Setting the MOTD.
 
-			if (!(GuildMechanics.isGuildLeader(p.getName()) || GuildMechanics.isGuildCoOwner(p.getName()))) {
+			if (!(GuildMechanics.isGuildLeader(p) || GuildMechanics.isGuildCoOwner(p))) {
 				p.sendMessage(ChatColor.RED + "You must be the " + ChatColor.BOLD + "GUILD OWNER" + ChatColor.RED
 						+ " to use " + ChatColor.BOLD + "/gmotd <motd>.");
 				return true;
