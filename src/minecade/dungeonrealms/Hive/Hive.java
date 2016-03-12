@@ -210,11 +210,30 @@ public class Hive implements Listener {
 	 */
 	public static volatile HashMap<UUID, Inventory> player_inventory = new HashMap<UUID, Inventory>();
 
-	public static volatile HashMap<String, Location> player_location = new HashMap<String, Location>();
-	public static volatile HashMap<String, Double> player_hp = new HashMap<String, Double>();
-	public static volatile HashMap<String, Integer> player_level = new HashMap<String, Integer>();
-	public static volatile HashMap<String, Integer> player_food_level = new HashMap<String, Integer>();
-	public static volatile HashMap<String, ItemStack[]> player_armor_contents = new HashMap<String, ItemStack[]>();
+	/**
+	 * UUID mapped to location
+	 */
+	public static volatile HashMap<UUID, Location> player_location = new HashMap<UUID, Location>();
+	
+	/**
+	 * UUID mapped to player hp
+	 */
+	public static volatile HashMap<UUID, Double> player_hp = new HashMap<UUID, Double>();
+	
+	/**
+	 * UUID mapped to player level
+	 */
+	public static volatile HashMap<UUID, Integer> player_level = new HashMap<UUID, Integer>();
+	
+	/**
+	 * UUID mapped to player food level
+	 */
+	public static volatile HashMap<UUID, Integer> player_food_level = new HashMap<UUID, Integer>();
+	
+	/**
+	 * UUID mapped to player armor
+	 */
+	public static volatile HashMap<UUID, ItemStack[]> player_armor_contents = new HashMap<UUID, ItemStack[]>();
 
 	/**
 	 * UUID mapped to ecash
@@ -589,7 +608,7 @@ public class Hive implements Listener {
 
 		Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
 			public void run() {
-				player_count = Bukkit.getOnlinePlayers().length;
+				player_count = Bukkit.getOnlinePlayers().size();
 			}
 		}, 10 * 20L, 5 * 20L);
 
@@ -640,11 +659,12 @@ public class Hive implements Listener {
 			}
 		}, 10 * 20L, 1 * 20L);
 
+		//Kicks players from the to_kick hashmap
 		Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
 			public void run() {
-				List<String> to_remove = new ArrayList<String>();
-				for (Entry<String, String> data : to_kick.entrySet()) {
-					String s = data.getKey();
+				List<UUID> to_remove = new ArrayList<UUID>();
+				for (Entry<UUID, String> data : to_kick.entrySet()) {
+					UUID s = data.getKey();
 					String reason = data.getValue();
 					if (Bukkit.getPlayer(s) != null) {
 						Player pl = Bukkit.getPlayer(s);
@@ -653,7 +673,7 @@ public class Hive implements Listener {
 					to_remove.add(s);
 				}
 
-				for (String s : to_remove) {
+				for (UUID s : to_remove) {
 					to_kick.remove(s);
 				}
 			}
@@ -704,7 +724,7 @@ public class Hive implements Listener {
 		Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
 			public void run() {
 				if (server_lock == true && (force_kick == true || get_payload == true || get_payload_spoof == true)
-						&& Bukkit.getOnlinePlayers().length > 0) {
+						&& Bukkit.getOnlinePlayers().size() > 0) {
 					for (Player p : Main.plugin.getServer().getOnlinePlayers()) {
 						if (p.isOp() && get_payload == false && get_payload_spoof == false) {
 							continue; // Don't kick the OP's.
@@ -977,7 +997,7 @@ public class Hive implements Listener {
 			ShopMechanics.backupStoreData(s);
 		}
 
-		for (String s : player_inventory.keySet()) {
+		for (UUID s : player_inventory.keySet()) {
 			try {
 				uploadPlayerDatabaseData(s); // Uploads all player-specific data
 												// that is stored locally on
@@ -1338,7 +1358,7 @@ public class Hive implements Listener {
 		}
 	}
 
-	public static void uploadPlayerDatabaseData(String p_name) throws SQLException {
+	public static void uploadPlayerDatabaseData(UUID id) throws SQLException {
 		Inventory inv = null;
 		Location loc = null;
 
@@ -1349,8 +1369,8 @@ public class Hive implements Listener {
 		double hp = -1;
 		String ip = "";
 
-		if (Bukkit.getPlayer(p_name) != null && !(pending_upload.contains(p_name))) {
-			Player pl = Bukkit.getPlayer(p_name);
+		if (Bukkit.getPlayer(id) != null && !(pending_upload.contains(id))) {
+			Player pl = Bukkit.getPlayer(id);
 			loc = pl.getLocation();
 			inv = pl.getInventory();
 
@@ -1359,23 +1379,23 @@ public class Hive implements Listener {
 			Damageable damp = (Damageable) pl;
 			hp = damp.getHealth();
 		} else {
-			if (player_location.containsKey(p_name)) {
-				loc = player_location.get(p_name);
+			if (player_location.containsKey(id)) {
+				loc = player_location.get(id);
 			}
-			if (player_inventory.containsKey(p_name)) {
-				inv = player_inventory.get(p_name);
+			if (player_inventory.containsKey(id)) {
+				inv = player_inventory.get(id);
 			}
 
-			level = player_level.get(p_name);
-			hp = player_hp.get(p_name);
-			food_level = player_food_level.get(p_name);
+			level = player_level.get(id);
+			hp = player_hp.get(id);
+			food_level = player_food_level.get(id);
 		}
 
 		if (loc == null || inv == null) {
 			return;
 		} // We don't want to upload null values for inventory / location --
 			// could result in wipe.
-		if (!(player_location.containsKey(p_name)) || !(player_inventory.containsKey(p_name))) {
+		if (!(player_location.containsKey(id)) || !(player_inventory.containsKey(id))) {
 			return;
 		} // ^
 
@@ -1390,56 +1410,56 @@ public class Hive implements Listener {
 		}
 
 		if (inv_count <= 0) {
-			log.info("[HIVE] Empty inventory detected on upload for player: " + p_name);
+			log.info("[HIVE] Empty inventory detected on upload for player: " + id.toString());
 			// return; // Empty inventory being uploaded.
 		}
 
-		String inventory = convertInventoryToString(p_name, inv, true);
+		String inventory = convertInventoryToString(id, inv, true);
 
 		long align_time = 0;
 		String align_status = "good";
 
-		if (KarmaMechanics.align_map.containsKey(p_name)) {
-			align_status = KarmaMechanics.align_map.get(p_name);
-			if (KarmaMechanics.align_time.containsKey(p_name)) {
-				align_time = KarmaMechanics.align_time.get(p_name);
+		if (KarmaMechanics.align_map.containsKey(id)) {
+			align_status = KarmaMechanics.align_map.get(id);
+			if (KarmaMechanics.align_time.containsKey(id)) {
+				align_time = KarmaMechanics.align_time.get(id);
 			}
 		}
 
-		String rank = PermissionMechanics.getRank(p_name);
+		String rank = PermissionMechanics.getRank(id);
 
 		int realm_tier = 1;
 
 		try {
-			realm_tier = RealmMechanics.realm_tier.get(p_name);
+			realm_tier = RealmMechanics.realm_tier.get(id);
 		} catch (NullPointerException npe) {
-			log.info("[HIVE] Null 'realm tier' value for player: " + p_name);
+			log.info("[HIVE] Null 'realm tier' value for player: " + id.toString());
 			realm_tier = 1; // Null? Impossible, but ok bro.
 		}
 
-		String realm_title = StringEscapeUtils.escapeSql(RealmMechanics.realm_title.get(p_name));
+		String realm_title = StringEscapeUtils.escapeSql(RealmMechanics.realm_title.get(id));
 		long last_login_time = System.currentTimeMillis();
 
 		String buddy_list = "";
 		String ignore_list = "";
 
-		if (PlayerManager.getPlayerModel(p_name).getBuddyList() != null) {
-			List<String> lbuddy_list = PlayerManager.getPlayerModel(p_name).getBuddyList();
-			for (String s : lbuddy_list) {
-				buddy_list += StringEscapeUtils.escapeSql(s + ",");
+		if (PlayerManager.getPlayerModel(id).getBuddyList() != null) {
+			List<UUID> lbuddy_list = PlayerManager.getPlayerModel(id).getBuddyList();
+			for (UUID s : lbuddy_list) {
+				buddy_list += id.toString() + ",";
 			}
 		}
 
-		if (PlayerManager.getPlayerModel(p_name).getIgnoreList() != null) {
-			List<String> lignore_list = PlayerManager.getPlayerModel(p_name).getIgnoreList();
-			for (String s : lignore_list) {
-				ignore_list += StringEscapeUtils.escapeSql(s + ",");
+		if (PlayerManager.getPlayerModel(id).getIgnoreList() != null) {
+			List<UUID> lignore_list = PlayerManager.getPlayerModel(id).getIgnoreList();
+			for (UUID s : lignore_list) {
+				ignore_list += id.toString() + ",";
 			}
 		}
 
 		String toggles = "";
 
-		if (PlayerManager.getPlayerModel(p_name).getToggleList() != null) {
+		if (PlayerManager.getPlayerModel(id).getToggleList() != null) {
 			final List<String> ltoggle_list = PlayerManager.getPlayerModel(p_name).getToggleList();
 			for (String s : ltoggle_list) {
 				toggles += s + ",";

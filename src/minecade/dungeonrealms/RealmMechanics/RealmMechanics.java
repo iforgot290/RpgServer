@@ -221,8 +221,10 @@ public class RealmMechanics implements Listener {
 	static ConcurrentHashMap<String, List<Location>> block_process_list = new ConcurrentHashMap<String, List<Location>>();
 	// Lists of blocks to process on aSync thread for realm upgrades.
 
-	public static HashMap<String, String> realm_title = new HashMap<String, String>();
-	// Realm descriptions.
+	/**
+	 * UUID mapped to realm title
+	 */
+	public static HashMap<UUID, String> realm_title = new HashMap<UUID, String>();
 
 	// Realm tiers. (UUID converted)
 	public static HashMap<UUID, Integer> realm_tier = new HashMap<UUID, Integer>();
