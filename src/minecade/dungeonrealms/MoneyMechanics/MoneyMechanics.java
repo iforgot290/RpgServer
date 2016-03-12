@@ -79,16 +79,22 @@ public class MoneyMechanics implements Listener {
 	// DEPRECIATED: Used for upload recurrency to ensure data goes up if there's
 	// SQL error.
 
-	public static ConcurrentHashMap<String, List<Inventory>> bank_contents = new ConcurrentHashMap<String, List<Inventory>>();
-	// Bank inventory.
+	/**
+	 * Bank inventory
+	 */
+	public static ConcurrentHashMap<UUID, List<Inventory>> bank_contents = new ConcurrentHashMap<UUID, List<Inventory>>();
 
-	public static ConcurrentHashMap<String, Integer> bank_level = new ConcurrentHashMap<String, Integer>();
-	// Bank level.
+	/**
+	 * Bank level.
+	 */
+	public static ConcurrentHashMap<UUID, Integer> bank_level = new ConcurrentHashMap<UUID, Integer>();
 
 	static HashMap<Player, String> bank_upgrade_codes = new HashMap<Player, String>();
 	// Unique upgrade codes for bank upgrade.
 
-	// Net worth of player's cash stack in bank. (UUID converted)
+	/**
+	 * Net worth of player's cash stack in bank.
+	 */
 	public static HashMap<UUID, Integer> bank_map = new HashMap<UUID, Integer>();
 
 	public static HashMap<Player, Integer> split_map = new HashMap<Player, Integer>();
@@ -657,14 +663,14 @@ public class MoneyMechanics implements Listener {
 		 */
 	}
 
-	public static void uploadBankDatabaseData(final String p_name, boolean remove_when_done) {
+	public static void uploadBankDatabaseData(final UUID id, boolean remove_when_done) {
 		String final_bank_content = null;
 		int final_bank_net = -2;
 		int final_bank_level = -2;
 
-		if (bank_contents.containsKey(p_name)) {
-			for (Inventory inv : bank_contents.get(p_name)) {
-				String local_inv = Hive.convertInventoryToString(p_name, inv, false);
+		if (bank_contents.containsKey(id)) {
+			for (Inventory inv : bank_contents.get(id)) {
+				String local_inv = Hive.convertInventoryToString(id, inv, false);
 				final_bank_content += local_inv + "@page_break@"; // TODO:
 																	// Randomize
 			}
@@ -679,26 +685,25 @@ public class MoneyMechanics implements Listener {
 			// bank_contents.get(p_name), false);
 		}
 
-		if (bank_map.containsKey(p_name)) {
-			final_bank_net = bank_map.get(p_name);
+		if (bank_map.containsKey(id)) {
+			final_bank_net = bank_map.get(id);
 		}
 
-		if (bank_level.containsKey(p_name)) {
-			final_bank_level = bank_level.get(p_name);
+		if (bank_level.containsKey(id)) {
+			final_bank_level = bank_level.get(id);
 		}
 
 		if (final_bank_content == null || final_bank_level == -2 || final_bank_net == -2) {
-			log.info("[MoneyMechanics] Skipping bank_database upload for " + p_name + ", data does not exist.");
+			log.info("[MoneyMechanics] Skipping bank_database upload for " + id + ", data does not exist.");
 			return; // Do not upload, something is wrong.
 		}
 
-		Connection con = null;
 		PreparedStatement pst = null;
 
 		try {
 			pst = ConnectionPool.getConnection()
 					.prepareStatement("INSERT INTO bank_database (p_name, content, money, level)" + " VALUES" + "('"
-							+ p_name + "', '" + StringEscapeUtils.escapeSql(final_bank_content) + "', '"
+							+ id.toString() + "', '" + StringEscapeUtils.escapeSql(final_bank_content) + "', '"
 							+ final_bank_net + "', '" + final_bank_level + "') ON DUPLICATE KEY UPDATE content = '"
 							+ StringEscapeUtils.escapeSql(final_bank_content) + "', money='" + final_bank_net
 							+ "', level='" + final_bank_level + "'");
@@ -722,9 +727,6 @@ public class MoneyMechanics implements Listener {
 				if (pst != null) {
 					pst.close();
 				}
-				if (con != null) {
-					con.close();
-				}
 
 			} catch (SQLException ex) {
 				log.log(Level.WARNING, ex.getMessage(), ex);
@@ -732,9 +734,9 @@ public class MoneyMechanics implements Listener {
 		}
 
 		if (remove_when_done) {
-			bank_contents.remove(p_name);
-			bank_map.remove(p_name);
-			bank_level.remove(p_name);
+			bank_contents.remove(id);
+			bank_map.remove(id);
+			bank_level.remove(id);
 		}
 
 	}

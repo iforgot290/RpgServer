@@ -181,11 +181,12 @@ public class Hive implements Listener {
 	// not uploading properly.
 
 	// Contains a list of players who are logging in for the very first time.
-	// (UUID converted)
 	public static List<UUID> first_login = new ArrayList<UUID>();
 
-	public static List<String> online_today = new ArrayList<String>();
-	// Players who are online today, ecash.
+	/**
+	 * Players who are online today, ecash
+	 */
+	public static List<UUID> online_today = new ArrayList<UUID>();
 
 	public static List<String> killing_self = new ArrayList<String>();
 	// 2-Step confirmation for the /suicide command.
@@ -203,7 +204,11 @@ public class Hive implements Listener {
 	//
 
 	public static volatile HashMap<String, String> local_player_ip = new HashMap<String, String>();
-	public static volatile HashMap<String, List<String>> player_ip = new HashMap<String, List<String>>();
+	
+	/**
+	 * UUID mapped to IP history
+	 */
+	public static volatile HashMap<UUID, List<String>> player_ip = new HashMap<UUID, List<String>>();
 
 	/**
 	 * UUID mapped to inventory
@@ -245,7 +250,7 @@ public class Hive implements Listener {
 	/**
 	 * UUID mapped to list of portal shards sorted by tier (ex t1 = 0)
 	 */
-	public static volatile HashMap<String, List<Integer>> player_portal_shards = new HashMap<String, List<Integer>>();
+	public static volatile HashMap<UUID, List<Integer>> player_portal_shards = new HashMap<UUID, List<Integer>>();
 
 	//
 	// END THREAD SAFE
@@ -1460,20 +1465,20 @@ public class Hive implements Listener {
 		String toggles = "";
 
 		if (PlayerManager.getPlayerModel(id).getToggleList() != null) {
-			final List<String> ltoggle_list = PlayerManager.getPlayerModel(p_name).getToggleList();
+			final List<String> ltoggle_list = PlayerManager.getPlayerModel(id).getToggleList();
 			for (String s : ltoggle_list) {
 				toggles += s + ",";
 			}
 		}
 
-		boolean new_player = HealthMechanics.noob_players.contains(p_name);
+		boolean new_player = HealthMechanics.noob_players.contains(id);
 		int i_new_player = 0;
 		if (new_player) {
 			i_new_player = 1;
 		}
 
-		if (player_ip.containsKey(p_name)) {
-			for (String l_ip : player_ip.get(p_name)) {
+		if (player_ip.containsKey(id)) {
+			for (String l_ip : player_ip.get(id)) {
 				ip += l_ip + ",";
 			}
 			if (ip.endsWith(",")) {
@@ -1484,8 +1489,8 @@ public class Hive implements Listener {
 		String last_server = MOTD.substring(0, MOTD.indexOf(" "));
 
 		String portal_shard_string = "";
-		if (player_portal_shards.containsKey(p_name)) {
-			for (int i : player_portal_shards.get(p_name)) {
+		if (player_portal_shards.containsKey(id)) {
+			for (int i : player_portal_shards.get(id)) {
 				portal_shard_string += i + ",";
 			}
 			if (portal_shard_string.endsWith(",")) {
@@ -1494,29 +1499,29 @@ public class Hive implements Listener {
 		}
 
 		String saved_gear = "";
-		if (KarmaMechanics.saved_gear.containsKey(p_name)) {
-			saved_gear = StringEscapeUtils.escapeSql(convertInventoryToString(KarmaMechanics.saved_gear.get(p_name)));
+		if (KarmaMechanics.saved_gear.containsKey(id)) {
+			saved_gear = StringEscapeUtils.escapeSql(convertInventoryToString(KarmaMechanics.saved_gear.get(id)));
 		}
 
 		String mule_inventory_string = "";
-		if (MountMechanics.mule_inventory.containsKey(p_name)) {
-			mule_inventory_string = Hive.convertInventoryToString(null, MountMechanics.mule_inventory.get(p_name),
+		if (MountMechanics.mule_inventory.containsKey(id)) {
+			mule_inventory_string = Hive.convertInventoryToString(null, MountMechanics.mule_inventory.get(id),
 					false);
 		}
-		if (mule_inventory_string.equalsIgnoreCase("") && !MountMechanics.mule_inventory.containsKey(p_name)) {
-			if (MountMechanics.mule_itemlist_string.containsKey(p_name)) {
-				mule_inventory_string = StringEscapeUtils.escapeSql(MountMechanics.mule_itemlist_string.get(p_name));
+		if (mule_inventory_string.equalsIgnoreCase("") && !MountMechanics.mule_inventory.containsKey(id)) {
+			if (MountMechanics.mule_itemlist_string.containsKey(id)) {
+				mule_inventory_string = StringEscapeUtils.escapeSql(MountMechanics.mule_itemlist_string.get(id));
 			}
 		}
 
 		String achievments = "";
-		if (PlayerManager.getPlayerModel(p_name).getAchievements() != null) {
-			achievments = PlayerManager.getPlayerModel(p_name).getAchievements();
+		if (PlayerManager.getPlayerModel(id).getAchievements() != null) {
+			achievments = PlayerManager.getPlayerModel(id).getAchievements();
 		}
 
 		String ecash_storage = "";
-		if (EcashMechanics.ecash_storage_map.containsKey(p_name)) {
-			ecash_storage = StringEscapeUtils.escapeSql(EcashMechanics.ecash_storage_map.get(p_name));
+		if (EcashMechanics.ecash_storage_map.containsKey(id)) {
+			ecash_storage = StringEscapeUtils.escapeSql(EcashMechanics.ecash_storage_map.get(id));
 		}
 
 		PreparedStatement pst = null;
@@ -1524,7 +1529,7 @@ public class Hive implements Listener {
 		// 15 KEYS! -- Monster Query.
 		pst = ConnectionPool.getConnection().prepareStatement(
 				"INSERT INTO player_database (p_name, location, inventory, hp, food_level, level, last_login_time, rank, align_status, align_time, toggles, buddy_list, ignore_list, realm_tier, realm_title, noob_player, combat_log, last_server, ip, portal_shards, saved_gear, mule_inventory, achievments, ecash_storage) "
-						+ "VALUES('" + p_name + "', '" + location + "', '" + StringEscapeUtils.escapeSql(inventory)
+						+ "VALUES('" + id.toString() + "', '" + location + "', '" + StringEscapeUtils.escapeSql(inventory)
 						+ "', '" + hp + "', '" + food_level + "', '" + level + "', '" + last_login_time + "', '" + rank
 						+ "', '" + align_status + "', '" + align_time + "', '" + toggles + "', '" + buddy_list + "', '"
 						+ ignore_list + "', '" + realm_tier + "', '" + realm_title + "', '" + i_new_player + "', 0, '"
@@ -1545,15 +1550,15 @@ public class Hive implements Listener {
 		pst.executeUpdate();
 	}
 
-	public Object downloadPlayerDatabaseData(String p_name) {
+	public Object downloadPlayerDatabaseData(UUID id) {
 		// Any # = Don't let them log in, they're on another server or
 		// something, the # will = the server. (server_num >= 0)
 		// false = Data does not exist / error. (server_num = -2)
 		// true = Everything is fine. (server_num = -1)
 
-		online_today.remove(p_name);
-		Hive.player_inventory.remove(p_name);
-		Hive.player_location.remove(p_name);
+		online_today.remove(id);
+		Hive.player_inventory.remove(id);
+		Hive.player_location.remove(id);
 		Hive.player_hp.remove(p_name);
 		Hive.player_level.remove(p_name);
 		Hive.player_food_level.remove(p_name);
@@ -1866,7 +1871,7 @@ public class Hive implements Listener {
 		return return_string;
 	}
 
-	public static String convertInventoryToString(String p_name, Inventory inv, boolean player) {
+	public static String convertInventoryToString(UUID id, Inventory inv, boolean player) {
 		// @item@Slot:ItemID-Amount.Durability#Item_Name#$Item_Lore$[lam1]lam_color[lam2]
 		// @item@1:267-1.54#Magic Sword#$DMG: 5 - 7, CRIT: 5%$@item@
 
@@ -1910,14 +1915,14 @@ public class Hive implements Listener {
 
 		List<ItemStack> armor_contents = new ArrayList<ItemStack>();
 		if (player) {
-			if (Bukkit.getPlayer(p_name) != null) {
-				Player owner = Bukkit.getPlayer(p_name);
+			if (Bukkit.getPlayer(id) != null) {
+				Player owner = Bukkit.getPlayer(id);
 				for (ItemStack is : owner.getInventory().getArmorContents()) {
 					armor_contents.add(is);
 				}
 			} else {
-				if (player_armor_contents.containsKey(p_name)) {
-					for (ItemStack is : player_armor_contents.get(p_name)) {
+				if (player_armor_contents.containsKey(id)) {
+					for (ItemStack is : player_armor_contents.get(id)) {
 						armor_contents.add(is);
 					}
 				}

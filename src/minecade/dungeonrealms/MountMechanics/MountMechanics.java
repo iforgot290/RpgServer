@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
@@ -199,11 +200,15 @@ public class MountMechanics implements Listener {
 	public static ConcurrentHashMap<Entity, String> inv_mule_map = new ConcurrentHashMap<Entity, String>();
 	// Mule, Owner (player_name)
 
-	public static ConcurrentHashMap<String, Inventory> mule_inventory = new ConcurrentHashMap<String, Inventory>();
-	// PLAYER_NAME, Mule inventory
+	/**
+	 * Player UUID, Mule inventory
+	 */
+	public static ConcurrentHashMap<UUID, Inventory> mule_inventory = new ConcurrentHashMap<UUID, Inventory>();
 
-	public static HashMap<String, String> mule_itemlist_string = new HashMap<String, String>();
-	// PLAYER_NAME, Mule item list (string)
+	/**
+	 * Player UUID, Mule inventory string
+	 */
+	public static HashMap<UUID, String> mule_itemlist_string = new HashMap<UUID, String>();
 
 	Inventory TradeWindow = Bukkit.createInventory(null, 18, "Animal Tamer");
 

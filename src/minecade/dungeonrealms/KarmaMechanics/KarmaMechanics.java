@@ -68,8 +68,10 @@ public class KarmaMechanics implements Listener {
 	public static HashMap<String, Long> last_attack_time = new HashMap<String, Long>();
 	// Last time a player attacked another player.
 
-	public static HashMap<String, List<ItemStack>> saved_gear = new HashMap<String, List<ItemStack>>();
-	// Used on player death event to ensure gear is safe on respawn.
+	/**
+	 * Stores player items to be saved on death
+	 */
+	public static HashMap<UUID, List<ItemStack>> saved_gear = new HashMap<UUID, List<ItemStack>>();
 	// TODO: Make this cross-server
 
 	public static HashMap<String, String> lost_gear = new HashMap<String, String>();

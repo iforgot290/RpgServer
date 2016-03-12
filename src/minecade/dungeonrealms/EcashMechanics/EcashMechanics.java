@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -167,8 +168,10 @@ public class EcashMechanics implements Listener {
 	public static ConcurrentHashMap<Location, Integer> gold_curse_blocks_timing = new ConcurrentHashMap<Location, Integer>();
 	// Location, Material to transform back to.
 
-	public static ConcurrentHashMap<String, String> ecash_storage_map = new ConcurrentHashMap<String, String>();
-	// Player_Name, Ecash_Storage_Contents (string)
+	/**
+	 * UUID, Ecash storage contents
+	 */
+	public static ConcurrentHashMap<UUID, String> ecash_storage_map = new ConcurrentHashMap<UUID, String>();
 
 	public static List<String> gold_curse = new ArrayList<String>();
 	// Players with active 'gold_curse' on them.
