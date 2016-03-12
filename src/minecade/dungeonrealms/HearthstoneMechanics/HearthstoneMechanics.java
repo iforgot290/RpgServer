@@ -88,10 +88,10 @@ public class HearthstoneMechanics implements Listener {
 					}
 					time_left -= 1;
 					if (time_left <= 0) {
-						p.playSound(p.getLocation(), Sound.WITHER_DEATH, 1, 1);
+						p.playSound(p.getLocation(), Sound.ENTITY_WITHER_DEATH, 1, 1);
 						p.teleport(getHearthStone(p.getName()).getLocation());
-						int timer = (PermissionMechanics.getRank(p.getName()) != null
-								&& !PermissionMechanics.getRank(p.getName()).equalsIgnoreCase("default") && !p.isOp())
+						int timer = (PermissionMechanics.getRank(p) != null
+								&& !PermissionMechanics.getRank(p).equalsIgnoreCase("default") && !p.isOp())
 										? 25 : 15;
 						getHearthStone(p.getName()).setTimer(60 * timer);
 						p.sendMessage(ChatColor.GRAY + "Your Hearthstone has been put on a " + ChatColor.UNDERLINE
@@ -267,7 +267,7 @@ public class HearthstoneMechanics implements Listener {
 			Player p = e.getPlayer();
 			if (!isInnkeeper(clicked))
 				return;
-			ItemStack is = clicked.getItemInHand();
+			ItemStack is = clicked.getInventory().getItemInMainHand();
 			if (changing_homes.containsKey(p.getName())) {
 				p.sendMessage(ChatColor.GRAY + "Innkeeper: " + ChatColor.WHITE + "You are already changing your home!");
 				return;
@@ -319,7 +319,7 @@ public class HearthstoneMechanics implements Listener {
 				getHearthStone(p.getName()).setLocationName(changing_homes.get(p.getName()));
 				getHearthStone(p.getName()).setLocation(spawn_map.get(changing_homes.get(p.getName())));
 				getHearthStone(p.getName()).saveData();
-				p.playSound(p.getLocation(), Sound.LEVEL_UP, 1, 1);
+				p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 				checkInventoryAndReset(p);
 			} else {
 				p.sendMessage(ChatColor.GRAY + "Innkeeper: " + ChatColor.WHITE + "Maybe another day traveler!");
@@ -335,8 +335,8 @@ public class HearthstoneMechanics implements Listener {
 		}
 		if (p.getName().contains("Innkeeper")) {
 			// Jackpot
-			if (p.getItemInHand() != null) {
-				ItemStack is = p.getItemInHand();
+			if (p.getInventory().getItemInMainHand() != null) {
+				ItemStack is = p.getInventory().getItemInMainHand();
 				if (is.getType() != Material.QUARTZ) {
 					return false;
 				}
@@ -369,7 +369,7 @@ public class HearthstoneMechanics implements Listener {
 					+ " use this item on Tutorial Island.");
 			return;
 		}
-		if (KarmaMechanics.getAlignment(p.getName()).contains("evil")) {
+		if (KarmaMechanics.getAlignment(p).contains("evil")) {
 			p.sendMessage(ChatColor.RED + "You cannot do this while chaotic!");
 			return;
 		}
