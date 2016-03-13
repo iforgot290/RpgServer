@@ -133,7 +133,6 @@ import minecade.dungeonrealms.models.LogModel;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
-@SuppressWarnings("deprecation")
 public class Hive implements Listener {
 
 	public static int id = getServerNumFromPrefix(Bukkit.getMotd());
@@ -1040,7 +1039,6 @@ public class Hive implements Listener {
 	}
 
 	public static void runSyncQuery(String query) {
-		Connection con = null;
 		PreparedStatement pst = null;
 
 		try {
@@ -1056,9 +1054,6 @@ public class Hive implements Listener {
 			try {
 				if (pst != null) {
 					pst.close();
-				}
-				if (con != null) {
-					con.close();
 				}
 
 			} catch (SQLException ex) {
@@ -1131,7 +1126,8 @@ public class Hive implements Listener {
 				String s_shop_backup = rs.getString("shop_backup");
 				if (s_shop_backup.length() > 0 && !(ShopMechanics.shop_stock.containsKey(s_p_name))) {
 					// Convert shop_backup to collection_bin.
-					setCollectionBinSQL(s_p_name, s_shop_backup);
+					UUID id = UUID.fromString(s_p_name);
+					setCollectionBinSQL(id, s_shop_backup);
 					fix_count++;
 					log.info("[ShopMechanics] Recovered collection bin data of " + s_p_name
 							+ " -- set collection_bin string.");
@@ -1146,12 +1142,12 @@ public class Hive implements Listener {
 		}
 	}
 
-	public static void setCollectionBinSQL(String p_name, String contents) {
+	public static void setCollectionBinSQL(UUID id, String contents) {
 		PreparedStatement pst = null;
 
 		try {
 			pst = ConnectionPool.getConnection()
-					.prepareStatement("INSERT INTO shop_database (p_name, collection_bin, server_num) VALUES('" + p_name
+					.prepareStatement("INSERT INTO shop_database (p_name, collection_bin, server_num) VALUES('" + id.toString()
 							+ "', '" + contents + "', '-1') ON DUPLICATE KEY UPDATE collection_bin='" + contents
 							+ "', server_num='-1'");
 
@@ -1245,9 +1241,7 @@ public class Hive implements Listener {
 		return result;
 	}
 
-	@SuppressWarnings("resource")
 	public void makeAllTables() {
-		Connection con = null;
 		PreparedStatement pst = null;
 
 		try {
@@ -1304,9 +1298,6 @@ public class Hive implements Listener {
 				if (pst != null) {
 					pst.close();
 				}
-				if (con != null) {
-					con.close();
-				}
 
 			} catch (SQLException ex) {
 				log.log(Level.WARNING, ex.getMessage(), ex);
@@ -1316,12 +1307,12 @@ public class Hive implements Listener {
 		log.info("[HIVE (SLAVE Edition) Completed creating SQL tables.");
 	}
 
-	public void setFirstLoginSQL(String p_name) {
+	public void setFirstLoginSQL(UUID id) {
 		PreparedStatement pst = null;
 
 		try {
 			pst = ConnectionPool.getConnection()
-					.prepareStatement("INSERT INTO player_database (p_name, first_login) VALUES('" + p_name + "', '"
+					.prepareStatement("INSERT INTO player_database (p_name, first_login) VALUES('" + id.toString() + "', '"
 							+ System.currentTimeMillis() + "') ON DUPLICATE KEY UPDATE first_login="
 							+ System.currentTimeMillis());
 
@@ -1340,12 +1331,12 @@ public class Hive implements Listener {
 		}
 	}
 
-	public static void setCombatLogger(String p_name) {
+	public static void setCombatLogger(UUID id) {
 		PreparedStatement pst = null;
 
 		try {
 			pst = ConnectionPool.getConnection()
-					.prepareStatement("INSERT INTO player_database (p_name, combat_log) VALUES('" + p_name + "', " + 1
+					.prepareStatement("INSERT INTO player_database (p_name, combat_log) VALUES('" + id.toString() + "', " + 1
 							+ ") ON DUPLICATE KEY UPDATE combat_log=1");
 
 			pst.executeUpdate();

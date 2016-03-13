@@ -106,8 +106,10 @@ public class ShopMechanics implements Listener {
 	static HashMap<Block, Hologram> shop_nameplates = new HashMap<Block, Hologram>();
 	// NPC linked list that assigns an NPC to a given shop block.
 
-	public static HashMap<String, Integer> shop_level = new HashMap<String, Integer>();
-	// Locally stored shop level/tier.
+	/**
+	 * Locally stored shop level/tier
+	 */
+	public static HashMap<UUID, Integer> shop_level = new HashMap<UUID, Integer>();
 
 	static HashMap<Block, String> shop_names = new HashMap<Block, String>();
 	// Block-to-Shop name map for data reference.
@@ -134,8 +136,10 @@ public class ShopMechanics implements Listener {
 	public static HashMap<String, Integer> current_item_being_bought = new HashMap<String, Integer>();
 	// Async Chat event.
 
-	public static HashMap<String, Integer> shop_server = new HashMap<String, Integer>();
-	// Locally stored data, Player, Shop Server
+	/**
+	 * Locally stored data, UUID, Shop Server
+	 */
+	public static HashMap<UUID, Integer> shop_server = new HashMap<UUID, Integer>();
 
 	static HashMap<String, String> shop_being_browsed = new HashMap<String, String>();
 	// You get too far away, you can't purchase.
@@ -760,26 +764,26 @@ public class ShopMechanics implements Listener {
 	// Then, when server starts again, the restore script sees they have a
 	// shop_backup and no collection_bin.
 	// We need to clear the shop_backup when collection_bin becomes empty.
-	public static void uploadShopDatabaseData(String p_name, boolean remove_when_done) {
+	public static void uploadShopDatabaseData(UUID id, boolean remove_when_done) {
 		String collection_bin_s = "null";
 		int server_num = -1;
-		if (collection_bin.containsKey(p_name)) {
-			collection_bin_s = Hive.convertInventoryToString(p_name, collection_bin.get(p_name), false);
+		if (collection_bin.containsKey(id)) {
+			collection_bin_s = Hive.convertInventoryToString(id, collection_bin.get(id), false);
 			if (collection_bin_s.equalsIgnoreCase("")) {
 				collection_bin_s = "null"; // No items left in collection bin.
 			}
 		}
-		if (shop_server.containsKey(p_name)) {
-			server_num = shop_server.get(p_name);
+		if (shop_server.containsKey(id)) {
+			server_num = shop_server.get(id);
 		}
 
 		int lshop_level = -1;
-		if (shop_level.containsKey(p_name)) {
-			lshop_level = shop_level.get(p_name);
+		if (shop_level.containsKey(id)) {
+			lshop_level = shop_level.get(id);
 		}
 
 		if (lshop_level == -1) {
-			log.info("[ShopMechanics] Skipping shop_database upload for " + p_name + ", data does not exist.");
+			log.info("[ShopMechanics] Skipping shop_database upload for " + id.toString() + ", data does not exist.");
 			return; // Do not upload, something is wrong.
 		}
 
@@ -788,7 +792,7 @@ public class ShopMechanics implements Listener {
 		try {
 			pst = ConnectionPool.getConnection()
 					.prepareStatement("INSERT INTO shop_database (p_name, level, server_num, collection_bin)"
-							+ " VALUES" + "('" + p_name + "', '" + lshop_level + "', '" + server_num + "', '"
+							+ " VALUES" + "('" + id.toString() + "', '" + lshop_level + "', '" + server_num + "', '"
 							+ StringEscapeUtils.escapeSql(collection_bin_s) + "') ON DUPLICATE KEY UPDATE level = '"
 							+ lshop_level + "', server_num='" + server_num + "', collection_bin='"
 							+ StringEscapeUtils.escapeSql(collection_bin_s) + "';");
@@ -809,11 +813,11 @@ public class ShopMechanics implements Listener {
 		}
 
 		if (remove_when_done) {
-			collection_bin.remove(p_name); // - Causes corruption of collection
+			collection_bin.remove(id); // - Causes corruption of collection
 											// bin data.
 			// shop_level.remove(p_name); Shop level is needed if a shop exists
 			// on the server.
-			shop_server.remove(p_name);
+			shop_server.remove(id);
 		}
 	}
 
@@ -1082,10 +1086,10 @@ public class ShopMechanics implements Listener {
 		}
 	}
 
-	public static void asyncSetShopServerSQL(final String p_name, final int server_num) {
-		shop_server.put(p_name, server_num);
+	public static void asyncSetShopServerSQL(final UUID id, final int server_num) {
+		shop_server.put(id, server_num);
 		if (!shop_shutdown) {
-			Hive.sql_query.add("INSERT INTO shop_database (p_name, server_num)" + " VALUES" + "('" + p_name + "', '"
+			Hive.sql_query.add("INSERT INTO shop_database (p_name, server_num)" + " VALUES" + "('" + id.toString() + "', '"
 					+ server_num + "') ON DUPLICATE KEY UPDATE server_num = '" + server_num + "'");
 			// The issue with this, is if the server crashes... backups are kind
 			// of GG'd
@@ -1098,10 +1102,10 @@ public class ShopMechanics implements Listener {
 		} else {
 			// In this case, we are shutting down, do work on main thread do not
 			// use query.
-			runSyncQuery("INSERT INTO shop_database (p_name, server_num)" + " VALUES" + "('" + p_name + "', '"
+			runSyncQuery("INSERT INTO shop_database (p_name, server_num)" + " VALUES" + "('" + id.toString() + "', '"
 					+ server_num + "') ON DUPLICATE KEY UPDATE server_num = '" + server_num + "'");
 			Main.plugin.getServer().getConsoleSender()
-					.sendMessage("INSERT INTO shop_database (p_name, server_num)" + " VALUES" + "('" + p_name + "', '"
+					.sendMessage("INSERT INTO shop_database (p_name, server_num)" + " VALUES" + "('" + id.toString() + "', '"
 							+ server_num + "') ON DUPLICATE KEY UPDATE server_num = '" + server_num + "';");
 			/*
 			 * if(server_num == -1){ Hive.runSyncQuery(
