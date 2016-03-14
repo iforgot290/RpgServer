@@ -171,13 +171,17 @@ public class Hive implements Listener {
 	// information on corrupt players, but no longer applies due to SQL upload.
 	// Updated for use w/ possible SQL issues.
 
-	static List<String> being_uploaded = new ArrayList<String>();
-	// Players are added to this list on logout, it prevents the players from
-	// logging back in locally until AFTER their data has been uploaded.
+	/**
+	 * Players are added to this list on logout, it prevents the players from 
+	 * logging back in locally until AFTER their data has been uploaded
+	 */
+	static List<UUID> being_uploaded = new ArrayList<UUID>();
 
-	static List<String> lockout_players = new ArrayList<String>();
-	// List of players who are 'locked' to the local server due to their data
-	// not uploading properly.
+	/**
+	 * List of players who are 'locked' to the local server due to their data 
+	 * not uploading properly.
+	 */
+	static List<UUID> lockout_players = new ArrayList<UUID>();
 
 	// Contains a list of players who are logging in for the very first time.
 	public static List<UUID> first_login = new ArrayList<UUID>();
@@ -190,9 +194,12 @@ public class Hive implements Listener {
 	public static List<String> killing_self = new ArrayList<String>();
 	// 2-Step confirmation for the /suicide command.
 	public static ConcurrentSet<String> players_unable_to_join = new ConcurrentSet<String>();
-	public static volatile ConcurrentHashMap<String, List<Object>> remote_player_data = new ConcurrentHashMap<String, List<Object>>();
-	// Packaged version of player data, created in loadPlayerDataSQL() and
-	// accessed throughout login proceedure.
+	
+	/**
+	 * Packaged version of player data, created in loadPlayerDataSQL() 
+	 * and accessed throughout the login procedure.
+	 */
+	public static volatile ConcurrentHashMap<UUID, List<Object>> remote_player_data = new ConcurrentHashMap<UUID, List<Object>>();
 
 	public static HashMap<Integer, List<Integer>> server_population = new HashMap<Integer, List<Integer>>();
 	// Contains min/max players for every server, used for shard menu.
@@ -202,7 +209,10 @@ public class Hive implements Listener {
 	// START THREAD SAFE
 	//
 
-	public static volatile HashMap<String, String> local_player_ip = new HashMap<String, String>();
+	/**
+	 * Local player ip
+	 */
+	public static volatile HashMap<UUID, String> local_player_ip = new HashMap<UUID, String>();
 	
 	/**
 	 * UUID mapped to IP history
@@ -244,7 +254,10 @@ public class Hive implements Listener {
 	 */
 	public static volatile HashMap<UUID, Integer> player_ecash = new HashMap<UUID, Integer>();
 
-	public static volatile HashMap<String, Integer> player_sdays_left = new HashMap<String, Integer>();
+	/**
+	 * UUID mapped to sdaysleft
+	 */
+	public static volatile HashMap<UUID, Integer> player_sdays_left = new HashMap<UUID, Integer>();
 
 	/**
 	 * UUID mapped to list of portal shards sorted by tier (ex t1 = 0)
@@ -263,7 +276,9 @@ public class Hive implements Listener {
 	public static HashMap<String, String> player_bio = new HashMap<String, String>();
 	// Player Name, Bio(being written)
 
-	// These two hashes are both used for COMBAT-LOGGING NPC management.
+	/**
+	 * Used for combat-logging npc management
+	 */
 	public static HashMap<String, NPC> player_to_npc = new HashMap<String, NPC>();
 
 	public static HashMap<String, String> player_to_npc_align = new HashMap<String, String>();
@@ -307,10 +322,11 @@ public class Hive implements Listener {
 	// Used by many other plugins to determine when a player has -just- logged
 	// in and therfore should be excempt from certain processes.
 
-	public static HashMap<String, String> server_swap = new HashMap<String, String>();
-	// Players who are swapping shards. This map is accessed in
-	// uploadPlayerData() to skip certain tasks / checks and such.
-	// PLAYER_NAME, SERVER_ID
+	/**
+	 * Players who are swapping shards. This map is accessed in 
+	 * uploadPlayerData() to skip certain tasks / checks and such.
+	 */
+	public static HashMap<UUID, String> server_swap = new HashMap<UUID, String>();
 
 	public static HashMap<String, Location> server_swap_location = new HashMap<String, Location>();
 	// Players who are swapping shards. This map is accessed in
@@ -1618,13 +1634,13 @@ public class Hive implements Listener {
 			// false = Don't upload the new rank -- we're already pulling it
 			// from DB so no need.
 
-			KarmaMechanics.align_time.put(p_name, rs.getInt("align_time"));
+			KarmaMechanics.align_time.put(id, rs.getInt("align_time"));
 			String align_status = rs.getString("align_status");
 			if (align_status == null || align_status.equalsIgnoreCase("null")) {
 				align_status = "good";
 			}
 
-			KarmaMechanics.setAlignment(p_name, align_status, 1);
+			KarmaMechanics.setAlignment(id, align_status, 1);
 			// Karma alignment and seconds left until it expires.
 
 			List<String> ltoggle_list = new ArrayList<String>();
@@ -1637,7 +1653,7 @@ public class Hive implements Listener {
 				}
 			}
 
-			PlayerManager.getPlayerModel(p_name).setToggleList(ltoggle_list);
+			PlayerManager.getPlayerModel(id).setToggleList(ltoggle_list);
 			// Toggles for a multitude of different settings.
 
 			List<String> pet_data = new ArrayList<String>();
@@ -1651,50 +1667,50 @@ public class Hive implements Listener {
 					pet_data.add(pet_list);
 				}
 			}
-			PetMechanics.player_pets.put(p_name, pet_data);
+			PetMechanics.player_pets.put(id, pet_data);
 			// Sets up pet ownership for the player, will spawn them eggs and
 			// such.
 
-			List<String> lbuddy_list = new ArrayList<String>();
+			List<UUID> lbuddy_list = new ArrayList<UUID>();
 			String buddy_list = rs.getString("buddy_list");
 			if (buddy_list != null && buddy_list.contains(",")) {
 				for (String s : buddy_list.split(",")) {
 					if (s.length() > 0) {
-						lbuddy_list.add(s);
+						lbuddy_list.add(UUID.fromString(s));
 					}
 				}
 			}
 
-			PlayerManager.getPlayerModel(p_name).setBuddyList(lbuddy_list);
+			PlayerManager.getPlayerModel(id).setBuddyList(lbuddy_list);
 			// Friend list!
 
-			List<String> lignore_list = new ArrayList<String>();
+			List<UUID> lignore_list = new ArrayList<UUID>();
 			String ignore_list = rs.getString("ignore_list");
 			if (ignore_list != null && ignore_list.contains(",")) {
 				for (String s : ignore_list.split(",")) {
 					if (s.length() > 0) {
-						lignore_list.add(s);
+						lignore_list.add(UUID.fromString(s));
 					}
 				}
 			}
 
-			PlayerManager.getPlayerModel(p_name).setIgnoreList(lignore_list);
+			PlayerManager.getPlayerModel(id).setIgnoreList(lignore_list);
 			// Ignore list!
 
-			RealmMechanics.realm_tier.put(p_name, rs.getInt("realm_tier"));
-			RealmMechanics.realm_title.put(p_name, rs.getString("realm_title"));
-			RealmMechanics.realm_loaded_status.put(p_name, rs.getBoolean("realm_loaded"));
+			RealmMechanics.realm_tier.put(id, rs.getInt("realm_tier"));
+			RealmMechanics.realm_title.put(id, rs.getString("realm_title"));
+			RealmMechanics.realm_loaded_status.put(id, rs.getBoolean("realm_loaded"));
 			// Realm tier (for size) and the description showed on right click.
 
 			int noob_player = rs.getInt("noob_player");
 			if (noob_player == 1) {
-				HealthMechanics.noob_players.add(p_name);
+				HealthMechanics.noob_players.add(id);
 			}
 
 			String loc_s = rs.getString("location");
 			Location loc = null;
 			if (loc_s == null) {
-				log.info("[HIVE (Slave Edition)] No LOCATION data found for " + p_name + ", return null.");
+				log.info("[HIVE (Slave Edition)] No LOCATION data found for " + id.toString() + ", return null.");
 				return false;
 			} else if (loc_s != null) {
 				loc = convertStringToLocation(loc_s);
@@ -1702,20 +1718,20 @@ public class Hive implements Listener {
 
 			String inventory_s = rs.getString("inventory");
 			if (inventory_s == null) {
-				log.info("[HIVE (Slave Edition)] No INVENTORY data found for " + p_name + ", return null.");
+				log.info("[HIVE (Slave Edition)] No INVENTORY data found for " + id.toString() + ", return null.");
 				return false;
 			}
 
 			int ecash = rs.getInt("ecash");
 			if (ecash > 0) {
-				player_ecash.put(p_name, ecash); // Store E-CASH locally --
+				player_ecash.put(id, ecash); // Store E-CASH locally --
 													// they'll need to relog to
 													// get any new E-CASH.
 			}
 
 			int sdays_left = rs.getInt("sdays_left");
 			if (sdays_left > 0) {
-				player_sdays_left.put(p_name, sdays_left);
+				player_sdays_left.put(id, sdays_left);
 			}
 
 			List<String> ip_list = new ArrayList<String>();
@@ -1730,11 +1746,11 @@ public class Hive implements Listener {
 					ip_list.add(raw_ip_list);
 				}
 			}
-			if (local_player_ip.containsKey(p_name) && !ip_list.contains(local_player_ip.get(p_name))) {
-				ip_list.add(local_player_ip.get(p_name));
+			if (local_player_ip.containsKey(id) && !ip_list.contains(local_player_ip.get(id))) {
+				ip_list.add(local_player_ip.get(id));
 			}
 
-			player_ip.put(p_name, ip_list);
+			player_ip.put(id, ip_list);
 
 			String portal_shard_string = rs.getString("portal_shards");
 			List<Integer> portal_shards = new ArrayList<Integer>();
@@ -1744,9 +1760,9 @@ public class Hive implements Listener {
 					int i = Integer.parseInt(s);
 					portal_shards.add(i);
 				}
-				player_portal_shards.put(p_name, portal_shards);
+				player_portal_shards.put(id, portal_shards);
 			} else {
-				player_portal_shards.put(p_name, new ArrayList<Integer>(Arrays.asList(0, 0, 0, 0, 0)));
+				player_portal_shards.put(id, new ArrayList<Integer>(Arrays.asList(0, 0, 0, 0, 0)));
 			}
 
 			int level = rs.getInt("level");
@@ -1756,11 +1772,11 @@ public class Hive implements Listener {
 			String saved_gear = rs.getString("saved_gear");
 			if (saved_gear != null && saved_gear.length() > 0) {
 				List<ItemStack> sg_list = convertStringToInventoryString(saved_gear);
-				KarmaMechanics.saved_gear.put(p_name, sg_list);
-				if (!HealthMechanics.combat_logger.contains(p_name)) {
+				KarmaMechanics.saved_gear.put(id, sg_list);
+				if (!HealthMechanics.combat_logger.contains(id)) {
 					// If combat_logger contains them, they'll be killed on
 					// login anyway. We don't want to double kill.
-					HealthMechanics.combat_logger.add(p_name); // Use this
+					HealthMechanics.combat_logger.add(id); // Use this
 																// method, it
 																// actually
 																// works.
@@ -1769,7 +1785,7 @@ public class Hive implements Listener {
 
 			String lost_gear = rs.getString("lost_gear");
 			if (lost_gear != null && lost_gear.length() > 0) {
-				KarmaMechanics.lost_gear.put(p_name, lost_gear);
+				KarmaMechanics.lost_gear.put(id, lost_gear);
 			}
 
 			String mule_inventory = rs.getString("mule_inventory");
@@ -1778,18 +1794,18 @@ public class Hive implements Listener {
 				// mule, it will generate the inventory and the slots based on
 				// the mule they're
 				// using.;
-				MountMechanics.mule_itemlist_string.put(p_name, mule_inventory);
+				MountMechanics.mule_itemlist_string.put(id, mule_inventory);
 			}
 
 			String achievments = rs.getString("achievments");
 			if (achievments == null) {
 				achievments = "";
 			}
-			PlayerManager.getPlayerModel(p_name).setAchievements(achievments);
+			PlayerManager.getPlayerModel(id).setAchievements(achievments);
 
 			String ecash_storage = rs.getString("ecash_storage");
 			if (ecash_storage != null) {
-				EcashMechanics.ecash_storage_map.put(p_name, ecash_storage);
+				EcashMechanics.ecash_storage_map.put(id, ecash_storage);
 			}
 
 			data.add(loc);
@@ -1798,9 +1814,9 @@ public class Hive implements Listener {
 			data.add((double) hp);
 			data.add(food_level);
 
-			log.info(inventory_s);
+			//log.info(inventory_s);
 
-			remote_player_data.put(p_name, data);
+			remote_player_data.put(id, data);
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -1821,6 +1837,7 @@ public class Hive implements Listener {
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static String convertInventoryToString(List<ItemStack> inv) {
 		// @item@Slot:ItemID-Amount.Durability#Item_Name#$Item_Lore$[lam1]lam_color[lam2]
 		// @item@1:267-1.54#Magic Sword#$DMG: 5 - 7, CRIT: 5%$@item@
@@ -1851,7 +1868,6 @@ public class Hive implements Listener {
 				// No lore.
 				i_lore = "null";
 			}
-
 			return_string = return_string + ("@item@" + slot + ":" + is.getTypeId() + "-" + is.getAmount() + "."
 					+ is.getDurability() + "#" + i_name + "#" + "$" + i_lore + "$");
 			if (is.hasItemMeta() && is.getItemMeta() instanceof LeatherArmorMeta) {
@@ -1863,6 +1879,7 @@ public class Hive implements Listener {
 		return return_string;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static String convertInventoryToString(UUID id, Inventory inv, boolean player) {
 		// @item@Slot:ItemID-Amount.Durability#Item_Name#$Item_Lore$[lam1]lam_color[lam2]
 		// @item@1:267-1.54#Magic Sword#$DMG: 5 - 7, CRIT: 5%$@item@
@@ -1958,6 +1975,7 @@ public class Hive implements Listener {
 		return return_string;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static List<ItemStack> convertStringToInventoryString(String inventory_string) {
 		List<ItemStack> is_list = new ArrayList<ItemStack>();
 		// int expected_item_size = inventory_string.split("@item@").length;
@@ -2038,6 +2056,7 @@ public class Hive implements Listener {
 		return is_list;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static Inventory convertStringToInventory(Player pl, String inventory_string, String inventory_name,
 			int slots) {
 		Inventory inv = null;
@@ -2169,18 +2188,18 @@ public class Hive implements Listener {
 		return loc;
 	}
 
-	public boolean hasAccountData(String p_name) {
+	public boolean hasAccountData(UUID id) {
 		PreparedStatement pst;
 
 		try {
 			pst = ConnectionPool.getConnection()
-					.prepareStatement("SELECT location FROM player_database WHERE p_name = '" + p_name + "'");
+					.prepareStatement("SELECT location FROM player_database WHERE p_name = '" + id.toString() + "'");
 
 			pst.execute();
 			ResultSet rs = pst.getResultSet();
 
 			if (!(rs.next()) || rs.getString("location") == null) {
-				log.info("[HIVE (Slave Edition)] No PLAYER DATA found for " + p_name + ", return null.");
+				log.info("[HIVE (Slave Edition)] No PLAYER DATA found for " + id.toString() + ", return null.");
 				return false;
 			}
 
@@ -2196,7 +2215,7 @@ public class Hive implements Listener {
 		return false;
 	}
 
-	public static String getServerRank(String p_name) {
+	public static String getServerRank(UUID id) {
 
 		// rank_forumgroup.put("default", 2);
 		// rank_forumgroup.put("pmod", 11);
@@ -2210,13 +2229,13 @@ public class Hive implements Listener {
 
 		try {
 			pst = ConnectionPool.getConnection()
-					.prepareStatement("SELECT rank FROM player_database WHERE p_name = '" + p_name + "'");
+					.prepareStatement("SELECT rank FROM player_database WHERE p_name = '" + id.toString() + "'");
 
 			pst.execute();
 			ResultSet rs = pst.getResultSet();
 
 			if (!(rs.next())) {
-				log.info("[HIVE (Slave Edition)] No PLAYER DATA found for " + p_name + ", return null.");
+				log.info("[HIVE (Slave Edition)] No PLAYER DATA found for " + id.toString() + ", return null.");
 				return "default";
 			}
 
@@ -2278,13 +2297,12 @@ public class Hive implements Listener {
 	}
 
 	public void setAllPlayersAsOffline() {
-		Connection con = null;
 		PreparedStatement pst = null;
 
 		try {
-			for (String p_name : player_inventory.keySet()) {
+			for (UUID id : player_inventory.keySet()) {
 				pst = ConnectionPool.getConnection()
-						.prepareStatement("INSERT INTO player_database (p_name, server_num)" + " VALUES" + "('" + p_name
+						.prepareStatement("INSERT INTO player_database (p_name, server_num)" + " VALUES" + "('" + id.toString()
 								+ "', '" + (-1) + "') ON DUPLICATE KEY UPDATE server_num = '" + (-1) + "'");
 
 				pst.executeUpdate();
@@ -2297,9 +2315,6 @@ public class Hive implements Listener {
 			try {
 				if (pst != null) {
 					pst.close();
-				}
-				if (con != null) {
-					con.close();
 				}
 
 			} catch (SQLException ex) {
@@ -2448,12 +2463,12 @@ public class Hive implements Listener {
 		restart_task = null;
 	}
 
-	public static boolean isPlayerOnline(String p_name) {
-		int server_num = getPlayerServer(p_name, true);
+	public static boolean isPlayerOnline(UUID id) {
+		int server_num = getPlayerServer(id, true);
 		if (server_num <= -1) {
 			return false;
 		}
-		if (pending_upload.contains(p_name)) {
+		if (pending_upload.contains(id)) {
 			return false;
 		} // They're not literally online.
 		else {
@@ -2526,7 +2541,7 @@ public class Hive implements Listener {
 
 	}
 
-	public void setPlayerServer(final String p_name) {
+	public void setPlayerServer(final UUID id) {
 		final String motd = Bukkit.getMotd();
 		int lserver_num = 1;
 		if (motd.contains("US-YT")) {
@@ -2547,38 +2562,34 @@ public class Hive implements Listener {
 
 		final int server_num = lserver_num;
 
-		Connection con = null;
 		PreparedStatement pst = null;
 
 		try {
 
 			pst = ConnectionPool.getConnection()
-					.prepareStatement("INSERT INTO player_database (p_name, server_num)" + " VALUES" + "('" + p_name
+					.prepareStatement("INSERT INTO player_database (p_name, server_num)" + " VALUES" + "('" + id.toString()
 							+ "', '" + server_num + "') ON DUPLICATE KEY UPDATE server_num = '" + server_num + "'");
 
 			pst.executeUpdate();
 
-			PlayerManager.getPlayerModel(p_name).setServerNum(server_num);
+			PlayerManager.getPlayerModel(id).setServerNum(server_num);
 
 			List<Object> qdata = new ArrayList<Object>();
-			qdata.add("@server_num@" + p_name + ":" + server_num);
+			qdata.add("@server_num@" + id.toString() + ":" + server_num);
 			qdata.add(null);
 			qdata.add(true);
-			CommunityMechanics.social_query_list.put(p_name, qdata);
+			CommunityMechanics.social_query_list.put(id.toString(), qdata);
 			// CommunityMechanics.sendPacketCrossServer("@server_num@" + p_name
 			// + ":" + server_num, server_num, true);
 
 		} catch (SQLException ex) {
 			log.log(Level.SEVERE, ex.getMessage(), ex);
-			setPlayerServer(p_name);
+			setPlayerServer(id);
 
 		} finally {
 			try {
 				if (pst != null) {
 					pst.close();
-				}
-				if (con != null) {
-					con.close();
 				}
 
 			} catch (SQLException ex) {
@@ -2588,30 +2599,26 @@ public class Hive implements Listener {
 
 	}
 
-	public void deletePlayerServer(final String p_name) {
+	public void deletePlayerServer(final UUID id) {
 		Thread t = new Thread(new Runnable() {
 			public void run() {
 
-				Connection con = null;
 				PreparedStatement pst = null;
 
 				try {
 
 					pst = ConnectionPool.getConnection()
-							.prepareStatement("DELETE FROM p_login_data WHERE pname = '" + p_name + "'");
+							.prepareStatement("DELETE FROM p_login_data WHERE pname = '" + id.toString() + "'");
 					pst.executeUpdate();
 
 				} catch (SQLException ex) {
 					log.log(Level.SEVERE, ex.getMessage(), ex);
-					setPlayerServer(p_name);
+					setPlayerServer(id);
 
 				} finally {
 					try {
 						if (pst != null) {
 							pst.close();
-						}
-						if (con != null) {
-							con.close();
 						}
 
 					} catch (SQLException ex) {
@@ -2624,7 +2631,7 @@ public class Hive implements Listener {
 		t.start();
 	}
 
-	public static void setPlayerOffline(final String p_name, int second_delay, boolean ignore_all_checks) {
+	public static void setPlayerOffline(final UUID id, int second_delay, boolean ignore_all_checks) {
 		final int login_delay_s = second_delay * 1000;
 
 		try {
@@ -2632,17 +2639,16 @@ public class Hive implements Listener {
 				Thread.sleep(login_delay_s);
 			}
 
-			Connection con = null;
 			PreparedStatement pst = null;
 
 			try {
 				pst = ConnectionPool.getConnection()
-						.prepareStatement("INSERT INTO player_database (p_name, server_num)" + " VALUES" + "('" + p_name
+						.prepareStatement("INSERT INTO player_database (p_name, server_num)" + " VALUES" + "('" + id.toString()
 								+ "', '" + (-1) + "') ON DUPLICATE KEY UPDATE server_num = '" + (-1) + "'");
 
 				pst.executeUpdate();
 
-				being_uploaded.remove(p_name);
+				being_uploaded.remove(id);
 
 			} catch (SQLException ex) {
 				log.log(Level.SEVERE, ex.getMessage(), ex);
@@ -2651,9 +2657,6 @@ public class Hive implements Listener {
 				try {
 					if (pst != null) {
 						pst.close();
-					}
-					if (con != null) {
-						con.close();
 					}
 
 				} catch (SQLException ex) {
@@ -2666,7 +2669,7 @@ public class Hive implements Listener {
 
 	}
 
-	public static void setPlayerOffline(final String p_name, int second_delay) {
+	public static void setPlayerOffline(final UUID id, int second_delay) {
 		final int login_delay_s = second_delay * 1000;
 
 		try {
@@ -2674,34 +2677,33 @@ public class Hive implements Listener {
 				Thread.sleep(login_delay_s);
 			}
 
-			if (lockout_players.contains(p_name)) {
-				log.info("[HIVE (SLAVE EDITION] Player " + p_name
+			if (lockout_players.contains(id)) {
+				log.info("[HIVE (SLAVE EDITION] Player " + id.toString()
 						+ " has been detected in the lockout_players table, and will not be set as offline this server.");
 				return; // Don't set them as offline to prevent a desync.
 			}
 
-			if (!(player_to_npc.containsKey(p_name)) && Bukkit.getPlayer(p_name) != null
-					&& Bukkit.getPlayer(p_name).isOnline() && shutting_down == false) {
+			if (!(player_to_npc.containsKey(id)) && Bukkit.getPlayer(id) != null
+					&& Bukkit.getPlayer(id).isOnline() && shutting_down == false) {
 				return; // They're back online locally! WOO!
 			}
 
-			if (player_to_npc.containsKey(p_name)) {
+			if (player_to_npc.containsKey(id)) {
 				// Let that event finish and handle when they're 'offline'.
 				return;
 			}
 
-			Connection con = null;
 			PreparedStatement pst = null;
 
 			try {
 				pst = ConnectionPool.getConnection()
-						.prepareStatement("INSERT INTO player_database (p_name, server_num)" + " VALUES" + "('" + p_name
+						.prepareStatement("INSERT INTO player_database (p_name, server_num)" + " VALUES" + "('" + id.toString()
 								+ "', '" + (-1) + "') ON DUPLICATE KEY UPDATE server_num = '" + (-1) + "'");
 
 				pst.executeUpdate();
 
 				// pending_upload.remove(p_name);
-				being_uploaded.remove(p_name);
+				being_uploaded.remove(id);
 
 			} catch (SQLException ex) {
 				log.log(Level.SEVERE, ex.getMessage(), ex);
@@ -2710,9 +2712,6 @@ public class Hive implements Listener {
 				try {
 					if (pst != null) {
 						pst.close();
-					}
-					if (con != null) {
-						con.close();
 					}
 
 				} catch (SQLException ex) {
@@ -2724,13 +2723,13 @@ public class Hive implements Listener {
 		}
 
 		List<Object> qdata = new ArrayList<Object>();
-		qdata.add("@server_num@" + p_name + ":" + -1);
+		qdata.add("@server_num@" + id.toString() + ":" + -1);
 		qdata.add(null);
 		qdata.add(true);
-		CommunityMechanics.social_query_list.put(p_name, qdata);
+		CommunityMechanics.social_query_list.put(id.toString(), qdata);
 		// CommunityMechanics.sendPacketCrossServer("@server_num@" + p_name +
 		// ":" + -1, -1, true);
-		PlayerManager.getPlayerModel(p_name).setServerNum(-1);
+		PlayerManager.getPlayerModel(id).setServerNum(-1);
 
 	}
 
@@ -2761,7 +2760,7 @@ public class Hive implements Listener {
 	@EventHandler
 	public void savedata(PlayerQuitEvent e) throws SQLException {
 		Player p = (Player) e.getPlayer();
-		uploadPlayerDatabaseData(p.getName());
+		uploadPlayerDatabaseData(p.getUniqueId());
 		Thread t = new UploadPlayerData(p.getName()); // mumoxx own dis
 		t.start();
 
@@ -2769,9 +2768,8 @@ public class Hive implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onCommandPreProcess(PlayerCommandPreprocessEvent e) {
-		if (e.getMessage().equalsIgnoreCase("/stop") && e.getPlayer() != null
-				&& (e.getPlayer().getName().equalsIgnoreCase("availer")
-						|| e.getPlayer().getName().equalsIgnoreCase("vaquxine"))) {
+		if (e.getMessage().equalsIgnoreCase("/stop") && e.getPlayer() != null && 
+				PermissionMechanics.isGM(e.getPlayer())) {
 			server_lock = true;
 			force_kick = true;
 			setAllPlayersAsOffline();
@@ -2826,7 +2824,7 @@ public class Hive implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerDeath(PlayerDeathEvent e) {
 		Player pl = e.getEntity();
-		if (server_swap.containsKey(pl.getName())) {
+		if (server_swap.containsKey(pl.getUniqueId())) {
 			e.getDrops().clear();
 		}
 	}

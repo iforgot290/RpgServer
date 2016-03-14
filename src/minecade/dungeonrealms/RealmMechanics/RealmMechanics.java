@@ -233,7 +233,7 @@ public class RealmMechanics implements Listener {
 	// Saved player level (HP) for traveling between realms -- fixes a vanilla
 	// bug.
 
-	public static volatile HashMap<String, Boolean> realm_loaded_status = new HashMap<String, Boolean>();
+	public static volatile HashMap<UUID, Boolean> realm_loaded_status = new HashMap<UUID, Boolean>();
 	// Setup on login, everytime players try to open a realm and this =true, it
 	// will update SQL.
 	// TODO: Change this to sockets.

@@ -74,10 +74,11 @@ public class KarmaMechanics implements Listener {
 	public static HashMap<UUID, List<ItemStack>> saved_gear = new HashMap<UUID, List<ItemStack>>();
 	// TODO: Make this cross-server
 
-	public static HashMap<String, String> lost_gear = new HashMap<String, String>();
-	// Used to prevent dupe from neutral deaths not coordinating correct lost
-	// items.
-	// ',' delim list of slot #'s of armor/weapon that was dropped.
+	/**
+	 * Used to prevent dupe from neutral deaths not coordinating correct lost items.<br><br>
+	 * ',' delim list of lot #'s of armor/weapon that was dropped
+	 */
+	public static HashMap<UUID, String> lost_gear = new HashMap<UUID, String>();
 
 	public static HashMap<UUID, Location> saved_location = new HashMap<UUID, Location>();
 	// Location to TP players back to on asyncmove event.
@@ -1083,8 +1084,12 @@ public class KarmaMechanics implements Listener {
 	public static int getSecondsUntilAlignmentChange(Player player) {
 		return getSecondsUntilAlignmentChange(player.getUniqueId());
 	}
+	
+	public static void setAlignment(Player player, String new_align, int echo_type){
+		setAlignment(player.getUniqueId(), new_align, echo_type);
+	}
 
-	public static void setAlignment(String p_name, String new_align, int echo_type) { // 0
+	public static void setAlignment(UUID id, String new_align, int echo_type) { // 0
 																						// =
 																						// none,
 																						// 1
@@ -1093,15 +1098,15 @@ public class KarmaMechanics implements Listener {
 																						// 2
 																						// =
 																						// all
-		align_map.put(p_name, new_align);
+		align_map.put(id, new_align);
 		// align_time.put(p_name, System.currentTimeMillis()); // Time of last
 		// alignment change.
 
-		if (Bukkit.getPlayer(p_name) != null && Bukkit.getPlayer(p_name).isOnline()
-				&& !Bukkit.getPlayer(p_name).getPlayerListName().equalsIgnoreCase("")) {
-			final Player p = Bukkit.getPlayer(p_name);
+		if (Bukkit.getPlayer(id) != null && Bukkit.getPlayer(id).isOnline()
+				&& !Bukkit.getPlayer(id).getPlayerListName().equalsIgnoreCase("")) {
+			final Player p = Bukkit.getPlayer(id);
 			sendAlignColor(p, p);
-			p.playSound(p.getLocation(), Sound.ZOMBIE_INFECT, 3F, 1.2F);
+			p.playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_INFECT, 3F, 1.2F);
 			if (new_align.equalsIgnoreCase("good")) {
 				if (!(p.getPlayerListName().contains(ChatColor.AQUA.toString()))) {
 					String test_name = ChatColor.GRAY.toString() + ChatColor.stripColor(p.getName());
