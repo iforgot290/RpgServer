@@ -117,7 +117,10 @@ public class PetMechanics implements Listener {
 
 	public static HashMap<String, Long> pet_spawn_delay = new HashMap<String, Long>();
 
-	public static volatile ConcurrentHashMap<String, List<Entity>> pet_map = new ConcurrentHashMap<String, List<Entity>>();
+	/**
+	 * UUID mapped to pets
+	 */
+	public static volatile ConcurrentHashMap<UUID, List<Entity>> pet_map = new ConcurrentHashMap<UUID, List<Entity>>();
 	public static ConcurrentHashMap<Entity, String> inv_pet_map = new ConcurrentHashMap<Entity, String>();
 
 	public static HashMap<Entity, List<Entity>> baby_chick_map = new HashMap<Entity, List<Entity>>();

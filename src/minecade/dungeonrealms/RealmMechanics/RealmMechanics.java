@@ -263,8 +263,10 @@ public class RealmMechanics implements Listener {
 			Material.DROPPER, Material.HOPPER);
 	// A list of items to be blocked from opening in other people's realms
 
-	public static HashMap<String, Long> player_god_mode = new HashMap<String, Long>();
-	// The player is in god mode, the time they were set to godmode.
+	/**
+	 * The player in god mode and the time they were set to godmode
+	 */
+	public static HashMap<UUID, Long> player_god_mode = new HashMap<UUID, Long>();
 
 	public static volatile CopyOnWriteArrayList<String> async_realm_status = new CopyOnWriteArrayList<String>();
 	// Handles RealmStatusThread() queries. (isRealmLoadedSQL())

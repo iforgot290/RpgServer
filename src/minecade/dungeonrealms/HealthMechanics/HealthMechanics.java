@@ -84,7 +84,10 @@ public class HealthMechanics implements Listener {
 	// Interval (in seconds) between last instance of a combat acivity and the
 	// start of auto HP regen.
 
-	public static ConcurrentHashMap<String, Integer> player_health = new ConcurrentHashMap<String, Integer>();
+	/**
+	 * Player's current health
+	 */
+	public static ConcurrentHashMap<UUID, Integer> player_health = new ConcurrentHashMap<UUID, Integer>();
 
 	public static HashMap<String, Integer> player_potion_event = new HashMap<String, Integer>();
 	// Get the value of the potion being drink.
@@ -93,9 +96,7 @@ public class HealthMechanics implements Listener {
 	// Stores the potion data of thrown item.
 
 	/**
-	 * Max data (health?) of a certain player<br>
-	 * <br>
-	 * UUID mapped to the integer
+	 * Max data (health?) of a certain player
 	 */
 	public static HashMap<UUID, Integer> health_data = new HashMap<UUID, Integer>();
 
@@ -104,9 +105,10 @@ public class HealthMechanics implements Listener {
 	 */
 	public static HashMap<UUID, Integer> health_regen_data = new HashMap<UUID, Integer>();
 
-	public static ConcurrentHashMap<String, Long> in_combat = new ConcurrentHashMap<String, Long>();
-	// A list of all players in combat and the last time they were in a combat
-	// situation.
+	/**
+	 * List of all players in combat and the last time they were in a combat situation
+	 */
+	public static ConcurrentHashMap<UUID, Long> in_combat = new ConcurrentHashMap<UUID, Long>();
 
 	public static HashMap<String, Long> last_environ_dmg = new HashMap<String, Long>();
 	// Last time environ dmg was taken, prevents spam damage bug from fire
@@ -620,14 +622,18 @@ public class HealthMechanics implements Listener {
 		}
 	}
 
-	public static void setPlayerHP(String p_name, int hp) {
+	public static void setPlayerHP(Player pl, int hp){
+		setPlayerHP(pl.getUniqueId(), hp);
+	}
+	
+	public static void setPlayerHP(UUID id, int hp) {
 		/*
 		 * if(plugin.getServer().getPlayer(p_name) != null){ Player pl =
 		 * plugin.getServer().getPlayer(p_name); pl.setMetadata("dr_hp", new
 		 * FixedMetadataValue(plugin, hp)); }
 		 */
 
-		player_health.put(p_name, hp);
+		player_health.put(id, hp);
 	}
 
 	public static int getPlayerHP(String p_name) {

@@ -1998,18 +1998,17 @@ public class GuildMechanics implements Listener {
 		player_guild_rank.put(id, getGuildRank(id));
 	}
 
-	public static String getPlayerGuildSQL(String p_name) {
+	public static String getPlayerGuildSQL(UUID id) {
 		PreparedStatement pst = null;
 
 		try {
 			pst = ConnectionPool.getConnection()
-					.prepareStatement("SELECT guild_name FROM player_database WHERE p_name = '" + p_name + "'");
-
+					.prepareStatement("SELECT guild_name FROM player_database WHERE p_name = '" + id.toString() + "'");
 			pst.execute();
 			ResultSet rs = pst.getResultSet();
 
 			if (!(rs.next())) {
-				log.info("[GuildMechanics] No guild data found for " + p_name + ", return null.");
+				log.info("[GuildMechanics] No guild data found for " + id.toString() + ", return null.");
 				return null;
 			}
 

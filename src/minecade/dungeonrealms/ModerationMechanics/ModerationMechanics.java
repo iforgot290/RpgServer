@@ -676,9 +676,13 @@ public class ModerationMechanics implements Listener {
 			vanish_list.remove(p_name.toLowerCase());
 	}
 
-	public static void vanishPlayer(String p_name) {
-		if (!vanish_list.contains(p_name))
-			vanish_list.add(p_name.toLowerCase());
+	public static void vanishPlayer(Player player){
+		vanishPlayer(player.getUniqueId());
+	}
+	
+	public static void vanishPlayer(UUID id) {
+		if (!vanish_list.contains(id))
+			vanish_list.add(id);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

@@ -281,10 +281,14 @@ public class PermissionMechanics implements Listener {
 		String rank = getRank(pl.getUniqueId());
 		return rank.equalsIgnoreCase("GM") || rank.equalsIgnoreCase("PMOD") ? true : false;
 	}
+	
+	public static boolean isGM(UUID id){
+		String rank = getRank(id);
+		return rank.equalsIgnoreCase("gm");
+	}
 
 	public static boolean isGM(Player pl) {
-		String rank = getRank(pl.getUniqueId());
-		return rank.equalsIgnoreCase("GM");
+		return isGM(pl.getUniqueId());
 	}
 
 }

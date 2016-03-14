@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,12 +28,12 @@ import minecade.dungeonrealms.managers.PlayerManager;
 
 public class UploadPlayerData extends Thread {
 
-	String p_name = "";
+	private UUID id;
 	int g_attempts = 0;
 	static int g_up_attempts = 0;
 
-	public UploadPlayerData(String safe_pname) {
-		p_name = safe_pname;
+	public UploadPlayerData(UUID id) {
+		this.id = id;
 	}
 
 	public void run() {

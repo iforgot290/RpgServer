@@ -441,7 +441,7 @@ public class MoneyMechanics implements Listener {
 						+ " to upgrade your bank size.");
 	}
 
-	public static boolean downloadBankDatabaseData(final String p_name) {
+	public static boolean downloadBankDatabaseData(final UUID id) {
 		PreparedStatement pst = null;
 
 		// TODO: Does this cause issues if they somehow log in before
@@ -453,15 +453,15 @@ public class MoneyMechanics implements Listener {
 
 		try {
 			pst = ConnectionPool.getConnection().prepareStatement(
-					"SELECT money, level, content FROM bank_database WHERE p_name = '" + p_name + "'");
+					"SELECT money, level, content FROM bank_database WHERE p_name = '" + id.toString() + "'");
 
 			pst.execute();
 
 			ResultSet rs = pst.getResultSet();
 			if (!rs.next()) {
-				bank_map.put(p_name, 0);
-				bank_level.put(p_name, 0);
-				bank_contents.put(p_name,
+				bank_map.put(id, 0);
+				bank_level.put(id, 0);
+				bank_contents.put(id,
 						new ArrayList<Inventory>(Arrays.asList(Bukkit.createInventory(null, 9, "Bank Chest (1/1)"))));
 				return true;
 			}
@@ -603,9 +603,9 @@ public class MoneyMechanics implements Listener {
 				bank_pages.add(Bukkit.createInventory(null, getBankSlots(level), "Bank Chest (1/1)"));
 			}
 
-			bank_contents.put(p_name, bank_pages);
-			bank_map.put(p_name, money);
-			bank_level.put(p_name, level);
+			bank_contents.put(id, bank_pages);
+			bank_map.put(id, money);
+			bank_level.put(id, level);
 
 			return true;
 

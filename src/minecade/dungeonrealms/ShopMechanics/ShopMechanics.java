@@ -610,23 +610,23 @@ public class ShopMechanics implements Listener {
 		return collection_bin_contents;
 	}
 
-	public static boolean downloadShopDatabaseData(String p_name) {
+	public static boolean downloadShopDatabaseData(UUID id) {
 		PreparedStatement pst = null;
 
-		collection_bin.remove(p_name);
-		shop_level.remove(p_name);
-		shop_server.remove(p_name);
+		collection_bin.remove(id);
+		shop_level.remove(id);
+		shop_server.remove(id);
 
 		try {
 			pst = ConnectionPool.getConnection().prepareStatement(
-					"SELECT level, server_num, collection_bin FROM shop_database WHERE p_name = '" + p_name + "'");
+					"SELECT level, server_num, collection_bin FROM shop_database WHERE p_name = '" + id.toString() + "'");
 
 			pst.execute();
 
 			ResultSet rs = pst.getResultSet();
 			if (!rs.next()) {
-				shop_level.put(p_name, 0);
-				shop_server.put(p_name, -1);
+				shop_level.put(id, 0);
+				shop_server.put(id, -1);
 				return true;
 			}
 
@@ -638,8 +638,8 @@ public class ShopMechanics implements Listener {
 
 			String collection_bin_s = rs.getString("collection_bin");
 
-			shop_level.put(p_name, level);
-			shop_server.put(p_name, server_num);
+			shop_level.put(id, level);
+			shop_server.put(id, server_num);
 
 			if (collection_bin_s != null && !collection_bin_s.equalsIgnoreCase("null")) {
 				// They have a collection bin.
@@ -658,7 +658,7 @@ public class ShopMechanics implements Listener {
 				}
 
 				if (inv != null) {
-					collection_bin.put(p_name, inv);
+					collection_bin.put(id, inv);
 				}
 			}
 
