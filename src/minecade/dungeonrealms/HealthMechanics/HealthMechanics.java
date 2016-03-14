@@ -128,10 +128,11 @@ public class HealthMechanics implements Listener {
 	// 3 warnings for noobie players to stop being in combat before they loose
 	// their status.
 
-	public static List<String> combat_logger = new ArrayList<String>();
-	// Combat loggers who have logged in, treated slightly differently on death,
-	// they drop nothing.
-	// Just need to process what they keep.
+	/**
+	 * Combat loggers who have logged in, treated slightly differently on death, they drop nothing. 
+	 * Just need to process what they keep.
+	 */
+	public static List<UUID> combat_logger = new ArrayList<UUID>();
 
 	// Overhead HP stuff. {
 	// public static ScoreboardManager manager;

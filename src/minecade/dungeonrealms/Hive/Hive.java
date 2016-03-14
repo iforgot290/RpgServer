@@ -255,9 +255,10 @@ public class Hive implements Listener {
 	// END THREAD SAFE
 	//
 
-	public static HashMap<String, Long> player_first_login = new HashMap<String, Long>();
-	// The LONG-format time a player first logged in. Used for
-	// noobie-protection.
+	/**
+	 * The LONG-format time a player first logged in. Used for noobie-protection.
+	 */
+	public static HashMap<UUID, Long> player_first_login = new HashMap<UUID, Long>();
 
 	public static HashMap<String, String> player_bio = new HashMap<String, String>();
 	// Player Name, Bio(being written)
@@ -1442,14 +1443,14 @@ public class Hive implements Listener {
 		if (PlayerManager.getPlayerModel(id).getBuddyList() != null) {
 			List<UUID> lbuddy_list = PlayerManager.getPlayerModel(id).getBuddyList();
 			for (UUID s : lbuddy_list) {
-				buddy_list += id.toString() + ",";
+				buddy_list += s.toString() + ",";
 			}
 		}
 
 		if (PlayerManager.getPlayerModel(id).getIgnoreList() != null) {
 			List<UUID> lignore_list = PlayerManager.getPlayerModel(id).getIgnoreList();
 			for (UUID s : lignore_list) {
-				ignore_list += id.toString() + ",";
+				ignore_list += s.toString() + ",";
 			}
 		}
 
@@ -1550,31 +1551,31 @@ public class Hive implements Listener {
 		online_today.remove(id);
 		Hive.player_inventory.remove(id);
 		Hive.player_location.remove(id);
-		Hive.player_hp.remove(p_name);
-		Hive.player_level.remove(p_name);
-		Hive.player_food_level.remove(p_name);
-		Hive.player_armor_contents.remove(p_name);
-		Hive.player_ecash.remove(p_name);
-		Hive.player_sdays_left.remove(p_name);
-		KarmaMechanics.align_map.remove(p_name);
-		KarmaMechanics.align_time.remove(p_name);
-		KarmaMechanics.saved_gear.remove(p_name);
-		PlayerManager.getPlayerModel(p_name).setIgnoreList(new ArrayList<String>());
-		PlayerManager.getPlayerModel(p_name).setBuddyList(new ArrayList<String>());
-		PlayerManager.getPlayerModel(p_name).setToggleList(new ArrayList<String>());
-		HealthMechanics.noob_player_warning.remove(p_name);
-		HealthMechanics.noob_players.remove(p_name);
-		RealmMechanics.realm_title.remove(p_name);
-		RealmMechanics.realm_tier.remove(p_name);
-		MountMechanics.mule_inventory.remove(p_name);
-		MountMechanics.mule_itemlist_string.remove(p_name);
+		Hive.player_hp.remove(id);
+		Hive.player_level.remove(id);
+		Hive.player_food_level.remove(id);
+		Hive.player_armor_contents.remove(id);
+		Hive.player_ecash.remove(id);
+		Hive.player_sdays_left.remove(id);
+		KarmaMechanics.align_map.remove(id);
+		KarmaMechanics.align_time.remove(id);
+		KarmaMechanics.saved_gear.remove(id);
+		PlayerManager.getPlayerModel(id).setIgnoreList(new ArrayList<UUID>());
+		PlayerManager.getPlayerModel(id).setBuddyList(new ArrayList<UUID>());
+		PlayerManager.getPlayerModel(id).setToggleList(new ArrayList<String>());
+		HealthMechanics.noob_player_warning.remove(id);
+		HealthMechanics.noob_players.remove(id);
+		RealmMechanics.realm_title.remove(id);
+		RealmMechanics.realm_tier.remove(id);
+		MountMechanics.mule_inventory.remove(id);
+		MountMechanics.mule_itemlist_string.remove(id);
 
 		PreparedStatement pst = null;
 
 		try {
 			pst = ConnectionPool.getConnection().prepareStatement(
 					"SELECT server_num, location, inventory, hp, food_level, level, first_login, combat_log, last_login_time, rank, align_status, align_time, toggles, pets, buddy_list, ignore_list, realm_tier, realm_title, realm_loaded, noob_player, ecash, ip, sdays_left, portal_shards, saved_gear, lost_gear, mule_inventory, achievments, online_today, ecash_storage FROM player_database WHERE p_name = '"
-							+ p_name + "'");
+							+ id.toString() + "'");
 
 			pst.execute();
 			ResultSet rs = pst.getResultSet();
@@ -1582,7 +1583,7 @@ public class Hive implements Listener {
 			if (!(rs.next())) {
 				// Could either be problem with SQL (unlikely, would throw
 				// exception), or it's a new player.
-				log.info("[HIVE (Slave Edition)] No PLAYER DATA found for " + p_name + ", return null.");
+				log.info("[HIVE (Slave Edition)] No PLAYER DATA found for " + id.toString() + ", return null.");
 				return false;
 			}
 
@@ -1594,11 +1595,11 @@ public class Hive implements Listener {
 			}
 
 			long first_login = rs.getLong("first_login");
-			player_first_login.put(p_name, first_login);
+			player_first_login.put(id, first_login);
 
 			int combat_log = rs.getInt("combat_log");
 			if (combat_log == 1) {
-				HealthMechanics.combat_logger.add(p_name); // Combat logger, you
+				HealthMechanics.combat_logger.add(id); // Combat logger, you
 															// will enjoy a slow
 															// death! (not
 															// really!)
@@ -1606,13 +1607,13 @@ public class Hive implements Listener {
 
 			int l_online_today = rs.getInt("online_today");
 			if (l_online_today != 1) {
-				online_today.add(p_name);
+				online_today.add(id);
 			}
 
-			PlayerManager.getPlayerModel(p_name).setLastLocalLogin(rs.getLong("last_login_time"));
+			PlayerManager.getPlayerModel(id).setLastLocalLogin(rs.getLong("last_login_time"));
 			// Used for certain cooldown events and such.
 
-			PermissionMechanics.setRank(p_name, rs.getString("rank"), false);
+			PermissionMechanics.setRank(id, rs.getString("rank"), false);
 			// Set's server rank, needed for cross-server chat events.
 			// false = Don't upload the new rank -- we're already pulling it
 			// from DB so no need.
