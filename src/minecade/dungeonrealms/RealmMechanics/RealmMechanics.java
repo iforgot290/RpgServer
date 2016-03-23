@@ -187,9 +187,11 @@ public class RealmMechanics implements Listener {
 	// Used to prevent players from placing portals ontop of AFK players.
 	// Contains time of last player movement.
 
+	/**
+	 * Locations of all the places in the REAL world for players in realms. Used 
+	 * to TP them out.
+	 */
 	public static HashMap<UUID, Location> saved_locations = new HashMap<UUID, Location>();
-	// Locations of all the places in the REAL world for players in realms. Used
-	// to TP them out.
 
 	public static ConcurrentHashMap<Location, String> portal_map = new ConcurrentHashMap<Location, String>();
 	// Location, Owner of Realm / Realm Name
@@ -197,8 +199,10 @@ public class RealmMechanics implements Listener {
 	public static ConcurrentHashMap<String, String> portal_map_coords = new ConcurrentHashMap<String, String>();
 	// Player Name, Location (x,y,z format) of the lower realm block.
 
-	public static ConcurrentHashMap<String, Location> inv_portal_map = new ConcurrentHashMap<String, Location>();
-	// PLAYER_NAME, Their realm portal location.
+	/**
+	 * Player realm portal location
+	 */
+	public static ConcurrentHashMap<UUID, Location> inv_portal_map = new ConcurrentHashMap<UUID, Location>();
 
 	public static HashMap<String, Boolean> has_portal = new HashMap<String, Boolean>();
 	// Does a given player have a portal? (possibly depreciated)

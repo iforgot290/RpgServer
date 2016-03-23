@@ -857,7 +857,8 @@ public class PetMechanics implements Listener {
 		}
 	}
 
-	public static List<String> downloadPetData(String pname) {
+	//TODO this method
+	public static List<String> downloadPetData(UUID id) {
 		if (player_pets.containsKey(pname)) {
 			return player_pets.get(pname);
 		}

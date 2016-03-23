@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TimeZone;
@@ -196,7 +195,10 @@ public class Hive implements Listener {
 	 */
 	public static List<UUID> killing_self = new ArrayList<UUID>();
 
-	public static ConcurrentSet<String> players_unable_to_join = new ConcurrentSet<String>();
+	/**
+	 * Players unable to join..?
+	 */
+	public static ConcurrentSet<UUID> players_unable_to_join = new ConcurrentSet<UUID>();
 	
 	/**
 	 * Packaged version of player data, created in loadPlayerDataSQL() 
@@ -501,6 +503,7 @@ public class Hive implements Listener {
 		sync = new SyncCommand();
 		sync.start();
 
+		//TODO move this to end of enable in main function
 		Thread echo_online = new Thread(new Runnable() {
 			public void run() {
 				try {
@@ -715,7 +718,7 @@ public class Hive implements Listener {
 			}
 		}, 20 * 20L, 1 * 20L);
 
-		Main.plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(Main.plugin, new Runnable() {
+		Main.plugin.getServer().getScheduler().runTaskTimerAsynchronously(Main.plugin, new Runnable() {
 			public void run() {
 				if (Hive.server_lock == true) {
 					return;
@@ -726,7 +729,7 @@ public class Hive implements Listener {
 		}, 10 * 20L, 20 * 20L); // Perform it quickly on launch, then after a
 								// while.
 
-		Main.plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(Main.plugin, new Runnable() {
+		Main.plugin.getServer().getScheduler().runTaskTimerAsynchronously(Main.plugin, new Runnable() {
 			public void run() {
 				if (payload_pending == true) {
 					try {
@@ -784,7 +787,7 @@ public class Hive implements Listener {
 			}
 		}, 5 * 20L, 5L);
 
-		Main.plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(Main.plugin, new Runnable() {
+		Main.plugin.getServer().getScheduler().runTaskTimerAsynchronously(Main.plugin, new Runnable() {
 			public void run() {
 				if (ready_to_die == true) {
 					File payload = new File(rootDir + "/payload.zip");
@@ -802,25 +805,25 @@ public class Hive implements Listener {
 
 		Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
 			public void run() {
-				List<String> to_remove = new ArrayList<String>();
-				for (Entry<String, Integer> data : safe_logout.entrySet()) {
-					String p_name = data.getKey();
+				List<UUID> to_remove = new ArrayList<UUID>();
+				for (Entry<UUID, Integer> data : safe_logout.entrySet()) {
+					UUID id = data.getKey();
 					Integer seconds_left = data.getValue();
 
-					if (Bukkit.getPlayer(p_name) == null) {
-						to_remove.add(p_name);
+					if (Bukkit.getPlayer(id) == null) {
+						to_remove.add(id);
 						continue;
 					}
 
-					Player p = Bukkit.getPlayer(p_name);
+					Player p = Bukkit.getPlayer(id);
 
 					if (seconds_left <= 0) {
-						if (HealthMechanics.in_combat.containsKey(p_name)) {
-							to_remove.add(p_name);
+						if (HealthMechanics.in_combat.containsKey(id)) {
+							to_remove.add(id);
 							continue; // They're in combat...
 						}
-						HealthMechanics.in_combat.remove(p_name);
-						to_remove.add(p_name);
+						HealthMechanics.in_combat.remove(id);
+						to_remove.add(id);
 						p.kickPlayer(ChatColor.GREEN.toString() + "You have safely logged out." + "\n\n"
 								+ ChatColor.GRAY.toString() + "Your player data has been synced.");
 						continue;
@@ -828,7 +831,7 @@ public class Hive implements Listener {
 
 					p.sendMessage(ChatColor.RED + "Logging out in ... " + ChatColor.BOLD + seconds_left + "s");
 					seconds_left = seconds_left - 1;
-					safe_logout.put(p.getName(), seconds_left);
+					safe_logout.put(p.getUniqueId(), seconds_left);
 				}
 
 			}
@@ -836,28 +839,28 @@ public class Hive implements Listener {
 
 		Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
 			public void run() {
-				for (Map.Entry<String, Long> set : logout_time.entrySet()) {
+				for (Entry<UUID, Long> set : logout_time.entrySet()) {
 					try {
-						final String p_name = set.getKey();
+						final UUID id = set.getKey();
 						Long log_time = set.getValue();
 
 						if ((System.currentTimeMillis() - log_time) > (20 * 1000)) {
-							if (!(player_to_npc.containsKey(p_name))) { // If
+							if (!(player_to_npc.containsKey(id))) { // If
 																		// the
 																		// NPC
 																		// died
 																		// or
 																		// something.
-								logout_time.remove(p_name);
+								logout_time.remove(id);
 
 								log.info(Ansi.ansi().fg(Ansi.Color.CYAN).boldOff().toString()
-										+ "[HIVE (SLAVE Edition)] Player " + p_name + "'s NPC has been killed [DEBUG]."
+										+ "[HIVE (SLAVE Edition)] Player " + id.toString() + "'s NPC has been killed [DEBUG]."
 										+ Ansi.ansi().fg(Ansi.Color.WHITE).boldOff().toString());
 
 								Thread t = new Thread(new Runnable() {
 									public void run() {
-										setCombatLogger(p_name);
-										Hive.setPlayerOffline(p_name, 5);
+										setCombatLogger(id);
+										Hive.setPlayerOffline(id, 5);
 									}
 								});
 
@@ -865,17 +868,17 @@ public class Hive implements Listener {
 								continue;
 							}
 
-							NPC n = player_to_npc.get(p_name);
+							NPC n = player_to_npc.get(id);
 
-							logout_time.remove(p_name); // The player is now
+							logout_time.remove(id); // The player is now
 														// safe and may log back
 														// in again with their
 														// items still intact.
-							player_to_npc.remove(p_name);
-							player_to_npc_align.remove(p_name);
+							player_to_npc.remove(id);
+							player_to_npc_align.remove(id);
 
 							log.info(Ansi.ansi().fg(Ansi.Color.CYAN).boldOff().toString()
-									+ "[HIVE (SLAVE Edition)] Player " + p_name + "'s NPC has been despawned."
+									+ "[HIVE (SLAVE Edition)] Player " + id.toString() + "'s NPC has been despawned."
 									+ Ansi.ansi().fg(Ansi.Color.WHITE).boldOff().toString());
 							List<Player> lpl = new ArrayList<Player>();
 							for (Entity ent : n.getBukkitEntity().getNearbyEntities(32, 32, 32)) {
@@ -889,7 +892,7 @@ public class Hive implements Listener {
 
 							Thread t = new Thread(new Runnable() {
 								public void run() {
-									Hive.setPlayerOffline(p_name, 5);
+									Hive.setPlayerOffline(id, 5);
 								}
 							});
 
@@ -982,7 +985,7 @@ public class Hive implements Listener {
 	public void onDisable() {
 		// backup.interrupt();
 		// Interrupts backup process.
-		for (String s : players_unable_to_join) {
+		for (UUID s : players_unable_to_join) {
 			setPlayerCanJoin(s, true);
 		}
 		if (shutting_down == true) {
@@ -1282,41 +1285,50 @@ public class Hive implements Listener {
 			pst = ConnectionPool.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + "bank_database"
 					+ "(p_name VARCHAR(18) PRIMARY KEY, content LONGTEXT, level INT, money INT) ENGINE=InnoDB;");
 			pst.executeUpdate();
+			pst.close();
 
 			// Combines: shop_data, cbin_data, shop_level
 			pst = ConnectionPool.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + "shop_database"
 					+ "(p_name VARCHAR(18) PRIMARY KEY, server_num INT, level INT, collection_bin LONGTEXT, shop_backup LONGTEXT) ENGINE=InnoDB;");
 			pst.executeUpdate();
+			pst.close();
 
 			// Combines player_data, p_login_data, max_health, last_login,
 			// align_status, align_time
 			pst = ConnectionPool.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + "player_database"
 					+ "(p_name VARCHAR(18) PRIMARY KEY, location TEXT, inventory LONGTEXT, hp INT, food_level INT, level INT, guild_name VARCHAR(16), combat_log BIT, last_login_time LONG, rank TINYTEXT, server_num INT, align_status VARCHAR(16), align_time LONG, toggles TEXT, pets TEXT, buddy_list TEXT, ignore_list TEXT, realm_tier INT, realm_title TINYTEXT, realm_loaded TINYINT(1), noob_player TINYINT(1), last_server TINYTEXT, ecash INT, ip TEXT, portal_shards TEXT, saved_gear TEXT, mule_inventory TEXT) ENGINE=InnoDB;");
 			pst.executeUpdate();
+			pst.close();
 
 			pst = ConnectionPool.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + "instance"
 					+ "(instance_template VARCHAR(18) PRIMARY KEY, times LONGTEXT) ENGINE=InnoDB;");
 			pst.executeUpdate();
+			pst.close();
 
 			pst = ConnectionPool.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + "guilds"
 					+ "(guild_name VARCHAR(16) PRIMARY KEY, guild_handle VARCHAR(3), guild_color INT, guild_server_num INT, members LONGTEXT, motd LONGTEXT) ENGINE=InnoDB;");
 			pst.executeUpdate();
+			pst.close();
 
 			pst = ConnectionPool.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + "reports"
 					+ "(id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (id), type CHAR(18), reporter CHAR(18), offender CHAR(18), report TEXT, server VARCHAR(4), time DATETIME, cords TEXT) ENGINE=InnoDB;");
 			pst.executeUpdate();
+			pst.close();
 
 			pst = ConnectionPool.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + "statistics"
 					+ "(pname CHAR(18) PRIMARY KEY, unlawful_kills INT, lawful_kills INT, deaths INT, mob_kills INT, money INT) ENGINE=InnoDB;");
 			pst.executeUpdate();
+			pst.close();
 
 			pst = ConnectionPool.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + "perm_statistics"
 					+ "(pname CHAR(18) PRIMARY KEY, unlawful_kills INT, lawful_kills INT, deaths INT, mob_kills INT, money INT) ENGINE=InnoDB;");
 			pst.executeUpdate();
+			pst.close();
 
 			pst = ConnectionPool.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + "ban_list"
 					+ "(pname CHAR(18) PRIMARY KEY, unban_date DATETIME, ban_reason TEXT, who_banned CHAR(18), ban_date DATETIME, unban_reason TEXT, who_unbanned CHAR(18), rank CHAR(12), ban_count TINYINT) ENGINE=InnoDB;");
 			pst.executeUpdate();
+			pst.close();
 
 			pst = ConnectionPool.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + "mute_map"
 					+ "(pname CHAR(18) PRIMARY KEY, unmute LONG, who_muted CHAR(18)) ENGINE=InnoDB;");
@@ -2780,7 +2792,7 @@ public class Hive implements Listener {
 	public void savedata(PlayerQuitEvent e) throws SQLException {
 		Player p = (Player) e.getPlayer();
 		uploadPlayerDatabaseData(p.getUniqueId());
-		Thread t = new UploadPlayerData(p.getName()); // mumoxx own dis
+		Thread t = new UploadPlayerData(p.getUniqueId()); // mumoxx own dis
 		t.start();
 
 	}
@@ -3965,7 +3977,6 @@ public class Hive implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerQuit(PlayerQuitEvent e) throws IOException {
-		String pname = "";
 		e.setQuitMessage("");
 		final Player p = e.getPlayer();
 
@@ -4314,7 +4325,7 @@ public class Hive implements Listener {
 			// connected.
 			icon = new ItemStack(Material.WOOL, 1, (short) 5);
 			cc = ChatColor.GREEN;
-			online_players = (int) Math.round((double) Bukkit.getOnlinePlayers().length);
+			online_players = (int) Math.round((double) Bukkit.getOnlinePlayers().size());
 			max_players = Bukkit.getMaxPlayers();
 		} else {
 			boolean server_open = true; // BungeeCord.getInstance().getServerInfo(server_prefix).canAccess((net.md_5.bungee.api.CommandSender)
@@ -4715,32 +4726,32 @@ public class Hive implements Listener {
 
 					if (!(pl.getWorld().getName().equalsIgnoreCase(main_world_name))) {
 						Location safe = null;
-						if (RealmMechanics.saved_locations.containsKey(pl.getName())) {
-							safe = RealmMechanics.saved_locations.get(pl.getName());
-							if (RealmMechanics.inv_portal_map.containsKey(pl.getName())) {
-								Location l = RealmMechanics.inv_portal_map.get(pl.getName());
-								RealmMechanics.inv_portal_map.remove(pl.getName());
+						if (RealmMechanics.saved_locations.containsKey(pl.getUniqueId())) {
+							safe = RealmMechanics.saved_locations.get(pl.getUniqueId());
+							if (RealmMechanics.inv_portal_map.containsKey(pl.getUniqueId())) {
+								Location l = RealmMechanics.inv_portal_map.get(pl.getUniqueId());
+								RealmMechanics.inv_portal_map.remove(pl.getUniqueId());
 								RealmMechanics.portal_map.remove(l);
 								l.getBlock().setType(Material.AIR);
 								l.subtract(0, 1, 0).getBlock().setType(Material.AIR);
 							}
-						} else if (InstanceMechanics.saved_location_instance.containsKey(pl.getName())) {
-							safe = InstanceMechanics.saved_location_instance.get(pl.getName());
+						} else if (InstanceMechanics.saved_location_instance.containsKey(pl.getUniqueId())) {
+							safe = InstanceMechanics.saved_location_instance.get(pl.getUniqueId());
 						} else {
-							safe = SpawnMechanics.getRandomSpawnPoint(pl.getName());
+							safe = SpawnMechanics.getRandomSpawnPoint(pl);
 						}
 
 						pl.teleport(safe);
 					}
 
 					// pl.saveData();
-					player_inventory.put(pl.getName(), pl.getInventory());
-					player_location.put(pl.getName(), pl.getLocation());
+					player_inventory.put(pl.getUniqueId(), pl.getInventory());
+					player_location.put(pl.getUniqueId(), pl.getLocation());
 					Damageable damp = (Damageable) pl;
-					player_hp.put(pl.getName(), (double) damp.getHealth());
-					player_level.put(pl.getName(), HealthMechanics.getPlayerHP(pl.getName()));
-					player_food_level.put(pl.getName(), pl.getFoodLevel());
-					player_armor_contents.put(pl.getName(), pl.getInventory().getArmorContents());
+					player_hp.put(pl.getUniqueId(), (double) damp.getHealth());
+					player_level.put(pl.getUniqueId(), HealthMechanics.getPlayerHP(pl.getName()));
+					player_food_level.put(pl.getUniqueId(), pl.getFoodLevel());
+					player_armor_contents.put(pl.getUniqueId(), pl.getInventory().getArmorContents());
 					// Update local data.
 
 					pl.sendMessage("");
@@ -4759,71 +4770,6 @@ public class Hive implements Listener {
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
-							/*
-							 * pl.getWorld().spawnParticle(pl.getLocation().add(
-							 * 0.5, 0.5, 0), Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * pl.getWorld().spawnParticle(pl.getLocation().add(
-							 * 0, 0.5, 0.5), Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * 
-							 * pl.getWorld().spawnParticle(pl.getLocation().add(
-							 * 0, 0.75, 0.25), Particle.HAPPY_VILLAGER, 0.5F,
-							 * 1);
-							 * pl.getWorld().spawnParticle(pl.getLocation().add(
-							 * 0.25, 0.75, 0), Particle.HAPPY_VILLAGER, 0.5F,
-							 * 1);
-							 * 
-							 * pl.getWorld().spawnParticle(pl.getLocation().add(
-							 * 0, 1, 0.25), Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * pl.getWorld().spawnParticle(pl.getLocation().add(
-							 * 0.25, 1, 0), Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * 
-							 * pl.getWorld().spawnParticle(pl.getLocation().add(
-							 * 0, 1.50, 0.25), Particle.HAPPY_VILLAGER, 0.5F,
-							 * 1);
-							 * pl.getWorld().spawnParticle(pl.getLocation().add(
-							 * 0.25, 1.50, 0), Particle.HAPPY_VILLAGER, 0.5F,
-							 * 1);
-							 * 
-							 * pl.getWorld().spawnParticle(pl.getLocation().add(
-							 * 0, 2, 0.25), Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * pl.getWorld().spawnParticle(pl.getLocation().add(
-							 * 0.25, 2, 0), Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * 
-							 * pl.getWorld().spawnParticle(pl.getLocation().
-							 * subtract(0.5, -0.5, 0), Particle.HAPPY_VILLAGER,
-							 * 0.5F, 1);
-							 * pl.getWorld().spawnParticle(pl.getLocation().
-							 * subtract(0, -0.5, 0.5), Particle.HAPPY_VILLAGER,
-							 * 0.5F, 1);
-							 * 
-							 * pl.getWorld().spawnParticle(pl.getLocation().
-							 * subtract(0, -0.75, 0.25),
-							 * Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * pl.getWorld().spawnParticle(pl.getLocation().
-							 * subtract(0.25, -0.75, 0),
-							 * Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * 
-							 * pl.getWorld().spawnParticle(pl.getLocation().
-							 * subtract(0, -1, 0.25), Particle.HAPPY_VILLAGER,
-							 * 0.5F, 1);
-							 * pl.getWorld().spawnParticle(pl.getLocation().
-							 * subtract(0.25, -1, 0), Particle.HAPPY_VILLAGER,
-							 * 0.5F, 1);
-							 * 
-							 * pl.getWorld().spawnParticle(pl.getLocation().
-							 * subtract(0, -1.50, 0.25),
-							 * Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * pl.getWorld().spawnParticle(pl.getLocation().
-							 * subtract(0.25, -1.50, 0),
-							 * Particle.HAPPY_VILLAGER, 0.5F, 1);
-							 * 
-							 * pl.getWorld().spawnParticle(pl.getLocation().
-							 * subtract(0, -2, 0.25), Particle.HAPPY_VILLAGER,
-							 * 0.5F, 1);
-							 * pl.getWorld().spawnParticle(pl.getLocation().
-							 * subtract(0.25, -2, 0), Particle.HAPPY_VILLAGER,
-							 * 0.5F, 1);
-							 */
 						}
 					});
 
@@ -4835,7 +4781,7 @@ public class Hive implements Listener {
 					// would cause dupe issues.
 					// pl.setPlayerListName(""); // So server treats them like
 					// NPC, no trading, etc.
-					RealmMechanics.player_god_mode.put(pl.getName(), System.currentTimeMillis());
+					RealmMechanics.player_god_mode.put(pl.getUniqueId(), System.currentTimeMillis());
 
 					Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 						public void run() {
@@ -4847,7 +4793,7 @@ public class Hive implements Listener {
 
 						public void run() {
 							// UploadPlayerData.uploadData(pl.getName());
-							Thread t = new UploadPlayerData(pl.getName());
+							Thread t = new UploadPlayerData(pl.getUniqueId());
 							t.start();
 						}
 					}.runTaskLaterAsynchronously(Main.plugin, 4L);
@@ -4857,7 +4803,7 @@ public class Hive implements Listener {
 							// 30 second timeout, if they're still online then
 							// d/c them.
 							if (Main.plugin.getServer().getPlayer(pl.getName()) != null
-									&& server_swap.containsKey(pl.getName())) {
+									&& server_swap.containsKey(pl.getUniqueId())) {
 								// Player upl =
 								// Main.plugin.getServer().getPlayer(pl.getName());WAS
 								// UN COMENTED
@@ -4876,7 +4822,7 @@ public class Hive implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerInteract(PlayerInteractEvent e) {
 		Player pl = e.getPlayer();
-		if (server_swap.containsKey(pl.getName())) {
+		if (server_swap.containsKey(pl.getUniqueId())) {
 			e.setCancelled(true);
 			e.setUseInteractedBlock(org.bukkit.event.Event.Result.DENY);
 			e.setUseItemInHand(org.bukkit.event.Event.Result.DENY);
@@ -5058,8 +5004,8 @@ public class Hive implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerDropItem(PlayerDropItemEvent e) {
 		Player pl = e.getPlayer();
-		if (server_swap.containsKey(pl.getName())
-				|| (System.currentTimeMillis() - login_time.get(pl.getName())) <= 5000) {
+		if (server_swap.containsKey(pl.getUniqueId())
+				|| (System.currentTimeMillis() - login_time.get(pl.getUniqueId())) <= 5000) {
 			e.setCancelled(true);
 			return;
 		}
@@ -5075,7 +5021,7 @@ public class Hive implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onCommandPreProcessPrevent(PlayerCommandPreprocessEvent e) {
 		Player pl = e.getPlayer();
-		if (server_swap.containsKey(pl.getName())) {
+		if (server_swap.containsKey(pl.getUniqueId())) {
 			log.info("Cancelled command due to server_swap!");
 			e.setCancelled(true);
 		}
@@ -5084,7 +5030,7 @@ public class Hive implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerChatEvent(AsyncPlayerChatEvent e) {
 		Player pl = e.getPlayer();
-		if (server_swap_pending.containsKey(pl.getName()) || server_swap.containsKey(pl.getName())) {
+		if (server_swap_pending.containsKey(pl.getUniqueId()) || server_swap.containsKey(pl.getUniqueId())) {
 			e.setCancelled(true);
 		}
 	}
@@ -5092,7 +5038,7 @@ public class Hive implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onInventoryOpen(InventoryOpenEvent e) {
 		Player pl = (Player) e.getPlayer();
-		if (server_swap.containsKey(pl.getName())) {
+		if (server_swap.containsKey(pl.getUniqueId())) {
 			e.setCancelled(true);
 		}
 	}
@@ -5100,7 +5046,7 @@ public class Hive implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onInventoryClickPrevent(InventoryClickEvent e) {
 		Player pl = (Player) e.getWhoClicked();
-		if (server_swap.containsKey(pl.getName())) {
+		if (server_swap.containsKey(pl.getUniqueId())) {
 			e.setCancelled(true);
 		}
 	}
@@ -5108,11 +5054,11 @@ public class Hive implements Listener {
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent e) {
 		final Player pl = (Player) e.getPlayer();
-		if (server_swap_pending.containsKey(pl.getName())) {
+		if (server_swap_pending.containsKey(pl.getUniqueId())) {
 			// Remove in 2 ticks.
 			Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 				public void run() {
-					server_swap_pending.remove(pl.getName());
+					server_swap_pending.remove(pl.getUniqueId());
 				}
 			}, 2L);
 		}

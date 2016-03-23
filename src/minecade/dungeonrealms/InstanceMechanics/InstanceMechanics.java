@@ -129,8 +129,11 @@ public class InstanceMechanics implements Listener {
 	// Instance Name (template), HashMap of Location,String of Location,Chest
 	// Template to spawn/monitor.
 
-	public static HashMap<String, Location> saved_location_instance = new HashMap<String, Location>();
-	// Player Name, Location in main world
+	/**
+	 * Player and location in main world
+	 */
+	public static HashMap<UUID, Location> saved_location_instance = new HashMap<UUID, Location>();
+	
 	public static HashMap<String, Integer> instances_run = new HashMap<String, Integer>();
 	// Player Name, Amount of instances run
 	public static HashMap<String, Long> processing_move = new HashMap<String, Long>();

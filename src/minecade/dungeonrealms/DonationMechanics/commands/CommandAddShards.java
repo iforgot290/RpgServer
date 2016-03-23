@@ -1,9 +1,11 @@
 package minecade.dungeonrealms.DonationMechanics.commands;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,7 +35,9 @@ public class CommandAddShards implements CommandExecutor {
 		}
 
 		final String p_name = args[0];
-		List<Integer> portal_shards = Hive.player_portal_shards.get(p_name);
+		@SuppressWarnings("deprecation")
+		OfflinePlayer player = Bukkit.getOfflinePlayer(p_name);
+		List<Integer> portal_shards = Hive.player_portal_shards.get(player.getUniqueId());
 		final int amount = Integer.parseInt(args[1]);
 		final int tier = Integer.parseInt(args[2]);
 		int current_shards = portal_shards.get(tier);
@@ -46,7 +50,7 @@ public class CommandAddShards implements CommandExecutor {
 
 		portal_shards.set(tier, current_shards);
 
-		Hive.player_portal_shards.put(p_name, portal_shards);
+		Hive.player_portal_shards.put(player.getUniqueId(), portal_shards);
 
 		// CommunityMechanics.sendPacketCrossServer("[portal shards]" + p_name +
 		// ":" + current_shards, -1, true);
