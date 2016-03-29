@@ -451,8 +451,10 @@ public class Hive implements Listener {
 	public static List<UUID> loaded_players = new ArrayList<UUID>();
 	// Players whose data has been loaded, prevents wipe from quick login/outs.
 
-	public static volatile List<String> sync_queue = new ArrayList<String>();
-	// /sync multithreading
+	/**
+	 * List of UUID's to sync
+	 */
+	public static volatile List<UUID> sync_queue = new ArrayList<UUID>();
 
 	public final static long serverStart = System.currentTimeMillis();
 	// Server startup time for monitoring schedule reboots.
@@ -1414,7 +1416,7 @@ public class Hive implements Listener {
 			loc = pl.getLocation();
 			inv = pl.getInventory();
 
-			level = HealthMechanics.getPlayerHP(pl.getName());
+			level = HealthMechanics.getPlayerHP(pl);
 			food_level = pl.getFoodLevel();
 			Damageable damp = (Damageable) pl;
 			hp = damp.getHealth();
@@ -2503,7 +2505,7 @@ public class Hive implements Listener {
 		}
 	}
 	
-	public static int getPlayerServer(Player player, boolean sql){
+	public static int getPlayerServer(OfflinePlayer player, boolean sql){
 		return getPlayerServer(player.getUniqueId(), sql);
 	}
 
@@ -3636,7 +3638,7 @@ public class Hive implements Listener {
 																												// mountain
 																												// spawn.
 						// They're in debug plains somehow. This isn't good!
-						if (HealthMechanics.getPlayerHP(p.getName()) < 50) {
+						if (HealthMechanics.getPlayerHP(p) < 50) {
 							p.teleport(TutorialMechanics.tutorialSpawn, TeleportCause.PLUGIN);
 						} else {
 							p.teleport(SpawnMechanics.getRandomSpawnPoint(p), TeleportCause.PLUGIN);
@@ -4016,7 +4018,7 @@ public class Hive implements Listener {
 		player_location.put(p.getUniqueId(), p.getLocation());
 		Damageable damp = (Damageable) p;
 		player_hp.put(p.getUniqueId(), (double) damp.getHealth());
-		player_level.put(p.getUniqueId(), HealthMechanics.getPlayerHP(p.getName()));
+		player_level.put(p.getUniqueId(), HealthMechanics.getPlayerHP(p));
 		player_food_level.put(p.getUniqueId(), p.getFoodLevel());
 		player_armor_contents.put(p.getUniqueId(), p.getInventory().getArmorContents());
 
@@ -4749,7 +4751,7 @@ public class Hive implements Listener {
 					player_location.put(pl.getUniqueId(), pl.getLocation());
 					Damageable damp = (Damageable) pl;
 					player_hp.put(pl.getUniqueId(), (double) damp.getHealth());
-					player_level.put(pl.getUniqueId(), HealthMechanics.getPlayerHP(pl.getName()));
+					player_level.put(pl.getUniqueId(), HealthMechanics.getPlayerHP(pl));
 					player_food_level.put(pl.getUniqueId(), pl.getFoodLevel());
 					player_armor_contents.put(pl.getUniqueId(), pl.getInventory().getArmorContents());
 					// Update local data.

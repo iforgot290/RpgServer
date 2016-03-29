@@ -1646,7 +1646,7 @@ public class RealmMechanics implements Listener {
 		setRealmLoadStatusSQL(world_name, false);
 	}
 
-	public static void uploadWorld(String p_name, String world_name) {
+	public static void uploadWorld(UUID id, String world_name) {
 
 		if (!(uploading_realms.contains(p_name))) {
 			uploading_realms.add(p_name);

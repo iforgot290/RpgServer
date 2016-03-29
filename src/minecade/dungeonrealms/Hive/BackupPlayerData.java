@@ -2,6 +2,7 @@ package minecade.dungeonrealms.Hive;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.entity.Player;
 import org.fusesource.jansi.Ansi;
@@ -14,21 +15,21 @@ public class BackupPlayerData extends Thread {
 
 	public static void backupPlayers(Player[] data) {
 		for (Player p : data) {
-			String p_name = p.getName();
+			UUID id = p.getUniqueId();
 
-			if (Hive.being_uploaded.contains(p_name) || Hive.pending_upload.contains(p_name)
-					|| Hive.server_swap.containsKey(p_name)) {
+			if (Hive.being_uploaded.contains(id) || Hive.pending_upload.contains(id)
+					|| Hive.server_swap.containsKey(id)) {
 				continue;
 			}
 
 			try {
-				Hive.uploadPlayerDatabaseData(p_name);
+				Hive.uploadPlayerDatabaseData(id);
 			} catch (SQLException err) {
 				err.printStackTrace();
 			}
 			; // Location, Inventory
-			MoneyMechanics.uploadBankDatabaseData(p_name, false);
-			ShopMechanics.uploadShopDatabaseData(p_name, false);
+			MoneyMechanics.uploadBankDatabaseData(id, false);
+			ShopMechanics.uploadShopDatabaseData(id, false);
 		}
 	}
 

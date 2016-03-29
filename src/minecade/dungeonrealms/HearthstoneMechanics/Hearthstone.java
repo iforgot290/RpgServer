@@ -3,6 +3,7 @@ package minecade.dungeonrealms.HearthstoneMechanics;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -12,23 +13,18 @@ import org.bukkit.scheduler.BukkitRunnable;
 import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.database.ConnectionPool;
 
+//TODO change timer to store last time it was used with timemillis
 public class Hearthstone {
 	private Location tp_loc;
 	private int timer_seconds;
 	private String tp_name;
-	private Player p;
-	private String p_name;
+	private UUID id;
+	private Player player;
 
-	public Hearthstone(String p_name) {
-		this.p_name = p_name;
+	public Hearthstone(UUID id) {
 		this.timer_seconds = 0;
-		p = Bukkit.getPlayer(p_name);
-		loadData(p_name);
-		HearthstoneMechanics.hearthstone_map.put(p_name, this);
-	}
-
-	public void setPlayer(Player p) {
-		this.p = p;
+		this.id = id;
+		loadData(id); 
 	}
 
 	/**
@@ -36,10 +32,10 @@ public class Hearthstone {
 	 * 
 	 * @param p_name
 	 */
-	public void loadData(String p_name) {
+	public void loadData(UUID id) {
 		try (PreparedStatement pst = ConnectionPool.getConnection()
 				.prepareStatement("SELECT * FROM hearthstone WHERE p_name = ?")) {
-			pst.setString(1, p_name);
+			pst.setString(1, id.toString());
 			ResultSet rst = pst.executeQuery();
 			if (!rst.first()) {
 				tp_loc = HearthstoneMechanics.spawn_map.get("Cyrennica");
@@ -49,12 +45,10 @@ public class Hearthstone {
 			}
 			tp_name = rst.getString("location_name");
 			if (tp_name == null) {
-				System.out.print("Location name was null for " + p_name);
+				System.out.println("Location name was null for " + id.toString());
 			}
 			tp_loc = HearthstoneMechanics.spawn_map.get(rst.getString("location_name"));
 			setTimer(rst.getInt("timer"));
-			// TODO: Download the data from tables and set their spawns
-			System.out.print("[HearthstoneMechanics] Set " + p_name + " location to " + tp_name);
 			pst.close();
 		} catch (SQLException sqlE) {
 			sqlE.printStackTrace();
@@ -64,6 +58,18 @@ public class Hearthstone {
 	public void setLocation(Location l) {
 		this.tp_loc = l;
 	}
+	
+	public Player getPlayer(){
+		if (player == null && Bukkit.getPlayer(id) != null){
+			player = Bukkit.getPlayer(id);
+			return player;
+		}
+		
+		if (player.isOnline()) return player;
+		
+		player = null;
+		return null;
+	}
 
 	/**
 	 * This saves all their data in an Async task
@@ -71,11 +77,11 @@ public class Hearthstone {
 	public void sendInsertQuery() {
 		try (PreparedStatement pst = ConnectionPool.getConnection().prepareStatement(
 				"INSERT IGNORE INTO hearthstone (p_name, location_name, timer) VALUES (?, ?, 0) ON DUPLICATE KEY UPDATE location_name = ?")) {
-			pst.setString(1, tp_name);
+			pst.setString(1, id.toString());
 			pst.setString(2, "Cyrennica");
 			pst.setString(3, tp_name);
 			pst.executeUpdate();
-			System.out.print("[HeartstoneMechanics] Saved " + p_name + "s Hearthstone data for the first time.");
+			System.out.print("[HeartstoneMechanics] Saved " + id.toString() + "s Hearthstone data for the first time.");
 			pst.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -87,7 +93,7 @@ public class Hearthstone {
 			public void run() {
 				try (PreparedStatement pst = ConnectionPool.getConnection().prepareStatement(
 						"INSERT INTO hearthstone VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE location_name = ?, timer = ?;")) {
-					pst.setString(1, p_name);
+					pst.setString(1, id.toString());
 					pst.setString(2, tp_name);
 					pst.setInt(3, timer_seconds);
 					pst.setString(4, tp_name);
@@ -106,9 +112,9 @@ public class Hearthstone {
 	public Location getLocation() {
 		return tp_loc;
 	}
-
-	public Player getPlayer() {
-		return p;
+	
+	public UUID getUUID(){
+		return id;
 	}
 
 	public void setTimer(int timer) {

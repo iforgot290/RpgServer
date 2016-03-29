@@ -21,7 +21,7 @@ public class CommandSuicide implements CommandExecutor {
 					return;
 				}
 
-				Hive.killing_self.add(p.getName());
+				Hive.killing_self.add(p.getUniqueId());
 				p.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD.toString() + "WARNING: " + ChatColor.GRAY
 						+ "This command will KILL you, you will LOSE every thing you are carrying. If you are sure, type '"
 						+ ChatColor.GREEN.toString() + ChatColor.BOLD + "Y" + ChatColor.GRAY + "', if not, type '"

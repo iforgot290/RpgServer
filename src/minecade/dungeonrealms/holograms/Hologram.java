@@ -160,7 +160,7 @@ public class Hologram {
 			nmsPlayer.playerConnection.sendPacket(packets.get(skull_packet));
 			nmsPlayer.playerConnection.sendPacket(skull_packet);
 
-			PacketPlayOutAttachEntity pa = new PacketPlayOutAttachEntity(0,
+			PacketPlayOutAttachEntity pa = new PacketPlayOutAttachEntity(
 					horse_entities.get(packets.get(skull_packet)), skull_entities.get(skull_packet));
 			nmsPlayer.playerConnection.sendPacket(pa);
 		}

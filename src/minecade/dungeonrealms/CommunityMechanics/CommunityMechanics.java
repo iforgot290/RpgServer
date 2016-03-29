@@ -584,7 +584,7 @@ public class CommunityMechanics implements Listener {
 						+ ChatColor.UNDERLINE.toString() + "  Your Character" + "   " + "\n"
 						+ ChatColor.BLACK.toString() + ChatColor.BOLD.toString() + "Alignment: " + pretty_align
 						+ align_expire_message + "\n" + ChatColor.BLACK.toString() + align_descrip + new_line
-						+ ChatColor.BLACK.toString() + "   " + HealthMechanics.getPlayerHP(p.getName()) + " / "
+						+ ChatColor.BLACK.toString() + "   " + HealthMechanics.getPlayerHP(p) + " / "
 						+ HealthMechanics.health_data.get(p.getUniqueId()) + "" + ChatColor.BOLD.toString() + " HP"
 						+ "\n" + ChatColor.BLACK.toString() + "   "
 						+ ItemMechanics.armor_data.get(p.getUniqueId()).get(0) + " - "

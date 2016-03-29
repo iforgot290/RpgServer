@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -98,8 +99,8 @@ public enum ParticleEffect {
 		}
 		double radius = 32D;
 
-		for (String s : MonsterMechanics.player_locations.keySet()) {
-			if (Bukkit.getPlayerExact(s) != null) {
+		for (UUID s : MonsterMechanics.player_locations.keySet()) {
+			if (Bukkit.getPlayer(s) != null) {
 				Player pl = Main.plugin.getServer().getPlayer(s);
 				if (pl.getWorld().getName().equalsIgnoreCase(location.getWorld().getName())
 						&& pl.getLocation().toVector().distanceSquared(location.toVector()) <= Math.pow(radius, 2)) {

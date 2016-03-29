@@ -35,8 +35,8 @@ public class CommandLogout implements CommandExecutor {
 
 		p.sendMessage(ChatColor.RED + "You will be " + ChatColor.BOLD + "LOGGED OUT" + ChatColor.RED
 				+ " of the game world shortly.");
-		Hive.safe_logout.put(p.getName(), (int) seconds_left);
-		Hive.safe_logout_location.put(p.getName(), p.getLocation());
+		Hive.safe_logout.put(p.getUniqueId(), (int) seconds_left);
+		Hive.safe_logout_location.put(p.getUniqueId(), p.getLocation());
 
 		// p.kickPlayer(ChatColor.GREEN.toString() + "You have safely logged
 		// out." + "\n\n" + ChatColor.GRAY.toString() + "Goodbye!");

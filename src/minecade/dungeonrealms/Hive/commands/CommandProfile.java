@@ -17,7 +17,7 @@ public class CommandProfile implements CommandExecutor {
 		// due to host transfer.");
 		if (!p.isOp())
 			return true;
-		String code = Hive.generateProfileCode(p.getName());
+		String code = Hive.generateProfileCode(p.getUniqueId());
 		String url = "http://69.69.69.69:6969/lolaskdfjasdlf/?name=" + p.getName() + "&code=" + code;
 		JSONMessage msg = new JSONMessage("Click ", ChatColor.AQUA);
 		msg.addURL(ChatColor.UNDERLINE + "HERE", ChatColor.GREEN, url);

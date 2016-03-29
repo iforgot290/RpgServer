@@ -1,6 +1,5 @@
 package minecade.dungeonrealms.RecordMechanics;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,7 +31,7 @@ public class RecordMechanics implements Listener {
 	// Money can be obtained from MoneyMechanics.bank_map
 	public static HashMap<String, Integer> mob_kills = new HashMap<String, Integer>();
 
-	public static HashMap<String, List<Integer>> duel_statistics = new HashMap<String, List<Integer>>();
+	public static HashMap<UUID, List<Integer>> duel_statistics = new HashMap<UUID, List<Integer>>();
 
 	// Player Name, List<new_loss_count, new_win_count>
 
@@ -45,10 +45,8 @@ public class RecordMechanics implements Listener {
 		log.info("[RecordMechanics] has been disabled.");
 	}
 
-	@SuppressWarnings("resource")
-	public static void updateStatisticData(String pname, int nmoney, int npdeaths, int nunlawful_kills,
+	public static void updateStatisticData(UUID id, int nmoney, int npdeaths, int nunlawful_kills,
 			int nlawful_kills, int nmob_kills, int nduel_wins, int nduel_lose) {
-		Connection con = null;
 		PreparedStatement pst = null;
 
 		// int tmoney = 0;
@@ -70,7 +68,7 @@ public class RecordMechanics implements Listener {
 		try {
 			pst = ConnectionPool.getConnection().prepareStatement(
 					"SELECT lawful_kills, unlawful_kills, deaths, mob_kills, money, duel_wins, duel_lose FROM statistics WHERE pname = '"
-							+ pname + "'");
+							+ id.toString() + "'");
 
 			pst.execute();
 			ResultSet rs = pst.getResultSet();
@@ -92,10 +90,12 @@ public class RecordMechanics implements Listener {
 			mob_kills += nmob_kills;
 			duel_wins += nduel_wins;
 			duel_lose += nduel_lose;
+			
+			pst.close();
 
 			pst = ConnectionPool.getConnection().prepareStatement(
 					"SELECT lawful_kills, unlawful_kills, deaths, mob_kills, money, duel_wins, duel_lose FROM statistics WHERE pname = '"
-							+ pname + "'");
+							+ id.toString() + "'");
 
 			pst.execute();
 			rs = pst.getResultSet();
@@ -109,10 +109,12 @@ public class RecordMechanics implements Listener {
 				// tduel_wins = rs.getInt("duel_wins");
 				// tduel_lose = rs.getInt("duel_lose");
 			}
+			
+			pst.close();
 
 			pst = ConnectionPool.getConnection().prepareStatement(
 					"INSERT INTO statistics (pname, lawful_kills, unlawful_kills, deaths, mob_kills, money, duel_wins, duel_lose)"
-							+ " VALUES" + "('" + pname + "', '" + lawful_kills + "', '" + unlawful_kills + "', '"
+							+ " VALUES" + "('" + id.toString() + "', '" + lawful_kills + "', '" + unlawful_kills + "', '"
 							+ deaths + "', '" + mob_kills + "', '" + money + "', '" + duel_wins + "', '" + duel_lose
 							+ "') ON DUPLICATE KEY UPDATE lawful_kills = '" + lawful_kills + "', unlawful_kills = '"
 							+ unlawful_kills + "', deaths = '" + deaths + "', mob_kills = '" + mob_kills
@@ -142,9 +144,6 @@ public class RecordMechanics implements Listener {
 				if (pst != null) {
 					pst.close();
 				}
-				if (con != null) {
-					con.close();
-				}
 
 			} catch (SQLException ex) {
 				log.log(Level.WARNING, ex.getMessage(), ex);
@@ -153,27 +152,27 @@ public class RecordMechanics implements Listener {
 
 	}
 
-	public static void incrementDuelStats(String p_name, boolean win) {
-		List<Integer> duel_stats = duel_statistics.get(p_name);
+	public static void incrementDuelStats(Player player, boolean win) {
+		List<Integer> duel_stats = duel_statistics.get(player.getUniqueId());
 
 		if (win) {
 			int wins = duel_stats.get(1);
 			if (wins >= 1) {
-				AchievementMechanics.addAchievement(p_name, "Duelist I");
+				AchievementMechanics.addAchievement(player, "Duelist I");
 				if (wins >= 10) {
-					AchievementMechanics.addAchievement(p_name, "Duelist II");
+					AchievementMechanics.addAchievement(player, "Duelist II");
 				}
 				if (wins >= 25) {
-					AchievementMechanics.addAchievement(p_name, "Duelist III");
+					AchievementMechanics.addAchievement(player, "Duelist III");
 				}
 				if (wins >= 50) {
-					AchievementMechanics.addAchievement(p_name, "Duelist IV");
+					AchievementMechanics.addAchievement(player, "Duelist IV");
 				}
 				if (wins >= 100) {
-					AchievementMechanics.addAchievement(p_name, "Duelist V");
+					AchievementMechanics.addAchievement(player, "Duelist V");
 				}
 				if (wins >= 200) {
-					AchievementMechanics.addAchievement(p_name, "Duelist VI");
+					AchievementMechanics.addAchievement(player, "Duelist VI");
 				}
 			}
 			duel_stats.set(1, wins + 1);
@@ -182,7 +181,7 @@ public class RecordMechanics implements Listener {
 			duel_stats.set(0, loses + 1);
 		}
 
-		duel_statistics.put(p_name, duel_stats);
+		duel_statistics.put(player.getUniqueId(), duel_stats);
 	}
 
 	@EventHandler
@@ -191,7 +190,7 @@ public class RecordMechanics implements Listener {
 		player_deaths.put(p.getName(), 0);
 		player_kills.put(p.getName(), new ArrayList<Integer>(Arrays.asList(0, 0)));
 		mob_kills.put(p.getName(), 0);
-		duel_statistics.put(p.getName(), new ArrayList<Integer>(Arrays.asList(0, 0)));
+		duel_statistics.put(p.getUniqueId(), new ArrayList<Integer>(Arrays.asList(0, 0)));
 	}
 
 	@EventHandler

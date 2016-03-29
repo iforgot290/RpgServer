@@ -1,6 +1,8 @@
 package minecade.dungeonrealms.Hive.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,9 +19,11 @@ public class CommandAllowLogin implements CommandExecutor {
 		if (!sender.isOp()) {
 			return true;
 		}
-		String name = args[0];
-		Hive.setPlayerCanJoin(name, true);
-		sender.sendMessage(ChatColor.AQUA + name + " join status set to " + ChatColor.GREEN + ChatColor.BOLD + "TRUE");
+		
+		@SuppressWarnings("deprecation")
+		OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
+		Hive.setPlayerCanJoin(player, true);
+		sender.sendMessage(ChatColor.AQUA + player.getName() + " join status set to " + ChatColor.GREEN + ChatColor.BOLD + "TRUE");
 		return false;
 	}
 

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -77,7 +78,7 @@ public class FixBrokenLoginCodes extends Thread {
 			}
 		}
 
-		File dir = new File(Hive.main_world_name + "/players/");
+		File dir = new File(Hive.main_world_name + "/playerdata/");
 		for (File f : dir.listFiles()) {
 			String p_name = f.getName().replaceAll(".dat", "");
 			if (!(reported_online.contains(p_name))) {
@@ -110,6 +111,7 @@ public class FixBrokenLoginCodes extends Thread {
 		setAllOffline(to_fix);
 	}
 
+	//TODO update this to UUID
 	public void setAllOffline(List<String> plist) {
 		PreparedStatement pst = null;
 		// con = DriverManager.getConnection(sql_url, sql_user, sql_password);
@@ -121,7 +123,9 @@ public class FixBrokenLoginCodes extends Thread {
 				}
 
 				Hive.log.info("[Hive (SLAVE EDITION)] Fixed a corrupt server listing data code for " + p_name);
-				new File(Hive.main_world_name + "/players/" + p_name + ".dat").delete();
+				new File(Hive.main_world_name + "/playerdata/" + p_name + ".dat").delete();
+				
+				UUID id = UUID.fromString(p_name);
 
 				Hive.player_inventory.remove(p_name);
 				Hive.player_location.remove(p_name);
@@ -143,8 +147,8 @@ public class FixBrokenLoginCodes extends Thread {
 				KarmaMechanics.align_map.remove(p_name);
 				KarmaMechanics.align_time.remove(p_name);
 
-				PlayerManager.getPlayerModel(p_name).setIgnoreList(new ArrayList<String>());
-				PlayerManager.getPlayerModel(p_name).setBuddyList(new ArrayList<String>());
+				PlayerManager.getPlayerModel(id).setIgnoreList(new ArrayList<UUID>());
+				PlayerManager.getPlayerModel(id).setBuddyList(new ArrayList<UUID>());
 
 				HealthMechanics.noob_player_warning.remove(p_name);
 				HealthMechanics.noob_players.remove(p_name);

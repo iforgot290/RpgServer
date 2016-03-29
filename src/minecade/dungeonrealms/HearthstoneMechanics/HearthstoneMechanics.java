@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
@@ -49,17 +50,24 @@ import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
 import minecade.dungeonrealms.TutorialMechanics.TutorialMechanics;
 
 public class HearthstoneMechanics implements Listener {
-	public static ConcurrentHashMap<String, Hearthstone> hearthstone_map = new ConcurrentHashMap<String, Hearthstone>();
+	/** Map of player to hearthstone */
+	private static ConcurrentHashMap<UUID, Hearthstone> hearthstone_map = new ConcurrentHashMap<UUID, Hearthstone>();
+	
+	/** Town name and price */
 	public static ConcurrentHashMap<String, Integer> hearthstone_price = new ConcurrentHashMap<String, Integer>();
-	public static ConcurrentHashMap<String, Location> hearthstone_location = new ConcurrentHashMap<String, Location>();
-	// Player name, location they called it at.
-	public static ConcurrentHashMap<String, Integer> hearthstone_timer = new ConcurrentHashMap<String, Integer>();
-	// Countdown timer for the stone calling
+	
+	/** Location player called hearthstone at */
+	public static ConcurrentHashMap<UUID, Location> hearthstone_location = new ConcurrentHashMap<UUID, Location>();
+	
+	/** Time left on hearthstone teleportation */
+	public static ConcurrentHashMap<UUID, Integer> hearthstone_timer = new ConcurrentHashMap<UUID, Integer>();
+	
 	public static HashMap<String, Location> spawn_map = new HashMap<String, Location>();
-
 	// Location Name, Location - Used to get locations fromt he name in the sql
-	public ConcurrentHashMap<String, String> changing_homes = new ConcurrentHashMap<String, String>();
-	// P_name, Location name
+	
+	/** Player mapped to town name */
+	public ConcurrentHashMap<UUID, String> changing_homes = new ConcurrentHashMap<UUID, String>();
+	
 	static String templatePath_s = "plugins/HearthstoneMechanics/spawn_locations.dat";
 
 	public void onEnable() {
@@ -69,38 +77,38 @@ public class HearthstoneMechanics implements Listener {
 		Main.plugin.getCommand("listhearthstone").setExecutor(new CommandListHearthstone());
 		new BukkitRunnable() {
 			public void run() {
-				for (Entry<String, Integer> timer_data : hearthstone_timer.entrySet()) {
+				for (Entry<UUID, Integer> timer_data : hearthstone_timer.entrySet()) {
 					int time_left = timer_data.getValue();
-					String p_name = timer_data.getKey();
-					if (Bukkit.getPlayer(p_name) == null) {
-						removeHearthstoneTimer(p_name);
+					UUID id = timer_data.getKey();
+					if (Bukkit.getPlayer(id) == null) {
+						removeHearthstoneTimer(id);
 						continue;
 					}
-					final Player p = Bukkit.getPlayer(p_name);
-					if (!isLocationsEqual(p.getLocation(), hearthstone_location.get(p_name))) {
+					final Player p = Bukkit.getPlayer(id);
+					if (!isLocationsEqual(p.getLocation(), hearthstone_location.get(id))) {
 						p.sendMessage(ChatColor.RED + "Hearthstone -" + ChatColor.BOLD + " CANCELLED");
 						p.sendMessage(ChatColor.GRAY + "Your Hearthstone has been put on a 3 minute cooldown timer.");
 						// 5 minutes
-						getHearthStone(p_name).setTimer(60 * 3);
-						hearthstone_location.remove(p_name);
-						hearthstone_timer.remove(p_name);
+						getHearthStone(id).setTimer(60 * 3);
+						hearthstone_location.remove(id);
+						hearthstone_timer.remove(id);
 						return;
 					}
 					time_left -= 1;
 					if (time_left <= 0) {
 						p.playSound(p.getLocation(), Sound.ENTITY_WITHER_DEATH, 1, 1);
-						p.teleport(getHearthStone(p.getName()).getLocation());
+						p.teleport(getHearthStone(p).getLocation());
 						int timer = (PermissionMechanics.getRank(p) != null
 								&& !PermissionMechanics.getRank(p).equalsIgnoreCase("default") && !p.isOp())
 										? 25 : 15;
-						getHearthStone(p.getName()).setTimer(60 * timer);
+						getHearthStone(p).setTimer(60 * timer);
 						p.sendMessage(ChatColor.GRAY + "Your Hearthstone has been put on a " + ChatColor.UNDERLINE
 								+ timer + ChatColor.GRAY + " minute cooldown timer.");
-						hearthstone_location.remove(p.getName());
-						hearthstone_timer.remove(p.getName());
+						hearthstone_location.remove(p.getUniqueId());
+						hearthstone_timer.remove(p.getUniqueId());
 					} else {
 						p.sendMessage(ChatColor.BOLD + "TELEPORTING " + ChatColor.WHITE + " ... " + time_left + "s");
-						hearthstone_timer.put(p.getName(), time_left);
+						hearthstone_timer.put(p.getUniqueId(), time_left);
 						new BukkitRunnable() {
 							public void run() {
 								try {
@@ -119,18 +127,19 @@ public class HearthstoneMechanics implements Listener {
 
 		new BukkitRunnable() {
 			public void run() {
-				for (Entry<String, Hearthstone> h_entries : hearthstone_map.entrySet()) {
+				for (Entry<UUID, Hearthstone> h_entries : hearthstone_map.entrySet()) {
 					Hearthstone hs = h_entries.getValue();
-					String p_name = h_entries.getKey();
+					UUID id = h_entries.getKey();
 					int time_left = hs.getTimer();
 					if (time_left == 0) {
 						// They dont need to be alerted
 						continue;
 					}
 					time_left -= 1;
+					
 					Player p = hs.getPlayer();
 					if (p == null) {
-						hearthstone_map.remove(p_name);
+						hearthstone_map.remove(id);
 						continue;
 					}
 
@@ -147,14 +156,14 @@ public class HearthstoneMechanics implements Listener {
 
 		new BukkitRunnable() {
 			public void run() {
-				for (Entry<String, String> entry : changing_homes.entrySet()) {
-					String p_name = entry.getKey();
-					if (Bukkit.getPlayer(p_name) == null) {
+				for (Entry<UUID, String> entry : changing_homes.entrySet()) {
+					UUID id = entry.getKey();
+					if (Bukkit.getPlayer(id) == null) {
 						// They are offline
-						changing_homes.remove(p_name);
+						changing_homes.remove(id);
 						continue;
 					}
-					Player p = Bukkit.getPlayer(p_name);
+					Player p = Bukkit.getPlayer(id);
 					boolean inkeeper_nearby = false;
 					for (Entity e : p.getNearbyEntities(15, 15, 15)) {
 						if (e instanceof Player) {
@@ -168,7 +177,7 @@ public class HearthstoneMechanics implements Listener {
 						p.sendMessage(
 								ChatColor.GRAY + "Innkeeper: " + ChatColor.WHITE + "Maybe another time traveler.");
 						p.sendMessage(ChatColor.RED + "Town Change - " + ChatColor.BOLD + "CANCELLED");
-						changing_homes.remove(p.getName());
+						changing_homes.remove(id);
 					}
 				}
 			}
@@ -182,22 +191,23 @@ public class HearthstoneMechanics implements Listener {
 		hearthstone_map.clear();
 	}
 
-	public static void saveData(String p_name) {
-		Hearthstone to_save = getHearthStone(p_name);
+	public static void saveData(UUID id) {
+		Hearthstone to_save = getHearthStone(id);
 		if (to_save != null) {
 			to_save.saveData();
 		} else {
 			Log.error("hearthstone is null");
 		}
-		hearthstone_location.remove(p_name);
-		hearthstone_map.remove(p_name);
-		hearthstone_timer.remove(p_name);
+		hearthstone_location.remove(id);
+		hearthstone_map.remove(id);
+		hearthstone_timer.remove(id);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void Prelogin(AsyncPlayerPreLoginEvent e) {
 		// Loads the data and saves it into a hashmap
-		new Hearthstone(e.getName());
+		Hearthstone hearthstone = new Hearthstone(e.getUniqueId());
+		hearthstone_map.put(e.getUniqueId(), hearthstone);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
@@ -213,9 +223,10 @@ public class HearthstoneMechanics implements Listener {
 	public void onPlayerLoginEvent(PlayerLoginEvent e) {
 		final Player p = e.getPlayer();
 		if (!hearthstone_map.containsKey(p.getName())) {
-			new Hearthstone(p.getName());
+			Hearthstone hearth = new Hearthstone(p.getUniqueId());
+			hearthstone_map.put(p.getUniqueId(), hearth);
 		}
-		hearthstone_map.get(p.getName()).setPlayer(p);
+		
 		new BukkitRunnable() {
 			public void run() {
 				checkInventoryAndReset(p);
@@ -239,11 +250,11 @@ public class HearthstoneMechanics implements Listener {
 		if (e instanceof Player) {
 			Player p = ((Player) e).getPlayer();
 			if (hearthstone_timer.containsKey(p.getName())) {
-				removeHearthstoneTimer(p.getName());
+				removeHearthstoneTimer(p.getUniqueId());
 				p.sendMessage(ChatColor.RED + "Hearthstone -" + ChatColor.BOLD + " CANCELLED");
 				p.sendMessage(ChatColor.GRAY + "Your Hearthstone has been put on a 3 minute cooldown timer.");
 				// 5 minutes
-				getHearthStone(p.getName()).setTimer(60 * 3);
+				getHearthStone(p.getUniqueId()).setTimer(60 * 3);
 			}
 		}
 	}
@@ -252,11 +263,11 @@ public class HearthstoneMechanics implements Listener {
 	public void onPlayerAnimation(PlayerAnimationEvent e) {
 		Player p = e.getPlayer();
 		if (hearthstone_timer.containsKey(p.getName())) {
-			removeHearthstoneTimer(p.getName());
+			removeHearthstoneTimer(p);
 			p.sendMessage(ChatColor.RED + "Hearthstone -" + ChatColor.BOLD + " CANCELLED");
 			p.sendMessage(ChatColor.GRAY + "Your Hearthstone has been put on a 3 minute cooldown timer.");
 			// 5 minutes
-			getHearthStone(p.getName()).setTimer(60 * 3);
+			getHearthStone(p).setTimer(60 * 3);
 		}
 	}
 
@@ -286,7 +297,7 @@ public class HearthstoneMechanics implements Listener {
 				p.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "COST: " + ChatColor.RED + price + "G");
 				return;
 			}
-			if (getHearthStone(p.getName()).getName().equalsIgnoreCase(town_name)) {
+			if (getHearthStone(p).getName().equalsIgnoreCase(town_name)) {
 				p.sendMessage(ChatColor.GRAY + "Innkeeper:" + ChatColor.WHITE
 						+ " Traveler! It seems like your home is already set here!");
 				return;
@@ -296,7 +307,7 @@ public class HearthstoneMechanics implements Listener {
 					+ ChatColor.GRAY + ".");
 			p.sendMessage(ChatColor.GRAY + "Please type " + ChatColor.GREEN + ChatColor.BOLD + "Y" + ChatColor.GRAY
 					+ " to confirm.");
-			changing_homes.put(p.getName(), town_name);
+			changing_homes.put(p.getUniqueId(), town_name);
 
 		}
 	}
@@ -316,9 +327,9 @@ public class HearthstoneMechanics implements Listener {
 						ChatColor.GRAY + "Hearthstone set to: " + ChatColor.GREEN + changing_homes.get(p.getName()));
 				p.sendMessage(
 						ChatColor.RED.toString() + ChatColor.BOLD + "-" + ChatColor.RED + price + ChatColor.BOLD + "G");
-				getHearthStone(p.getName()).setLocationName(changing_homes.get(p.getName()));
-				getHearthStone(p.getName()).setLocation(spawn_map.get(changing_homes.get(p.getName())));
-				getHearthStone(p.getName()).saveData();
+				getHearthStone(p).setLocationName(changing_homes.get(p.getName()));
+				getHearthStone(p).setLocation(spawn_map.get(changing_homes.get(p.getName())));
+				getHearthStone(p).saveData();
 				p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 				checkInventoryAndReset(p);
 			} else {
@@ -387,8 +398,8 @@ public class HearthstoneMechanics implements Listener {
 					+ " seconds to use this again.");
 			return;
 		}
-		hearthstone_location.put(p.getName(), p.getLocation());
-		hearthstone_timer.put(p.getName(), 10);
+		hearthstone_location.put(p.getUniqueId(), p.getLocation());
+		hearthstone_timer.put(p.getUniqueId(), 10);
 		p.sendMessage(ChatColor.WHITE.toString() + ChatColor.BOLD + "TELEPORTING - " + ChatColor.AQUA
 				+ hearthstone_map.get(p.getName()).getName() + ChatColor.WHITE + " ... 10s");
 	}
@@ -506,23 +517,22 @@ public class HearthstoneMechanics implements Listener {
 		saveSpawnLocationData();
 		loadSpawnLocationTemplate();
 	}
+	
+	public void removeHearthstoneTimer(Player pl){
+		removeHearthstoneTimer(pl.getUniqueId());
+	}
 
-	public void removeHearthstoneTimer(String p_name) {
-		hearthstone_location.remove(p_name);
-		hearthstone_timer.remove(p_name);
+	public void removeHearthstoneTimer(UUID id) {
+		hearthstone_location.remove(id);
+		hearthstone_timer.remove(id);
 	}
 
 	public static boolean isLocationsEqual(Location first, Location second) {
-		if ((first.getBlockX() == second.getBlockX()) && (first.getBlockY() == second.getBlockY())
-				&& (first.getBlockZ() == second.getBlockZ())
-				&& first.getWorld().getName().equalsIgnoreCase(second.getWorld().getName())) {
-			return true;
-		}
-		return false;
+		return first.equals(second);
 	}
 
 	public static ItemStack getHearthstoneItem(Player p) {
-		Hearthstone hs = getHearthStone(p.getName());
+		Hearthstone hs = getHearthStone(p);
 		if (hs == null) {
 			return createCustomItem(new ItemStack(Material.QUARTZ),
 					ChatColor.YELLOW.toString() + ChatColor.BOLD + "Hearthstone",
@@ -550,8 +560,12 @@ public class HearthstoneMechanics implements Listener {
 		is.setItemMeta(im);
 		return is;
 	}
+	
+	public static Hearthstone getHearthStone(Player pl){
+		return getHearthStone(pl.getUniqueId());
+	}
 
-	public static Hearthstone getHearthStone(String p_name) {
-		return hearthstone_map.get(p_name);
+	public static Hearthstone getHearthStone(UUID id) {
+		return hearthstone_map.get(id);
 	}
 }

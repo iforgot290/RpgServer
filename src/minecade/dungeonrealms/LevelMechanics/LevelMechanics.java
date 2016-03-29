@@ -3,6 +3,7 @@ package minecade.dungeonrealms.LevelMechanics;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
@@ -584,20 +585,17 @@ public class LevelMechanics implements Listener {
 		return 1;
 	}
 
-	public static PlayerLevel getPlayerData(Player p) {
-		if (PlayerManager.getPlayerModel(p.getName()).getPlayerLevel() == null) {
-			PlayerLevel pl = new PlayerLevel(p.getName(), true);
-			PlayerManager.getPlayerModel(p).setPlayerLevel(pl);
+	public static PlayerLevel getPlayerData(UUID id) {
+		if (PlayerManager.getPlayerModel(id).getPlayerLevel() == null) {
+			PlayerLevel pl = new PlayerLevel(id, true);
+			PlayerManager.getPlayerModel(id).setPlayerLevel(pl);
 			return pl;
 		}
-		return PlayerManager.getPlayerModel(p.getName()).getPlayerLevel();
+		return PlayerManager.getPlayerModel(id).getPlayerLevel();
 	}
 
-	public static PlayerLevel getPlayerData(String p_name) {
-		if (PlayerManager.getPlayerModel(p_name).getPlayerLevel() == null) {
-			return new PlayerLevel(p_name, true);
-		}
-		return PlayerManager.getPlayerModel(p_name).getPlayerLevel();
+	public static PlayerLevel getPlayerData(Player player) {
+		return getPlayerData(player.getUniqueId());
 	}
 
 	public static int getPlayerLevel(Player p) {

@@ -13,13 +13,13 @@ public class CommandBio implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player pl = (Player) sender;
 		if (args.length == 0) {
-			if (Hive.player_bio.containsKey(pl.getName())) {
+			if (Hive.player_bio.containsKey(pl.getUniqueId())) {
 				pl.sendMessage(ChatColor.RED
 						+ "You already have a pending profile biography. Type 'cancel' to void that one before starting another.");
 				return true;
 			}
 
-			Hive.player_bio.put(pl.getName(), "");
+			Hive.player_bio.put(pl.getUniqueId(), "");
 			pl.sendMessage("");
 			pl.sendMessage(ChatColor.YELLOW + "Start typing your profile biography just like you would chat.");
 			pl.sendMessage(ChatColor.GRAY + "Send your typed message at any time as a line break. Type '"

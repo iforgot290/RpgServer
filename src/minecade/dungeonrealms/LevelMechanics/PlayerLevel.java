@@ -3,6 +3,7 @@ package minecade.dungeonrealms.LevelMechanics;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,7 +26,6 @@ import minecade.dungeonrealms.models.LogModel;
 public class PlayerLevel {
 
 	private Player p;
-	private String p_name;
 	private int level;
 	private int xp;
 	private Entity last_mob_gained_from;
@@ -55,8 +55,7 @@ public class PlayerLevel {
 			+ ChatColor.BOLD + "HERE" + ChatColor.GRAY + " to allocate them." + ChatColor.GREEN + "*";
 	private static final String ALPHA_NUM = "123456789";
 
-	public PlayerLevel(String p_name, boolean aSync) {
-		this.p_name = p_name;
+	public PlayerLevel(UUID id, boolean aSync) {
 		this.freePoints = 0;
 		this.tempFreePoints = 0;
 		this.strPoints = 0;
@@ -69,7 +68,7 @@ public class PlayerLevel {
 		this.isResetting = false;
 		this.resetCode = "";
 		this.resetCost = 0;
-		this.p = Bukkit.getPlayer(p_name);
+		this.p = Bukkit.getPlayer(id);
 		if (aSync) {
 			new BukkitRunnable() {
 				public void run() {
@@ -79,7 +78,7 @@ public class PlayerLevel {
 		} else {
 			loadData();
 		}
-		PlayerManager.getPlayerModel(p_name).setPlayerLevel(this);
+		PlayerManager.getPlayerModel(id).setPlayerLevel(this);
 	}
 
 	public void setPlayer(Player p) {

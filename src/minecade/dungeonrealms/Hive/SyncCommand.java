@@ -1,6 +1,7 @@
 package minecade.dungeonrealms.Hive;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 import minecade.dungeonrealms.MoneyMechanics.MoneyMechanics;
 import minecade.dungeonrealms.ShopMechanics.ShopMechanics;
@@ -16,7 +17,7 @@ public class SyncCommand extends Thread {
 			if (Hive.sync_queue.size() <= 0) {
 				continue;
 			}
-			for (String p_name : Hive.sync_queue) {
+			for (UUID p_name : Hive.sync_queue) {
 				if (!(Hive.shutting_down) && !(ShopMechanics.shop_shutdown)
 						&& !(Hive.pending_upload.contains(p_name))) {
 					try {

@@ -1428,8 +1428,8 @@ public class DuelMechanics implements Listener {
 			ChatColor attacked_color = ChatMechanics.getPlayerColor(attacked, attacked);
 			String attacked_prefix = ChatMechanics.getPlayerPrefix(attacked);
 
-			RecordMechanics.incrementDuelStats(attacker.getName(), true);
-			RecordMechanics.incrementDuelStats(attacked.getName(), true);
+			RecordMechanics.incrementDuelStats(attacker, true);
+			RecordMechanics.incrementDuelStats(attacked, true);
 
 			attacker.sendMessage(attacker_color + attacker_prefix + attacker.getName() + ChatColor.GREEN + " has "
 					+ ChatColor.UNDERLINE + "DEFEATED" + ChatColor.RESET + " " + attacked_color + attacked_prefix
@@ -1615,8 +1615,8 @@ public class DuelMechanics implements Listener {
 					ChatColor attacked_color = ChatMechanics.getPlayerColor(attacked, attacked);
 					String attacked_prefix = ChatMechanics.getPlayerPrefix(attacked);
 
-					RecordMechanics.incrementDuelStats(attacker.getName(), true);
-					RecordMechanics.incrementDuelStats(attacked.getName(), true);
+					RecordMechanics.incrementDuelStats(attacker, true);
+					RecordMechanics.incrementDuelStats(attacked, true);
 
 					attacker.sendMessage(attacker_color + attacker_prefix + attacker.getName() + ChatColor.GREEN
 							+ " has " + ChatColor.UNDERLINE + "DEFEATED" + ChatColor.RESET + " " + attacked_color
@@ -1707,9 +1707,9 @@ public class DuelMechanics implements Listener {
 				ChatColor attacked_color = ChatMechanics.getPlayerColor(attacked, attacked);
 				String attacked_prefix = ChatMechanics.getPlayerPrefix(attacked);
 
-				RecordMechanics.incrementDuelStats(attacker.getName(), true);
+				RecordMechanics.incrementDuelStats(attacker, true);
 				// They lost
-				RecordMechanics.incrementDuelStats(attacked.getName(), false);
+				RecordMechanics.incrementDuelStats(attacked, false);
 
 				attacker.sendMessage(attacker_color + attacker_prefix + attacker.getName() + ChatColor.GREEN + " has "
 						+ ChatColor.UNDERLINE + "DEFEATED" + ChatColor.RESET + " " + attacked_color + attacked_prefix

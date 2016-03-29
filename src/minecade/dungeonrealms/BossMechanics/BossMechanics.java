@@ -853,7 +853,7 @@ public class BossMechanics implements Listener {
 							if (pl.getLocation().distanceSquared(explosion) <= 64) {
 								// Hurt them.
 								// Deal 90% of health in DMG
-								double max_health = HealthMechanics.getMaxHealthValue(pl.getName());
+								double max_health = HealthMechanics.getMaxHealthValue(pl);
 								double dmg = max_health * 0.90;
 								pl.damage(dmg, ent);
 							}
