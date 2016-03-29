@@ -725,7 +725,7 @@ public class EcashMechanics implements Listener {
 			// pl.setMetadata("ecash_storage", new
 			// FixedMetadataValue(Hive.instance,
 			// Hive.convertInventoryToString(null, e.getInventory(), false)));
-			ecash_storage_map.put(pl.getName(), Hive.convertInventoryToString(null, e.getInventory(), false));
+			ecash_storage_map.put(pl.getUniqueId(), Hive.convertInventoryToString(null, e.getInventory(), false));
 			pl.sendMessage(ChatColor.GRAY + "E-Cash Storage: " + ChatColor.WHITE + "Your trinkets are safe with me!");
 		}
 	}

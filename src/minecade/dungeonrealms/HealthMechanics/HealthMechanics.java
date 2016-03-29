@@ -243,11 +243,11 @@ public class HealthMechanics implements Listener {
 		Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(Main.plugin, new Runnable() {
 			public void run() {
 				if (!in_combat.isEmpty()) {
-					Map<String, Long> hmash = new HashMap<String, Long>(in_combat);
-					for (Map.Entry<String, Long> entry : hmash.entrySet()) {
-						String p_name = entry.getKey();
-						if (cooldownOver(p_name)) {
-							in_combat.remove(p_name);
+					Map<UUID, Long> hmash = new HashMap<UUID, Long>(in_combat);
+					for (Map.Entry<UUID, Long> entry : hmash.entrySet()) {
+						UUID id = entry.getKey();
+						if (cooldownOver(id)) {
+							in_combat.remove(id);
 						}
 					}
 				}
@@ -275,16 +275,15 @@ public class HealthMechanics implements Listener {
 		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
 			public void run() {
 				for (Player pl : Bukkit.getServer().getOnlinePlayers()) {
-					if (getPlayerHP(pl.getName()) > 0) {
-						setOverheadHP(pl, getPlayerHP(pl.getName()));
+					if (getPlayerHP(pl) > 0) {
+						setOverheadHP(pl, getPlayerHP(pl));
 					}
 				}
 				for (NPC n : Hive.player_to_npc.values()) {
 					if (!(n.getEntity() instanceof Player))
 						continue;
 					if (((Player) n.getEntity()).getHealth() > 0) {
-						setOverheadHP((Player) n.getEntity(), getPlayerHP(((Player) n.getEntity()).getName()));
-						log.info(getPlayerHP(((Player) n.getEntity()).getName()) + "");
+						setOverheadHP((Player) n.getEntity(), getPlayerHP((Player) n.getEntity()));
 					}
 				}
 			}
@@ -461,7 +460,7 @@ public class HealthMechanics implements Listener {
 	public static void setOverheadHP(Player pl, int hp) {
 		ScoreboardMechanics.setOverheadHP(pl, hp);
 		if (!pl.hasMetadata("NPC") && !pl.getPlayerListName().equalsIgnoreCase("")) {
-			double max_hp = HealthMechanics.getMaxHealthValue(pl.getName());
+			double max_hp = HealthMechanics.getMaxHealthValue(pl);
 			double health_percent = ((double) hp / (double) max_hp);
 			if (health_percent > 1.0) {
 				health_percent = 1.0;
@@ -484,14 +483,14 @@ public class HealthMechanics implements Listener {
 				String dash = ChatColor.BLACK.toString() + ChatColor.BOLD + " - ";
 				BarAPI.setMessage(pl,
 						levelData + dash + ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP "
-								+ ChatColor.LIGHT_PURPLE + getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / "
-								+ ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()) + dash + xpData,
+								+ ChatColor.LIGHT_PURPLE + getPlayerHP(pl) + ChatColor.BOLD.toString() + " / "
+								+ ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl) + dash + xpData,
 								(float) (health_percent * 100F));
 			} else {
 				BarAPI.setMessage(pl,
 						ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE
-						+ getPlayerHP(pl.getName()) + ChatColor.BOLD.toString() + " / "
-						+ ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl.getName()),
+						+ getPlayerHP(pl) + ChatColor.BOLD.toString() + " / "
+						+ ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl),
 						(float) (health_percent * 100F));
 			}
 			// FakeDragon.setStatus(pl, ChatColor.LIGHT_PURPLE.toString() +
@@ -563,16 +562,16 @@ public class HealthMechanics implements Listener {
 	public void HealthAutoRegen() {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			try {
-				if (getPlayerHP(p.getName()) <= 0 && p.getHealth() <= 0) {
+				if (getPlayerHP(p) <= 0 && p.getHealth() <= 0) {
 					continue;
 				} // They're dead anyway.
 				if (FatigueMechanics.starving.contains(p)) {
 					continue;
 				}
 
-				if (!(in_combat.containsKey(p.getName()))) {
-					double max_hp = getMaxHealthValue(p.getName());
-					double current_hp = getPlayerHP(p.getName());
+				if (!(in_combat.containsKey(p.getUniqueId()))) {
+					double max_hp = getMaxHealthValue(p);
+					double current_hp = getPlayerHP(p);
 					double amount_to_heal = 5;
 					if (current_hp + 1 > max_hp) {
 
@@ -589,15 +588,15 @@ public class HealthMechanics implements Listener {
 						// overheal.
 						p.setHealth(20);
 						// p.setLevel((int)max_hp);
-						HealthMechanics.setPlayerHP(p.getName(), (int) max_hp);
-						setPlayerHP(p.getName(), (int) max_hp);
+						HealthMechanics.setPlayerHP(p, (int) max_hp);
+						//setPlayerHP(p, (int) max_hp);
 						continue;
 					}
 
 					else if (p.getHealth() <= 19 && ((current_hp + amount_to_heal) < max_hp)) {
 						// p.setLevel((int)(p.getLevel() + amount_to_heal));
-						setPlayerHP(p.getName(), (int) (getPlayerHP(p.getName()) + amount_to_heal));
-						double health_percent = (getPlayerHP(p.getName()) + amount_to_heal) / max_hp;
+						setPlayerHP(p, (int) (getPlayerHP(p) + amount_to_heal));
+						double health_percent = (getPlayerHP(p) + amount_to_heal) / max_hp;
 						double new_health_display = health_percent * 20;
 						if (new_health_display >= 19.50) { // It will be 20
 							// hearts...
@@ -635,10 +634,14 @@ public class HealthMechanics implements Listener {
 
 		player_health.put(id, hp);
 	}
+	
+	public static int getPlayerHP(Player pl){
+		return getPlayerHP(pl.getUniqueId());
+	}
 
-	public static int getPlayerHP(String p_name) {
-		if (player_health.containsKey(p_name)) {
-			return player_health.get(p_name);
+	public static int getPlayerHP(UUID id) {
+		if (player_health.containsKey(id)) {
+			return player_health.get(id);
 		}
 		// If the data doesn't exist, return default?
 		return 50;
@@ -731,9 +734,13 @@ public class HealthMechanics implements Listener {
 	 * Hive.player_mule_inventory.remove(p.getName()); n.destroy(); } }
 	 */
 
-	public static int getMaxHealthValue(String p_name) {
-		if (health_data.containsKey(p_name)) {
-			return health_data.get(p_name);
+	public static int getMaxHealthValue(Player pl){
+		return getMaxHealthValue(pl.getUniqueId());
+	}
+	
+	public static int getMaxHealthValue(UUID id) {
+		if (health_data.containsKey(id)) {
+			return health_data.get(id);
 		}
 		return 1; // Never even setMaxHealth. Impossible?
 	}
@@ -795,12 +802,12 @@ public class HealthMechanics implements Listener {
 		health_regen_data.put(p.getUniqueId(), total_regen);
 	}
 
-	public static boolean cooldownOver(String p_name) {
-		if (!in_combat.containsKey(p_name)) {
+	public static boolean cooldownOver(UUID id) {
+		if (!in_combat.containsKey(id)) {
 			return true;
 		}
 
-		long oldTime = getOldTime(p_name);
+		long oldTime = getOldTime(id);
 		long currentTime = System.currentTimeMillis();
 		if (currentTime - oldTime >= (HealthRegenCombatDelay * 1000)) {
 
@@ -838,8 +845,8 @@ public class HealthMechanics implements Listener {
 		return false;
 	}
 
-	public static long getOldTime(String p_name) {
-		return in_combat.get(p_name);
+	public static long getOldTime(UUID id) {
+		return in_combat.get(id);
 	}
 
 	public static int generateMaxHP(Player p) {
@@ -963,8 +970,8 @@ public class HealthMechanics implements Listener {
 					continue;
 				}
 				Player pl = (Player) le;
-				double max_hp = getMaxHealthValue(pl.getName());
-				double current_hp = getPlayerHP(p.getName());
+				double max_hp = getMaxHealthValue(pl);
+				double current_hp = getPlayerHP(p);
 				if (current_hp + 1 > max_hp) {
 					continue;
 				} // They have max HP.
@@ -984,14 +991,14 @@ public class HealthMechanics implements Listener {
 				if ((current_hp + amount_to_heal) >= max_hp) {
 					pl.setHealth(20);
 					// pl.setLevel((int)max_hp);
-					setPlayerHP(pl.getName(), (int) max_hp);
+					setPlayerHP(pl, (int) max_hp);
 					continue; // Full HP.
 				}
 
 				else if (pl.getHealth() <= 19 && ((current_hp + amount_to_heal) < max_hp)) {
 					// pl.setLevel((int)(pl.getLevel() + amount_to_heal));
-					setPlayerHP(pl.getName(), (int) (getPlayerHP(pl.getName()) + amount_to_heal));
-					double health_percent = (getPlayerHP(pl.getName()) + amount_to_heal) / max_hp;
+					setPlayerHP(pl, (int) (getPlayerHP(pl) + amount_to_heal));
+					double health_percent = (getPlayerHP(pl) + amount_to_heal) / max_hp;
 					double new_health_display = health_percent * 20;
 					if (new_health_display > 19) {
 						if (health_percent >= 1) {
@@ -1225,8 +1232,8 @@ public class HealthMechanics implements Listener {
 						double amount_to_heal = to_restore;
 						// player_potion_event.remove(p.getName());
 						// TODO: Restore health.
-						double max_hp = getMaxHealthValue(p.getName());
-						double current_hp = getPlayerHP(p.getName());
+						double max_hp = getMaxHealthValue(p);
+						double current_hp = getPlayerHP(p);
 
 						if (slot == -1) {
 							slot = p.getInventory().firstEmpty();
@@ -1251,7 +1258,7 @@ public class HealthMechanics implements Listener {
 						if ((current_hp + amount_to_heal) >= max_hp) {
 							p.setHealth(20);
 							// p.setLevel((int)max_hp);
-							setPlayerHP(p.getName(), (int) max_hp);
+							setPlayerHP(p, (int) max_hp);
 
 							if (p.getInventory().contains(Material.POTION)) {
 								move_potion_slot.put(p.getName(), slot);
@@ -1276,7 +1283,7 @@ public class HealthMechanics implements Listener {
 							if (new_health_display < 1) {
 								new_health_display = 1;
 							}
-							setPlayerHP(p.getName(), (int) (current_hp + amount_to_heal));
+							setPlayerHP(p, (int) (current_hp + amount_to_heal));
 							// p.setLevel((int)(current_hp + amount_to_heal));
 							p.setHealth((int) new_health_display);
 						}
@@ -1483,7 +1490,7 @@ public class HealthMechanics implements Listener {
 		}
 
 		boolean subtract_hp = false;
-		int max_health = getMaxHealthValue(p.getName());
+		int max_health = getMaxHealthValue(p);
 		if ((new_armor == null || new_armor.getType() == Material.AIR) && old_armor != null
 				&& old_armor.getType() != Material.AIR) {
 			// Removing armor.
@@ -1516,7 +1523,7 @@ public class HealthMechanics implements Listener {
 			float pitch_mod = 1.0F + (r.nextFloat() * (maxX - minX) + minX);
 			p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.00F, pitch_mod);
 
-			int cur_hp = getPlayerHP(p.getName());
+			int cur_hp = getPlayerHP(p);
 			if (cur_hp > new_max_hp) {
 				cur_hp = new_max_hp;
 			}
@@ -1541,12 +1548,12 @@ public class HealthMechanics implements Listener {
 						double new_max_hp = generateMaxHP(p);
 						setLocalMaxHealth(p, (int) new_max_hp);
 
-						if (getPlayerHP(p.getName()) > (int) new_max_hp) {
+						if (getPlayerHP(p) > (int) new_max_hp) {
 							// p.setLevel((int)new_max_hp);
-							setPlayerHP(p.getName(), (int) new_max_hp);
+							setPlayerHP(p, (int) new_max_hp);
 						}
 
-						double d_level = getPlayerHP(p.getName());
+						double d_level = getPlayerHP(p);
 
 						double health_percent = d_level / new_max_hp;
 						double new_health_display = (health_percent * 20.0D);
@@ -1604,7 +1611,7 @@ public class HealthMechanics implements Listener {
 				float pitch_mod = 1.0F + (r.nextFloat() * (maxX - minX) + minX);
 				p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.00F, pitch_mod);
 
-				int cur_hp = getPlayerHP(p.getName());
+				int cur_hp = getPlayerHP(p);
 				if (cur_hp > new_max_hp) {
 					cur_hp = new_max_hp;
 				}
@@ -1633,7 +1640,7 @@ public class HealthMechanics implements Listener {
 				float pitch_mod = 1.0F + (r.nextFloat() * (maxX - minX) + minX);
 				p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.00F, pitch_mod);
 
-				int cur_hp = getPlayerHP(p.getName());
+				int cur_hp = getPlayerHP(p);
 				if (cur_hp > new_max_hp) {
 					cur_hp = (int) new_max_hp;
 				}
@@ -1664,12 +1671,12 @@ public class HealthMechanics implements Listener {
 				double new_max_hp = generateMaxHP(p);
 				setLocalMaxHealth(p, (int) new_max_hp);
 
-				if (getPlayerHP(p.getName()) > (int) new_max_hp) {
-					setPlayerHP(p.getName(), (int) new_max_hp);
+				if (getPlayerHP(p) > (int) new_max_hp) {
+					setPlayerHP(p, (int) new_max_hp);
 					// p.setLevel((int)new_max_hp);
 				}
 
-				double d_level = getPlayerHP(p.getName());
+				double d_level = getPlayerHP(p);
 
 				double health_percent = d_level / new_max_hp;
 				double new_health_display = (health_percent * 20.0D);
@@ -1697,15 +1704,15 @@ public class HealthMechanics implements Listener {
 		if (combat_logger.contains(p.getName())) {
 			combat_logger.remove(p.getName());
 		}
-		if (!(Hive.player_first_login.containsKey(p.getName()))) {
+		if (!(Hive.player_first_login.containsKey(p.getUniqueId()))) {
 			// Not a new player, conversion conflict.
-			Hive.player_first_login.put(p.getName(), 1L);
+			Hive.player_first_login.put(p.getUniqueId(), 1L);
 		}
 
-		if (noob_players.contains(p.getName())
-				&& (System.currentTimeMillis() - Hive.player_first_login.get(p.getName())) <= (24 * 3600000)) {
+		if (noob_players.contains(p.getUniqueId())
+				&& (System.currentTimeMillis() - Hive.player_first_login.get(p.getUniqueId())) <= (24 * 3600000)) {
 			// noob_players.add(p.getName());
-			long hours = (System.currentTimeMillis() - Hive.player_first_login.get(p.getName())) / 3600000;
+			long hours = (System.currentTimeMillis() - Hive.player_first_login.get(p.getUniqueId())) / 3600000;
 			int i_hours = 24 - (int) hours;
 			p.sendMessage("");
 			p.sendMessage(ChatColor.RED + "You have " + ChatColor.BOLD + i_hours + "h " + ChatColor.RED
@@ -1748,13 +1755,13 @@ public class HealthMechanics implements Listener {
 			}, 10L);
 		}
 
-		if (getPlayerHP(p.getName()) <= 0 && Hive.first_login.contains(p.getName())) {
+		if (getPlayerHP(p) <= 0 && Hive.first_login.contains(p.getName())) {
 			// Fix for new players.
 			// p.setLevel(50);
-			setPlayerHP(p.getName(), 50);
+			setPlayerHP(p, 50);
 		}
 
-		if (getPlayerHP(p.getName()) <= 0 && p.getHealth() <= 0) {
+		if (getPlayerHP(p) <= 0 && p.getHealth() <= 0) {
 			// They're dead.
 			p.teleport(SpawnMechanics.getRandomSpawnPoint(p));
 		}
@@ -1763,13 +1770,13 @@ public class HealthMechanics implements Listener {
 		float old_energy = p.getExp();
 		p.setExp(old_energy);
 
-		if (getPlayerHP(p.getName()) <= 0 && p.getHealth() > 0) {
+		if (getPlayerHP(p) <= 0 && p.getHealth() > 0) {
 			// p.setLevel(gear_maxhp);
-			setPlayerHP(p.getName(), gear_maxhp);
+			setPlayerHP(p, gear_maxhp);
 		}
 
-		if (getPlayerHP(p.getName()) >= 1) {
-			setOverheadHP(p, getPlayerHP(p.getName()));
+		if (getPlayerHP(p) >= 1) {
+			setOverheadHP(p, getPlayerHP(p));
 		}
 
 		health_data.put(p.getUniqueId(), gear_maxhp);
@@ -1781,7 +1788,7 @@ public class HealthMechanics implements Listener {
 		thrown_potion_map.remove(p.getName());
 		player_potion_event.remove(p.getName());
 		move_potion_slot.remove(p.getName());
-		noob_players.remove(p.getName());
+		noob_players.remove(p.getUniqueId());
 		// if (in_combat.contains(p.getName())){
 		// combat_logger.add(p.getName()); combat log mumoxx
 	}
@@ -1791,7 +1798,7 @@ public class HealthMechanics implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerDeath(PlayerDeathEvent e) {
 		Player p = (Player) e.getEntity();
-		setPlayerHP(p.getName(), 0);
+		setPlayerHP(p, 0);
 		p.playSound(p.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1F, 1F);
 		if (combat_logger.contains(p.getName())) {
 			e.getDrops().clear();
@@ -1851,7 +1858,7 @@ public class HealthMechanics implements Listener {
 				Player p = Bukkit.getPlayer(p_name);
 				if (p != null) {
 					// p.setLevel(50);
-					setPlayerHP(p.getName(), 50);
+					setPlayerHP(p, 50);
 				}
 			}
 		}, 10L);
@@ -1861,7 +1868,7 @@ public class HealthMechanics implements Listener {
 				Player p = Bukkit.getPlayer(p_name);
 				if (p != null) {
 					// p.setLevel(50);
-					setPlayerHP(p.getName(), 50);
+					setPlayerHP(p, 50);
 					setLocalMaxHealth(p, 50);
 					p.setHealth(20);
 					p.setFoodLevel(20);
@@ -1905,8 +1912,8 @@ public class HealthMechanics implements Listener {
 		e.setCancelled(true);
 		Player p = (Player) e.getEntity();
 		double regain_amount = e.getAmount();
-		double total_hp = getPlayerHP(p.getName());
-		double max_hp = getMaxHealthValue(p.getName());
+		double total_hp = getPlayerHP(p);
+		double max_hp = getMaxHealthValue(p);
 
 		if (total_hp == max_hp) {
 			return;
@@ -1914,13 +1921,13 @@ public class HealthMechanics implements Listener {
 
 		if (total_hp + regain_amount >= max_hp) {
 			// p.setLevel((int)max_hp);
-			setPlayerHP(p.getName(), (int) max_hp);
+			setPlayerHP(p, (int) max_hp);
 			p.setHealth(20);
 			return;
 		}
 
 		// p.setLevel((int)(regain_amount + total_hp));
-		setPlayerHP(p.getName(), (int) (regain_amount + total_hp));
+		setPlayerHP(p, (int) (regain_amount + total_hp));
 		double health_percent = (total_hp + regain_amount) / max_hp;
 		double new_health_display = health_percent * 20;
 
@@ -1944,7 +1951,7 @@ public class HealthMechanics implements Listener {
 
 		Player p = (Player) e.getDamager();
 		if (e.getDamage() > 0) {
-			in_combat.put(p.getName(), System.currentTimeMillis());
+			in_combat.put(p.getUniqueId(), System.currentTimeMillis());
 			p.playSound(p.getLocation(), Sound.ENTITY_GENERIC_HURT, 1F, 1F); // Cool
 			// sound
 			// effect
@@ -2206,9 +2213,9 @@ public class HealthMechanics implements Listener {
 		}
 
 		double dmg = e.getDamage();
-		double max_hp = getMaxHealthValue(p.getName());
+		double max_hp = getMaxHealthValue(p);
 
-		if (RealmMechanics.player_god_mode.containsKey(p.getName())) {
+		if (RealmMechanics.player_god_mode.containsKey(p.getUniqueId())) {
 			e.setCancelled(true);
 			e.setDamage(0);
 			return;
@@ -2246,15 +2253,15 @@ public class HealthMechanics implements Listener {
 			if (blocks >= 2) {
 				dmg = (max_hp * 0.02D) * blocks;
 			}
-			if (dmg > getPlayerHP(p.getName())) {
+			if (dmg > getPlayerHP(p)) {
 				// This would normally kill them, let's be nice for now as this
 				// could
 				// be causing insta-death bugs on /shard etc etc
 				// dmg = (getPlayerHP(p.getName()) - 1);
-				dmg = (getPlayerHP(p.getName()));
+				dmg = (getPlayerHP(p));
 			}
 
-			if (blocks >= 49 && dmg <= getPlayerHP(p.getName())) {
+			if (blocks >= 49 && dmg <= getPlayerHP(p)) {
 				AchievementMechanics.addAchievement(p, "Leap of Faith");
 			}
 		}
@@ -2459,14 +2466,14 @@ public class HealthMechanics implements Listener {
 		}
 
 		if (!(e.getCause() == DamageCause.FALL)) {
-			in_combat.put(p.getName(), System.currentTimeMillis());
+			in_combat.put(p.getUniqueId(), System.currentTimeMillis());
 		}
 
 		p.setLastDamageCause(e);
 
-		double max_hp = getMaxHealthValue(p.getName());
+		double max_hp = getMaxHealthValue(p);
 
-		if (getPlayerHP(p.getName()) > max_hp) {
+		if (getPlayerHP(p) > max_hp) {
 			max_hp = generateMaxHP(p);
 			health_data.put(p.getUniqueId(), (int) max_hp);
 			// TODO: this could cause an exploit; use need_update ?
@@ -2475,7 +2482,7 @@ public class HealthMechanics implements Listener {
 		double dmg = e.getDamage();
 		// log.info("" + dmg);
 
-		double total_hp = getPlayerHP(p.getName());
+		double total_hp = getPlayerHP(p);
 		double new_hp = total_hp - dmg;
 
 		if (KarmaMechanics.getRawAlignment(p).equalsIgnoreCase("good")
@@ -2510,7 +2517,7 @@ public class HealthMechanics implements Listener {
 					p.teleport(SpawnMechanics.getRandomSpawnPoint(p));
 					p.setHealth(1); // They're in a duel, 1hp them instead.
 					// p.setLevel(1);
-					setPlayerHP(p.getName(), 1);
+					setPlayerHP(p, 1);
 					e.setDamage(0);
 					p.sendMessage("");
 					p.sendMessage(ChatColor.RED + "You have " + ChatColor.BOLD + i_hours + "h " + ChatColor.RED
@@ -2535,18 +2542,18 @@ public class HealthMechanics implements Listener {
 				p.setSneaking(false);
 				p.setHealth(0);
 				// p.setLevel(0);
-				setPlayerHP(p.getName(), 0);
+				setPlayerHP(p, 0);
 				// p.playEffect(EntityEffect.DEATH);
 				return;
 			}
 			p.setHealth(1); // They're in a duel, 1hp them instead.
-			setPlayerHP(p.getName(), 1);
+			setPlayerHP(p, 1);
 			// p.setLevel(1);
 			e.setCancelled(true);
 			return;
 		}
 
-		setPlayerHP(p.getName(), (int) new_hp);
+		setPlayerHP(p, (int) new_hp);
 		// p.setLevel((int)new_hp);
 
 		double health_percent = (new_hp / max_hp);

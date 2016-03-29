@@ -1588,16 +1588,16 @@ public class DuelMechanics implements Listener {
 				}, 1L);
 
 				// They would die from this, save them, cancel duel.
-				RealmMechanics.player_god_mode.put(attacked.getName(), System.currentTimeMillis());
+				RealmMechanics.player_god_mode.put(attacked.getUniqueId(), System.currentTimeMillis());
 				attacked.setFireTicks(0);
 				attacked.setFallDistance(0.0F);
 				attacked.removePotionEffect(PotionEffectType.POISON);
 				attacked.setHealth(20);
-				HealthMechanics.setPlayerHP(attacked.getName(), 20);
+				HealthMechanics.setPlayerHP(attacked, 20);
 				// attacked.setLevel(1);
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 					public void run() {
-						RealmMechanics.player_god_mode.remove(attacked.getName());
+						RealmMechanics.player_god_mode.remove(attacked.getUniqueId());
 					}
 				}, 3 * 20L);
 
@@ -1676,16 +1676,16 @@ public class DuelMechanics implements Listener {
 		if (duel_map.get(attacked.getName()).equalsIgnoreCase(attacker.getName())) {
 			Damageable poo = (Damageable) attacked;
 			if (poo.getHealth() - e.getDamage() <= 1) {
-				RealmMechanics.player_god_mode.put(attacked.getName(), System.currentTimeMillis());
+				RealmMechanics.player_god_mode.put(attacked.getUniqueId(), System.currentTimeMillis());
 				attacked.setFireTicks(0);
 				attacked.setFallDistance(0.0F);
 				attacked.removePotionEffect(PotionEffectType.POISON);
 				attacked.setHealth(2);
-				HealthMechanics.setPlayerHP(attacked.getName(), 10);
+				HealthMechanics.setPlayerHP(attacked, 10);
 				// attacked.setLevel(1);
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 					public void run() {
-						RealmMechanics.player_god_mode.remove(attacked.getName());
+						RealmMechanics.player_god_mode.remove(attacked.getUniqueId());
 					}
 				}, 3 * 20L);
 
@@ -1738,14 +1738,14 @@ public class DuelMechanics implements Listener {
 				Damageable poo9 = (Damageable) attacked;
 				System.out.print("DUEL > DMG: " + e.getDamage() + " Winner: " + attacker.getName() + " Loser: "
 						+ attacked.getName() + " Losers HP:" + poo9.getHealth() + " HP: "
-						+ HealthMechanics.getPlayerHP(attacked.getName()));
+						+ HealthMechanics.getPlayerHP(attacked));
 				e.setDamage(0);
 				return;
 			}
 
 			e.setCancelled(false);
 			attacked.damage(e.getDamage());
-			HealthMechanics.setOverheadHP(attacked, HealthMechanics.getPlayerHP(attacked.getName()));
+			HealthMechanics.setOverheadHP(attacked, HealthMechanics.getPlayerHP(attacked));
 			return;
 			// Cancel any previously made event cancels... if this doesn't work,
 			// just do direct damage lool.
