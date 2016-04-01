@@ -36,13 +36,13 @@ public class CommandAllowFight implements CommandExecutor {
 			if (!ModerationMechanics.allowsFight.contains(p.getName())) {
 				isGod = RealmMechanics.player_god_mode.containsKey(p.getName());
 				ModerationMechanics.allowsFight.add(p.getName());
-				HealthMechanics.setPlayerHP(p.getName(), HealthMechanics.health_data.get(p.getName()));
+				HealthMechanics.setPlayerHP(p, HealthMechanics.health_data.get(p.getUniqueId()));
 				if (isGod)
 					RealmMechanics.player_god_mode.remove(p.getName());
 				sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "You toggled on fight mode.");
 			} else {
 				ModerationMechanics.allowsFight.remove(p.getName());
-				HealthMechanics.setPlayerHP(p.getName(), HealthMechanics.health_data.get(p.getName()));
+				HealthMechanics.setPlayerHP(p, HealthMechanics.health_data.get(p.getName()));
 				sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "You toggled off fight mode");
 			}
 		}

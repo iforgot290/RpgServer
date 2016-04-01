@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -1005,7 +1006,7 @@ public class MerchantMechanics implements Listener {
 			} // Only 'Trader' should do anything.
 			e.setCancelled(true);
 
-			p.playSound(p.getLocation(), Sound.WOOD_CLICK, 1.0F, 1.0F);
+			p.playSound(p.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1.0F, 1.0F);
 			if (in_npc_shop.contains(p.getName())) {
 				in_npc_shop.remove(p.getName());
 			}
@@ -1038,7 +1039,7 @@ public class MerchantMechanics implements Listener {
 			// ItemStack(Material.INK_SACK, 1, (short) 8),
 			// ChatColor.YELLOW.toString() +
 			// "Click to ACCEPT Trade", ""));
-			p.playSound(p.getLocation(), Sound.WOOD_CLICK, 1.0F, 1.0F);
+			p.playSound(p.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1.0F, 1.0F);
 			if (in_npc_shop.contains(p.getName())) {
 				in_npc_shop.remove(p.getName());
 			}
@@ -1068,7 +1069,7 @@ public class MerchantMechanics implements Listener {
 			// ItemStack(Material.INK_SACK, 1, (short) 8),
 			// ChatColor.YELLOW.toString() +
 			// "Click to ACCEPT Trade", ""));
-			p.playSound(p.getLocation(), Sound.WOOD_CLICK, 1.0F, 1.0F);
+			p.playSound(p.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1.0F, 1.0F);
 			if (in_npc_shop.contains(p.getName())) {
 				in_npc_shop.remove(p.getName());
 			}
@@ -1101,7 +1102,7 @@ public class MerchantMechanics implements Listener {
 			// ItemStack(Material.INK_SACK, 1, (short) 8),
 			// ChatColor.YELLOW.toString() +
 			// "Click to ACCEPT Trade", ""));
-			p.playSound(p.getLocation(), Sound.WOOD_CLICK, 1.0F, 1.0F);
+			p.playSound(p.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1.0F, 1.0F);
 			if (in_npc_shop.contains(p.getName())) {
 				in_npc_shop.remove(p.getName());
 			}
@@ -1126,7 +1127,7 @@ public class MerchantMechanics implements Listener {
 			if (EcashMechanics.ecash_storage_map.containsKey(p.getName())) {
 				Inventory ecash_inv = Hive.convertStringToInventory(null,
 						EcashMechanics.ecash_storage_map.get(p.getName()), "E-Cash Storage", 54);
-				p.playSound(p.getLocation(), Sound.WOOD_CLICK, 1.0F, 1.0F);
+				p.playSound(p.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1.0F, 1.0F);
 				boolean found_stuff = false;
 				List<ItemStack> giveBack = new ArrayList<ItemStack>();
 				for (ItemStack is : ecash_inv) {
@@ -1147,7 +1148,7 @@ public class MerchantMechanics implements Listener {
 					p.sendMessage(
 							ChatColor.RED + "A mount/mule was found in your E-Cash Storage, it has been removed!");
 					for (Player GM : Bukkit.getOnlinePlayers()) {
-						if (PermissionMechanics.isGM(GM.getName())) {
+						if (PermissionMechanics.isGM(GM)) {
 							GM.sendMessage(ChatColor.AQUA.toString() + ChatColor.UNDERLINE + p.getName()
 									+ ChatColor.AQUA + " has been found with a mule/mount in their E-Cash Storage.");
 						}
@@ -1159,7 +1160,7 @@ public class MerchantMechanics implements Listener {
 				in_npc_shop.add(p.getName());
 				p.openInventory(ecash_inv);
 			} else {
-				String rank = PermissionMechanics.getRank(p.getName());
+				String rank = PermissionMechanics.getRank(p);
 				if (!(rank.contains("sub")) && !(p.isOp()) && !(rank.contains("pmod"))) {
 					p.sendMessage(ChatColor.GRAY + "E-Cash Storage: " + ChatColor.WHITE.toString()
 							+ "I'm sorry, but I only provide item storing services to Dungeon Realm's subscribers! Gain access today at "
@@ -1168,7 +1169,7 @@ public class MerchantMechanics implements Listener {
 				}
 				// First time.
 				Inventory ecash_inv = Bukkit.createInventory(null, 54, "E-Cash Storage");
-				p.playSound(p.getLocation(), Sound.WOOD_CLICK, 1.0F, 1.0F);
+				p.playSound(p.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1.0F, 1.0F);
 				if (in_npc_shop.contains(p.getName())) {
 					in_npc_shop.remove(p.getName());
 				}
@@ -1200,7 +1201,7 @@ public class MerchantMechanics implements Listener {
 				return;
 			}
 
-			p.playSound(p.getLocation(), Sound.WOOD_CLICK, 1.0F, 1.0F);
+			p.playSound(p.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1.0F, 1.0F);
 			if (in_npc_shop.contains(p.getName())) {
 				in_npc_shop.remove(p.getName());
 			}
@@ -1295,7 +1296,7 @@ public class MerchantMechanics implements Listener {
 				return;
 			}
 
-			int shard_count = InstanceMechanics.getPortalShardCount(pl.getName(), shard_tier);
+			int shard_count = InstanceMechanics.getPortalShardCount(pl, shard_tier);
 			if (total_price > 0 && (shard_count < total_price)) {
 				Main.d("Amount of shards for tier " + shard_tier + ": " + shard_count + " Total Price: " + total_price);
 				pl.sendMessage(ChatColor.RED + "You do not have enough Portal Key Shards to complete this purchase.");
@@ -1306,7 +1307,7 @@ public class MerchantMechanics implements Listener {
 				return;
 			}
 
-			InstanceMechanics.subtractShards(pl.getName(), shard_tier, total_price);
+			InstanceMechanics.subtractShards(pl, shard_tier, total_price);
 
 			/*
 			 * if(total_price > 0 && !Hive.doTheyHaveEnoughECASH(pl.getName(),
@@ -1358,7 +1359,7 @@ public class MerchantMechanics implements Listener {
 			pl.sendMessage(
 					ChatColor.RED + "" + ChatColor.BOLD + "-" + ChatColor.RED + total_price + ChatColor.BOLD + "PKS");
 			pl.sendMessage(ChatColor.GREEN + "Transaction successful.");
-			pl.playSound(pl.getLocation(), Sound.ORB_PICKUP, 1F, 1F);
+			pl.playSound(pl.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
 
 			try {
 				ParticleEffect.sendToLocation(ParticleEffect.HAPPY_VILLAGER, pl.getLocation().add(0, 2.5, 0),
@@ -1445,7 +1446,7 @@ public class MerchantMechanics implements Listener {
 				return;
 			}
 
-			if (total_price > 0 && !Hive.doTheyHaveEnoughECASH(pl.getName(), total_price)) {
+			if (total_price > 0 && !Hive.doTheyHaveEnoughECASH(pl.getUniqueId(), total_price)) {
 				pl.sendMessage(ChatColor.RED + "You do not have enough E-CASH to complete this purchase.");
 				pl.sendMessage(
 						ChatColor.GRAY + "" + amount_to_buy + " X " + price_per + " EC/ea = " + total_price + " EC.");
@@ -1457,13 +1458,13 @@ public class MerchantMechanics implements Listener {
 			int total_ecash = Hive.player_ecash.get(pl.getName());
 			total_ecash -= total_price;
 
-			final String p_name = pl.getName();
+			final UUID id = pl.getUniqueId();
 			final int ftotal_ecash = total_ecash;
 
-			Hive.player_ecash.put(pl.getName(), total_ecash);
+			Hive.player_ecash.put(pl.getUniqueId(), total_ecash);
 			Thread t = new Thread(new Runnable() {
 				public void run() {
-					DonationMechanics.setECASH_SQL(p_name, ftotal_ecash);
+					DonationMechanics.setECASH_SQL(id, ftotal_ecash);
 				}
 			});
 			t.start();
@@ -1520,7 +1521,7 @@ public class MerchantMechanics implements Listener {
 			pl.sendMessage(
 					ChatColor.RED + "" + ChatColor.BOLD + "-" + ChatColor.RED + total_price + ChatColor.BOLD + "EC");
 			pl.sendMessage(ChatColor.GREEN + "Transaction successful.");
-			pl.playSound(pl.getLocation(), Sound.ORB_PICKUP, 1F, 1F);
+			pl.playSound(pl.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
 			try {
 				ParticleEffect.sendToLocation(ParticleEffect.HAPPY_VILLAGER, pl.getLocation().add(0, 2.5, 0),
 						new Random().nextFloat(), new Random().nextFloat(), new Random().nextFloat(), 0.5F, 20);
@@ -1535,10 +1536,10 @@ public class MerchantMechanics implements Listener {
 			}
 			pl.updateInventory();
 
-			AchievementMechanics.addAchievement(pl.getName(), "Supporter");
+			AchievementMechanics.addAchievement(pl, "Supporter");
 
 			if (product.getType() == Material.JUKEBOX) {
-				AchievementMechanics.addAchievement(p_name, "The Bard");
+				AchievementMechanics.addAchievement(pl, "The Bard");
 			}
 
 			ecash_item_being_bought.remove(pl.getName());
@@ -1617,7 +1618,7 @@ public class MerchantMechanics implements Listener {
 			pl.sendMessage(
 					ChatColor.RED + "" + ChatColor.BOLD + "-" + ChatColor.RED + total_price + ChatColor.BOLD + "G");
 			pl.sendMessage(ChatColor.GREEN + "Transaction successful.");
-			pl.playSound(pl.getLocation(), Sound.ORB_PICKUP, 1F, 1F);
+			pl.playSound(pl.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
 			try {
 				ParticleEffect.sendToLocation(ParticleEffect.HAPPY_VILLAGER, pl.getLocation().add(0, 2.5, 0),
 						new Random().nextFloat(), new Random().nextFloat(), new Random().nextFloat(), 0.5F, 20);
@@ -1704,7 +1705,7 @@ public class MerchantMechanics implements Listener {
 			pl.sendMessage(
 					ChatColor.RED + "" + ChatColor.BOLD + "-" + ChatColor.RED + total_price + ChatColor.BOLD + "G");
 			pl.sendMessage(ChatColor.GREEN + "Transaction successful.");
-			pl.playSound(pl.getLocation(), Sound.ORB_PICKUP, 1F, 1F);
+			pl.playSound(pl.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
 			try {
 				ParticleEffect.sendToLocation(ParticleEffect.HAPPY_VILLAGER, pl.getLocation().add(0, 2.5, 0),
 						new Random().nextFloat(), new Random().nextFloat(), new Random().nextFloat(), 0.5F, 20);
@@ -1743,7 +1744,7 @@ public class MerchantMechanics implements Listener {
 			int price = (int) MountMechanics.getShardPrice(e.getCurrentItem());
 			int total_price = price * 64;
 			int tier = (int) MountMechanics.getShardPriceTier(e.getCurrentItem());
-			int shard_count = InstanceMechanics.getPortalShardCount(pl.getName(), tier);
+			int shard_count = InstanceMechanics.getPortalShardCount(pl, tier);
 			ChatColor cc = ProfessionMechanics.getTierColor(tier);
 			if (shard_count < price) {
 				pl.sendMessage(ChatColor.RED + "You do " + ChatColor.UNDERLINE + "NOT" + ChatColor.RED + " have enough "
@@ -1788,7 +1789,7 @@ public class MerchantMechanics implements Listener {
 			int price = (int) Hive.getECASHPrice(e.getCurrentItem());
 			int total_price = price * 64;
 
-			if (!Hive.doTheyHaveEnoughECASH(pl.getName(), price)) {
+			if (!Hive.doTheyHaveEnoughECASH(pl.getUniqueId(), price)) {
 				pl.sendMessage(ChatColor.RED + "You do " + ChatColor.UNDERLINE + "NOT" + ChatColor.RED
 						+ " have enough E-CASH to buy a " + ChatColor.UNDERLINE.toString()
 						+ e.getCurrentItem().getItemMeta().getDisplayName() + ".");
@@ -2147,7 +2148,7 @@ public class MerchantMechanics implements Listener {
 				e.getCurrentItem().setDurability((short) 10);
 				e.setCurrentItem(TradeMechanics.setIinfo(new ItemStack(Material.INK_SACK, 1, (short) 10),
 						ChatColor.GREEN.toString() + "Trade ACCEPTED.", ChatColor.GRAY.toString() + ""));
-				clicker.playSound(clicker.getLocation(), Sound.BLAZE_HIT, 1F, 2.0F);
+				clicker.playSound(clicker.getLocation(), Sound.ENTITY_BLAZE_HURT, 1F, 2.0F);
 
 				for (ItemStack i : clicker.getInventory()) {
 					if (i == null || i.getType() == Material.AIR) {
@@ -2204,7 +2205,7 @@ public class MerchantMechanics implements Listener {
 					clicker.getInventory().setItem(clicker.getInventory().firstEmpty(), (i));
 				}
 				clicker.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Trade accepted.");
-				clicker.playSound(clicker.getLocation(), Sound.BLAZE_HIT, 1F, 1.5F);
+				clicker.playSound(clicker.getLocation(), Sound.ENTITY_BLAZE_HURT, 1F, 1.5F);
 				tradeWin.clear();
 
 				in_npc_shop.remove(clicker.getName());

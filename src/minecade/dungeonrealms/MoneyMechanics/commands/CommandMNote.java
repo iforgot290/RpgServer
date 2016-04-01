@@ -15,7 +15,7 @@ public class CommandMNote implements CommandExecutor {
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
-		if (!(Main.isMaster(p.getName()))) {
+		if (!(Main.isMaster(p.getUniqueId()))) {
 			return true;
 		}
 
@@ -31,12 +31,12 @@ public class CommandMNote implements CommandExecutor {
 			// p.getInventory().addItem(CraftItemStack.asCraftCopy(t1_gem_pouch));
 		}
 		if (args[0].equalsIgnoreCase("upload")) {
-			MoneyMechanics.uploadBankDatabaseData(p.getName(), false);
+			MoneyMechanics.uploadBankDatabaseData(p.getUniqueId(), false);
 			p.sendMessage("All GEMS data uploaded to SQL.");
 			return true;
 		}
 		if (args[0].equalsIgnoreCase("download")) {
-			MoneyMechanics.downloadBankDatabaseData(p.getName());
+			MoneyMechanics.downloadBankDatabaseData(p.getUniqueId());
 			p.sendMessage("All GEMS data downloaded and loaded into memory.");
 			return true;
 		}

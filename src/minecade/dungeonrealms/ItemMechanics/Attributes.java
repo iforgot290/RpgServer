@@ -225,7 +225,7 @@ public class Attributes {
 	}
 
 	// This may be modified
-	public net.minecraft.server.v1_7_R2.ItemStack nmsStack;
+	public net.minecraft.server.v1_9_R1.ItemStack nmsStack;
 
 	private NBTTagCompound parent;
 	private NBTTagList attributes;
@@ -235,10 +235,11 @@ public class Attributes {
 		this.nmsStack = CraftItemStack.asNMSCopy(stack);
 
 		// Load NBT
-		if (nmsStack.tag == null) {
-			parent = (nmsStack.tag = new NBTTagCompound());
+		if (nmsStack.getTag() == null) {
+			nmsStack.setTag(new NBTTagCompound());
+			parent = nmsStack.getTag();
 		} else {
-			parent = nmsStack.tag;
+			parent = nmsStack.getTag();
 		}
 
 		// Load attribute list

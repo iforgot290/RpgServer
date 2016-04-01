@@ -40,7 +40,7 @@ public class CommandSetOre implements CommandExecutor {
 		}
 
 		ProfessionMechanics.ore_place.put(p.getName(), ore_type);
-		p.setItemInHand(new ItemStack(Material.STONE, -1));
+		p.getInventory().setItemInMainHand(new ItemStack(Material.STONE, -1));
 		p.setGameMode(GameMode.CREATIVE);
 		p.sendMessage(ChatColor.GOLD + "Now placing: '" + ore_type + "' ore.");
 		p.sendMessage(ChatColor.GRAY

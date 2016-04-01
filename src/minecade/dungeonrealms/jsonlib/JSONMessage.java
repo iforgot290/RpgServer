@@ -156,7 +156,7 @@ public class JSONMessage {
 
 	public void sendToPlayer(Player p) {
 		((CraftPlayer) p).getHandle().playerConnection
-				.sendPacket(new PacketPlayOutChat(ChatSerializer.a(json.toString()), true));
+				.sendPacket(new PacketPlayOutChat(ChatSerializer.a(json.toString())));
 	}
 
 	public void setColor(ChatColor color) {

@@ -1,6 +1,7 @@
 package minecade.dungeonrealms.MonsterMechanics.commands;
 
 import java.util.Random;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -25,7 +26,7 @@ public class CommandMon implements CommandExecutor {
 			return true;
 		}
 
-		Location l = p.getTargetBlock(null, 128).getLocation().add(0, 1, 0);
+		Location l = p.getTargetBlock((Set<Material>) null, 128).getLocation().add(0, 1, 0);
 
 		if (args.length == 2) {
 			p.getInventory().addItem(new ItemStack(Material.MOB_SPAWNER, 10));

@@ -1,7 +1,5 @@
 package minecade.dungeonrealms.ModerationMechanics.commands;
 
-import java.io.File;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -45,7 +43,7 @@ public class CommandRealmClone implements CommandExecutor {
 		}
 
 		Bukkit.getServer().unloadWorld(Bukkit.getWorld(p.getName()), false);
-		File world_root = new File(RealmMechanics.rootDir + "/" + p.getName());
+		//File world_root = new File(RealmMechanics.rootDir + "/" + p.getName());
 		// RealmMechanics.deleteFolder(world_root);
 
 		mod.sendMessage(ChatColor.RED + "CLONING REALM OF " + p_name + " ....");
@@ -53,7 +51,7 @@ public class CommandRealmClone implements CommandExecutor {
 		// PORTAL ONCE THE DOWNLOAD IS COMPLETE.");
 		Location portal_location = p.getLocation().add(0, 1, 0);
 		p.getWorld().playEffect(portal_location, Effect.ENDER_SIGNAL, 20, 5);
-		p.playSound(p.getLocation(), Sound.ENDERMAN_TELEPORT, 5F, 1.25F);
+		p.playSound(p.getLocation(), Sound.ENTITY_ENDERMEN_TELEPORT, 5F, 1.25F);
 		RealmMechanics.has_portal.put(p.getName(), true);
 		RealmMechanics.makePortal(p.getName(), portal_location.subtract(0, 2, 0), 60);
 

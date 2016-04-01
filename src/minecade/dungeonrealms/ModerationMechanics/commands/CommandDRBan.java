@@ -2,6 +2,7 @@ package minecade.dungeonrealms.ModerationMechanics.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,7 +23,7 @@ public class CommandDRBan implements CommandExecutor {
 		String rank = "";
 		boolean perm = false;
 		if (p != null) {
-			rank = PermissionMechanics.getRank(p.getName());
+			rank = PermissionMechanics.getRank(p);
 			if (rank == null) {
 				return true;
 			}
@@ -45,7 +46,8 @@ public class CommandDRBan implements CommandExecutor {
 		if (p != null) {
 			banner = p.getName();
 		}
-		final String p_name = args[0];
+		@SuppressWarnings("deprecation")
+		final OfflinePlayer op = Bukkit.getOfflinePlayer(args[0]);
 		int hours = 24;
 		try {
 			hours = Integer.parseInt(args[1]);
@@ -87,8 +89,8 @@ public class CommandDRBan implements CommandExecutor {
 		final String f_banner = banner;
 		final boolean f_perm = perm;
 
-		if (PermissionMechanics.getRank(p_name).equalsIgnoreCase("gm")
-				|| (Bukkit.getPlayer(p_name) != null && Bukkit.getPlayer(p_name).isOp() && sender instanceof Player)) {
+		if (PermissionMechanics.getRank(op).equalsIgnoreCase("gm")
+				|| op.isOp() && sender instanceof Player) {
 			p.sendMessage(ChatColor.RED + "You cannot ban a Game Moderator unless you have console acesss.");
 			return true;
 		}
@@ -97,7 +99,7 @@ public class CommandDRBan implements CommandExecutor {
 			public void run() {
 				try {
 					Thread.sleep(100);
-					ModerationMechanics.BanPlayer(p_name, unban_date, f_reason, f_banner, f_perm);
+					ModerationMechanics.BanPlayer(op.getUniqueId(), unban_date, f_reason, f_banner, f_perm);
 				} catch (Exception err) {
 				} // Wait 100ms -- this should occur after function has
 					// returned.
@@ -107,8 +109,8 @@ public class CommandDRBan implements CommandExecutor {
 		});
 		ban_player.start();
 
-		if (Bukkit.getPlayer(p_name) != null) {
-			Player banned = Bukkit.getPlayer(p_name);
+		if (op.isOnline()) {
+			Player banned = op.getPlayer();
 			if (reason == "") {
 				banned.kickPlayer(ChatColor.RED.toString()
 						+ "Your account has been TEMPORARILY locked due to suspisious activity." + "\n"
@@ -123,7 +125,7 @@ public class CommandDRBan implements CommandExecutor {
 		} else {
 			Thread t = new Thread(new Runnable() {
 				public void run() {
-					CommunityMechanics.sendPacketCrossServer("@ban@" + p_name + ":" + f_reason, -1, true);
+					CommunityMechanics.sendPacketCrossServer("@ban@" + op.getUniqueId() + ":" + f_reason, -1, true);
 				}
 			});
 
@@ -131,12 +133,12 @@ public class CommandDRBan implements CommandExecutor {
 		}
 
 		if (p != null) {
-			p.sendMessage(ChatColor.AQUA + "You have banned the user '" + p_name + "' for " + hours + " hours.");
+			p.sendMessage(ChatColor.AQUA + "You have banned the user '" + op.getName() + "' for " + hours + " hours.");
 			p.sendMessage(ChatColor.GRAY + "Reason: " + reason);
 		}
 
 		ModerationMechanics.log
-				.info("[ModerationMechanics] BANNED player " + p_name + " for " + hours + " hours because " + reason);
+				.info("[ModerationMechanics] BANNED player " + op.getName() + " for " + hours + " hours because " + reason);
 
 		return true;
 	}

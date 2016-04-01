@@ -22,22 +22,19 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -83,11 +80,6 @@ import minecade.dungeonrealms.MountMechanics.MountMechanics;
 import minecade.dungeonrealms.PartyMechanics.PartyMechanics;
 import minecade.dungeonrealms.SpawnMechanics.SpawnMechanics;
 import minecade.dungeonrealms.database.ConnectionPool;
-import net.minecraft.server.v1_9_R1.EntityPlayer;
-import net.minecraft.server.v1_9_R1.EntityTracker;
-import net.minecraft.server.v1_9_R1.EntityTrackerEntry;
-import net.minecraft.server.v1_9_R1.PacketPlayOutRespawn;
-import net.minecraft.server.v1_9_R1.WorldServer;
 
 @SuppressWarnings("deprecation")
 public class InstanceMechanics implements Listener {
@@ -278,7 +270,7 @@ public class InstanceMechanics implements Listener {
 						for (Player pl : Bukkit.getServer().getWorld(instance_name).getPlayers()) {
 							pl.setHealth(1);
 							// pl.setLevel(1);
-							HealthMechanics.setPlayerHP(pl.getName(), 1);
+							HealthMechanics.setPlayerHP(pl, 1);
 							pl.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD
 									+ "You have been drained of nearly all your life by the power of the inferno.");
 						}
@@ -320,28 +312,28 @@ public class InstanceMechanics implements Listener {
 								pl.sendMessage("");
 
 								if (formal_dungeon_name.equalsIgnoreCase("Varenglade")) {
-									AchievementMechanics.addAchievement(pl.getName(), "Burick the Fanatic");
+									AchievementMechanics.addAchievement(pl, "Burick the Fanatic");
 
 									if (party_size == 1) {
-										AchievementMechanics.addAchievement(pl.getName(), "Braving Burick");
+										AchievementMechanics.addAchievement(pl, "Braving Burick");
 									}
 								}
 
 								if (formal_dungeon_name.equalsIgnoreCase("Bandit Trove")) {
-									AchievementMechanics.addAchievement(pl.getName(), "Mayel the Cruel");
+									AchievementMechanics.addAchievement(pl, "Mayel the Cruel");
 								}
 								if (formal_dungeon_name.equalsIgnoreCase("Infernal Abyss")) {
-									AchievementMechanics.addAchievement(pl.getName(), "The Infernal Abyss");
+									AchievementMechanics.addAchievement(pl, "The Infernal Abyss");
 								}
 								if (formal_dungeon_name.equalsIgnoreCase("The Dark Depths of Aceron")) {
-									AchievementMechanics.addAchievement(pl.getName(), "The Dark Depths of Aceron");
+									AchievementMechanics.addAchievement(pl, "The Dark Depths of Aceron");
 								}
 								// if(formal_dungeon_name.eq)
 								String instance_template = pl.getWorld().getName();
 								instance_template = instance_template.substring(0, instance_template.indexOf("."));
 
 								int tier = getDungeonTier(instance_template);
-								giveTokens(pl.getName(), tier, instance_timing.get(pl.getWorld().getName()),
+								giveTokens(pl.getUniqueId(), tier, instance_timing.get(pl.getWorld().getName()),
 										instance_template);
 							}
 
@@ -450,7 +442,7 @@ public class InstanceMechanics implements Listener {
 						for (String s : instance_party.get(instance_name)) {
 							if (Bukkit.getServer().getPlayer(s) != null) {
 								final Player pl = Bukkit.getServer().getPlayer(s);
-								saved_location_instance.put(pl.getName(), pl.getLocation());
+								saved_location_instance.put(pl.getUniqueId(), pl.getLocation());
 								if (!(teleport_on_load.contains(pl.getName()))) {
 									pl.sendMessage(ChatColor.LIGHT_PURPLE.toString() + "<" + ChatColor.BOLD + "P"
 											+ ChatColor.LIGHT_PURPLE + ">" + " Your party leader has started the '"
@@ -465,7 +457,7 @@ public class InstanceMechanics implements Listener {
 										Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin,
 												new Runnable() {
 													public void run() {
-														setPlayerEnvironment(pl, Environment.NETHER);
+														//setPlayerEnvironment(pl, Environment.NETHER);
 														pl.setFallDistance(0.0F);
 													}
 												}, 20L);
@@ -636,7 +628,7 @@ public class InstanceMechanics implements Listener {
 												Main.plugin.getServer().getScheduler()
 														.scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 															public void run() {
-																setPlayerEnvironment(pl, Environment.NETHER);
+																//setPlayerEnvironment(pl, Environment.NETHER);
 																pl.setFallDistance(0.0F);
 															}
 														}, 20L);
@@ -822,7 +814,7 @@ public class InstanceMechanics implements Listener {
 		return "C";
 	}
 
-	public void giveTokens(String p_name, int tier, long start_time, String world_template) {
+	public void giveTokens(UUID id, int tier, long start_time, String world_template) {
 		int tokens_to_give = 0;
 		long cur_time = System.currentTimeMillis();
 
@@ -890,8 +882,8 @@ public class InstanceMechanics implements Listener {
 			tokens_to_give = 1200 + new Random().nextInt(750);
 		}
 
-		if (Bukkit.getPlayer(p_name) != null) {
-			Player pl = Bukkit.getPlayer(p_name);
+		if (Bukkit.getPlayer(id) != null) {
+			Player pl = Bukkit.getPlayer(id);
 			// pl.sendMessage(tier_color.toString() + ChatColor.BOLD + " " +
 			// "Dungeon Grade: " + getGrade(percent));
 			pl.sendMessage(tier_color + "You have gained " + ChatColor.UNDERLINE + tokens_to_give + " Portal Shards"
@@ -899,16 +891,16 @@ public class InstanceMechanics implements Listener {
 		}
 
 		int tier_index = tier - 1;
-		if (!Hive.player_portal_shards.containsKey(p_name)) {
+		if (!Hive.player_portal_shards.containsKey(id)) {
 			return;
 		}
-		List<Integer> portal_shards = Hive.player_portal_shards.get(p_name);
+		List<Integer> portal_shards = Hive.player_portal_shards.get(id);
 		int current_shards = portal_shards.get(tier_index);
 
 		current_shards += tokens_to_give;
 		portal_shards.set(tier_index, current_shards);
 
-		Hive.player_portal_shards.put(p_name, portal_shards);
+		Hive.player_portal_shards.put(id, portal_shards);
 	}
 
 	public static int getDungeonTier(String instance_template) {
@@ -975,17 +967,21 @@ public class InstanceMechanics implements Listener {
 	public static int getPortalShardCount(Player player, int tier) {
 		return getPortalShardCount(player.getUniqueId(), tier);
 	}
+	
+	public static void subtractShards(Player pl, int tier, int amount){
+		subtractShards(pl.getUniqueId(), tier, amount);
+	}
 
-	public static void subtractShards(String p_name, int tier, int amount) {
-		if (Hive.player_portal_shards.containsKey(p_name)) {
-			List<Integer> portal_shards = Hive.player_portal_shards.get(p_name);
+	public static void subtractShards(UUID id, int tier, int amount) {
+		if (Hive.player_portal_shards.containsKey(id)) {
+			List<Integer> portal_shards = Hive.player_portal_shards.get(id);
 			int old_amount = portal_shards.get((tier - 1));
 			portal_shards.set((tier - 1), old_amount - amount);
-			Hive.player_portal_shards.put(p_name, portal_shards);
+			Hive.player_portal_shards.put(id, portal_shards);
 		}
 	}
 
-	public static void setPlayerEnvironment(Player pl, Environment env) {
+	/*public static void setPlayerEnvironment(Player pl, Environment env) {
 		int dimension = 0;
 		if (env == Environment.NORMAL) {
 			dimension = 0;
@@ -1016,29 +1012,29 @@ public class InstanceMechanics implements Listener {
 		pl.setFlying(fly);
 		updatePlayerView(pl);
 		updateEntities(pl);
-	}
+	}*/
 
 	// This just updated any open inventory they may have.
-	private static void updatePlayerView(Player player) {
+	/*private static void updatePlayerView(Player player) {
 		if ((player == null) || (((CraftPlayer) player).getHandle().activeContainer == null))
 			return;
 		((CraftPlayer) player).getHandle().updateInventory(((CraftPlayer) player).getHandle().activeContainer);
-	}
+	}*/
 
 	// So this (I assume) untracks the player and retracks them for entities
 	// within 32x32x32...
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	private static void updateEntities(Player player) {
 		WorldServer ws = ((CraftWorld) player.getWorld()).getHandle();
 		EntityTracker tracker = ws.tracker;
 		for (Entity ent : player.getNearbyEntities(32.0D, 32.0D, 32.0D)) {
 			EntityTrackerEntry entry = (EntityTrackerEntry) tracker.trackedEntities.get(ent.getEntityId());
-			List<EntityPlayer> nms = new ArrayList<EntityPlayer>();
+			List<EntityHuman> nms = new ArrayList<EntityHuman>();
 			nms.add(((CraftPlayer) player).getHandle());
 			entry.trackedPlayers.removeAll(nms);
 			entry.scanPlayers(nms);
 		}
-	}
+	}*/
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDeath(EntityDeathEvent e) {
@@ -1060,7 +1056,7 @@ public class InstanceMechanics implements Listener {
 				if (custom_name.equalsIgnoreCase("Wicked Gate Keeper")) {
 					setBlockAreaType(ent.getWorld(), 206, 35, 72, 206, 38, 75, Material.AIR);
 					for (Player pl : ent.getWorld().getPlayers()) {
-						pl.playSound(pl.getLocation(), Sound.DOOR_OPEN, 1F, 1F);
+						pl.playSound(pl.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1F, 1F);
 						pl.sendMessage(ChatColor.RED + "Wicked Gate Keeper: " + ChatColor.WHITE
 								+ "Hah! You may have defeated me, but you only further your own destruction.");
 						pl.sendMessage(ChatColor.YELLOW + "You hear a gateway open nearby.");
@@ -1069,7 +1065,7 @@ public class InstanceMechanics implements Listener {
 				if (custom_name.equalsIgnoreCase("Wicked Sargent Derricks")) {
 					setBlockAreaType(ent.getWorld(), 9, 82, 4, 11, 85, 4, Material.AIR);
 					for (Player pl : ent.getWorld().getPlayers()) {
-						pl.playSound(pl.getLocation(), Sound.DOOR_OPEN, 1F, 1F);
+						pl.playSound(pl.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1F, 1F);
 						pl.sendMessage(ChatColor.RED + "Wicked Sargent Derricks: " + ChatColor.WHITE
 								+ "Death... will come... for all.");
 						pl.sendMessage(ChatColor.YELLOW + "You hear a gateway open nearby.");
@@ -1078,7 +1074,7 @@ public class InstanceMechanics implements Listener {
 				if (custom_name.equalsIgnoreCase("Wicked Captian Roedock")) {
 					setBlockAreaType(ent.getWorld(), 167, 134, -9, 169, 137, -9, Material.AIR);
 					for (Player pl : ent.getWorld().getPlayers()) {
-						pl.playSound(pl.getLocation(), Sound.DOOR_OPEN, 1F, 1F);
+						pl.playSound(pl.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1F, 1F);
 						pl.sendMessage(ChatColor.RED + "Wicked Captian Roedock: " + ChatColor.WHITE
 								+ "Your ignorance will be your undoing, foolish Andalucians.");
 						pl.sendMessage(ChatColor.YELLOW + "You hear a gateway open nearby.");
@@ -1087,7 +1083,7 @@ public class InstanceMechanics implements Listener {
 				if (custom_name.equalsIgnoreCase("Devious Demon")) {
 					setBlockAreaType(ent.getWorld(), -25, 170, -5, -23, 173, -5, Material.AIR);
 					for (Player pl : ent.getWorld().getPlayers()) {
-						pl.playSound(pl.getLocation(), Sound.DOOR_OPEN, 1F, 1F);
+						pl.playSound(pl.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1F, 1F);
 						pl.sendMessage(ChatColor.RED + "Devious Demon: " + ChatColor.WHITE
 								+ "How dare you... defy the powers of Akatan");
 						pl.sendMessage(ChatColor.YELLOW + "You hear a gateway open nearby.");
@@ -1192,9 +1188,9 @@ public class InstanceMechanics implements Listener {
 					for (Player p : pl.getWorld().getPlayers()) {
 						p.removePotionEffect(PotionEffectType.WITHER);
 						p.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, (int) (90 * 20L), 0));
-						p.playSound(p.getLocation(), Sound.ENDERDRAGON_HIT, 5F, 1.5F);
+						p.playSound(p.getLocation(), Sound.ENTITY_ENDERDRAGON_HURT, 5F, 1.5F);
 						p.sendMessage(ChatColor.YELLOW + "Debuff timer refreshed, " + ChatColor.UNDERLINE
-								+ HealthMechanics.getMaxHealthValue(p.getName()) + " DMG " + ChatColor.YELLOW
+								+ HealthMechanics.getMaxHealthValue(p) + " DMG " + ChatColor.YELLOW
 								+ "will be inflicted in 90s unless another beacon is activated.");
 					}
 
@@ -1251,9 +1247,9 @@ public class InstanceMechanics implements Listener {
 				for (Player pl : p.getWorld().getPlayers()) {
 					pl.removePotionEffect(PotionEffectType.WITHER);
 					pl.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, (int) (90 * 20L), 0));
-					pl.playSound(pl.getLocation(), Sound.ENDERDRAGON_HIT, 5F, 1.5F);
+					pl.playSound(pl.getLocation(), Sound.ENTITY_ENDERDRAGON_HURT, 5F, 1.5F);
 					pl.sendMessage(ChatColor.YELLOW + "Debuff timer refreshed, " + ChatColor.UNDERLINE
-							+ HealthMechanics.getMaxHealthValue(pl.getName()) + " DMG " + ChatColor.YELLOW
+							+ HealthMechanics.getMaxHealthValue(pl) + " DMG " + ChatColor.YELLOW
 							+ "will be inflicted in 90s unless another beacon is activated.");
 				}
 			}
@@ -1463,7 +1459,7 @@ public class InstanceMechanics implements Listener {
 			if (saved_location_instance.containsKey(pl.getName())) {
 				pl.teleport(saved_location_instance.get(pl.getName()));
 			} else {
-				pl.teleport(SpawnMechanics.getRandomSpawnPoint(pl.getName()));
+				pl.teleport(SpawnMechanics.getRandomSpawnPoint(pl));
 			}
 			saved_location_instance.remove(pl.getName());
 			player_instance.remove(pl.getName());

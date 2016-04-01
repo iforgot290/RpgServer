@@ -3699,7 +3699,7 @@ public class Hive implements Listener {
 					long unban_date = -1L; // (System.currentTimeMillis() +
 											// (1000 * (72 * 3600)));
 					String reason = "[AUTO] Dupe Exploit";
-					ModerationMechanics.BanPlayer(p.getName(), unban_date, reason, "Console", false);
+					ModerationMechanics.BanPlayer(p.getUniqueId(), unban_date, reason, "Console", false);
 					if (Bukkit.getPlayer(p_name) != null) {
 						Player banned = Bukkit.getPlayer(p_name);
 						if (reason == "") {

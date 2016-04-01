@@ -26,6 +26,7 @@ import minecade.dungeonrealms.models.LogModel;
 public class PlayerLevel {
 
 	private Player p;
+	private UUID id;
 	private int level;
 	private int xp;
 	private Entity last_mob_gained_from;
@@ -69,6 +70,7 @@ public class PlayerLevel {
 		this.resetCode = "";
 		this.resetCost = 0;
 		this.p = Bukkit.getPlayer(id);
+		this.id = id;
 		if (aSync) {
 			new BukkitRunnable() {
 				public void run() {
@@ -110,8 +112,8 @@ public class PlayerLevel {
 			setXP(getXP() + xp);
 		}
 		// saveData(true, false);
-		if (PlayerManager.getPlayerModel(p_name).getToggleList() != null
-				&& PlayerManager.getPlayerModel(p_name).getToggleList().contains("debug")) {
+		if (PlayerManager.getPlayerModel(id).getToggleList() != null
+				&& PlayerManager.getPlayerModel(id).getToggleList().contains("debug")) {
 			if (p == null) {
 				checkPlayer();
 			}
@@ -150,8 +152,8 @@ public class PlayerLevel {
 	}
 
 	public void saveData(boolean remove) {
-		final String name = p_name;
-		Main.d("SAVED " + p_name + "'s DATA! Level: " + getLevel() + " XP: " + getXP());
+		final String name = id.toString();
+		Main.d("SAVED " + p.getName() + "'s DATA! Level: " + getLevel() + " XP: " + getXP());
 		final int level = getLevel();
 		final int xp = getXP();
 		if (level == 0) {
@@ -179,7 +181,7 @@ public class PlayerLevel {
 			}
 		}.runTaskAsynchronously(Main.plugin);
 		if (remove) {
-			PlayerManager.getPlayerModel(p_name).setPlayerLevel(null);
+			PlayerManager.getPlayerModel(id).setPlayerLevel(null);
 			return;
 		}
 	}
@@ -193,12 +195,12 @@ public class PlayerLevel {
 		freePoints += POINTS_PER_LEVEL;
 		updateScoreboardLevel();
 		if (getLevel() == 100) {
-			CommunityMechanics.sendPacketCrossServer("@level100@" + p_name + ":", -1, true);
-			AchievementMechanics.addAchievement(p_name, "Overachiever");
+			CommunityMechanics.sendPacketCrossServer("@level100@" + id.toString() + ":", -1, true);
+			AchievementMechanics.addAchievement(p, "Overachiever");
 			Bukkit.broadcastMessage(
-					ChatColor.AQUA.toString() + ChatColor.BOLD + p_name + ChatColor.WHITE + " has reached level 100!");
+					ChatColor.AQUA.toString() + ChatColor.BOLD + p.getName() + ChatColor.WHITE + " has reached level 100!");
 		}
-		new LogModel(LogType.LEVEL_UP, p_name, new JsonBuilder("level", getLevel()).getJson());
+		new LogModel(LogType.LEVEL_UP, id.toString(), new JsonBuilder("level", getLevel()).getJson());
 
 		if (alert) {
 			if (p == null) {
@@ -206,11 +208,11 @@ public class PlayerLevel {
 			}
 			if (p == null)
 				return;
-			p.getWorld().playSound(p.getLocation(), Sound.LEVEL_UP, 1, .4F);
+			p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, .4F);
 			p.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "         " + " LEVEL UP! " + ChatColor.YELLOW
 					+ ChatColor.UNDERLINE + (getLevel() - 1) + ChatColor.BOLD + " -> " + ChatColor.YELLOW
 					+ ChatColor.UNDERLINE + (getLevel()));
-			p.playSound(p.getLocation(), Sound.LEVEL_UP, 0.5F, 1F);
+			p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5F, 1F);
 			sendStatNoticeToPlayer(p);
 		}
 	}
@@ -232,13 +234,13 @@ public class PlayerLevel {
 	}
 
 	public void checkPlayer() {
-		this.p = Bukkit.getPlayer(p_name);
+		this.p = Bukkit.getPlayer(id);
 	}
 
 	public void loadData() {
 		try (PreparedStatement pst = ConnectionPool.getConnection().prepareStatement(
 				"SELECT player_level, player_xp, allocated_str, allocated_dex, allocated_int, allocated_vit, resets FROM player_database WHERE p_name = '"
-						+ p_name + "'")) {
+						+ id.toString() + "'")) {
 			ResultSet rs = pst.executeQuery();
 			if (!rs.first()) {
 				sendInsertUpdate();
@@ -270,7 +272,7 @@ public class PlayerLevel {
 	public void sendInsertUpdate() {
 		try (PreparedStatement pst = ConnectionPool.getConnection().prepareStatement(
 				"INSERT INTO player_database(p_name, player_level, player_xp, allocated_str, allocated_dex, allocated_int, allocated_vit) VALUES ('"
-						+ p_name + "', 1, 0, 0, 0, 0, 0) ON DUPLICATE KEY UPDATE p_name = '" + p_name + "'")) {
+						+ id.toString() + "', 1, 0, 0, 0, 0, 0) ON DUPLICATE KEY UPDATE p_name = '" + id.toString() + "'")) {
 			pst.executeUpdate();
 			pst.close();
 		} catch (SQLException e) {
@@ -333,7 +335,7 @@ public class PlayerLevel {
 	public void setXP(int xp) {
 		this.xp = xp;
 		if (p != null)
-			HealthMechanics.setOverheadHP(p, HealthMechanics.getPlayerHP(p.getName()));
+			HealthMechanics.setOverheadHP(p, HealthMechanics.getPlayerHP(p));
 	}
 
 	public int getLevel() {

@@ -19,7 +19,7 @@ public class CommandSendPacket implements CommandExecutor {
 			p = (Player) sender;
 		}
 
-		if (p != null && !Main.isMaster(p.getName())) {
+		if (p != null && !Main.isMaster(p.getUniqueId())) {
 			return true;
 		}
 

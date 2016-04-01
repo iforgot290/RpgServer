@@ -2,6 +2,7 @@ package minecade.dungeonrealms.ModerationMechanics.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,7 +21,7 @@ public class CommandDRKick implements CommandExecutor {
 		}
 
 		if (p != null) {
-			String rank = PermissionMechanics.getRank(p.getName());
+			String rank = PermissionMechanics.getRank(p);
 			if (rank == null) {
 				return true;
 			}
@@ -49,32 +50,29 @@ public class CommandDRKick implements CommandExecutor {
 			ModerationMechanics.kick_count.put(p.getName(), count);
 		}
 
-		String p_name_2kick = args[0];
+		@SuppressWarnings("deprecation")
+		OfflinePlayer op = Bukkit.getOfflinePlayer(args[0]);
 		String reason = "";
 
 		for (String s : args) {
-			if (s.equalsIgnoreCase(p_name_2kick)) {
+			if (s.equalsIgnoreCase(op.getName())) {
 				continue; // args[0]
 			}
 			reason += s + " ";
 		}
 
-		if (Bukkit.getPlayer(p_name_2kick) != null && Bukkit.getPlayer(p_name_2kick).isOnline()) {
-			p_name_2kick = Bukkit.getPlayer(p_name_2kick).getName();
-		}
-
 		if (p != null) {
 			p.sendMessage(ChatColor.AQUA + "You have " + ChatColor.BOLD + "KICKED" + ChatColor.AQUA + " the user "
-					+ ChatColor.BOLD + p_name_2kick + ChatColor.AQUA + " from all servers.");
+					+ ChatColor.BOLD + op.getName() + ChatColor.AQUA + " from all servers.");
 			p.sendMessage(ChatColor.GRAY + "REASON: " + reason);
 		}
 
-		if (Bukkit.getPlayer(p_name_2kick) != null && Bukkit.getPlayer(p_name_2kick).isOnline()) {
-			Player kicked = Bukkit.getPlayer(p_name_2kick);
+		if (op.isOnline()) {
+			Player kicked = op.getPlayer();
 			kicked.kickPlayer(reason);
-		} else if (ModerationMechanics.isPlayerOnline(p_name_2kick)) { // @kick@notch:reason
-			int server_num = ModerationMechanics.getPlayerServer(p_name_2kick);
-			CommunityMechanics.sendPacketCrossServer("@kick@" + p_name_2kick + ":" + reason, server_num, false);
+		} else if (ModerationMechanics.isPlayerOnline(op)) { // @kick@notch:reason
+			int server_num = ModerationMechanics.getPlayerServer(op);
+			CommunityMechanics.sendPacketCrossServer("@kick@" + op.getUniqueId().toString() + ":" + reason, server_num, false);
 		}
 
 		return true;

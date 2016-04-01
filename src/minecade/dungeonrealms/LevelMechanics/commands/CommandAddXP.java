@@ -37,7 +37,7 @@ public class CommandAddXP implements CommandExecutor {
 
 		p.sendMessage(ChatColor.AQUA + "You have added " + to_set.getName() + "'s XP from "
 				+ PlayerManager.getPlayerModel(to_set).getPlayerLevel().getXP() + " to " + level);
-		p.playSound(p.getLocation(), Sound.SHEEP_SHEAR, 1, 1.3F);
+		p.playSound(p.getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1, 1.3F);
 		PlayerManager.getPlayerModel(to_set).getPlayerLevel().addXP(level);
 		PlayerManager.getPlayerModel(to_set).getPlayerLevel().updateScoreboardLevel();
 		return true;

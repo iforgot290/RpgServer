@@ -10,6 +10,7 @@ import net.minecraft.server.v1_9_R1.EntityArrow;
 import net.minecraft.server.v1_9_R1.EntityHuman;
 import net.minecraft.server.v1_9_R1.EntityLiving;
 import net.minecraft.server.v1_9_R1.EntityZombie;
+import net.minecraft.server.v1_9_R1.EnumItemSlot;
 import net.minecraft.server.v1_9_R1.IRangedEntity;
 import net.minecraft.server.v1_9_R1.Items;
 import net.minecraft.server.v1_9_R1.PathfinderGoal;
@@ -79,11 +80,11 @@ public class ZombieArcher extends EntityZombie implements IRangedEntity {
 		// this.bd());
 
 		entityarrow.b((double) (f * 2.0F) + this.random.nextGaussian() * 0.25D
-				+ (double) ((float) this.world.difficulty.a() * 0.11F));
+				+ (double) ((float) this.world.getDifficulty().a() * 0.11F));
 
 		// CraftBukkit start
 		org.bukkit.event.entity.EntityShootBowEvent event = CraftEventFactory.callEntityShootBowEvent(this,
-				this.getEquipment(0), entityarrow, 0.8F);
+				this.getEquipment(EnumItemSlot.MAINHAND), entityarrow, 0.8F);
 		if (event.isCancelled()) {
 			event.getProjectile().remove();
 			return;

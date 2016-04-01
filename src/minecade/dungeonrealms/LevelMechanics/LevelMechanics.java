@@ -126,7 +126,7 @@ public class LevelMechanics implements Listener {
 
 	@EventHandler
 	public void onAsyncLogin(AsyncPlayerPreLoginEvent e) {
-		new PlayerLevel(e.getName(), false);
+		new PlayerLevel(e.getUniqueId(), false);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -597,28 +597,16 @@ public class LevelMechanics implements Listener {
 	public static PlayerLevel getPlayerData(Player player) {
 		return getPlayerData(player.getUniqueId());
 	}
-
-	public static int getPlayerLevel(Player p) {
-		if (PlayerManager.getPlayerModel(p).getPlayerLevel() == null) {
-			// Create an instance of it
-			return new PlayerLevel(p.getName(), true).getLevel();
-		}
-		if (PlayerManager.getPlayerModel(p) == null) {
-			System.out.print("PLAYER MODEL WAS NULL!");
-			return 0;
-		}
-		if (PlayerManager.getPlayerModel(p).getPlayerLevel() == null) {
-			System.out.print("PLAYER LEVEL WAS NULL IN PLAYER MODEL!");
-			return 0;
-		}
-		return PlayerManager.getPlayerModel(p).getPlayerLevel().getLevel();
+	
+	public static int getPlayerLevel(Player pl){
+		return getPlayerLevel(pl.getUniqueId());
 	}
 
-	public static int getPlayerLevel(String p_name) {
-		if (PlayerManager.getPlayerModel(p_name).getPlayerLevel() == null) {
-			return new PlayerLevel(p_name, true).getLevel();
+	public static int getPlayerLevel(UUID id) {
+		if (PlayerManager.getPlayerModel(id).getPlayerLevel() == null) {
+			return new PlayerLevel(id, true).getLevel();
 		}
-		return PlayerManager.getPlayerModel(p_name).getPlayerLevel().getLevel();
+		return PlayerManager.getPlayerModel(id).getPlayerLevel().getLevel();
 	}
 
 	/**

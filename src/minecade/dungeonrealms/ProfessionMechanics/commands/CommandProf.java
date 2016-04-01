@@ -28,7 +28,7 @@ public class CommandProf implements CommandExecutor {
 			return true;
 		}
 		if (args.length == 1 && args[0].equalsIgnoreCase("addexp")) {
-			ProfessionMechanics.addEXP(p, p.getItemInHand(), 5000, "fishing");
+			ProfessionMechanics.addEXP(p, p.getInventory().getItemInMainHand(), 5000, "fishing");
 			return true;
 		}
 		if (args.length == 1) {

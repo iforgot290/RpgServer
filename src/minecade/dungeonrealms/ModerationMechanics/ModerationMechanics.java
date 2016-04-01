@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -22,9 +21,8 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -63,7 +61,6 @@ import minecade.dungeonrealms.ModerationMechanics.commands.CommandUnmute;
 import minecade.dungeonrealms.PermissionMechanics.PermissionMechanics;
 import minecade.dungeonrealms.config.Config;
 import minecade.dungeonrealms.database.ConnectionPool;
-import net.minecraft.server.v1_9_R1.PacketPlayOutWorldEvent;
 
 public class ModerationMechanics implements Listener {
 
@@ -92,14 +89,14 @@ public class ModerationMechanics implements Listener {
 		new BukkitRunnable() {
 
 			public void run() {
-				for (String s : vanish_list) {
+				for (UUID s : vanish_list) {
 					if (Bukkit.getPlayer(s) != null) {
 						Player pl = Bukkit.getPlayer(s);
 						for (Player p : Main.plugin.getServer().getOnlinePlayers()) {
 							if (p.getName().equalsIgnoreCase(pl.getName())) {
 								continue;
 							}
-							if (PermissionMechanics.isGM(p.getName()) || p.isOp()) {
+							if (PermissionMechanics.isGM(p) || p.isOp()) {
 								p.showPlayer(pl);
 								continue;
 							}
@@ -144,7 +141,7 @@ public class ModerationMechanics implements Listener {
 		log.info("[ModerationMechanics] has been disabled.");
 	}
 
-	public void doParticleEffects() {
+	/*public void doParticleEffects() {
 		if (particle_effects.size() <= 0) {
 			return;
 		}
@@ -176,17 +173,16 @@ public class ModerationMechanics implements Listener {
 		for (String s : to_remove) {
 			particle_effects.remove(s);
 		}
-	}
+	}*/
 
-	public static int getBanCount(String p_name) {
-		Connection con = null;
+	public static int getBanCount(UUID id) {
 		PreparedStatement pst = null;
 
 		try {
 			// con = DriverManager.getConnection(Hive.sql_url, Hive.sql_user,
 			// Hive.sql_password);
 			pst = ConnectionPool.getConnection()
-					.prepareStatement("SELECT ban_count FROM ban_list WHERE pname = '" + p_name + "'");
+					.prepareStatement("SELECT ban_count FROM ban_list WHERE pname = '" + id.toString() + "'");
 
 			pst.execute();
 			ResultSet rs = pst.getResultSet();
@@ -203,9 +199,6 @@ public class ModerationMechanics implements Listener {
 			try {
 				if (pst != null) {
 					pst.close();
-				}
-				if (con != null) {
-					con.close();
 				}
 
 			} catch (SQLException ex) {
@@ -333,15 +326,15 @@ public class ModerationMechanics implements Listener {
 		}
 	}
 
-	public static void BanPlayer(final String p_name, final long unban_time, final String reason, final String banner,
+	public static void BanPlayer(final UUID id, final long unban_time, final String reason, final String banner,
 			final boolean perm) {
-		String rank = PermissionMechanics.getRank(p_name);
+		String rank = PermissionMechanics.getRank(id);
 
 		long date = System.currentTimeMillis();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String dt = dateFormat.format(date);
 		String unban_time_s = dateFormat.format(unban_time);
-		int ban_count = getBanCount(p_name) + 1;
+		int ban_count = getBanCount(id) + 1;
 
 		String sperm = "0";
 
@@ -354,7 +347,7 @@ public class ModerationMechanics implements Listener {
 
 		Hive.sql_query
 				.add("INSERT INTO ban_list (pname, unban_date, ban_reason, who_banned, ban_date, rank, ban_count, perm)"
-						+ " VALUES" + "('" + p_name + "', '" + unban_time_s + "', '" + reason + "', '" + banner + "', '"
+						+ " VALUES" + "('" + id.toString() + "', '" + unban_time_s + "', '" + reason + "', '" + banner + "', '"
 						+ dt + "', '" + rank + "', '" + ban_count + "', '" + sperm + "') "
 						+ "ON DUPLICATE KEY UPDATE unban_date = '" + unban_time_s + "', ban_reason = '" + reason
 						+ "', who_banned = '" + banner + "', ban_date = '" + dt + "', rank = '" + rank
@@ -363,14 +356,14 @@ public class ModerationMechanics implements Listener {
 
 	}
 
-	public static void unbanPlayer(final String p_name, final String reason, final String unbanner) {
+	public static void unbanPlayer(final UUID id, final String reason, final String unbanner) {
 
 		long unban_time = System.currentTimeMillis();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String futuredate = dateFormat.format(unban_time);
 
 		Hive.sql_query.add("INSERT INTO ban_list (pname, unban_date, unban_reason, who_unbanned)" + " VALUES" + "('"
-				+ p_name + "', '" + futuredate + "', '" + reason + "', '" + unbanner + "') "
+				+ id.toString() + "', '" + futuredate + "', '" + reason + "', '" + unbanner + "') "
 				+ "ON DUPLICATE KEY UPDATE unban_date = '" + futuredate + "', unban_reason = '" + reason
 				+ "', who_unbanned = '" + unbanner + "'");
 
@@ -567,20 +560,21 @@ public class ModerationMechanics implements Listener {
 			}
 
 			if (step == 2) {
-				String hacker_name = msg;
-				if (CommunityMechanics.getLastLogin(hacker_name, false) == -1L) {
-					p.sendMessage(ChatColor.DARK_RED + "The player " + ChatColor.BOLD + hacker_name + ChatColor.DARK_RED
+				@SuppressWarnings("deprecation")
+				UUID id = Bukkit.getOfflinePlayer(msg).getUniqueId();
+				if (CommunityMechanics.getLastLogin(id) == -1L) {
+					p.sendMessage(ChatColor.DARK_RED + "The player " + ChatColor.BOLD + msg + ChatColor.DARK_RED
 							+ " has NEVER logged in to Dungeon Realms before.");
 					return;
 				}
 
 				String lreport_data = report_data.get(p.getName());
 				String report_type = lreport_data.substring(0, lreport_data.indexOf("@"));
-				lreport_data += "::" + hacker_name;
+				lreport_data += "::" + id.toString();
 				report_data.put(p.getName(), lreport_data);
 				report_step.put(p.getName(), 3);
 
-				p.sendMessage(ChatColor.GRAY + hacker_name);
+				p.sendMessage(ChatColor.GRAY + msg);
 				p.sendMessage("");
 				p.sendMessage(ChatColor.DARK_RED + "" + ChatColor.GRAY + "Enter the " + ChatColor.BOLD + "DETAILS"
 						+ ChatColor.GRAY + " of your report; once you are satisfied with your report, type '"
@@ -605,7 +599,7 @@ public class ModerationMechanics implements Listener {
 					p.sendMessage(
 							ChatColor.GREEN + "                 " + ChatColor.BOLD + "REPORT SUBMITTED, THANK YOU!");
 					p.sendMessage("");
-					p.playSound(p.getLocation(), Sound.COW_IDLE, 1F, 1F);
+					p.playSound(p.getLocation(), Sound.ENTITY_COW_AMBIENT, 1F, 1F);
 					report_step.remove(p.getName());
 					report_data.remove(p.getName());
 					return;
@@ -650,12 +644,12 @@ public class ModerationMechanics implements Listener {
 		}
 	}
 
-	public static int getPlayerServer(String p_name) {
-		return Hive.getPlayerServer(p_name, false);
+	public static int getPlayerServer(OfflinePlayer op) {
+		return Hive.getPlayerServer(op, false);
 	}
 
-	public static boolean isPlayerOnline(String p_name) {
-		int server_num = getPlayerServer(p_name);
+	public static boolean isPlayerOnline(OfflinePlayer op) {
+		int server_num = getPlayerServer(op);
 		if (server_num == -1 || server_num == -2) {
 			return false;
 		} else {
@@ -670,10 +664,14 @@ public class ModerationMechanics implements Listener {
 	public static boolean isPlayerVanished(UUID p_uuid) {
 		return vanish_list.contains(p_uuid);
 	}
+	
+	public static void unvanishPlayer(Player pl){
+		unvanishPlayer(pl.getUniqueId());
+	}
 
-	public static void unvanishPlayer(String p_name) {
-		if (isPlayerVanished(p_name))
-			vanish_list.remove(p_name.toLowerCase());
+	public static void unvanishPlayer(UUID id) {
+		if (isPlayerVanished(id))
+			vanish_list.remove(id);
 	}
 
 	public static void vanishPlayer(Player player){

@@ -249,130 +249,6 @@ public class MoneyMechanics implements Listener {
 		return null;
 	}
 
-	@SuppressWarnings("deprecation")
-	public static Inventory legacyBankStringToInventory(final String p_name, String bank_string) {
-		int bank_level = MoneyMechanics.bank_level.get(p_name);
-		int slots = getBankSlots(bank_level);
-		Inventory bank_contents = Bukkit.createInventory(null, slots, "Bank Chest (1/1)");
-		String bank_content_data = bank_string;
-		boolean has_nbt = false;
-		int slot_x = -1;
-
-		if (bank_content_data.equalsIgnoreCase("empty")) {
-			MoneyMechanics.bank_contents.put(p_name, new ArrayList<Inventory>(Arrays.asList(bank_contents)));
-			return null; // Return empty list.
-		}
-
-		String partial_data = "";
-
-		for (String s : bank_content_data.split("_")) {
-			if (s.length() <= 0) {
-				continue;
-			}
-			has_nbt = false;
-
-			slot_x++;
-
-			if (s.equalsIgnoreCase("AIR")) {
-				slot_x--;
-				/*
-				 * try{ bank_contents.setItem(slot_x, new
-				 * ItemStack(Material.AIR)); }
-				 * catch(ArrayIndexOutOfBoundsException err){
-				 * err.printStackTrace(); continue; }
-				 */
-				continue;
-			}
-
-			if (partial_data.length() > 0) {
-				s = partial_data + "_" + s;
-				partial_data = "";
-			}
-
-			String[] s_sub = s.split("=");
-
-			if (s.contains("@")) {
-				has_nbt = true;
-			}
-
-			int type_id = Integer.parseInt(s_sub[0]);
-			int amount = Integer.parseInt(s_sub[1]);
-			short meta_data = Short.parseShort(s_sub[2].split("@")[0]);
-
-			ItemStack i = new ItemStack(type_id, amount, meta_data);
-
-			if (has_nbt == true) {
-				String nbt_data = "";
-				try {
-					try {
-						nbt_data = s.substring(s.indexOf("@") + 1, s.lastIndexOf("@"));
-						String nbt_name = nbt_data.substring(nbt_data.indexOf("#") + 1, nbt_data.lastIndexOf("#"));
-						nbt_data = nbt_data.replace("#" + nbt_name + "#", "");
-						if (nbt_data.contains("#")) {
-							nbt_data = nbt_data.substring(nbt_data.lastIndexOf("#") + 1, nbt_data.lastIndexOf("@"));
-						}
-
-						if (nbt_name.contains("Harrison")) {
-							nbt_name = ChatColor.BOLD.toString() + "Teleport:" + ChatColor.WHITE.toString()
-									+ " Harrison Field";
-						}
-
-						if (nbt_name.equalsIgnoreCase("NOPE")) {
-							nbt_name = ChatColor.WHITE.toString()
-									+ RealmMechanics.getFormalMatName(Material.getMaterial(type_id), meta_data);
-						}
-
-						ItemStack custom_i = ItemMechanics.signCustomItem(Material.getMaterial(type_id), meta_data,
-								nbt_name, nbt_data);
-
-						if (s.contains("[larm1]")) {
-							// Set leather color.
-							ItemMeta im = custom_i.getItemMeta();
-							LeatherArmorMeta lam = (LeatherArmorMeta) im;
-							int bgr_color = Integer
-									.parseInt(s.substring((s.indexOf("[larm1]") + 7), s.indexOf("[larm2]")));
-							lam.setColor(Color.fromBGR(bgr_color));
-							custom_i.setItemMeta(lam);
-						}
-
-						if (custom_i.getType() == Material.POTION && custom_i.getDurability() > 0) {
-							// Renames potion to Instant Heal.
-							custom_i = ItemMechanics.signNewCustomItem(Material.getMaterial(type_id), meta_data,
-									nbt_name, nbt_data);
-						}
-
-						if (nbt_name.contains("Sheep") && nbt_name.contains("''")) {
-							// Sheep O' Luck
-							custom_i = PetMechanics.generatePetEgg(EntityType.SHEEP, "green");
-						}
-
-						custom_i.setAmount(amount);
-						bank_contents.setItem(slot_x, custom_i);
-						continue;
-
-					} catch (StringIndexOutOfBoundsException e) {
-						// log.info(nbt_data);
-						partial_data = s;
-						slot_x--;
-						continue;
-					}
-				} catch (ArrayIndexOutOfBoundsException err) {
-					continue;
-				}
-			}
-
-			else {
-				try {
-					bank_contents.setItem(slot_x, i);
-				} catch (ArrayIndexOutOfBoundsException err) {
-					continue;
-				}
-			}
-		}
-
-		return bank_contents;
-	}
-
 	public void updateStaticCashStack(final Player p) {
 		if (!(bank_map.containsKey(p.getName())))
 			return;
@@ -400,7 +276,7 @@ public class MoneyMechanics implements Listener {
 					bank_pages.add(inv);
 				}
 
-				bank_contents.put(p.getName(), bank_pages);
+				bank_contents.put(p.getUniqueId(), bank_pages);
 			}
 		}
 
@@ -423,7 +299,7 @@ public class MoneyMechanics implements Listener {
 				bank_chest.setItem((slots - 1), new_static_stack);
 				List<Inventory> bank_pages = bank_contents.get(p.getName());
 				bank_pages.set(0, bank_contents.get(p.getName()).get(0));
-				bank_contents.put(p.getName(), bank_pages);
+				bank_contents.put(p.getUniqueId(), bank_pages);
 			}
 		}
 
@@ -784,18 +660,18 @@ public class MoneyMechanics implements Listener {
 	}
 
 	public ItemStack setCountMeta(ItemStack is, int amount) {
-		net.minecraft.server.v1_7_R2.ItemStack nmsstack = CraftItemStack.asNMSCopy(is);
-		nmsstack.tag.setInt("count", amount);
+		net.minecraft.server.v1_9_R1.ItemStack nmsstack = CraftItemStack.asNMSCopy(is);
+		nmsstack.getTag().setInt("count", amount);
 		org.bukkit.inventory.ItemStack i = CraftItemStack.asCraftMirror(nmsstack);
 		return i;
 	}
 
 	public static int getCountMeta(ItemStack is) {
-		net.minecraft.server.v1_7_R2.ItemStack nmsstack = CraftItemStack.asNMSCopy(is);
+		net.minecraft.server.v1_9_R1.ItemStack nmsstack = CraftItemStack.asNMSCopy(is);
 
 		int amount = 0;
 		try {
-			amount = nmsstack.tag.getInt("count");
+			amount = nmsstack.getTag().getInt("count");
 		} catch (NullPointerException npe) {
 			return is.getAmount();
 		}
@@ -963,7 +839,7 @@ public class MoneyMechanics implements Listener {
 			}
 		}
 
-		p.playSound(p.getLocation(), Sound.ENDERDRAGON_WINGS, 1F, 1.2F);
+		p.playSound(p.getLocation(), Sound.ENTITY_ENDERDRAGON_FLAP, 1F, 1.2F);
 	}
 
 	public static void updateMoney(Player p, int slot, int new_amount) {
@@ -1125,7 +1001,7 @@ public class MoneyMechanics implements Listener {
 			r_new_level = new_level;
 		}
 
-		bank_level.put(p.getName(), r_new_level);
+		bank_level.put(p.getUniqueId(), r_new_level);
 		List<Inventory> bank_pages = bank_contents.get(p.getName());
 		int total_pages = 1;
 		int current_page = 1;
@@ -1233,7 +1109,7 @@ public class MoneyMechanics implements Listener {
 			bank_pages.set(last_page_index, i);
 		}
 
-		bank_contents.put(p.getName(), bank_pages);
+		bank_contents.put(p.getUniqueId(), bank_pages);
 	}
 
 	public static boolean isDivider(ItemStack is) {
@@ -1342,7 +1218,7 @@ public class MoneyMechanics implements Listener {
 						+ " COMPLETE ***");
 				p.sendMessage(ChatColor.GRAY + "You now have "
 						+ getBankSlots(MoneyMechanics.bank_level.get(p.getName())) + " bank slots available.");
-				p.playSound(p.getLocation(), Sound.LEVEL_UP, 1F, 1.25F);
+				p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1.25F);
 			} else {
 				p.sendMessage(ChatColor.RED + "Invalid authentication code entered. Bank upgrade cancelled.");
 				bank_upgrade_codes.remove(p);
@@ -1397,13 +1273,13 @@ public class MoneyMechanics implements Listener {
 							+ " GEM(s) from your bank account.");
 					p.sendMessage(ChatColor.GRAY + "Banker: " + ChatColor.WHITE
 							+ "Here are your Gems, thank you for your business!");
-					p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 1F);
-					bank_map.put(p.getName(), (net_worth - withdraw_amount));
+					p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
+					bank_map.put(p.getUniqueId(), (net_worth - withdraw_amount));
 				}
 			} else if (withdraw_type.get(p).equalsIgnoreCase("note")) {
 				withdraw_map.remove(p);
 				withdraw_type.remove(p);
-				bank_map.put(p.getName(), (net_worth - withdraw_amount));
+				bank_map.put(p.getUniqueId(), (net_worth - withdraw_amount));
 				addMoneyCert(p, withdraw_amount, false);
 				p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "New Balance: " + ChatColor.GREEN
 						+ (net_worth - withdraw_amount) + " GEM(s)");
@@ -1620,7 +1496,7 @@ public class MoneyMechanics implements Listener {
 			 * echest.addItem(PetMechanics.generatePetEgg(EntityType.ZOMBIE)); }
 			 */
 			p.openInventory(echest);
-			p.playSound(p.getLocation(), Sound.CHEST_OPEN, 1F, 1F);
+			p.playSound(p.getLocation(), Sound.BLOCK_CHEST_OPEN, 1F, 1F);
 
 		}
 
@@ -1734,7 +1610,7 @@ public class MoneyMechanics implements Listener {
 				return;
 			}
 			p.openInventory(echest);
-			p.playSound(p.getLocation(), Sound.CHEST_OPEN, 1F, 1F);
+			p.playSound(p.getLocation(), Sound.BLOCK_CHEST_OPEN, 1F, 1F);
 		}
 	}
 
@@ -1835,12 +1711,12 @@ public class MoneyMechanics implements Listener {
 																// is now empty.
 				p.sendMessage(ChatColor.GRAY + "Banker: " + ChatColor.WHITE + "Enjoy your items.");
 			} else if (items_left > 0) {
-				ShopMechanics.collection_bin.put(p.getName(), cb);
+				ShopMechanics.collection_bin.put(p.getUniqueId(), cb);
 				p.sendMessage(ChatColor.GRAY + "Banker: " + ChatColor.WHITE
 						+ "There are still some items in your collection bin!");
 			}
 
-			p.playSound(p.getLocation(), Sound.CHEST_CLOSE, 1F, 1F);
+			p.playSound(p.getLocation(), Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
 		}
 
 		if (e.getInventory().getName().startsWith("Bank Chest")) {
@@ -1880,9 +1756,9 @@ public class MoneyMechanics implements Listener {
 						p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "+" + ChatColor.GREEN + amount
 								+ ChatColor.BOLD + "G" + ChatColor.GREEN + ", " + ChatColor.BOLD + "New Balance: "
 								+ ChatColor.GREEN + net + " GEM(s)");
-						bank_map.put(p.getName(), net);
+						bank_map.put(p.getUniqueId(), net);
 						updateStaticCashStack(p);
-						p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 1F);
+						p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
 					}
 				}
 			}
@@ -1891,7 +1767,7 @@ public class MoneyMechanics implements Listener {
 			int page = Integer.parseInt(title.substring(title.lastIndexOf("(") + 1, title.lastIndexOf("/")));
 			List<Inventory> bank_pages = bank_contents.get(p.getName());
 			bank_pages.set((page - 1), e.getInventory());
-			bank_contents.put(p.getName(), bank_pages);
+			bank_contents.put(p.getUniqueId(), bank_pages);
 
 			int junk_count = 0;
 			int weapon_count = 0;
@@ -1909,32 +1785,32 @@ public class MoneyMechanics implements Listener {
 			}
 
 			if (junk_count >= 100) {
-				AchievementMechanics.addAchievement(p.getName(), "I might need it later!");
+				AchievementMechanics.addAchievement(p, "I might need it later!");
 			}
 
 			if (weapon_count >= 10) {
-				AchievementMechanics.addAchievement(p.getName(), "Personal Arsenal");
+				AchievementMechanics.addAchievement(p, "Personal Arsenal");
 			}
 
 			// Achievement Checks.
 			if (bank_map.containsKey(p.getName())) {
 				int bank_net = bank_map.get(p.getName());
 				if (bank_net >= 100) {
-					AchievementMechanics.addAchievement(p.getName(), "Acquire Currency I");
+					AchievementMechanics.addAchievement(p, "Acquire Currency I");
 					if (bank_net >= 1000) {
-						AchievementMechanics.addAchievement(p.getName(), "Acquire Currency II");
+						AchievementMechanics.addAchievement(p, "Acquire Currency II");
 						if (bank_net >= 5000) {
-							AchievementMechanics.addAchievement(p.getName(), "Acquire Currency III");
+							AchievementMechanics.addAchievement(p, "Acquire Currency III");
 							if (bank_net >= 10000) {
-								AchievementMechanics.addAchievement(p.getName(), "Acquire Currency IV");
+								AchievementMechanics.addAchievement(p, "Acquire Currency IV");
 								if (bank_net >= 50000) {
-									AchievementMechanics.addAchievement(p.getName(), "Acquire Currency V");
+									AchievementMechanics.addAchievement(p, "Acquire Currency V");
 									if (bank_net >= 100000) {
-										AchievementMechanics.addAchievement(p.getName(), "Acquire Currency VI");
+										AchievementMechanics.addAchievement(p, "Acquire Currency VI");
 										if (bank_net >= 500000) {
-											AchievementMechanics.addAchievement(p.getName(), "Acquire Currency VII");
+											AchievementMechanics.addAchievement(p, "Acquire Currency VII");
 											if (bank_net >= 1000000) {
-												AchievementMechanics.addAchievement(p.getName(), "Acquire Currency IX");
+												AchievementMechanics.addAchievement(p, "Acquire Currency IX");
 											}
 										}
 									}
@@ -1946,7 +1822,7 @@ public class MoneyMechanics implements Listener {
 
 			}
 
-			p.playSound(p.getLocation(), Sound.CHEST_CLOSE, 1F, 1F);
+			p.playSound(p.getLocation(), Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
 		}
 	}
 
@@ -1984,7 +1860,7 @@ public class MoneyMechanics implements Listener {
 				}
 				// p.getInventory().setItem(p.getInventory().firstEmpty(),
 				// scroll);
-				p.playSound(p.getLocation(), Sound.ITEM_PICKUP, 1F, 1F);
+				p.playSound(p.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1F, 1F);
 			}
 		}
 	}
@@ -2096,14 +1972,14 @@ public class MoneyMechanics implements Listener {
 			e.setCursor(makeGems(64));
 			// e.setCurrentItem(pouch);
 			pl.updateInventory();
-			pl.playSound(pl.getLocation(), Sound.ORB_PICKUP, 1F, 0.75F);
+			pl.playSound(pl.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0.75F);
 		} else if (current_value <= 64) {
 			e.setCancelled(true);
 			setPouchWorth(pouch, 0);
 			e.setCursor(makeGems(current_value));
 			// e.setCurrentItem(pouch);
 			pl.updateInventory();
-			pl.playSound(pl.getLocation(), Sound.ORB_PICKUP, 1F, 0.75F);
+			pl.playSound(pl.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0.75F);
 		}
 	}
 
@@ -2143,13 +2019,13 @@ public class MoneyMechanics implements Listener {
 			e.setCursor(cursor);
 			setPouchWorth(pouch, (max_capacity));
 			pl.updateInventory();
-			pl.playSound(pl.getLocation(), Sound.ORB_PICKUP, 1F, 1F);
+			pl.playSound(pl.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
 		} else if ((cursor_worth + current_value) <= max_capacity) {
 			e.setCancelled(true);
 			e.setCursor(new ItemStack(Material.AIR));
 			setPouchWorth(pouch, (cursor_worth + current_value));
 			pl.updateInventory();
-			pl.playSound(pl.getLocation(), Sound.ORB_PICKUP, 1F, 1F);
+			pl.playSound(pl.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
 		}
 	}
 
@@ -2183,7 +2059,7 @@ public class MoneyMechanics implements Listener {
 																							// subtract,
 																							// NEXT
 																							// page.
-						p.playSound(p.getLocation(), Sound.BAT_TAKEOFF, 1F, 1.2F);
+						p.playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1.2F);
 					}
 				}, 2L);
 				return;
@@ -2224,7 +2100,7 @@ public class MoneyMechanics implements Listener {
 																								// actually
 																								// page
 																								// 1)
-						p.playSound(p.getLocation(), Sound.BAT_TAKEOFF, 1F, 1.2F);
+						p.playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1.2F);
 					}
 				}, 2L);
 				return;
@@ -2273,7 +2149,7 @@ public class MoneyMechanics implements Listener {
 						public void run() {
 							p.updateInventory();
 							p.closeInventory();
-							p.playSound(p.getLocation(), Sound.CHEST_CLOSE, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
 							p.sendMessage("");
 							p.sendMessage(ChatColor.DARK_GRAY + "           *** " + ChatColor.GREEN + ChatColor.BOLD
 									+ "Bank Upgrade Confirmation" + ChatColor.DARK_GRAY + " ***");
@@ -2319,7 +2195,7 @@ public class MoneyMechanics implements Listener {
 						public void run() {
 							p.updateInventory();
 							p.closeInventory();
-							p.playSound(p.getLocation(), Sound.CHEST_CLOSE, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
 							p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Current Balance: " + ChatColor.GREEN
 									+ cur_val + " GEM(s)");
 							p.sendMessage(ChatColor.GRAY + "Banker: " + ChatColor.WHITE
@@ -2343,7 +2219,7 @@ public class MoneyMechanics implements Listener {
 								return;
 							p.updateInventory();
 							p.closeInventory();
-							p.playSound(p.getLocation(), Sound.CHEST_CLOSE, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
 							p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Current Balance: " + ChatColor.GREEN
 									+ cur_val + " GEM(s)");
 							p.sendMessage(ChatColor.GRAY + "Banker: " + ChatColor.WHITE
@@ -2460,7 +2336,7 @@ public class MoneyMechanics implements Listener {
 			p.sendMessage(ChatColor.GRAY + "You've combined bank notes " + ChatColor.ITALIC + map1_val + "G + "
 					+ map2_val + "G" + ChatColor.GRAY + " into one bank note with the value of " + ChatColor.BOLD
 					+ new_val + "G.");
-			p.playSound(p.getLocation(), Sound.ENDERDRAGON_WINGS, 1F, 1.2F);
+			p.playSound(p.getLocation(), Sound.ENTITY_ENDERDRAGON_FLAP, 1F, 1.2F);
 			return;
 		}
 
@@ -2563,7 +2439,7 @@ public class MoneyMechanics implements Listener {
 			int cur_val = bank_map.get(p.getName());
 
 			if (amount_to_deposit > 0) {
-				bank_map.put(p.getName(), amount_to_deposit + cur_val);
+				bank_map.put(p.getUniqueId(), amount_to_deposit + cur_val);
 				p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "+" + ChatColor.GREEN + amount_to_deposit
 						+ ChatColor.BOLD + "G" + ChatColor.GREEN + ", " + ChatColor.BOLD + "New Balance: "
 						+ ChatColor.GREEN + (amount_to_deposit + cur_val) + " GEM(s)");
@@ -2578,7 +2454,7 @@ public class MoneyMechanics implements Listener {
 				// + ChatColor.UNDERLINE + "LEFT CLICK" + ChatColor.GRAY + " the
 				// cauldron.");
 				updateStaticCashStack(p);
-				p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 1F);
+				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
 				p.updateInventory();
 				return;
 			}
@@ -2651,7 +2527,7 @@ public class MoneyMechanics implements Listener {
 			Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 				public void run() {
 					if ((it == null || it.isDead())) {
-						p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 1F);
+						p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
 						if (PlayerManager.getPlayerModel(p).getToggleList() != null
 								&& PlayerManager.getPlayerModel(p).getToggleList().contains("debug")) {
 							p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "                                 +"

@@ -13,7 +13,7 @@ public class CommandGMHelp implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
 
-		if (!PermissionMechanics.getRank(p.getName()).equalsIgnoreCase("gm") && !(p.isOp())) {
+		if (!PermissionMechanics.getRank(p).equalsIgnoreCase("gm") && !(p.isOp())) {
 			return true;
 		}
 

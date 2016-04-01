@@ -10,18 +10,20 @@ import net.minecraft.server.v1_9_R1.PathfinderGoalFloat;
 import net.minecraft.server.v1_9_R1.PathfinderGoalLeapAtTarget;
 import net.minecraft.server.v1_9_R1.PathfinderGoalMeleeAttack;
 import net.minecraft.server.v1_9_R1.PathfinderGoalSelector;
+import net.minecraft.server.v1_9_R1.World;
 
 public class CustomWolf extends EntityWolf {
 
 	public CustomWolf(World world) {
 		super(world);
 		a(0.6F, 0.8F);
-		getNavigation().a(true);
+		//TODO find out what this does
+		//getNavigation().a(true); //removed true
 		clearGoalSelectors();
 		setAngry(true);
 		this.goalSelector.a(1, new PathfinderGoalFloat(this));
 		this.goalSelector.a(2, new PathfinderGoalLeapAtTarget(this, 0.4F));
-		this.goalSelector.a(3, new PathfinderGoalMeleeAttack(this, EntityHuman.class, 1.0D, true));
+		this.goalSelector.a(3, new PathfinderGoalMeleeAttack(this, 1.0D, true)); //removed entity human thing
 		setTamed(false);
 		// this.targetSelector.a(1, new PathfinderGoalRandomTargetNonTamed(this,
 		// EntityHuman.class, 200, false));

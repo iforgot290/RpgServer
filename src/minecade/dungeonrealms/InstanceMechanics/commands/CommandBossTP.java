@@ -117,7 +117,7 @@ public class CommandBossTP implements CommandExecutor {
 				pl.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE + "Burick The Fanatic: " + ChatColor.WHITE
 						+ "Ahahaha! You dare try to kill ME?! I am Burick, disciple of Goragath! None of you will leave this place alive!");
 			}
-			boss.getWorld().playSound(boss.getLocation(), Sound.ENDERDRAGON_HIT, 4F, 0.5F);
+			boss.getWorld().playSound(boss.getLocation(), Sound.ENTITY_ENDERDRAGON_HURT, 4F, 0.5F);
 		}
 
 		if (cb.getBlock().getWorld().getName().contains("T1Dungeon")) {
@@ -128,7 +128,7 @@ public class CommandBossTP implements CommandExecutor {
 				pl.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE + "Mayel The Cruel: " + ChatColor.WHITE
 						+ "How dare you challenge ME, the leader of the Cyrene Bandits! To me, my brethern, let us crush these incolents!");
 			}
-			boss.getWorld().playSound(boss.getLocation(), Sound.AMBIENCE_CAVE, 1F, 1F);
+			boss.getWorld().playSound(boss.getLocation(), Sound.AMBIENT_CAVE, 1F, 1F);
 		}
 
 		if (cb.getBlock().getWorld().getName().contains("fireydungeon")) {
@@ -139,7 +139,7 @@ public class CommandBossTP implements CommandExecutor {
 				pl.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE + "The Infernal Abyss: " + ChatColor.WHITE
 						+ "... I have nothing to say to you foolish mortals, except for this: Burn.");
 			}
-			boss.getWorld().playSound(boss.getLocation(), Sound.AMBIENCE_THUNDER, 1F, 1F);
+			boss.getWorld().playSound(boss.getLocation(), Sound.ENTITY_LIGHTNING_THUNDER, 1F, 1F);
 		}
 
 		if (cb.getBlock().getWorld().getName().contains("OneWolfeDungeon")) {
@@ -159,7 +159,7 @@ public class CommandBossTP implements CommandExecutor {
 				pl.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE + "Aceron The Wicked: " + ChatColor.WHITE
 						+ "I hope you find what you are looking for, because you wont be leaving here with it!");
 			}
-			boss.getWorld().playSound(boss.getLocation(), Sound.GHAST_MOAN, 1F, 0.25F);
+			boss.getWorld().playSound(boss.getLocation(), Sound.ENTITY_GHAST_AMBIENT, 1F, 0.25F); //ghast moan
 		}
 		return true;
 	}

@@ -59,7 +59,7 @@ public class ConfirmItem implements MenuItem, BonusItem<PlayerModel> {
 				pLevel.setVitPoints(((VitalityItem) entry.getValue()).getPoints());
 			}
 		}
-		plr.playSound(plr.getLocation(), Sound.CLICK, 1.0F, 1.0F);
+		plr.playSound(plr.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1.0F, 1.0F);
 		drPlayer.updateStats();
 		plr.closeInventory();
 	}

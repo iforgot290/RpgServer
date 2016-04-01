@@ -536,7 +536,6 @@ public class MonsterMechanics implements Listener {
 		Main.plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(Main.plugin, new Runnable() {
 			public void run() {
 				updateNametags();
-				updateParticles();
 			}
 		}, 15 * 20L, 20L);
 
@@ -1150,7 +1149,7 @@ public class MonsterMechanics implements Listener {
 			EntityLiving el = (EntityLiving) ((CraftEntity) ent).getHandle();
 			el.yaw = (float) (yaw);
 			EntityCreature ec = (EntityCreature) ((CraftEntity) ent).getHandle();
-			ec.setTarget(null);
+			//ec.setTarget(null);
 			ec.yaw = (float) (yaw);
 			ent.teleport(loc);
 			// el.teleportTo(loc, false);
@@ -1170,21 +1169,21 @@ public class MonsterMechanics implements Listener {
 				int step = data.getValue();
 				if (step <= 4) { // Charging...
 					EntityCreature ec = (EntityCreature) ((CraftEntity) ent).getHandle();
-					ec.setTarget(null);
+					//ec.setTarget(null);
 
 					step += 1;
 					whirlwind.put(ent, step);
 					special_attack.put(ent, step);
 					boolean is_elite = false;
-					ItemStack weapon = CraftItemStack.asBukkitCopy(((CraftEntity) ent).getHandle().getEquipment()[0]);
+					LivingEntity le = (LivingEntity) ent;
+					ItemStack weapon = le.getEquipment().getItemInMainHand();
 					if (weapon.getEnchantments().containsKey(Enchantment.KNOCKBACK)) {
 						is_elite = true;
 					}
-					LivingEntity le = (LivingEntity) ent;
 					if (le != null && mob_health.containsKey(ent)) {
 						le.setCustomName(generateOverheadBar(ent, mob_health.get(ent), max_mob_health.get(ent),
 								getMobTier(ent), is_elite));
-						ent.getWorld().playSound(ent.getLocation(), Sound.CREEPER_HISS, 1F, 4.0F);
+						ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 1F, 4.0F);
 						try {
 							ParticleEffect.sendToLocation(ParticleEffect.LARGE_EXPLODE, ent.getLocation().add(0, 1, 0),
 									new Random().nextFloat(), new Random().nextFloat(), new Random().nextFloat(), 0.3F,
@@ -1212,7 +1211,7 @@ public class MonsterMechanics implements Listener {
 					 */
 
 					// Blow them up!
-					ent.getWorld().playSound(ent.getLocation(), Sound.EXPLODE, 1F, 0.5F);
+					ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 0.5F);
 					try {
 						ParticleEffect.sendToLocation(ParticleEffect.HUGE_EXPLOSION, ent.getLocation().add(0, 1, 0),
 								new Random().nextFloat(), new Random().nextFloat(), new Random().nextFloat(), 1F, 40);
@@ -1226,7 +1225,7 @@ public class MonsterMechanics implements Listener {
 					for (Entity enemy : ent.getNearbyEntities(8, 8, 8)) {
 						if (enemy instanceof Player) {
 							Player pl = (Player) enemy;
-							if (HealthMechanics.getPlayerHP(pl.getName()) > 0) {
+							if (HealthMechanics.getPlayerHP(pl) > 0) {
 								List<Integer> dmg_range = mob_damage.get(ent);
 								int min_dmg = dmg_range.get(0);
 								int max_dmg = dmg_range.get(1);
@@ -1250,11 +1249,11 @@ public class MonsterMechanics implements Listener {
 					special_attack.remove(ent);
 
 					boolean is_elite = false;
-					ItemStack weapon = CraftItemStack.asBukkitCopy(((CraftEntity) ent).getHandle().getEquipment()[0]);
+					LivingEntity le = (LivingEntity) ent;
+					ItemStack weapon = le.getEquipment().getItemInMainHand();
 					if (weapon.getEnchantments().containsKey(Enchantment.KNOCKBACK)) {
 						is_elite = true;
 					}
-					LivingEntity le = (LivingEntity) ent;
 
 					if (le != null && mob_health.containsKey(ent)) {
 						le.setCustomName(generateOverheadBar(ent, mob_health.get(ent), max_mob_health.get(ent),
@@ -1443,63 +1442,6 @@ public class MonsterMechanics implements Listener {
 				le.setCustomNameVisible(true);
 			}
 		}
-	}
-
-	public void updateParticles() {
-		for (Entity ent : mob_last_hurt.keySet()) {
-			if (ent instanceof LivingEntity && ent.hasMetadata("etype")) {
-				LivingEntity le = (LivingEntity) ent;
-				String elemental_type = le.getMetadata("etype").get(0).asString();
-				if (elemental_type.equalsIgnoreCase("poison")) {
-					attachPotionEffect(le, 0x669900);
-				}
-				if (elemental_type.equalsIgnoreCase("fire")) {
-					attachPotionEffect(le, 0xCC0033);
-				}
-				if (elemental_type.equalsIgnoreCase("ice")) {
-					attachPotionEffect(le, 0x33FFFF);
-				}
-				if (elemental_type.equalsIgnoreCase("pure")) {
-					attachPotionEffect(le, 0xFFFFFF);
-				}
-			}
-		}
-	}
-
-	public static void attachPotionEffect(final LivingEntity entity, int color) {
-		EntityLiving el = ((CraftLivingEntity) entity).getHandle();
-
-		/*
-		 * DataWatcher dw = el.getDataWatcher(); dw.watch(8,
-		 * Integer.valueOf(color));
-		 */
-
-		DataWatcher dw = el.getDataWatcher();
-		dw.watch(8, Byte.valueOf((byte) color));
-
-		/*
-		 * final DataWatcher dw = new DataWatcher(); dw.a(8,
-		 * Integer.valueOf(0)); dw.watch(8, Integer.valueOf(color));
-		 */
-
-		/*
-		 * Packet40EntityMetadata packet = new
-		 * Packet40EntityMetadata(entity.getEntityId(), dw, false);
-		 * ((CraftServer)
-		 * getServer()).getServer().getPlayerList().sendPacketNearby(entity.
-		 * getLocation().getBlockX(), entity.getLocation().getBlockY(),
-		 * entity.getLocation().getBlockZ(), 32, ((CraftWorld)
-		 * entity.getWorld()).getHandle().dimension, packet);
-		 */
-
-		/*
-		 * Bukkit.getScheduler().scheduleAsyncDelayedTask(instance, new
-		 * Runnable() { public void run() { DataWatcher dwReal =
-		 * ((CraftLivingEntity)entity).getHandle().getDataWatcher(); dw.watch(8,
-		 * dwReal.getByte(8)); Packet40EntityMetadata packet = new
-		 * Packet40EntityMetadata(entity.getEntityId(), dw, false); } },
-		 * duration);
-		 */
 	}
 
 	public void processChunks() {
@@ -2208,7 +2150,7 @@ public class MonsterMechanics implements Listener {
 		}
 		for (Entity ent : alive_ents) {
 			boolean isPet = false;
-			for (Entry<String, List<Entity>> petmap : PetMechanics.pet_map.entrySet()) {
+			for (Entry<UUID, List<Entity>> petmap : PetMechanics.pet_map.entrySet()) {
 				List<Entity> ents = petmap.getValue();
 				if (ents.contains(ent)) {
 					isPet = true;
@@ -2330,14 +2272,14 @@ public class MonsterMechanics implements Listener {
 					// If the code reaches this point, it's all about making
 					// sure the mob has a target.
 					// The mob is between 20-40 blocks from the spawner.
-					if (e instanceof EntityCreature) {
-						EntityCreature ec = (EntityCreature) ((CraftEntity) e).getHandle();
-						if (ec.target != null) {
-							if (!(ec.target instanceof Player)) {
+					if (e instanceof Creature) {
+						Creature creat = (Creature) e;
+						if (creat.getTarget() != null) {
+							if (!(creat.getTarget() instanceof Player)) {
 								continue;
 							}
 
-							Player e_target = (Player) (((EntityPlayer) ec.target).getBukkitEntity());
+							Player e_target = (Player) creat.getTarget();
 							Location target_loc = e_target.getLocation();
 							if (target_loc.getWorld().getName()
 									.equalsIgnoreCase(current_mob_loc.getWorld().getName())) {
@@ -2582,7 +2524,7 @@ public class MonsterMechanics implements Listener {
 				for (Entity ent : e.getEntity().getNearbyEntities(4, 4, 4)) {
 					if (ent instanceof Player) {
 						Player pl = (Player) ent;
-						double max_hp = HealthMechanics.getMaxHealthValue(pl.getName());
+						double max_hp = HealthMechanics.getMaxHealthValue(pl);
 						double dmg = max_hp * 0.15D;
 						pl.damage(dmg, shooter);
 						pl.setFireTicks(40);
@@ -2685,7 +2627,7 @@ public class MonsterMechanics implements Listener {
 		}
 		List<Location> to_remove = new ArrayList<Location>();
 		Location p_loc = p.getLocation();
-		player_locations.put(p.getName(), p_loc);
+		player_locations.put(p.getUniqueId(), p_loc);
 
 		for (Location l : mob_spawn_check_delay.keySet()) {
 			if (l.distanceSquared(p_loc) <= 6400) {
@@ -2724,7 +2666,7 @@ public class MonsterMechanics implements Listener {
 			return;
 		}
 		Location l = e.getTo();
-		player_locations.put(p.getName(), l);
+		player_locations.put(p.getUniqueId(), l);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

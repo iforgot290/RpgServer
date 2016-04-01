@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -27,8 +28,6 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
-import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.EntityType;
@@ -80,7 +79,6 @@ import minecade.dungeonrealms.ProfessionMechanics.commands.CommandShowFish;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
 import minecade.dungeonrealms.RepairMechanics.RepairMechanics;
 import minecade.dungeonrealms.managers.PlayerManager;
-import net.minecraft.server.v1_9_R1.PacketPlayOutWorldEvent;
 
 // TODO: (maybe)Add 2-step fishing spot creation process so that min/max fish until respawn is needed can be defined.
 // TODO: Figure out why fishingrod level up doesn't work.
@@ -1438,15 +1436,15 @@ public class ProfessionMechanics implements Listener {
 			pl.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "         " + item_name.toUpperCase()
 					+ " LEVEL UP! " + ChatColor.YELLOW + ChatColor.UNDERLINE + (new_level - 1) + ChatColor.BOLD + " -> "
 					+ ChatColor.YELLOW + ChatColor.UNDERLINE + new_level);
-			pl.playSound(pl.getLocation(), Sound.LEVEL_UP, 0.5F, 1F);
+			pl.playSound(pl.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5F, 1F);
 
 			if (new_level == 20) {
 				new_stat = true;
 				if (skill.equalsIgnoreCase("mining")) {
 					is.setType(Material.STONE_PICKAXE);
-					AchievementMechanics.addAchievement(pl.getName(), "Leveling up your pickaxe I");
+					AchievementMechanics.addAchievement(pl, "Leveling up your pickaxe I");
 				} else if (skill.equalsIgnoreCase("fishing")) {
-					AchievementMechanics.addAchievement(pl.getName(), "Leveling up your Rod I");
+					AchievementMechanics.addAchievement(pl, "Leveling up your Rod I");
 				}
 				im.setDisplayName(ChatColor.GREEN.toString() + "Apprentice " + item_name);
 			}
@@ -1454,9 +1452,9 @@ public class ProfessionMechanics implements Listener {
 				new_stat = true;
 				if (skill.equalsIgnoreCase("mining")) {
 					is.setType(Material.IRON_PICKAXE);
-					AchievementMechanics.addAchievement(pl.getName(), "Leveling up your pickaxe II");
+					AchievementMechanics.addAchievement(pl, "Leveling up your pickaxe II");
 				} else if (skill.equalsIgnoreCase("fishing")) {
-					AchievementMechanics.addAchievement(pl.getName(), "Leveling up your Rod II");
+					AchievementMechanics.addAchievement(pl, "Leveling up your Rod II");
 				}
 				im.setDisplayName(ChatColor.AQUA.toString() + "Expert " + item_name);
 			}
@@ -1464,9 +1462,9 @@ public class ProfessionMechanics implements Listener {
 				new_stat = true;
 				if (skill.equalsIgnoreCase("mining")) {
 					is.setType(Material.DIAMOND_PICKAXE);
-					AchievementMechanics.addAchievement(pl.getName(), "Leveling up your pickaxe III");
+					AchievementMechanics.addAchievement(pl, "Leveling up your pickaxe III");
 				} else if (skill.equalsIgnoreCase("fishing")) {
-					AchievementMechanics.addAchievement(pl.getName(), "Leveling up your Rod III");
+					AchievementMechanics.addAchievement(pl, "Leveling up your Rod III");
 				}
 				im.setDisplayName(ChatColor.LIGHT_PURPLE.toString() + "Supreme " + item_name);
 			}
@@ -1474,13 +1472,13 @@ public class ProfessionMechanics implements Listener {
 				new_stat = true;
 				if (skill.equalsIgnoreCase("mining")) {
 					is.setType(Material.GOLD_PICKAXE);
-					AchievementMechanics.addAchievement(pl.getName(), "Leveling up your pickaxe IV");
+					AchievementMechanics.addAchievement(pl, "Leveling up your pickaxe IV");
 				} else if (skill.equalsIgnoreCase("fishing")) {
-					AchievementMechanics.addAchievement(pl.getName(), "Leveling up your Rod IV");
+					AchievementMechanics.addAchievement(pl, "Leveling up your Rod IV");
 				}
-				if (AchievementMechanics.hasAchievement(pl.getName(), "Leveling up your pickaxe IV")
-						&& AchievementMechanics.hasAchievement(pl.getName(), "Leveling up your Rod IV")) {
-					AchievementMechanics.addAchievement(pl.getName(), "The Skill Master");
+				if (AchievementMechanics.hasAchievement(pl, "Leveling up your pickaxe IV")
+						&& AchievementMechanics.hasAchievement(pl, "Leveling up your Rod IV")) {
+					AchievementMechanics.addAchievement(pl, "The Skill Master");
 				}
 				im.setDisplayName(ChatColor.YELLOW.toString() + "Master " + item_name);
 			}
@@ -2454,13 +2452,13 @@ public class ProfessionMechanics implements Listener {
 
 		if (isCustomFish(is)) {
 			e.setCancelled(true);
-			ItemStack fish = pl.getItemInHand();
+			ItemStack fish = pl.getInventory().getItemInMainHand();
 			if (fish.getAmount() > 1) {
 				// Subtract just 1.
 				fish.setAmount(fish.getAmount() - 1);
-				pl.setItemInHand(fish);
+				pl.getInventory().setItemInMainHand(fish);
 			} else if (fish.getAmount() <= 1) {
-				pl.setItemInHand(new ItemStack(Material.AIR));
+				pl.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 			}
 			pl.updateInventory();
 			/*
@@ -2501,9 +2499,9 @@ public class ProfessionMechanics implements Listener {
 				if (s.contains("% HP (instant)")) {
 					// Instant heal.
 					double percent_to_heal = Double.parseDouble(s.substring(s.indexOf("+") + 1, s.indexOf("%"))) / 100;
-					double max_hp = HealthMechanics.getMaxHealthValue(pl.getName());
+					double max_hp = HealthMechanics.getMaxHealthValue(pl);
 					int amount_to_heal = (int) Math.round((percent_to_heal * max_hp));
-					double current_hp = HealthMechanics.getPlayerHP(pl.getName());
+					double current_hp = HealthMechanics.getPlayerHP(pl);
 					if (current_hp + 1 > max_hp) {
 						continue;
 					} // They have max HP.
@@ -2524,12 +2522,12 @@ public class ProfessionMechanics implements Listener {
 						pl.setHealth(20);
 						// HealthMechanics.setPlayerHP(pl.getName(),
 						// (int)max_hp);
-						HealthMechanics.setPlayerHP(pl.getName(), (int) max_hp);
+						HealthMechanics.setPlayerHP(pl, (int) max_hp);
 						continue; // Full HP.
 					} else if (damp.getHealth() <= 19 && ((current_hp + amount_to_heal) < max_hp)) {
-						HealthMechanics.setPlayerHP(pl.getName(),
-								(int) (HealthMechanics.getPlayerHP(pl.getName()) + amount_to_heal));
-						double health_percent = (HealthMechanics.getPlayerHP(pl.getName()) + amount_to_heal) / max_hp;
+						HealthMechanics.setPlayerHP(pl,
+								(int) (HealthMechanics.getPlayerHP(pl) + amount_to_heal));
+						double health_percent = (HealthMechanics.getPlayerHP(pl) + amount_to_heal) / max_hp;
 						double new_health_display = health_percent * 20;
 						if (new_health_display > 19) {
 							if (health_percent >= 1) {
@@ -2551,7 +2549,7 @@ public class ProfessionMechanics implements Listener {
 					double percent_to_regen = Double.parseDouble(s.substring(s.indexOf(" ") + 1, s.indexOf("%")))
 							/ 100.0D;
 					int regen_interval = Integer.parseInt(s.substring(s.lastIndexOf(" ") + 1, s.lastIndexOf("s")));
-					double max_hp = HealthMechanics.getMaxHealthValue(pl.getName());
+					double max_hp = HealthMechanics.getMaxHealthValue(pl);
 
 					final int amount_to_regen_per_interval = (int) (max_hp * percent_to_regen) / regen_interval;
 					pl.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "      " + ChatColor.GREEN
@@ -2750,18 +2748,18 @@ public class ProfessionMechanics implements Listener {
 			if (isCustomFish(is) && pl.getFoodLevel() >= 20) {
 				e.setUseInteractedBlock(Result.DENY);
 
-				pl.getWorld().playSound(pl.getLocation(), Sound.EAT, 1F, 1F);
+				pl.getWorld().playSound(pl.getLocation(), Sound.ENTITY_GENERIC_EAT, 1F, 1F);
 				Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 					public void run() {
 						// TODO: This could be abused with a macro.
-						if (isCustomFish(pl.getItemInHand())) {
-							ItemStack fish = pl.getItemInHand();
+						if (isCustomFish(pl.getInventory().getItemInMainHand())) {
+							ItemStack fish = pl.getInventory().getItemInMainHand();
 							if (fish.getAmount() > 1) {
 								// Subtract just 1.
 								fish.setAmount(fish.getAmount() - 1);
-								pl.setItemInHand(fish);
+								pl.getInventory().setItemInMainHand(fish);
 							} else if (fish.getAmount() <= 1) {
-								pl.setItemInHand(new ItemStack(Material.AIR));
+								pl.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 							}
 
 							pl.updateInventory();
@@ -2770,7 +2768,7 @@ public class ProfessionMechanics implements Listener {
 				}, 1L);
 				Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 					public void run() {
-						pl.getWorld().playSound(pl.getLocation(), Sound.EAT, 1F, 1.5F);
+						pl.getWorld().playSound(pl.getLocation(), Sound.ENTITY_GENERIC_EAT, 1F, 1.5F);
 					}
 				}, 4L);
 				// Ok, so now we need to see what we need to do for the player
@@ -2802,9 +2800,9 @@ public class ProfessionMechanics implements Listener {
 						// Instant heal.
 						double percent_to_heal = Double.parseDouble(s.substring(s.indexOf("+") + 1, s.indexOf("%")))
 								/ 100;
-						double max_hp = HealthMechanics.getMaxHealthValue(pl.getName());
+						double max_hp = HealthMechanics.getMaxHealthValue(pl);
 						int amount_to_heal = (int) Math.round((percent_to_heal * max_hp));
-						double current_hp = HealthMechanics.getPlayerHP(pl.getName());
+						double current_hp = HealthMechanics.getPlayerHP(pl);
 						if (current_hp + 1 > max_hp) {
 							continue;
 						} // They have max HP.
@@ -2820,14 +2818,14 @@ public class ProfessionMechanics implements Listener {
 						Damageable damp = (Damageable) pl;
 						if ((current_hp + amount_to_heal) >= max_hp) {
 							pl.setHealth(20);
-							HealthMechanics.setPlayerHP(pl.getName(), (int) max_hp);
+							HealthMechanics.setPlayerHP(pl, (int) max_hp);
 							continue; // Full HP.
 						}
 
 						else if (damp.getHealth() <= 19 && ((current_hp + amount_to_heal) < max_hp)) {
-							HealthMechanics.setPlayerHP(pl.getName(),
-									(int) (HealthMechanics.getPlayerHP(pl.getName()) + amount_to_heal));
-							double health_percent = (HealthMechanics.getPlayerHP(pl.getName()) + amount_to_heal)
+							HealthMechanics.setPlayerHP(pl,
+									(int) (HealthMechanics.getPlayerHP(pl) + amount_to_heal));
+							double health_percent = (HealthMechanics.getPlayerHP(pl) + amount_to_heal)
 									/ max_hp;
 							double new_health_display = health_percent * 20;
 							if (new_health_display > 19) {
@@ -2850,7 +2848,7 @@ public class ProfessionMechanics implements Listener {
 						double percent_to_regen = Double.parseDouble(s.substring(s.indexOf(" ") + 1, s.indexOf("%")))
 								/ 100.0D;
 						int regen_interval = Integer.parseInt(s.substring(s.lastIndexOf(" ") + 1, s.lastIndexOf("s")));
-						double max_hp = HealthMechanics.getMaxHealthValue(pl.getName());
+						double max_hp = HealthMechanics.getMaxHealthValue(pl);
 
 						final int amount_to_regen_per_interval = (int) (max_hp * percent_to_regen) / regen_interval;
 						pl.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "      " + ChatColor.GREEN
@@ -3033,9 +3031,9 @@ public class ProfessionMechanics implements Listener {
 
 				int amount_to_regen = fish_health_regen.get(pl.getName());
 
-				double max_hp = HealthMechanics.getMaxHealthValue(pl.getName());
+				double max_hp = HealthMechanics.getMaxHealthValue(pl);
 				int amount_to_heal = (int) amount_to_regen;
-				double current_hp = HealthMechanics.getPlayerHP(pl.getName());
+				double current_hp = HealthMechanics.getPlayerHP(pl);
 				if (current_hp + 1 > max_hp) {
 					return;
 				} // They have max HP.
@@ -3050,17 +3048,17 @@ public class ProfessionMechanics implements Listener {
 				Damageable damp = (Damageable) pl;
 				if ((current_hp + amount_to_heal) >= max_hp) {
 					pl.setHealth(20);
-					HealthMechanics.setPlayerHP(pl.getName(), (int) max_hp);
+					HealthMechanics.setPlayerHP(pl, (int) max_hp);
 					return; // Full HP.
 				}
 
 				else if (damp.getHealth() <= 19 && ((current_hp + amount_to_heal) < max_hp)) {
-					HealthMechanics.setPlayerHP(pl.getName(),
-							(int) (HealthMechanics.getPlayerHP(pl.getName()) + amount_to_heal));
+					HealthMechanics.setPlayerHP(pl,
+							(int) (HealthMechanics.getPlayerHP(pl) + amount_to_heal));
 					// HealthMechanics.setPlayerHP(pl.getName(),
 					// (int)(HealthMechanics.getPlayerHP(pl.getName()) +
 					// amount_to_heal));
-					double health_percent = (HealthMechanics.getPlayerHP(pl.getName()) + amount_to_heal) / max_hp;
+					double health_percent = (HealthMechanics.getPlayerHP(pl) + amount_to_heal) / max_hp;
 					double new_health_display = health_percent * 20;
 					if (new_health_display > 19) {
 						if (health_percent >= 1) {
@@ -3078,7 +3076,6 @@ public class ProfessionMechanics implements Listener {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
 	public void onPlayerCastRod(PlayerInteractEvent e) {
 		// TODO: Prevent fishing in no-fish / too high of tier areas.
@@ -3101,7 +3098,7 @@ public class ProfessionMechanics implements Listener {
 				// Do not allow fishing with incorrect types of fishing rods.
 			}
 
-			Location target_loc = pl.getTargetBlock(null, 8).getLocation();
+			Location target_loc = pl.getTargetBlock((Set<Material>) null, 8).getLocation();
 
 			int spot_tier = getFishingSpotTier(target_loc);
 			if (spot_tier == -1) {
@@ -3169,16 +3166,16 @@ public class ProfessionMechanics implements Listener {
 		final Player pl = e.getPlayer();
 		e.setExpToDrop(0);
 
-		if (!(player_fishing_spot.containsKey(pl.getName())) || !(isSkillItem(pl.getItemInHand()))
-				|| !(getSkillType(pl.getItemInHand()).equalsIgnoreCase("fishing"))) {
+		if (!(player_fishing_spot.containsKey(pl.getName())) || !(isSkillItem(pl.getInventory().getItemInMainHand()))
+				|| !(getSkillType(pl.getInventory().getItemInMainHand()).equalsIgnoreCase("fishing"))) {
 			e.setCancelled(true);
 			return; // Get out of here.
 		}
 
 		if (e.getState() == State.FAILED_ATTEMPT || e.getState() == State.CAUGHT_ENTITY) {
-			RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 1, "wep");
+			RepairMechanics.subtractCustomDurability(pl, pl.getInventory().getItemInMainHand(), 1, "wep");
 		} else if (e.getState() == State.CAUGHT_FISH) {
-			RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 2, "wep");
+			RepairMechanics.subtractCustomDurability(pl, pl.getInventory().getItemInMainHand(), 2, "wep");
 		}
 
 		if (e.getState() == State.CAUGHT_FISH) {
@@ -3204,7 +3201,7 @@ public class ProfessionMechanics implements Listener {
 				public void run() {
 					int do_i_get_fish = new Random().nextInt(100);
 
-					int item_tier = getItemTier(pl.getItemInHand());
+					int item_tier = getItemTier(pl.getInventory().getItemInMainHand());
 					int success_rate = 0;
 
 					if (item_tier > spot_tier) {
@@ -3212,13 +3209,13 @@ public class ProfessionMechanics implements Listener {
 					}
 					if (item_tier == spot_tier) {
 						success_rate = 50
-								+ (2 * (20 - Math.abs((getNextLevelUp(item_tier) - getItemLevel(pl.getItemInHand())))));
+								+ (2 * (20 - Math.abs((getNextLevelUp(item_tier) - getItemLevel(pl.getInventory().getItemInMainHand())))));
 					}
 
-					int success_mod = getSuccessChance(pl.getItemInHand());
+					int success_mod = getSuccessChance(pl.getInventory().getItemInMainHand());
 					success_rate += success_mod; // %CHANCE
 
-					if (isSkillItem(pl.getItemInHand()) && getSkillType(pl.getItemInHand()).equalsIgnoreCase("fishing")
+					if (isSkillItem(pl.getInventory().getItemInMainHand()) && getSkillType(pl.getInventory().getItemInMainHand()).equalsIgnoreCase("fishing")
 							&& success_rate >= do_i_get_fish) {
 						// They get fish!
 						ItemStack fish = getFishDrop(spot_tier);
@@ -3233,7 +3230,7 @@ public class ProfessionMechanics implements Listener {
 
 						// Special Effects!
 						int doi_double_drop = new Random().nextInt(100) + 1;
-						if (getDoubleDropChance(pl.getItemInHand()) >= doi_double_drop) {
+						if (getDoubleDropChance(pl.getInventory().getItemInMainHand()) >= doi_double_drop) {
 							fish = getFishDrop(spot_tier);
 							if (pl.getInventory().firstEmpty() != -1) {
 								pl.getInventory().setItem(pl.getInventory().firstEmpty(), fish);
@@ -3249,7 +3246,7 @@ public class ProfessionMechanics implements Listener {
 						}
 
 						int doi_triple_drop = new Random().nextInt(100) + 1;
-						if (getTripleDropChance(pl.getItemInHand()) >= doi_triple_drop) {
+						if (getTripleDropChance(pl.getInventory().getItemInMainHand()) >= doi_triple_drop) {
 							fish = getFishDrop(spot_tier);
 							if (pl.getInventory().firstEmpty() != -1) {
 								pl.getInventory().setItem(pl.getInventory().firstEmpty(), fish);
@@ -3272,7 +3269,7 @@ public class ProfessionMechanics implements Listener {
 							}
 						}
 
-						int junk_chance = getJunkFindChance(pl.getItemInHand());
+						int junk_chance = getJunkFindChance(pl.getInventory().getItemInMainHand());
 						if (junk_chance >= (new Random().nextInt(100) + 1)) {
 							int junk_type = new Random().nextInt(100) + 1; // 0,
 																			// 1,
@@ -3378,7 +3375,7 @@ public class ProfessionMechanics implements Listener {
 							}
 						}
 
-						int treasure_chance = getTreasureFindChance(pl.getItemInHand());
+						int treasure_chance = getTreasureFindChance(pl.getInventory().getItemInMainHand());
 						if (treasure_chance >= (new Random().nextInt(300) + 1)) {
 							// Give em treasure!
 							int treasure_type = new Random().nextInt(4); // 0, 1
@@ -3423,17 +3420,17 @@ public class ProfessionMechanics implements Listener {
 
 						int fish_caught = fish_caught_count.get(pl.getName());
 						if (fish_caught >= 1) {
-							AchievementMechanics.addAchievement(pl.getName(), "Gone Fishing I");
+							AchievementMechanics.addAchievement(pl, "Gone Fishing I");
 							if (fish_caught >= 10) {
-								AchievementMechanics.addAchievement(pl.getName(), "Gone Fishing II");
+								AchievementMechanics.addAchievement(pl, "Gone Fishing II");
 								if (fish_caught >= 25) {
-									AchievementMechanics.addAchievement(pl.getName(), "Gone Fishing III");
+									AchievementMechanics.addAchievement(pl, "Gone Fishing III");
 									if (fish_caught >= 50) {
-										AchievementMechanics.addAchievement(pl.getName(), "Gone Fishing IV");
+										AchievementMechanics.addAchievement(pl, "Gone Fishing IV");
 										if (fish_caught >= 100) {
-											AchievementMechanics.addAchievement(pl.getName(), "Gone Fishing V");
+											AchievementMechanics.addAchievement(pl, "Gone Fishing V");
 											if (fish_caught >= 200) {
-												AchievementMechanics.addAchievement(pl.getName(), "Gone Fishing VI");
+												AchievementMechanics.addAchievement(pl, "Gone Fishing VI");
 											}
 										}
 									}
@@ -3441,7 +3438,7 @@ public class ProfessionMechanics implements Listener {
 							}
 						}
 
-						addEXP(pl, pl.getItemInHand(), getFishEXP(spot_tier), "fishing");
+						addEXP(pl, pl.getInventory().getItemInMainHand(), getFishEXP(spot_tier), "fishing");
 
 					} else {
 						// They don't get fish!
@@ -3505,7 +3502,7 @@ public class ProfessionMechanics implements Listener {
 	public void onPlayerUseFire(PlayerInteractEvent e) {
 		Player pl = e.getPlayer();
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.hasItem() && e.getItem().getType() == Material.RAW_FISH) {
-			Block b = pl.getTargetBlock(null, 8);
+			Block b = pl.getTargetBlock((Set<Material>) null, 8);
 
 			if (b.getType() == Material.FIRE || b.getType() == Material.LAVA || b.getType() == Material.STATIONARY_LAVA
 					|| b.getType() == Material.FURNACE || b.getType() == Material.BURNING_FURNACE) {
@@ -3522,7 +3519,7 @@ public class ProfessionMechanics implements Listener {
 				raw_fish.setItemMeta(im);
 				pl.setItemInHand(raw_fish);
 
-				pl.getWorld().playSound(b.getLocation(), Sound.FIZZ, 0.5F, 0.05F);
+				pl.getWorld().playSound(b.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.5F, 0.05F);
 				pl.updateInventory();
 			} else {
 				pl.sendMessage(ChatColor.YELLOW + "To cook, " + ChatColor.UNDERLINE + "RIGHT CLICK" + ChatColor.YELLOW
@@ -3598,7 +3595,7 @@ public class ProfessionMechanics implements Listener {
 			applySkillEnchant(in_slot, getItemEnchant(cursor));
 
 			p.updateInventory();
-			p.getWorld().playSound(p.getLocation(), Sound.LEVEL_UP, 1.0F, 1.25F);
+			p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.25F);
 			// p.getWorld().spawnParticle(p.getLocation().add(0, 8, 0),
 			// Particle.FIREWORKS_SPARK, 0.75F, 50);
 			Firework fw = (Firework) p.getWorld().spawnEntity(p.getLocation(), EntityType.FIREWORK);
@@ -3849,7 +3846,7 @@ public class ProfessionMechanics implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent e) {
 		Player pl = e.getPlayer();
-		ItemStack is = pl.getItemInHand();
+		ItemStack is = pl.getInventory().getItemInMainHand();
 
 		Block b = e.getBlock();
 		if (b.getType() == Material.COAL_ORE || b.getType() == Material.EMERALD_ORE || b.getType() == Material.IRON_ORE
@@ -3883,23 +3880,23 @@ public class ProfessionMechanics implements Listener {
 					if (do_i_break > break_chance) {
 						e.setCancelled(true);
 
-						RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 2, "wep");
-						if (pl.getItemInHand().getType() == Material.AIR) {
-							pl.setItemInHand(new ItemStack(Material.AIR, 1));
-							e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
+						RepairMechanics.subtractCustomDurability(pl, pl.getInventory().getItemInMainHand(), 2, "wep");
+						if (pl.getInventory().getItemInMainHand().getType() == Material.AIR) {
+							pl.getInventory().setItemInMainHand(new ItemStack(Material.AIR, 1));
+							e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 							pl.updateInventory();
 						}
 
-						pl.playSound(pl.getLocation(), Sound.DIG_STONE, 1F, 0.75F);
+						pl.playSound(pl.getLocation(), Sound.BLOCK_STONE_BREAK, 1F, 0.75F);
 
-						Packet particles = new PacketPlayOutWorldEvent(2001,
+						/*Packet particles = new PacketPlayOutWorldEvent(2001,
 								(int) Math.round(b.getLocation().getBlockX()),
 								(int) Math.round(b.getLocation().getBlockY()),
 								(int) Math.round(b.getLocation().getBlockZ()), 1, false);
 						((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
 								b.getLocation().getBlockX(), b.getLocation().getBlockY() + 1,
 								b.getLocation().getBlockZ(), 24, ((CraftWorld) pl.getWorld()).getHandle().dimension,
-								particles);
+								particles);*/
 
 						pl.sendMessage(ChatColor.GRAY.toString() + ChatColor.ITALIC.toString()
 								+ "You fail to gather any ore.");
@@ -3916,10 +3913,10 @@ public class ProfessionMechanics implements Listener {
 
 				addEXP(pl, is, getOreEXP(m), "mining");
 
-				RepairMechanics.subtractCustomDurability(pl, pl.getItemInHand(), 1, "wep");
-				if (pl.getItemInHand().getType() == Material.AIR) {
-					pl.setItemInHand(new ItemStack(Material.AIR, 1));
-					e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
+				RepairMechanics.subtractCustomDurability(pl, pl.getInventory().getItemInMainHand(), 1, "wep");
+				if (pl.getInventory().getItemInMainHand().getType() == Material.AIR) {
+					pl.getInventory().setItemInMainHand(new ItemStack(Material.AIR, 1));
+					e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 					pl.updateInventory();
 					return; // It broke.
 				}
@@ -4015,7 +4012,7 @@ public class ProfessionMechanics implements Listener {
 			return;
 		}
 
-		if (!(pl.getItemInHand().getType() == Material.STONE)) {
+		if (!(pl.getInventory().getItemInMainHand().getType() == Material.STONE)) {
 			return;
 		}
 
@@ -4053,7 +4050,7 @@ public class ProfessionMechanics implements Listener {
 			return;
 		}
 
-		if (!(pl.getItemInHand().getType() == Material.WATER_LILY)) {
+		if (!(pl.getInventory().getItemInMainHand().getType() == Material.WATER_LILY)) {
 			return;
 		}
 

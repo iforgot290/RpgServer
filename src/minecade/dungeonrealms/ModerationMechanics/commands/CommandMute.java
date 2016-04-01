@@ -2,6 +2,7 @@ package minecade.dungeonrealms.ModerationMechanics.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,7 +21,7 @@ public class CommandMute implements CommandExecutor {
 			return true;
 		}
 		Player p = (Player) sender;
-		String rank = PermissionMechanics.getRank(p.getName());
+		String rank = PermissionMechanics.getRank(p);
 		if (rank == null) {
 			return true;
 		}
@@ -34,8 +35,9 @@ public class CommandMute implements CommandExecutor {
 						+ "/mute <PLAYER> <TIME(in minutes)>");
 				return true;
 			}
-		String p_name_2mute = args[0];
-		if (ChatMechanics.mute_list.containsKey(p_name_2mute) && !rank.equalsIgnoreCase("gm") && !p.isOp()) {
+		@SuppressWarnings("deprecation")
+		OfflinePlayer op = Bukkit.getOfflinePlayer(args[0]);
+		if (ChatMechanics.mute_list.containsKey(op.getUniqueId()) && !rank.equalsIgnoreCase("gm") && !p.isOp()) {
 			p.sendMessage(ChatColor.RED + "You cannot " + ChatColor.UNDERLINE + "overwrite" + ChatColor.RED
 					+ " a players mute.");
 			return true;
@@ -68,36 +70,34 @@ public class CommandMute implements CommandExecutor {
 		// long unmute_time = (System.currentTimeMillis() + ((minutes_to_mute *
 		// 60) * 1000));
 
-		if (Bukkit.getPlayer(p_name_2mute) != null && Bukkit.getPlayer(p_name_2mute).isOnline()) {
-			p_name_2mute = Bukkit.getPlayer(p_name_2mute).getName();
-			if (PermissionMechanics.getRank(p_name_2mute).equalsIgnoreCase("gm")) {
+		if (op.isOnline()) {
+			if (PermissionMechanics.getRank(op).equalsIgnoreCase("gm")) {
 				p.sendMessage(ChatColor.RED + "You cannot mute a Game Moderator.");
 				return true;
 			}
 		}
 
-		ChatMechanics.mute_list.put(p_name_2mute, (long) minutes_to_mute);
-		ChatMechanics.setMuteStateSQL(p_name_2mute);
+		ChatMechanics.mute_list.put(op.getUniqueId(), (long) minutes_to_mute);
+		ChatMechanics.setMuteStateSQL(op.getUniqueId());
 
 		p.sendMessage(ChatColor.AQUA + "You have issued a " + minutes_to_mute + " minute " + ChatColor.BOLD + "MUTE"
-				+ ChatColor.AQUA + " on the user " + ChatColor.BOLD + p_name_2mute);
-		p.sendMessage(ChatColor.GRAY + "If this was made in error, type '/unmute " + p_name_2mute + "'");
+				+ ChatColor.AQUA + " on the user " + ChatColor.BOLD + op.getName());
 		ModerationMechanics.log
-				.info("[ModerationMechanics] Muted player " + p_name_2mute + " for " + minutes_to_mute + " minute(s).");
+				.info("[ModerationMechanics] Muted player " + op.getName() + " for " + minutes_to_mute + " minute(s).");
 
 		String banner = "SYSTEM";
 		banner = p.getName();
 
-		if (Bukkit.getPlayer(p_name_2mute) != null && Bukkit.getPlayer(p_name_2mute).isOnline()) {
-			Player muted = Bukkit.getPlayer(p_name_2mute);
+		if (op.isOnline()) {
+			Player muted = op.getPlayer();
 			muted.sendMessage("");
 			muted.sendMessage(ChatColor.RED + "You have been " + ChatColor.BOLD + "GLOBALLY MUTED" + ChatColor.RED
 					+ " by " + ChatColor.BOLD + banner + ChatColor.RED + " for " + minutes_to_mute + " minute(s).");
 			muted.sendMessage("");
-		} else if (ModerationMechanics.isPlayerOnline(p_name_2mute)) {
-			int server_num = ModerationMechanics.getPlayerServer(p_name_2mute);
+		} else if (ModerationMechanics.isPlayerOnline(op)) {
+			int server_num = ModerationMechanics.getPlayerServer(op);
 			CommunityMechanics.sendPacketCrossServer(
-					"@mute@" + p.getName() + "/" + p_name_2mute + ":" + minutes_to_mute, server_num, false);
+					"@mute@" + p.getName() + "/" + op.getUniqueId() + ":" + minutes_to_mute, server_num, false);
 			// ConnectProtocol.sendResultCrossServer(CommunityMechanics.server_list.get(server_num),
 			// "@mute@" + p.getName() + "/" + p_name_2mute + ":" +
 			// unmute_time);

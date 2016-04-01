@@ -1,7 +1,10 @@
 package minecade.dungeonrealms.MonsterMechanics.commands;
 
+import java.util.Set;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -187,7 +190,7 @@ public class CommandMonSpawn implements CommandExecutor {
 
 			// /monspawn mob_type tier elite meta_data name
 
-			Location l = p.getTargetBlock(null, 128).getLocation().add(0, 1, 0);
+			Location l = p.getTargetBlock((Set<Material>) null, 128).getLocation().add(0, 1, 0);
 			/*
 			 * public static boolean spawnTierMob(Location l, EntityType et, int
 			 * tier, int mob_num, Location mob_spawner_loc, boolean elite,

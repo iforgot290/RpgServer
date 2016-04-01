@@ -89,7 +89,7 @@ public class IntellectItem implements MenuItem, BonusItem<PlayerModel> {
 				&& this.points + points <= 600) {
 			this.points += points;
 			pLevel.setTempFreePoints(pLevel.getTempFreePoints() - points);
-			plr.playSound(plr.getLocation(), Sound.SHEEP_SHEAR, 1.0F, 1.3F);
+			plr.playSound(plr.getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1.0F, 1.3F);
 			for (Entry<Integer, MenuItem> entry : DynamicMenuModel.getMenu(plr).getDynamicItems().entrySet()) {
 				DynamicMenuModel.getMenu(plr).getInventory().setItem(entry.getKey(), entry.getValue().getItem());
 			}

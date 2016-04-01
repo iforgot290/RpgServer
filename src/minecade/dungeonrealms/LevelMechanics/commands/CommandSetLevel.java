@@ -41,7 +41,7 @@ public class CommandSetLevel implements CommandExecutor {
 
 		p.sendMessage(ChatColor.AQUA + "You have set " + to_set.getName() + "'s level from "
 				+ PlayerManager.getPlayerModel(to_set).getPlayerLevel().getLevel() + " to " + level);
-		p.playSound(p.getLocation(), Sound.SHEEP_SHEAR, 1, 1.3F);
+		p.playSound(p.getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1, 1.3F);
 		PlayerManager.getPlayerModel(to_set).getPlayerLevel().setLevel(level);
 		PlayerManager.getPlayerModel(to_set).getPlayerLevel().updateScoreboardLevel();
 		return true;

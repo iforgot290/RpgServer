@@ -34,7 +34,7 @@ public class CommandSetFish implements CommandExecutor {
 		}
 
 		ProfessionMechanics.fishing_place.put(p.getName(), fish_type);
-		p.setItemInHand(new ItemStack(Material.WATER_LILY, -1));
+		p.getInventory().setItemInMainHand(new ItemStack(Material.WATER_LILY, -1));
 		p.setGameMode(GameMode.CREATIVE);
 		p.sendMessage(ChatColor.GOLD + "Now placing: '" + fish_type + "' fishing spots.");
 		p.sendMessage(ChatColor.GRAY

@@ -1,6 +1,8 @@
 package minecade.dungeonrealms.ModerationMechanics.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,7 +21,7 @@ public class CommandUnban implements CommandExecutor {
 
 		String rank = "";
 		if (p != null) {
-			rank = PermissionMechanics.getRank(p.getName());
+			rank = PermissionMechanics.getRank(p);
 			if (rank == null) {
 				return true;
 			}
@@ -42,19 +44,20 @@ public class CommandUnban implements CommandExecutor {
 			unbanner = p.getName();
 		}
 
-		String p_name = args[0];
+		@SuppressWarnings("deprecation")
+		OfflinePlayer op = Bukkit.getOfflinePlayer(args[0]);
 		String reason = "";
 
 		for (int i = 1; i < args.length; i++) {
 			reason += args[i] + " ";
 		}
 
-		ModerationMechanics.unbanPlayer(p_name, reason, unbanner);
+		ModerationMechanics.unbanPlayer(op.getUniqueId(), reason, unbanner);
 		ModerationMechanics.log
-				.info("[ModerationMechanics] UNBANNED player " + p_name + " for " + reason + "by " + unbanner);
+				.info("[ModerationMechanics] UNBANNED player " + op.getName() + " for " + reason + "by " + unbanner);
 
 		if (p != null) {
-			p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "UNBANNED" + ChatColor.RED + " player " + p_name
+			p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "UNBANNED" + ChatColor.RED + " player " + op.getName()
 					+ " because " + reason);
 		}
 

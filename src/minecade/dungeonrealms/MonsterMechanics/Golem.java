@@ -15,9 +15,11 @@ import net.minecraft.server.v1_9_R1.PathfinderGoalRandomLookaround;
 import net.minecraft.server.v1_9_R1.PathfinderGoalRandomStroll;
 import net.minecraft.server.v1_9_R1.PathfinderGoalSelector;
 import net.minecraft.server.v1_9_R1.PathfinderGoalTarget;
+import net.minecraft.server.v1_9_R1.World;
 
 public class Golem extends EntityIronGolem {
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Golem(World world) {
 		super(world);
 		clearGoalSelectors();
@@ -27,7 +29,7 @@ public class Golem extends EntityIronGolem {
 		this.goalSelector.a(3, new PathfinderGoalRandomLookaround(this));
 		this.goalSelector.a(4, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 6.0F));
 		this.targetSelector.a(0, new PathfinderGoalHurtByTarget(this, false));
-		this.targetSelector.a(1, new PathfinderGoalNearestAttackableTarget(this, EntityHuman.class, 0, true));
+		this.targetSelector.a(1, new PathfinderGoalNearestAttackableTarget(this, EntityHuman.class, true));
 	}
 
 	@SuppressWarnings("rawtypes")

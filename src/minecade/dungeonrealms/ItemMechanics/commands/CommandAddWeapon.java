@@ -39,10 +39,10 @@ public class CommandAddWeapon implements CommandExecutor {
 		}
 
 		if (args[0].equalsIgnoreCase("repair")) {
-			ItemStack hand = p.getItemInHand();
+			ItemStack hand = p.getInventory().getItemInMainHand();
 			hand.setDurability((short) 0);
-			p.setItemInHand(hand);
-			Attributes attributes = new Attributes(p.getItemInHand());
+			p.getInventory().setItemInMainHand(hand);
+			Attributes attributes = new Attributes(p.getInventory().getItemInMainHand());
 			attributes.clear();
 			p.updateInventory();
 			return true;
@@ -62,7 +62,7 @@ public class CommandAddWeapon implements CommandExecutor {
 			p.getInventory().addItem(Halloween.halloween_mask);
 		}
 
-		if (!Main.isMaster(sender.getName())) {
+		if (!Main.isMaster(p.getUniqueId())) {
 			return true;
 		}
 

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
@@ -25,8 +26,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftSkeleton;
 import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
@@ -64,7 +63,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -112,8 +110,8 @@ import minecade.dungeonrealms.enums.ItemTier;
 import minecade.dungeonrealms.enums.ItemType;
 import minecade.dungeonrealms.managers.PlayerManager;
 import net.minecraft.server.v1_9_R1.EntityLiving;
+import net.minecraft.server.v1_9_R1.EnumItemSlot;
 import net.minecraft.server.v1_9_R1.NBTTagCompound;
-import net.minecraft.server.v1_9_R1.PacketPlayOutWorldEvent;
 
 public class ItemMechanics implements Listener {
 
@@ -325,7 +323,7 @@ public class ItemMechanics implements Listener {
 						continue;
 					} // Equip event.
 					Damageable damp = (Damageable) p;
-					if (damp.getHealth() <= 0 || HealthMechanics.getPlayerHP(p.getName()) <= 0) {
+					if (damp.getHealth() <= 0 || HealthMechanics.getPlayerHP(p) <= 0) {
 						continue;
 					}
 					if (!(armor_contents.containsKey(p.getName()))) {
@@ -350,29 +348,29 @@ public class ItemMechanics implements Listener {
 					}
 					Player pl = Bukkit.getPlayer(s);
 					Damageable damp = (Damageable) pl;
-					if (HealthMechanics.getPlayerHP(pl.getName()) <= 0 || damp.getHealth() <= 0) {
+					if (HealthMechanics.getPlayerHP(pl) <= 0 || damp.getHealth() <= 0) {
 						// Don't calculate current HP if level hasn't been set.
 						// (/shard fix)
 						to_process_weapon.remove(s);
 						continue;
 					}
 
-					str_data.put(pl.getName(), generateTotalStrVal(pl));
-					dex_data.put(pl.getName(), generateTotalDexVal(pl));
-					vit_data.put(pl.getName(), generateTotalVitVal(pl));
-					int_data.put(pl.getName(), generateTotalIntVal(pl));
+					str_data.put(pl.getUniqueId(), generateTotalStrVal(pl));
+					dex_data.put(pl.getUniqueId(), generateTotalDexVal(pl));
+					vit_data.put(pl.getUniqueId(), generateTotalVitVal(pl));
+					int_data.put(pl.getUniqueId(), generateTotalIntVal(pl));
 
 					double new_max_hp = HealthMechanics.generateMaxHP(pl);
-					if (HealthMechanics.health_data.containsKey(pl.getName())
-							&& new_max_hp != HealthMechanics.health_data.get(pl.getName())) {
-						HealthMechanics.health_data.put(pl.getName(), (int) new_max_hp);
+					if (HealthMechanics.health_data.containsKey(pl.getUniqueId())
+							&& new_max_hp != HealthMechanics.health_data.get(pl.getUniqueId())) {
+						HealthMechanics.health_data.put(pl.getUniqueId(), (int) new_max_hp);
 
-						if (HealthMechanics.getPlayerHP(pl.getName()) > (int) new_max_hp) {
+						if (HealthMechanics.getPlayerHP(pl) > (int) new_max_hp) {
 							// pl.setLevel((int)new_max_hp);
-							HealthMechanics.setPlayerHP(pl.getName(), (int) new_max_hp);
+							HealthMechanics.setPlayerHP(pl, (int) new_max_hp);
 						}
 
-						double d_level = HealthMechanics.getPlayerHP(pl.getName());
+						double d_level = HealthMechanics.getPlayerHP(pl);
 
 						double health_percent = d_level / new_max_hp;
 						double new_health_display = (health_percent * 20.0D);
@@ -417,7 +415,7 @@ public class ItemMechanics implements Listener {
 						continue;
 					}
 					Player p = Bukkit.getPlayer(p_name);
-					AchievementMechanics.processArmorAchievements(p_name, p.getInventory().getArmorContents());
+					AchievementMechanics.processArmorAchievements(p, p.getInventory().getArmorContents());
 
 					// List<Integer> net_armor_vals = new
 					// ArrayList<Integer>(armor_data.get(p.getName()));
@@ -426,7 +424,7 @@ public class ItemMechanics implements Listener {
 						continue;
 					}
 					Damageable damp = (Damageable) p;
-					if (damp.getHealth() <= 0 || HealthMechanics.getPlayerHP(p.getName()) <= 0) {
+					if (damp.getHealth() <= 0 || HealthMechanics.getPlayerHP(p.getUniqueId()) <= 0) {
 						continue;
 					}
 
@@ -483,25 +481,25 @@ public class ItemMechanics implements Listener {
 
 					DecimalFormat df = new DecimalFormat("#.##");
 
-					armor_data.put(p.getName(), generateTotalArmorVal(p));
+					armor_data.put(p.getUniqueId(), generateTotalArmorVal(p));
 					dmg_data.put(p.getName(), generateTotalDmgVal(p));
 
-					str_data.put(p.getName(), new_str);
-					dex_data.put(p.getName(), new_dex);
-					vit_data.put(p.getName(), new_vit);
-					int_data.put(p.getName(), new_int);
+					str_data.put(p.getUniqueId(), new_str);
+					dex_data.put(p.getUniqueId(), new_dex);
+					vit_data.put(p.getUniqueId(), new_vit);
+					int_data.put(p.getUniqueId(), new_int);
 
 					dodge_data.put(p.getName(), new_dodge);
 					block_data.put(p.getName(), new_block);
 					thorn_data.put(p.getName(), new_thorns);
 					reflection_data.put(p.getName(), new_reflection);
 
-					fire_res_data.put(p.getName(), new_fire_res);
-					ice_res_data.put(p.getName(), new_ice_res);
-					poison_res_data.put(p.getName(), new_poison_res);
+					fire_res_data.put(p.getUniqueId(), new_fire_res);
+					ice_res_data.put(p.getUniqueId(), new_ice_res);
+					poison_res_data.put(p.getUniqueId(), new_poison_res);
 
-					gfind_data.put(p.getName(), new_gfind);
-					ifind_data.put(p.getName(), new_ifind);
+					gfind_data.put(p.getUniqueId(), new_gfind);
+					ifind_data.put(p.getUniqueId(), new_ifind);
 					p.setWalkSpeed(getPlayerSpeed(p));
 
 					FatigueMechanics.updateEnergyRegenData(p, true);
@@ -795,7 +793,7 @@ public class ItemMechanics implements Listener {
 			return;
 		}
 		Damageable damp = (Damageable) p;
-		if (damp.getHealth() <= 0 || HealthMechanics.getPlayerHP(p.getName()) <= 0) {
+		if (damp.getHealth() <= 0 || HealthMechanics.getPlayerHP(p) <= 0) {
 			return;
 		}
 
@@ -852,25 +850,25 @@ public class ItemMechanics implements Listener {
 
 		DecimalFormat df = new DecimalFormat("#.##");
 
-		armor_data.put(p.getName(), generateTotalArmorVal(p));
+		armor_data.put(p.getUniqueId(), generateTotalArmorVal(p));
 		dmg_data.put(p.getName(), generateTotalDmgVal(p));
 
-		str_data.put(p.getName(), new_str);
-		dex_data.put(p.getName(), new_dex);
-		vit_data.put(p.getName(), new_vit);
-		int_data.put(p.getName(), new_int);
+		str_data.put(p.getUniqueId(), new_str);
+		dex_data.put(p.getUniqueId(), new_dex);
+		vit_data.put(p.getUniqueId(), new_vit);
+		int_data.put(p.getUniqueId(), new_int);
 
 		dodge_data.put(p.getName(), new_dodge);
 		block_data.put(p.getName(), new_block);
 		thorn_data.put(p.getName(), new_thorns);
 		reflection_data.put(p.getName(), new_reflection);
 
-		fire_res_data.put(p.getName(), new_fire_res);
-		ice_res_data.put(p.getName(), new_ice_res);
-		poison_res_data.put(p.getName(), new_poison_res);
+		fire_res_data.put(p.getUniqueId(), new_fire_res);
+		ice_res_data.put(p.getUniqueId(), new_ice_res);
+		poison_res_data.put(p.getUniqueId(), new_poison_res);
 
-		gfind_data.put(p.getName(), new_gfind);
-		ifind_data.put(p.getName(), new_ifind);
+		gfind_data.put(p.getUniqueId(), new_gfind);
+		ifind_data.put(p.getUniqueId(), new_ifind);
 		p.setWalkSpeed(getPlayerSpeed(p));
 
 		FatigueMechanics.updateEnergyRegenData(p, true);
@@ -879,14 +877,14 @@ public class ItemMechanics implements Listener {
 
 		if (HealthMechanics.health_data.containsKey(p.getName())
 				&& new_max_hp != HealthMechanics.health_data.get(p.getName())) {
-			HealthMechanics.health_data.put(p.getName(), (int) new_max_hp);
+			HealthMechanics.health_data.put(p.getUniqueId(), (int) new_max_hp);
 
-			if (HealthMechanics.getPlayerHP(p.getName()) > (int) new_max_hp) {
+			if (HealthMechanics.getPlayerHP(p) > (int) new_max_hp) {
 				// p.setLevel((int)new_max_hp);
-				HealthMechanics.setPlayerHP(p.getName(), (int) new_max_hp);
+				HealthMechanics.setPlayerHP(p, (int) new_max_hp);
 			}
 
-			double d_level = HealthMechanics.getPlayerHP(p.getName());
+			double d_level = HealthMechanics.getPlayerHP(p);
 
 			double health_percent = d_level / new_max_hp;
 			double new_health_display = (health_percent * 20.0D);
@@ -1936,8 +1934,8 @@ public class ItemMechanics implements Listener {
 			total_int_val += getIntVal(i);
 		}
 
-		if (getIntVal(p.getItemInHand()) != 0) {
-			total_int_val += getIntVal(p.getItemInHand());
+		if (getIntVal(p.getInventory().getItemInMainHand()) != 0) {
+			total_int_val += getIntVal(p.getInventory().getItemInMainHand());
 		}
 
 		total_int_val += PlayerManager.getPlayerModel(p).getPlayerLevel().getIntPoints();
@@ -2951,7 +2949,7 @@ public class ItemMechanics implements Listener {
 	}
 
 	// @EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerAnimation(PlayerAnimationEvent e) {
+	/*public void onPlayerAnimation(PlayerAnimationEvent e) {
 		Player pl = e.getPlayer();
 		ItemStack is = pl.getItemInHand();
 		if (is == null) {
@@ -2965,7 +2963,7 @@ public class ItemMechanics implements Listener {
 		} catch (NullPointerException npe) {
 			return;
 		}
-	}
+	}*/
 
 	public static void removeAttributes(Inventory inv) {
 		int index = -1;
@@ -2976,7 +2974,7 @@ public class ItemMechanics implements Listener {
 				continue;
 			}
 
-			final net.minecraft.server.v1_7_R2.ItemStack nms = CraftItemStack.asNMSCopy(is);
+			final net.minecraft.server.v1_9_R1.ItemStack nms = CraftItemStack.asNMSCopy(is);
 
 			if (nms != null && nms.hasTag() && is.getMaxStackSize() == 1) {
 				Attributes attributes = new Attributes(is);
@@ -2997,7 +2995,7 @@ public class ItemMechanics implements Listener {
 			return null;
 		}
 
-		final net.minecraft.server.v1_7_R2.ItemStack nms = CraftItemStack.asNMSCopy(is);
+		final net.minecraft.server.v1_9_R1.ItemStack nms = CraftItemStack.asNMSCopy(is);
 
 		if (nms != null && nms.hasTag() && is.getMaxStackSize() == 1) { // &&
 																		// nms.getTag().hasKey("AttributeName")
@@ -3064,22 +3062,22 @@ public class ItemMechanics implements Listener {
 
 		ItemStack i = p.getInventory().getItem(e.getNewSlot());
 		if (i.getType() == Material.BOW) {
-			p.playSound(p.getLocation(), Sound.ITEM_BREAK, 1.0F, 1.4F);
+			p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 1.4F);
 		}
 		if (i.getType() == Material.WOOD_SWORD || i.getType() == Material.STONE_SWORD
 				|| i.getType() == Material.IRON_SWORD || i.getType() == Material.DIAMOND_SWORD
 				|| i.getType() == Material.GOLD_SWORD) {
-			p.playSound(p.getLocation(), Sound.ITEM_BREAK, 1.0F, 1.4F);
+			p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 1.4F);
 		}
 		if (i.getType() == Material.WOOD_AXE || i.getType() == Material.STONE_AXE || i.getType() == Material.IRON_AXE
 				|| i.getType() == Material.DIAMOND_AXE || i.getType() == Material.GOLD_AXE) {
-			p.playSound(p.getLocation(), Sound.ITEM_BREAK, 1.0F, 1.4F);
+			p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 1.4F);
 		}
 		if (i.getType().name().toLowerCase().contains("spade")) {
-			p.playSound(p.getLocation(), Sound.ITEM_BREAK, 1.0F, 1.4F);
+			p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 1.4F);
 		}
 		if (i.getType().name().toLowerCase().contains("hoe")) {
-			p.playSound(p.getLocation(), Sound.ITEM_BREAK, 1.0F, 1.4F);
+			p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 1.4F);
 		}
 
 	}
@@ -3117,7 +3115,7 @@ public class ItemMechanics implements Listener {
 		removeAttributes(p.getInventory());
 		p.updateInventory();
 
-		armor_data.put(p.getName(), generateTotalArmorVal(p));
+		armor_data.put(p.getUniqueId(), generateTotalArmorVal(p));
 		dmg_data.put(p.getName(), generateTotalDmgVal(p));
 
 		dodge_data.put(p.getName(), generateTotalDodgeChance(p));
@@ -3125,17 +3123,17 @@ public class ItemMechanics implements Listener {
 		thorn_data.put(p.getName(), generateTotalThornVal(p));
 		reflection_data.put(p.getName(), generateTotalReflectChance(p));
 
-		str_data.put(p.getName(), generateTotalStrVal(p));
-		dex_data.put(p.getName(), generateTotalDexVal(p));
-		vit_data.put(p.getName(), generateTotalVitVal(p));
-		int_data.put(p.getName(), generateTotalIntVal(p));
+		str_data.put(p.getUniqueId(), generateTotalStrVal(p));
+		dex_data.put(p.getUniqueId(), generateTotalDexVal(p));
+		vit_data.put(p.getUniqueId(), generateTotalVitVal(p));
+		int_data.put(p.getUniqueId(), generateTotalIntVal(p));
 
-		fire_res_data.put(p.getName(), generateTotalFireRes(p));
-		ice_res_data.put(p.getName(), generateTotalIceRes(p));
-		poison_res_data.put(p.getName(), generateTotalPoisonRes(p));
+		fire_res_data.put(p.getUniqueId(), generateTotalFireRes(p));
+		ice_res_data.put(p.getUniqueId(), generateTotalIceRes(p));
+		poison_res_data.put(p.getUniqueId(), generateTotalPoisonRes(p));
 
-		gfind_data.put(p.getName(), generateTotalGoldFindChance(p));
-		ifind_data.put(p.getName(), generateTotalItemFindChance(p));
+		gfind_data.put(p.getUniqueId(), generateTotalGoldFindChance(p));
+		ifind_data.put(p.getUniqueId(), generateTotalItemFindChance(p));
 
 		p.setWalkSpeed(getPlayerSpeed(p));
 
@@ -3213,7 +3211,7 @@ public class ItemMechanics implements Listener {
 				givePlayerItem(pl, to_give);
 				pl.sendMessage(ChatColor.RED + "You crack open the egg and find...");
 				pl.sendMessage(ChatColor.GOLD + "A " + ChatColor.RESET + to_give.getItemMeta().getDisplayName());
-				pl.playSound(pl.getLocation(), Sound.EXPLODE, 1, 1.3F);
+				pl.playSound(pl.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1.3F);
 				return;
 			}
 			if (should_i_give_orb == 1) {
@@ -3221,7 +3219,7 @@ public class ItemMechanics implements Listener {
 				givePlayerItem(pl, to_give);
 				pl.sendMessage(ChatColor.RED + "You crack open the egg and find...");
 				pl.sendMessage(ChatColor.GOLD + "A " + ChatColor.RESET + to_give.getItemMeta().getDisplayName());
-				pl.playSound(pl.getLocation(), Sound.EXPLODE, 1, 1.3F);
+				pl.playSound(pl.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1.3F);
 				return;
 			}
 			// They got none of the other stuff so give them some gems.
@@ -3234,7 +3232,7 @@ public class ItemMechanics implements Listener {
 			givePlayerItem(pl, gem_note);
 			pl.sendMessage(ChatColor.RED + "You crack open the egg and find...");
 			pl.sendMessage(ChatColor.GOLD.toString() + amount_of_gems + " gems!");
-			pl.playSound(pl.getLocation(), Sound.EXPLODE, 1, 1.3F);
+			pl.playSound(pl.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1.3F);
 			/*
 			 * pl.kickPlayer("Illegal Action - Account Flagged!"); long
 			 * unban_date = (System.currentTimeMillis() + (1000 * (72 * 3600)));
@@ -3263,7 +3261,7 @@ public class ItemMechanics implements Listener {
 				int bow_tier = getItemTier(p.getItemInHand());
 				// if(!doesPlayerHaveArrows(p, bow_tier)) {
 				if (!doesPlayerHaveAnyArrows(p)) {
-					p.playSound(p.getLocation(), Sound.IRONGOLEM_HIT, 0.3F, 2.0F);
+					p.playSound(p.getLocation(), Sound.ENTITY_IRONGOLEM_HURT, 0.3F, 2.0F);
 					e.setCancelled(true);
 					p.updateInventory();
 				}
@@ -3309,7 +3307,7 @@ public class ItemMechanics implements Listener {
 			e.getItem().remove();
 			e.setCancelled(true);
 			e.getPlayer().getInventory().addItem(removeAttributes(is));
-			e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ITEM_PICKUP, 1F, 1F);
+			e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_ITEM_PICKUP, 1F, 1F);
 		}
 	}
 
@@ -3458,7 +3456,7 @@ public class ItemMechanics implements Listener {
 			p.updateInventory();
 
 			if (in_slot.getItemMeta().getLore().size() < new_in_slot.getItemMeta().getLore().size()) {
-				p.getWorld().playSound(p.getLocation(), Sound.LEVEL_UP, 1.0F, 1.25F);
+				p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.25F);
 				try {
 					ParticleEffect.sendToLocation(ParticleEffect.FIREWORKS_SPARK, p.getLocation().add(0, 2.5, 0),
 							new Random().nextFloat(), new Random().nextFloat(), new Random().nextFloat(), 0.75F, 100);
@@ -3476,7 +3474,7 @@ public class ItemMechanics implements Listener {
 				fw.setFireworkMeta(fwm);
 			} else {
 				// FAIL. Same or worse.
-				p.getWorld().playSound(p.getLocation(), Sound.FIZZ, 2.0F, 1.25F);
+				p.getWorld().playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 2.0F, 1.25F);
 				try {
 					ParticleEffect.sendToLocation(ParticleEffect.LAVA, p.getLocation().add(0, 2.5, 0),
 							new Random().nextFloat(), new Random().nextFloat(), new Random().nextFloat(), 1F, 75);
@@ -3524,7 +3522,7 @@ public class ItemMechanics implements Listener {
 				// arrow.
 				EntityLiving el = ((CraftLivingEntity) ((Projectile) e_attacker).getShooter()).getHandle();
 				e_attacker = (Entity) ((Projectile) e_attacker).getShooter();
-				wep = (ItemStack) CraftItemStack.asCraftMirror(el.getEquipment(0));
+				wep = (ItemStack) CraftItemStack.asCraftMirror(el.getEquipment(EnumItemSlot.MAINHAND));
 			}
 			if (e_attacker instanceof Player) {
 				Player p_attacker = (Player) e_attacker;
@@ -3558,7 +3556,7 @@ public class ItemMechanics implements Listener {
 				// Monster attacking, store weapon -- this shouldn't ever get
 				// cancelled if the event has reached this point.
 				EntityLiving el = ((CraftLivingEntity) e_attacker).getHandle();
-				wep = (ItemStack) CraftItemStack.asCraftMirror(el.getEquipment(0));
+				wep = (ItemStack) CraftItemStack.asCraftMirror(el.getEquipment(EnumItemSlot.MAINHAND));
 			}
 
 			if (p.isBlocking() && !(wep == null || wep.getType() == Material.WOOD_AXE
@@ -3631,12 +3629,12 @@ public class ItemMechanics implements Listener {
 
 				else if (e_attacker instanceof Player) {
 					Player p_attacker = (Player) e_attacker;
-					if (!CommunityMechanics.isPlayerOnBuddyList(p.getName(), p_attacker.getName())
+					if (!CommunityMechanics.isPlayerOnBuddyList(p, p_attacker)
 							&& !PartyMechanics.arePartyMembers(p.getName(), p_attacker.getName())) {
-						double max_hp = HealthMechanics.getMaxHealthValue(p_attacker.getName());
+						double max_hp = HealthMechanics.getMaxHealthValue(p_attacker);
 
 						double dmg = e.getDamage();
-						double total_hp = HealthMechanics.getPlayerHP(p_attacker.getName());
+						double total_hp = HealthMechanics.getPlayerHP(p_attacker);
 						double new_hp = total_hp - dmg;
 
 						if (new_hp <= 0 && DuelMechanics.duel_map.containsKey(p_attacker.getName())) {
@@ -3649,7 +3647,7 @@ public class ItemMechanics implements Listener {
 						}
 
 						// p_attacker.setLevel((int)new_hp);
-						HealthMechanics.setPlayerHP(p_attacker.getName(), (int) new_hp);
+						HealthMechanics.setPlayerHP(p_attacker, (int) new_hp);
 
 						double health_percent = (new_hp / max_hp);
 						double new_health_display = (health_percent * 20.0D);
@@ -3676,7 +3674,7 @@ public class ItemMechanics implements Listener {
 							+ ChatColor.GREEN + ")");
 				}
 
-				p.playSound(p.getLocation(), Sound.ZOMBIE_INFECT, 2F, 1.5F);
+				p.playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_INFECT, 2F, 1.5F);
 				e.setDamage((double) 0);
 				dodge = true;
 				no_negation.add(p);
@@ -3699,7 +3697,7 @@ public class ItemMechanics implements Listener {
 							+ mob_name + ChatColor.DARK_GREEN + ")");
 				}
 
-				p.playSound(p.getLocation(), Sound.ZOMBIE_METAL, 2F, 1.0F);
+				p.playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 2F, 1.0F); //zombie metal?
 				// TODO: if(magic_attack == true){don't set damage to 0.}
 				e.setDamage((double) 0);
 				block = true;
@@ -3718,12 +3716,12 @@ public class ItemMechanics implements Listener {
 			} // Always at least 1 DMG reflect.
 
 			if (thorn_damage_to_return > 0) {
-				Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(p.getLocation().getBlockX()),
+				/*Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(p.getLocation().getBlockX()),
 						(int) Math.round(p.getLocation().getBlockY() + 1),
 						(int) Math.round(p.getLocation().getBlockZ()), 18, false);
 				((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
 						p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ(), 24,
-						((CraftWorld) p.getWorld()).getHandle().dimension, particles);
+						((CraftWorld) p.getWorld()).getHandle().dimension, particles);*/
 
 				if (!(e_attacker instanceof Player)) {
 					/*
@@ -3736,12 +3734,12 @@ public class ItemMechanics implements Listener {
 				} else if (e_attacker instanceof Player) {
 					Player p_attacker = (Player) e_attacker;
 
-					if (!CommunityMechanics.isPlayerOnBuddyList(p_attacker.getName(), p.getName())
+					if (!CommunityMechanics.isPlayerOnBuddyList(p_attacker, p)
 							&& !PartyMechanics.arePartyMembers(p.getName(), p_attacker.getName())) {
-						double max_hp = HealthMechanics.getMaxHealthValue(p_attacker.getName());
+						double max_hp = HealthMechanics.getMaxHealthValue(p_attacker);
 
 						double dmg = thorn_damage_to_return;
-						double total_hp = HealthMechanics.getPlayerHP(p_attacker.getName());
+						double total_hp = HealthMechanics.getPlayerHP(p_attacker);
 						double new_hp = total_hp - dmg;
 
 						if (new_hp <= 0 && DuelMechanics.duel_map.containsKey(p_attacker.getName())) {
@@ -3754,7 +3752,7 @@ public class ItemMechanics implements Listener {
 						}
 
 						// p_attacker.setLevel((int)new_hp);
-						HealthMechanics.setPlayerHP(p_attacker.getName(), (int) new_hp);
+						HealthMechanics.setPlayerHP(p_attacker, (int) new_hp);
 
 						double health_percent = (new_hp / max_hp);
 						double new_health_display = (health_percent * 20.0D);
@@ -3891,11 +3889,11 @@ public class ItemMechanics implements Listener {
 					if (attacker instanceof Player) {
 						Player p_attacker = (Player) attacker;
 						if (block_count >= 30) {
-							AchievementMechanics.addAchievement(p_attacker.getName(), "The Hawkeye");
+							AchievementMechanics.addAchievement(p_attacker, "The Hawkeye");
 							if (block_count >= 40) {
-								AchievementMechanics.addAchievement(p_attacker.getName(), "The Deadeye");
+								AchievementMechanics.addAchievement(p_attacker, "The Deadeye");
 								if (block_count >= 60) {
-									AchievementMechanics.addAchievement(p_attacker.getName(), "The Sniper");
+									AchievementMechanics.addAchievement(p_attacker, "The Sniper");
 								}
 							}
 						}
@@ -3953,7 +3951,7 @@ public class ItemMechanics implements Listener {
 				e.setDamage(dmg);
 
 				if (dmg >= 450 && attacker instanceof Player) {
-					AchievementMechanics.addAchievement(((Player) attacker).getName(), "Serious Strength");
+					AchievementMechanics.addAchievement(((Player) attacker), "Serious Strength");
 				}
 			}
 
@@ -3966,7 +3964,7 @@ public class ItemMechanics implements Listener {
 							+ (int) e.getDamage() + ChatColor.RED + ChatColor.BOLD + "HP" + ChatColor.GRAY + " [-"
 							+ calculateArmorVal(p) + "%A -> -" + damage_to_reduce + ChatColor.BOLD + "DMG"
 							+ ChatColor.GRAY + "] " + ChatColor.GREEN + "["
-							+ (int) (HealthMechanics.getPlayerHP(p.getName()) - e.getDamage()) + ChatColor.BOLD + "HP"
+							+ (int) (HealthMechanics.getPlayerHP(p) - e.getDamage()) + ChatColor.BOLD + "HP"
 							+ ChatColor.GREEN + "]");
 				}
 			}
@@ -4611,7 +4609,7 @@ public class ItemMechanics implements Listener {
 		}
 
 		Player p = (Player) a.getShooter();
-		HealthMechanics.in_combat.put(p.getName(), System.currentTimeMillis());
+		HealthMechanics.in_combat.put(p.getUniqueId(), System.currentTimeMillis());
 		// boolean is_player = false;
 		Entity ent = e.getEntity();
 		LivingEntity le = (LivingEntity) ent;
@@ -4734,7 +4732,7 @@ public class ItemMechanics implements Listener {
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
-			p.playSound(p.getLocation(), Sound.WOOD_CLICK, 1.5F, 0.5F);
+			p.playSound(p.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1.5F, 0.5F);
 			crit = true;
 		}
 		if (dmg_data.contains("leech=") || ProfessionMechanics.fish_bonus_lifesteal.containsKey(p.getName())) {
@@ -4749,30 +4747,30 @@ public class ItemMechanics implements Listener {
 			if (leech_val < 1) {
 				leech_val = 1;
 			}
-			if ((leech_val + HealthMechanics.getPlayerHP(p.getName())) > getMaxHP(p)) {
+			if ((leech_val + HealthMechanics.getPlayerHP(p)) > getMaxHP(p)) {
 				// p.setLevel(getMaxHP(p));
-				HealthMechanics.setPlayerHP(p.getName(), getMaxHP(p));
+				HealthMechanics.setPlayerHP(p, getMaxHP(p));
 				p.setHealth(20);
 			} else {
-				if (HealthMechanics.getPlayerHP(p.getName()) > 0 && !p.isDead()) {
+				if (HealthMechanics.getPlayerHP(p) > 0 && !p.isDead()) {
 					// They are dead and dont need to be healed -_-
-					HealthMechanics.setPlayerHP(p.getName(),
-							((int) (HealthMechanics.getPlayerHP(p.getName()) + leech_val)));
-					double health_percent = ((double) HealthMechanics.getPlayerHP(p.getName())) / (double) getMaxHP(p);
+					HealthMechanics.setPlayerHP(p,
+							((int) (HealthMechanics.getPlayerHP(p) + leech_val)));
+					double health_percent = ((double) HealthMechanics.getPlayerHP(p)) / (double) getMaxHP(p);
 					double new_health_display = health_percent * 20.0D;
 					p.setHealth((int) new_health_display);
 				}
-				Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(p.getLocation().getX()),
+				/*Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(p.getLocation().getX()),
 						(int) Math.round(p.getLocation().getY() + 1), (int) Math.round(p.getLocation().getZ()), 152,
 						false);
 				((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
 						p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), 24,
-						((CraftWorld) p.getWorld()).getHandle().dimension, particles);
+						((CraftWorld) p.getWorld()).getHandle().dimension, particles);*/
 
 				if (PlayerManager.getPlayerModel(p).getToggleList().contains("debug")) {
 					p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "        +" + ChatColor.GREEN
 							+ (int) leech_val + ChatColor.BOLD + " HP" + ChatColor.GRAY + " ["
-							+ (int) (HealthMechanics.getPlayerHP(p.getName())) + "/" + (int) getMaxHP(p) + "HP]");
+							+ (int) (HealthMechanics.getPlayerHP(p)) + "/" + (int) getMaxHP(p) + "HP]");
 				}
 			}
 		}
@@ -5022,7 +5020,7 @@ public class ItemMechanics implements Listener {
 		}
 
 		if (ent instanceof Player) {
-			p_attacker.getWorld().playSound(p_attacker.getLocation(), Sound.WOOD_CLICK, 1, 1.6F);
+			p_attacker.getWorld().playSound(p_attacker.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1, 1.6F);
 		}
 
 		boolean crit = false;
@@ -5192,7 +5190,7 @@ public class ItemMechanics implements Listener {
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-				p_attacker.playSound(p_attacker.getLocation(), Sound.WOOD_CLICK, 1.5F, 0.5F);
+				p_attacker.playSound(p_attacker.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1.5F, 0.5F);
 				crit = true;
 			}
 			if (dmg_data.contains("leech=")
@@ -5209,21 +5207,21 @@ public class ItemMechanics implements Listener {
 				if (leech_val < 1) {
 					leech_val = 1;
 				}
-				if ((leech_val + HealthMechanics.getPlayerHP(p_attacker.getName())) > getMaxHP(p_attacker)) {
+				if ((leech_val + HealthMechanics.getPlayerHP(p_attacker)) > getMaxHP(p_attacker)) {
 					// HealthMechanics.setPlayerHP(p_attacker.getName(),
 					// getMaxHP(p_attacker));
-					HealthMechanics.setPlayerHP(p_attacker.getName(), getMaxHP(p_attacker));
+					HealthMechanics.setPlayerHP(p_attacker, getMaxHP(p_attacker));
 					p_attacker.setHealth(20);
 				} else {
-					if (!p_attacker.isDead() && HealthMechanics.getPlayerHP(p_attacker.getName()) > 0) {
+					if (!p_attacker.isDead() && HealthMechanics.getPlayerHP(p_attacker) > 0) {
 
 						// leech_val -= 20 - p_attacker.getHealth();
 						// HealthMechanics.setPlayerHP(p_attacker.getName(),
 						// (int)(HealthMechanics.getPlayerHP(p_attacker.getName())
 						// + leech_val));
-						HealthMechanics.setPlayerHP(p_attacker.getName(),
-								(int) (HealthMechanics.getPlayerHP(p_attacker.getName()) + leech_val));
-						double health_percent = ((double) HealthMechanics.getPlayerHP(p_attacker.getName()))
+						HealthMechanics.setPlayerHP(p_attacker,
+								(int) (HealthMechanics.getPlayerHP(p_attacker) + leech_val));
+						double health_percent = ((double) HealthMechanics.getPlayerHP(p_attacker))
 								/ (double) getMaxHP(p_attacker);
 						double new_health_display = health_percent * 20.0D;
 						// log.info("" + new_health_display);
@@ -5242,17 +5240,17 @@ public class ItemMechanics implements Listener {
 															// le.getLocation().getZ())
 															// / 2;
 
-					Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(xpt),
+					/*Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(xpt),
 							(int) Math.round(ypt) + 1, (int) Math.round(zpt), 152, false);
 					((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
 							p_attacker.getLocation().getX(), p_attacker.getLocation().getY(),
 							p_attacker.getLocation().getZ(), 24,
-							((CraftWorld) p_attacker.getWorld()).getHandle().dimension, particles);
+							((CraftWorld) p_attacker.getWorld()).getHandle().dimension, particles);*/
 
 					if (PlayerManager.getPlayerModel(p_attacker).getToggleList().contains("debug")) {
 						p_attacker.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "        +" + ChatColor.GREEN
 								+ (int) leech_val + ChatColor.BOLD + " HP" + ChatColor.GRAY + " ["
-								+ (int) (HealthMechanics.getPlayerHP(p_attacker.getName())) + "/"
+								+ (int) (HealthMechanics.getPlayerHP(p_attacker)) + "/"
 								+ (int) getMaxHP(p_attacker) + "HP]");
 					}
 				}
@@ -5452,7 +5450,7 @@ public class ItemMechanics implements Listener {
 				}
 				// p_attacker.getWorld().spawnParticle(ent.getLocation(),
 				// Particle.MAGIC_CRIT, 1F, 50);
-				p_attacker.playSound(p_attacker.getLocation(), Sound.WOOD_CLICK, 1.5F, 0.5F);
+				p_attacker.playSound(p_attacker.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1.5F, 0.5F);
 				crit = true;
 			}
 			if (dmg_data.contains("leech=")
@@ -5468,19 +5466,19 @@ public class ItemMechanics implements Listener {
 				if (leech_val < 1) {
 					leech_val = 1;
 				}
-				if ((leech_val + HealthMechanics.getPlayerHP(p_attacker.getName())) > getMaxHP(p_attacker)) {
+				if ((leech_val + HealthMechanics.getPlayerHP(p_attacker)) > getMaxHP(p_attacker)) {
 					// HealthMechanics.setPlayerHP(p_attacker.getName(),
 					// getMaxHP(p_attacker));
-					HealthMechanics.setPlayerHP(p_attacker.getName(), getMaxHP(p_attacker));
+					HealthMechanics.setPlayerHP(p_attacker, getMaxHP(p_attacker));
 					p_attacker.setHealth(20);
 				} else {
 					// HealthMechanics.setPlayerHP(p_attacker.getName(),
 					// (int)(HealthMechanics.getPlayerHP(p_attacker.getName()) +
 					// leech_val));
-					if (HealthMechanics.getPlayerHP(p_attacker.getName()) > 0 && !p_attacker.isDead()) {
-						HealthMechanics.setPlayerHP(p_attacker.getName(),
-								(int) (HealthMechanics.getPlayerHP(p_attacker.getName()) + leech_val));
-						double health_percent = ((double) HealthMechanics.getPlayerHP(p_attacker.getName()))
+					if (HealthMechanics.getPlayerHP(p_attacker) > 0 && !p_attacker.isDead()) {
+						HealthMechanics.setPlayerHP(p_attacker,
+								(int) (HealthMechanics.getPlayerHP(p_attacker) + leech_val));
+						double health_percent = ((double) HealthMechanics.getPlayerHP(p_attacker))
 								/ (double) getMaxHP(p_attacker);
 						double new_health_display = health_percent * 20.0D;
 						p_attacker.setHealth((int) new_health_display);
@@ -5499,17 +5497,17 @@ public class ItemMechanics implements Listener {
 														// le.getLocation().getZ())
 														// / 2;
 
-				Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(xpt), (int) Math.round(ypt) + 1,
+				/*Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(xpt), (int) Math.round(ypt) + 1,
 						(int) Math.round(zpt), 152, false);
 				((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
 						p_attacker.getLocation().getX(), p_attacker.getLocation().getY(),
 						p_attacker.getLocation().getZ(), 24, ((CraftWorld) p_attacker.getWorld()).getHandle().dimension,
-						particles);
+						particles);*/
 
 				if (PlayerManager.getPlayerModel(p_attacker).getToggleList().contains("debug")) {
 					p_attacker.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "        +" + ChatColor.GREEN
 							+ (int) leech_val + ChatColor.BOLD + " HP" + ChatColor.GRAY + " ["
-							+ (int) (HealthMechanics.getPlayerHP(p_attacker.getName())) + "/"
+							+ (int) (HealthMechanics.getPlayerHP(p_attacker)) + "/"
 							+ (int) getMaxHP(p_attacker) + "HP]");
 				}
 
@@ -5708,7 +5706,7 @@ public class ItemMechanics implements Listener {
 				}
 				// p_attacker.getWorld().spawnParticle(ent.getLocation(),
 				// Particle.MAGIC_CRIT, 1F, 50);
-				p_attacker.playSound(p_attacker.getLocation(), Sound.WOOD_CLICK, 1.5F, 0.5F);
+				p_attacker.playSound(p_attacker.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1.5F, 0.5F);
 				crit = true;
 			}
 			if (dmg_data.contains("leech=")
@@ -5724,19 +5722,19 @@ public class ItemMechanics implements Listener {
 				if (leech_val < 1) {
 					leech_val = 1;
 				}
-				if ((leech_val + HealthMechanics.getPlayerHP(p_attacker.getName())) > getMaxHP(p_attacker)) {
+				if ((leech_val + HealthMechanics.getPlayerHP(p_attacker)) > getMaxHP(p_attacker)) {
 					// HealthMechanics.setPlayerHP(p_attacker.getName(),
 					// getMaxHP(p_attacker));
-					HealthMechanics.setPlayerHP(p_attacker.getName(), getMaxHP(p_attacker));
+					HealthMechanics.setPlayerHP(p_attacker, getMaxHP(p_attacker));
 					p_attacker.setHealth(20);
 				} else {
 					// HealthMechanics.setPlayerHP(p_attacker.getName(),
 					// (int)(HealthMechanics.getPlayerHP(p_attacker.getName()) +
 					// leech_val));
-					if (HealthMechanics.getPlayerHP(p_attacker.getName()) > 0 && !p_attacker.isDead()) {
-						HealthMechanics.setPlayerHP(p_attacker.getName(),
-								(int) (HealthMechanics.getPlayerHP(p_attacker.getName()) + leech_val));
-						double health_percent = ((double) HealthMechanics.getPlayerHP(p_attacker.getName()))
+					if (HealthMechanics.getPlayerHP(p_attacker) > 0 && !p_attacker.isDead()) {
+						HealthMechanics.setPlayerHP(p_attacker,
+								(int) (HealthMechanics.getPlayerHP(p_attacker) + leech_val));
+						double health_percent = ((double) HealthMechanics.getPlayerHP(p_attacker))
 								/ (double) getMaxHP(p_attacker);
 						double new_health_display = health_percent * 20.0D;
 						p_attacker.setHealth((int) new_health_display);
@@ -5755,17 +5753,17 @@ public class ItemMechanics implements Listener {
 														// le.getLocation().getZ())
 														// / 2;
 
-				Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(xpt), (int) Math.round(ypt) + 1,
+				/*Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(xpt), (int) Math.round(ypt) + 1,
 						(int) Math.round(zpt), 152, false);
 				((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
 						p_attacker.getLocation().getX(), p_attacker.getLocation().getY(),
 						p_attacker.getLocation().getZ(), 24, ((CraftWorld) p_attacker.getWorld()).getHandle().dimension,
-						particles);
+						particles);*/
 
 				if (PlayerManager.getPlayerModel(p_attacker).getToggleList().contains("debug")) {
 					p_attacker.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "        +" + ChatColor.GREEN
 							+ (int) leech_val + ChatColor.BOLD + " HP" + ChatColor.GRAY + " ["
-							+ (int) (HealthMechanics.getPlayerHP(p_attacker.getName())) + "/"
+							+ (int) (HealthMechanics.getPlayerHP(p_attacker)) + "/"
 							+ (int) getMaxHP(p_attacker) + "HP]");
 				}
 
@@ -6014,7 +6012,7 @@ public class ItemMechanics implements Listener {
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-				p_attacker.playSound(p_attacker.getLocation(), Sound.WOOD_CLICK, 1.5F, 0.5F);
+				p_attacker.playSound(p_attacker.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1.5F, 0.5F);
 				crit = true;
 			}
 			if (dmg_data.contains("leech=")
@@ -6030,16 +6028,16 @@ public class ItemMechanics implements Listener {
 				if (leech_val < 1) {
 					leech_val = 1;
 				}
-				if ((leech_val + HealthMechanics.getPlayerHP(p_attacker.getName())) > getMaxHP(p_attacker)) {
+				if ((leech_val + HealthMechanics.getPlayerHP(p_attacker)) > getMaxHP(p_attacker)) {
 					if (p_attacker.isDead())
 						return;
-					HealthMechanics.setPlayerHP(p_attacker.getName(), getMaxHP(p_attacker));
+					HealthMechanics.setPlayerHP(p_attacker, getMaxHP(p_attacker));
 					p_attacker.setHealth(20);
 				} else {
-					if (HealthMechanics.getPlayerHP(p_attacker.getName()) > 0 && !p_attacker.isDead()) {
-						HealthMechanics.setPlayerHP(p_attacker.getName(),
-								(int) (HealthMechanics.getPlayerHP(p_attacker.getName()) + leech_val));
-						double health_percent = ((double) HealthMechanics.getPlayerHP(p_attacker.getName()))
+					if (HealthMechanics.getPlayerHP(p_attacker) > 0 && !p_attacker.isDead()) {
+						HealthMechanics.setPlayerHP(p_attacker,
+								(int) (HealthMechanics.getPlayerHP(p_attacker) + leech_val));
+						double health_percent = ((double) HealthMechanics.getPlayerHP(p_attacker))
 								/ (double) getMaxHP(p_attacker);
 						double new_health_display = health_percent * 20.0D;
 						p_attacker.setHealth((int) new_health_display);
@@ -6058,17 +6056,17 @@ public class ItemMechanics implements Listener {
 														// le.getLocation().getZ())
 														// / 2;
 
-				Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(xpt), (int) Math.round(ypt) + 1,
+				/*Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(xpt), (int) Math.round(ypt) + 1,
 						(int) Math.round(zpt), 152, false);
 				((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
 						p_attacker.getLocation().getX(), p_attacker.getLocation().getY(),
 						p_attacker.getLocation().getZ(), 24, ((CraftWorld) p_attacker.getWorld()).getHandle().dimension,
-						particles);
+						particles);*/
 
 				if (PlayerManager.getPlayerModel(p_attacker).getToggleList().contains("debug")) {
 					p_attacker.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "        +" + ChatColor.GREEN
 							+ (int) leech_val + ChatColor.BOLD + " HP" + ChatColor.GRAY + " ["
-							+ (int) (HealthMechanics.getPlayerHP(p_attacker.getName())) + "/"
+							+ (int) (HealthMechanics.getPlayerHP(p_attacker)) + "/"
 							+ (int) getMaxHP(p_attacker) + "HP]");
 				}
 
@@ -6251,11 +6249,11 @@ public class ItemMechanics implements Listener {
 				}
 				// target_loc.getWorld().spawnParticle(target_loc.add(0, 1, 0),
 				// Particle.LARGE_EXPLODE, 1F, 8);
-				target_loc.getWorld().playSound(target_loc, Sound.EXPLODE, 2F, 1F);
+				target_loc.getWorld().playSound(target_loc, Sound.ENTITY_GENERIC_EXPLODE, 2F, 1F);
 				for (Entity ent : proj.getNearbyEntities(3, 3, 3)) {
 					if (ent instanceof Player) {
 						Player pl = (Player) ent;
-						double max_hp = HealthMechanics.getMaxHealthValue(pl.getName());
+						double max_hp = HealthMechanics.getMaxHealthValue(pl);
 						double dmg_lower = max_hp * 0.10D;
 						double dmg_upper = max_hp * 0.20D;
 						double dmg = new Random().nextInt((int) (dmg_upper - dmg_lower)) + dmg_lower;
@@ -6350,7 +6348,7 @@ public class ItemMechanics implements Listener {
 				}
 				// e.getEntity().getWorld().spawnParticle(e.getEntity().getLocation(),
 				// Particle.BUBBLE, 1F, 10);
-				e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.EXPLODE, 1F, 1F);
+				e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F);
 			}
 
 			if (proj instanceof EnderPearl) {
@@ -6362,7 +6360,7 @@ public class ItemMechanics implements Listener {
 				}
 				// e.getEntity().getWorld().spawnParticle(e.getEntity().getLocation(),
 				// Particle.WITCH_MAGIC, 0.50F, 10);
-				e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENDERMAN_TELEPORT, 2F, 1.50F);
+				e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_ENDERMEN_TELEPORT, 2F, 1.50F);
 			}
 
 			projectile_map.remove(proj);
@@ -6721,12 +6719,12 @@ public class ItemMechanics implements Listener {
 				// pl.getWorld().spawnParticle(pl.getTargetBlock(null,
 				// 2).getLocation(), Particle.MAGIC_CRIT, 0.50F, 20);
 				try {
-					ParticleEffect.sendToLocation(ParticleEffect.MAGIC_CRIT, pl.getTargetBlock(null, 2).getLocation(),
+					ParticleEffect.sendToLocation(ParticleEffect.MAGIC_CRIT, pl.getTargetBlock((Set<Material>) null, 2).getLocation(),
 							new Random().nextFloat(), new Random().nextFloat(), new Random().nextFloat(), 0.5F, 20);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-				pl.playSound(pl.getLocation(), Sound.FIZZ, 1.0F, 1.25F);
+				pl.playSound(pl.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.25F);
 				return; // Not a weapon, or in a safe zone.
 			}
 
@@ -6809,7 +6807,7 @@ public class ItemMechanics implements Listener {
 			}
 
 			projectile_map.put(pj, wep);
-			pl.playSound(pl.getLocation(), Sound.SHOOT_ARROW, 1F, 0.25F);
+			pl.playSound(pl.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1F, 0.25F);
 			FatigueMechanics.removeEnergy(pl, FatigueMechanics.getEnergyCost(wep));
 
 			if (DuelMechanics.duel_map.containsKey(pl.getName())) {
@@ -6830,18 +6828,18 @@ public class ItemMechanics implements Listener {
 		}
 	}
 
-	public static ItemStack setToHealingPotion(net.minecraft.server.v1_7_R2.ItemStack i) {
+	public static ItemStack setToHealingPotion(net.minecraft.server.v1_9_R1.ItemStack i) {
 		if (i == null) {
 			log.info("[ItemMechanics] NULL itemStack on setToHealingPotion()");
 			return CraftItemStack.asBukkitCopy(i);
 		}
 		try {
-			net.minecraft.server.v1_7_R2.NBTTagList cpe = new net.minecraft.server.v1_7_R2.NBTTagList();
+			net.minecraft.server.v1_9_R1.NBTTagList cpe = new net.minecraft.server.v1_9_R1.NBTTagList();
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setByte("Id", (byte) 6);
 			// ((NBTTagList)i.tag.getList("CustomPotionEffects", 0)).add(tag);
 			cpe.add(tag);
-			i.tag.set("CustomPotionEffects", cpe);
+			i.getTag().set("CustomPotionEffects", cpe);
 		} catch (NullPointerException npe) {
 			return CraftItemStack.asBukkitCopy(i);
 		}

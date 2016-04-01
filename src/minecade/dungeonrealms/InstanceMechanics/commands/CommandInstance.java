@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -34,7 +33,7 @@ public class CommandInstance implements CommandExecutor {
 		}
 
 		if (args.length == 3) {
-			InstanceMechanics.setPlayerEnvironment(p, Environment.NETHER);
+			//InstanceMechanics.setPlayerEnvironment(p, Environment.NETHER);
 		}
 
 		if (args.length == 0) {
@@ -110,11 +109,11 @@ public class CommandInstance implements CommandExecutor {
 			p.sendMessage(ChatColor.GRAY + "Loading Template: " + new_instance + " . . .");
 		}
 		if (sub_cmd.equalsIgnoreCase("shards")) {
-			InstanceMechanics.subtractShards(p.getName(), 1, -50000);
-			InstanceMechanics.subtractShards(p.getName(), 2, -50000);
-			InstanceMechanics.subtractShards(p.getName(), 3, -50000);
-			InstanceMechanics.subtractShards(p.getName(), 4, -50000);
-			InstanceMechanics.subtractShards(p.getName(), 5, -50000);
+			InstanceMechanics.subtractShards(p, 1, -50000);
+			InstanceMechanics.subtractShards(p, 2, -50000);
+			InstanceMechanics.subtractShards(p, 3, -50000);
+			InstanceMechanics.subtractShards(p, 4, -50000);
+			InstanceMechanics.subtractShards(p, 5, -50000);
 		}
 		return true;
 	}

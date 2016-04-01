@@ -122,7 +122,7 @@ public class Halloween implements Listener {
 								"armor", true);
 						e.setCurrentItem(n_armor);
 
-						pl.playSound(pl.getLocation(), Sound.GHAST_MOAN, 1F, 1F);
+						pl.playSound(pl.getLocation(), Sound.ENTITY_GHAST_WARN, 1F, 1F); //ghast moan
 						pl.updateInventory();
 						pl.sendMessage(ChatColor.YELLOW + "To remove your mask, " + ChatColor.UNDERLINE + "RIGHT CLICK"
 								+ ChatColor.YELLOW + " the masked item.");
@@ -170,7 +170,7 @@ public class Halloween implements Listener {
 					&& ChatColor.stripColor(trader.getName()).equalsIgnoreCase("Trick Or Treat")) {
 				Player pl = e.getPlayer();
 
-				if (isHalloweenCandy(pl.getItemInHand())) {
+				if (isHalloweenCandy(pl.getInventory().getItemInMainHand())) {
 					e.setCancelled(true);
 
 					if (pl.getInventory().firstEmpty() == -1) {
@@ -179,13 +179,13 @@ public class Halloween implements Listener {
 						return;
 					}
 
-					ItemStack candy = pl.getItemInHand();
+					ItemStack candy = pl.getInventory().getItemInMainHand();
 					if (candy.getAmount() > 1) {
 						int new_amount = candy.getAmount() - 1;
 						candy.setAmount(new_amount);
-						pl.setItemInHand(candy);
+						pl.getInventory().setItemInMainHand(candy);
 					} else if (candy.getAmount() == 1) {
-						pl.setItemInHand(new ItemStack(Material.AIR));
+						pl.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 					}
 
 					int trick_or_treat = new Random().nextInt(2);
@@ -208,7 +208,7 @@ public class Halloween implements Listener {
 							pl.setVelocity(new Vector(0, 8, 0));
 						}
 
-						pl.playSound(pl.getLocation(), Sound.CREEPER_HISS, 1F, 0.5F);
+						pl.playSound(pl.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 1F, 0.5F);
 						pl.sendMessage(ChatColor.GRAY + "Trick Or Treat: " + ChatColor.WHITE + "AHAHAHA! You got "
 								+ ChatColor.RED + "TRICKED!");
 					} else if (trick_or_treat == 1) {
@@ -283,7 +283,7 @@ public class Halloween implements Listener {
 							PowerupMechanics.handleBeaconEffect(pl, (15 * 60));
 						}
 
-						pl.playSound(pl.getLocation(), Sound.ORB_PICKUP, 1F, 1F);
+						pl.playSound(pl.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
 						pl.sendMessage(ChatColor.GRAY + "Trick Or Treat: " + ChatColor.WHITE + "Here, have a "
 								+ ChatColor.GREEN + "TREAT!");
 						pl.updateInventory();
@@ -307,9 +307,9 @@ public class Halloween implements Listener {
 				if (candy.getAmount() > 1) {
 					int new_amount = candy.getAmount() - 1;
 					candy.setAmount(new_amount);
-					pl.setItemInHand(candy);
+					pl.getInventory().setItemInMainHand(candy);
 				} else if (candy.getAmount() == 1) {
-					pl.setItemInHand(new ItemStack(Material.AIR));
+					pl.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 				}
 
 				if (pl.getFoodLevel() < 20) {
@@ -317,7 +317,7 @@ public class Halloween implements Listener {
 					pl.setSaturation(pl.getSaturation() + 1F);
 				}
 
-				pl.playSound(pl.getLocation(), Sound.EAT, 1F, 2F);
+				pl.playSound(pl.getLocation(), Sound.ENTITY_GENERIC_EAT, 1F, 2F);
 				pl.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, (4 * 20), 1));
 				pl.updateInventory();
 			}

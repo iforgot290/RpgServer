@@ -38,7 +38,8 @@ public class CommandSetAlignment implements CommandExecutor {
 		if (alignment.equalsIgnoreCase("lawful")) {
 			alignment = "good";
 		}
-		KarmaMechanics.setAlignment(args[0], alignment, 2);
+		
+		KarmaMechanics.setAlignment(Bukkit.getPlayer(args[0]), alignment, 2);
 		p.sendMessage(
 				ChatColor.AQUA + "You have set " + args[0] + "'s alignment to: "
 						+ (alignment.equalsIgnoreCase("evil") ? ChatColor.RED
