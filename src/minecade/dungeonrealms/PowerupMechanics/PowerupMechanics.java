@@ -36,7 +36,6 @@ import minecade.dungeonrealms.HealthMechanics.HealthMechanics;
 import minecade.dungeonrealms.Hive.Hive;
 import minecade.dungeonrealms.Hive.ParticleEffect;
 import minecade.dungeonrealms.LootMechanics.LootMechanics;
-import minecade.dungeonrealms.MonsterMechanics.MonsterMechanics;
 import minecade.dungeonrealms.TutorialMechanics.TutorialMechanics;
 
 public class PowerupMechanics implements Listener {
@@ -316,18 +315,18 @@ public class PowerupMechanics implements Listener {
 
 		if (effect.equalsIgnoreCase("Instant Health (100%)")) {
 			for (Player pl : effected_players) {
-				int max_hp = HealthMechanics.getMaxHealthValue(pl.getName());
+				int max_hp = HealthMechanics.getMaxHealthValue(pl);
 				// pl.setLevel(max_hp);
-				HealthMechanics.setPlayerHP(pl.getName(), max_hp);
+				HealthMechanics.setPlayerHP(pl, max_hp);
 				pl.setHealth(20);
 			}
 		}
 
 		if (effect.equalsIgnoreCase("Instant Health (50%)")) {
 			for (Player pl : effected_players) {
-				double max_hp = HealthMechanics.getMaxHealthValue(pl.getName());
+				double max_hp = HealthMechanics.getMaxHealthValue(pl);
 				double half_max = max_hp / 2.0D;
-				double cur_hp = HealthMechanics.getPlayerHP(pl.getName());
+				double cur_hp = HealthMechanics.getPlayerHP(pl);
 
 				double health_percent = (cur_hp + half_max) / max_hp;
 				double new_health_display = health_percent * 20.0D;
@@ -342,7 +341,7 @@ public class PowerupMechanics implements Listener {
 					new_health_display = 1.0D;
 				}
 
-				HealthMechanics.setPlayerHP(pl.getName(), (int) (cur_hp + half_max));
+				HealthMechanics.setPlayerHP(pl, (int) (cur_hp + half_max));
 				// pl.setLevel((int)(cur_hp + half_max));
 				p.setHealth((int) new_health_display);
 			}

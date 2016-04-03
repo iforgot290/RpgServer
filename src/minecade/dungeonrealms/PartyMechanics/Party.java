@@ -66,8 +66,6 @@ public class Party {
 		}
 	}
 
-	private Random randomGenerator;
-
 	public void removePlayer(Player p) {
 		if (this.getPartyMembers().size() == 1) {
 			players.remove(p.getName());
@@ -180,7 +178,7 @@ public class Party {
 		}
 
 		if (!Hive.pending_upload.contains(p.getName())) {
-			HealthMechanics.setOverheadHP(p, HealthMechanics.getPlayerHP(p.getName()));
+			HealthMechanics.setOverheadHP(p, HealthMechanics.getPlayerHP(p));
 		}
 
 	}
@@ -233,7 +231,7 @@ public class Party {
 				String name = getPlayerName(t);
 				if (name.length() > 16)
 					name = name.substring(0, 16);
-				o.getScore(Bukkit.getOfflinePlayer(name)).setScore(HealthMechanics.getPlayerHP(t.getName()));
+				o.getScore(Bukkit.getOfflinePlayer(name)).setScore(HealthMechanics.getPlayerHP(t));
 			}
 		}
 	}

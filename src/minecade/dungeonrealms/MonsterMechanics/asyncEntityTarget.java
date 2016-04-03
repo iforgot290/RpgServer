@@ -6,8 +6,6 @@ import java.util.Random;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
@@ -88,7 +86,7 @@ public class asyncEntityTarget extends Thread {
 					le.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 12000, 1));
 				}
 
-				if (ent instanceof LivingEntity && ent.hasMetadata("etype")) {
+				/*if (ent instanceof LivingEntity && ent.hasMetadata("etype")) {
 					String elemental_type = le.getMetadata("etype").get(0).asString();
 					if (elemental_type.equalsIgnoreCase("poison")) {
 						MonsterMechanics.attachPotionEffect(le, 0x669900);
@@ -102,7 +100,7 @@ public class asyncEntityTarget extends Thread {
 					if (elemental_type.equalsIgnoreCase("pure")) {
 						MonsterMechanics.attachPotionEffect(le, 0xFFFFFF);
 					}
-				}
+				}*/
 
 				if (ent.getVehicle() != null && ent.getVehicle() instanceof Creature) {
 					Creature c = (Creature) ent.getVehicle();

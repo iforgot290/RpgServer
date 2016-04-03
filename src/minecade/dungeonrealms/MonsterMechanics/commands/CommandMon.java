@@ -17,8 +17,6 @@ import minecade.dungeonrealms.MonsterMechanics.MonsterMechanics;
 
 public class CommandMon implements CommandExecutor {
 
-	@SuppressWarnings("deprecation")
-
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
 

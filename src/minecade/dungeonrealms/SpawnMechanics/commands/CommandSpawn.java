@@ -15,7 +15,7 @@ public class CommandSpawn implements CommandExecutor {
 		if (!(p.isOp())) {
 			return true;
 		}
-		Location respawn_location = SpawnMechanics.getRandomSpawnPoint(p.getName());
+		Location respawn_location = SpawnMechanics.getRandomSpawnPoint(p);
 		p.teleport(respawn_location);
 		return true;
 	}

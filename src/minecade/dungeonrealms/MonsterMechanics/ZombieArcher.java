@@ -20,6 +20,7 @@ import net.minecraft.server.v1_9_R1.PathfinderGoalMeleeAttack;
 import net.minecraft.server.v1_9_R1.PathfinderGoalRandomLookaround;
 import net.minecraft.server.v1_9_R1.PathfinderGoalRandomStroll;
 import net.minecraft.server.v1_9_R1.PathfinderGoalSelector;
+import net.minecraft.server.v1_9_R1.World;
 
 public class ZombieArcher extends EntityZombie implements IRangedEntity {
 

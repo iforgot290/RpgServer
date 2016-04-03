@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -138,6 +139,7 @@ import net.minecraft.server.v1_9_R1.DataWatcher;
 import net.minecraft.server.v1_9_R1.EntityCreature;
 import net.minecraft.server.v1_9_R1.EntityLiving;
 import net.minecraft.server.v1_9_R1.EntityPlayer;
+import net.minecraft.server.v1_9_R1.EnumItemSlot;
 import net.minecraft.server.v1_9_R1.NBTTagCompound;
 
 public class MonsterMechanics implements Listener {
@@ -3385,7 +3387,8 @@ public class MonsterMechanics implements Listener {
 		boolean is_elite = false;
 		int tier = getMobTier(e);
 		// List<ItemStack> ent_gear = mob_loot.get(ent);
-		ItemStack weapon = CraftItemStack.asBukkitCopy(((CraftEntity) e).getHandle().getEquipment()[0]);
+		final LivingEntity le = (LivingEntity) e;
+		ItemStack weapon = le.getEquipment().getItemInMainHand();
 		if (weapon.getEnchantments().containsKey(Enchantment.KNOCKBACK)) {
 			// log.info("ELITE!");
 			is_elite = true;
@@ -3394,13 +3397,11 @@ public class MonsterMechanics implements Listener {
 		if (new_hp > 0) {
 			mob_health.put(e, new_hp);
 			if (max_mob_health.containsKey(e)) {
-				LivingEntity le = (LivingEntity) e;
 				le.setCustomName(generateOverheadBar(e, new_hp, max_mob_health.get(e), tier, is_elite));
 				le.setCustomNameVisible(true);
 			}
 		} else if (new_hp <= 0) {
 			mob_health.put(e, 0);
-			final LivingEntity le = (LivingEntity) e;
 			// System.out.print("SET MOB HEALTH TO 0");
 			if (max_mob_health.containsKey(e)) {
 				le.setCustomName(generateOverheadBar(e, 0, max_mob_health.get(e), tier, is_elite));
@@ -3892,7 +3893,7 @@ public class MonsterMechanics implements Listener {
 			return mob_tier.get(ent);
 		}
 		LivingEntity le = (LivingEntity) ent;
-		ItemStack i = le.getEquipment().getItemInHand();
+		ItemStack i = le.getEquipment().getItemInMainHand();
 		if (i == null) {
 			return -1; // No tier.
 		}
@@ -4011,7 +4012,7 @@ public class MonsterMechanics implements Listener {
 
 				// le.getWorld().spawnParticle(le.getLocation().add(0, 0.5, 0),
 				// Particle.WITCH_MAGIC, 1F, 40);
-				le.getWorld().playSound(le.getLocation(), Sound.ENDERMAN_TELEPORT, 0.5F, 0.5F);
+				le.getWorld().playSound(le.getLocation(), Sound.ENTITY_ENDERMEN_TELEPORT, 0.5F, 0.5F);
 				return;
 			}
 		}
@@ -4031,7 +4032,7 @@ public class MonsterMechanics implements Listener {
 				// Ragdoll em.
 				pushAwayPlayer(ent, p_attacker, 2F);
 				p_attacker.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (5 * 20), 0));
-				p_attacker.playSound(p_attacker.getLocation(), Sound.ENDERMAN_SCREAM, 1F, 1F);
+				p_attacker.playSound(p_attacker.getLocation(), Sound.ENTITY_ENDERMEN_SCREAM, 1F, 1F);
 			}
 		}
 
@@ -4109,7 +4110,7 @@ public class MonsterMechanics implements Listener {
 		double mhealth = mob_health.get(ent);
 
 		if (attacker instanceof Player && mhealth == max_health && dmg >= max_health) {
-			AchievementMechanics.addAchievement(((Player) attacker).getName(), "One Hit K.O.");
+			AchievementMechanics.addAchievement((Player) attacker, "One Hit K.O.");
 		}
 
 		// Rag'doll them maybe?
@@ -4124,7 +4125,7 @@ public class MonsterMechanics implements Listener {
 		subtractMHealth(ent, (int) dmg);
 
 		if (attacker instanceof Player && dmg >= 450) {
-			AchievementMechanics.addAchievement(((Player) attacker).getName(), "Serious Strength");
+			AchievementMechanics.addAchievement((Player) attacker, "Serious Strength");
 		}
 
 		if (e instanceof EntityDamageByEntityEvent) {
@@ -4168,7 +4169,7 @@ public class MonsterMechanics implements Listener {
 						// Ragdoll em.
 						pushAwayPlayer(ent, p_attacker, 2.5F);
 						p_attacker.setFireTicks(80);
-						p_attacker.playSound(p_attacker.getLocation(), Sound.FIRE_IGNITE, 1F, 1F);
+						p_attacker.playSound(p_attacker.getLocation(), Sound.BLOCK_FIRE_AMBIENT, 1F, 1F);
 					}
 
 					double max_hp = max_mob_health.get(ent);
@@ -4204,8 +4205,8 @@ public class MonsterMechanics implements Listener {
 										+ ChatColor.WHITE + "The inferno will devour you!");
 								pl.sendMessage(ChatColor.GRAY + "The Infernal Abyss has armored up! "
 										+ ChatColor.UNDERLINE + "+50% ARMOR!");
-								pl.playSound(pl.getLocation(), Sound.GHAST_MOAN, 2F, 0.35F);
-								pl.playSound(pl.getLocation(), Sound.ENDERDRAGON_GROWL, 2F, 0.85F);
+								pl.playSound(pl.getLocation(), Sound.ENTITY_GHAST_WARN, 2F, 0.35F);
+								pl.playSound(pl.getLocation(), Sound.ENTITY_ENDERDRAGON_GROWL, 2F, 0.85F);
 							}
 						}
 					}
@@ -4235,8 +4236,8 @@ public class MonsterMechanics implements Listener {
 									+ ChatColor.WHITE + "You... cannot... kill me IN MY OWN DOMAIN, FOOLISH MORTALS!");
 							pl.sendMessage(ChatColor.GRAY + "The Infernal Abyss has become enraged! "
 									+ ChatColor.UNDERLINE + "+50% DMG!");
-							pl.playSound(pl.getLocation(), Sound.ENDERDRAGON_GROWL, 2F, 0.85F);
-							pl.playSound(pl.getLocation(), Sound.GHAST_DEATH, 2F, 0.85F);
+							pl.playSound(pl.getLocation(), Sound.ENTITY_ENDERDRAGON_GROWL, 2F, 0.85F);
+							pl.playSound(pl.getLocation(), Sound.ENTITY_GHAST_DEATH, 2F, 0.85F);
 						}
 
 						List<Entity> minion_map = new ArrayList<Entity>();
@@ -4330,12 +4331,12 @@ public class MonsterMechanics implements Listener {
 
 						for (Player pl : ent.getWorld().getPlayers()) {
 							if (minion_type == 0) {
-								pl.playSound(pl.getLocation(), Sound.GHAST_SCREAM2, 1F, 0.35F);
+								pl.playSound(pl.getLocation(), Sound.ENTITY_GHAST_SCREAM, 1F, 0.35F);
 							}
 							if (minion_type == 1) {
 								pl.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE + "The Infernal Abyss: "
 										+ ChatColor.WHITE + "Beyold, the powers of the inferno.");
-								pl.playSound(pl.getLocation(), Sound.GHAST_SCREAM, 1F, 0.25F);
+								pl.playSound(pl.getLocation(), Sound.ENTITY_GHAST_SCREAM, 1F, 0.25F);
 							}
 						}
 
@@ -4417,7 +4418,7 @@ public class MonsterMechanics implements Listener {
 								+ "Kill them my children, kill them all!");
 						pl.sendMessage(ChatColor.GRAY
 								+ "Mayel's minions will grow stronger the longer they are alive -- Kill them!");
-						pl.playSound(pl.getLocation(), Sound.GHAST_SCREAM2, 1F, 0.5F);
+						pl.playSound(pl.getLocation(), Sound.ENTITY_GHAST_SCREAM, 1F, 0.5F);
 					}
 
 					minion_wave += 1;
@@ -4450,7 +4451,7 @@ public class MonsterMechanics implements Listener {
 							pl.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE + "Mayel The Cruel: "
 									+ ChatColor.WHITE + "Do not slow your assault, we must kill them all!");
 							pl.sendMessage(ChatColor.GRAY + "Mayel has healed his bandits!");
-							pl.playSound(pl.getLocation(), Sound.BURP, 1F, 0.5F);
+							pl.playSound(pl.getLocation(), Sound.ENTITY_PLAYER_BURP, 1F, 0.5F);
 						}
 					}
 				}
@@ -4486,7 +4487,7 @@ public class MonsterMechanics implements Listener {
 						pl.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE + "Mayel The Cruel: " + ChatColor.WHITE
 								+ "I lend you my strength my brothers, crush these insolent fools!!");
 						pl.sendMessage(ChatColor.GRAY + "Mayel has buffed his bandits, +10% DPS/ +2% ARM!");
-						pl.playSound(pl.getLocation(), Sound.BURP, 1F, 0.5F);
+						pl.playSound(pl.getLocation(), Sound.ENTITY_PLAYER_BURP, 1F, 0.5F);
 					}
 				}
 			}
@@ -4524,7 +4525,7 @@ public class MonsterMechanics implements Listener {
 								pl.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE + "Burick The Fanatic: "
 										+ ChatColor.WHITE
 										+ "Let the powers of Maltai channel into me and give me strength!");
-								pl.playSound(pl.getLocation(), Sound.ENDERMAN_DEATH, 1F, 0.5F);
+								pl.playSound(pl.getLocation(), Sound.ENTITY_ENDERMEN_DEATH, 1F, 0.5F);
 							}
 						}
 
@@ -4533,7 +4534,7 @@ public class MonsterMechanics implements Listener {
 								pl.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE + "Burick The Fanatic: "
 										+ ChatColor.WHITE
 										+ "You cannot kill that which is already condemned, foolish adventurer!");
-								pl.playSound(pl.getLocation(), Sound.ENDERMAN_DEATH, 1F, 0.5F);
+								pl.playSound(pl.getLocation(), Sound.ENTITY_ENDERMEN_DEATH, 1F, 0.5F);
 							}
 						}
 
@@ -4542,7 +4543,7 @@ public class MonsterMechanics implements Listener {
 								pl.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE + "Burick The Fanatic: "
 										+ ChatColor.WHITE
 										+ "As long as you breathe, I still have purpose, and you cannot kill a creature with purpose!");
-								pl.playSound(pl.getLocation(), Sound.ENDERMAN_DEATH, 1F, 0.5F);
+								pl.playSound(pl.getLocation(), Sound.ENTITY_ENDERMEN_DEATH, 1F, 0.5F);
 							}
 						}
 
@@ -4568,9 +4569,9 @@ public class MonsterMechanics implements Listener {
 						pl.sendMessage(
 								ChatColor.GOLD + "" + ChatColor.UNDERLINE + "Burick The Fanatic " + ChatColor.GOLD
 										+ "has become ENRAGED" + ChatColor.GOLD + " 2.5X DMG, +80% ARMOR, 2x SPEED!");
-						pl.playSound(pl.getLocation(), Sound.ENDERMAN_DEATH, 0.8F, 0.5F);
-						pl.playSound(pl.getLocation(), Sound.ENDERMAN_DEATH, 1.2F, 0.2F);
-						pl.playSound(pl.getLocation(), Sound.ENDERMAN_DEATH, 0.8F, 1.2F);
+						pl.playSound(pl.getLocation(), Sound.ENTITY_ENDERMEN_DEATH, 0.8F, 0.5F);
+						pl.playSound(pl.getLocation(), Sound.ENTITY_ENDERMEN_DEATH, 1.2F, 0.2F);
+						pl.playSound(pl.getLocation(), Sound.ENTITY_ENDERMEN_DEATH, 0.8F, 1.2F);
 					}
 					LivingEntity le = (LivingEntity) ent;
 					le.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
@@ -4630,7 +4631,7 @@ public class MonsterMechanics implements Listener {
 								+ ChatColor.WHITE + "To me, my undead brethren! Rip these Andalucians to pieces!");
 						pl.sendMessage(ChatColor.GRAY
 								+ "Burick uses the energy of his minions to create a forcefield around himself -- kill the minions!");
-						pl.playSound(pl.getLocation(), Sound.ENDERMAN_SCREAM, 1F, 0.5F);
+						pl.playSound(pl.getLocation(), Sound.ENTITY_ENDERMEN_SCREAM, 1F, 0.5F);
 					}
 
 					LivingEntity le = (LivingEntity) ent;
@@ -4669,8 +4670,8 @@ public class MonsterMechanics implements Listener {
 
 		if (power_strike.containsKey(ent) && power_strike.get(ent) >= 5) {
 			// Double arrows!
-			ent.getWorld().playSound(ent.getLocation(), Sound.ARROW_HIT, 1F, 1F);
-			ent.getWorld().playSound(ent.getLocation(), Sound.ARROW_HIT, 1F, 1F);
+			ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
+			ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
 
 			Random random = new Random();
 			double b = random.nextInt(7) - 3;
@@ -4758,7 +4759,8 @@ public class MonsterMechanics implements Listener {
 		boolean is_elite = false;
 		int mob_tier = getMobTier(ent);
 		// List<ItemStack> ent_gear = mob_loot.get(ent);
-		ItemStack weapon = CraftItemStack.asBukkitCopy(((CraftEntity) ent).getHandle().getEquipment()[0]);
+		LivingEntity le = (LivingEntity) ent;
+		ItemStack weapon = le.getEquipment().getItemInMainHand();
 		if (weapon.getEnchantments().containsKey(Enchantment.KNOCKBACK)) {
 			// log.info("ELITE!");
 			is_elite = true;
@@ -4886,7 +4888,8 @@ public class MonsterMechanics implements Listener {
 		boolean is_elite = false;
 		// int mob_tier = getMobTier(ent);
 		// List<ItemStack> ent_gear = mob_loot.get(ent);
-		ItemStack weapon = CraftItemStack.asBukkitCopy(((CraftEntity) ent).getHandle().getEquipment()[0]);
+		LivingEntity le = (LivingEntity) ent;
+		ItemStack weapon = le.getEquipment().getItemInMainHand();
 		if (weapon.getEnchantments().containsKey(Enchantment.KNOCKBACK)) {
 			// log.info("ELITE!");
 			is_elite = true;
@@ -4905,8 +4908,7 @@ public class MonsterMechanics implements Listener {
 		player_slow.put(p.getName(), System.currentTimeMillis());
 		p.setWalkSpeed(0.165F);
 
-		if (PartyMechanics.party_map.containsKey(p.getName())) { // They're in a
-																	// party.
+		if (PartyMechanics.party_map.containsKey(p.getName())) { // They're in a party.
 			int mem_nearby = PartyMechanics.getPlayersInArea(PartyMechanics.party_map.get(p.getName()),
 					ent.getLocation(), 75);
 			if (mem_nearby >= 8) {
@@ -4922,7 +4924,7 @@ public class MonsterMechanics implements Listener {
 			// Extra DMG!
 			if (!(BossMechanics.boss_map.containsKey(ent))) {
 				dmg = dmg * 3;
-				ent.getWorld().playSound(ent.getLocation(), Sound.EXPLODE, 1F, 0.3F); // Ou!
+				ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 0.3F); // Ou!
 
 				try {
 					ParticleEffect.sendToLocation(ParticleEffect.EXPLODE, p.getLocation().add(0, 1, 0),
@@ -4939,7 +4941,7 @@ public class MonsterMechanics implements Listener {
 				String boss_name = BossMechanics.boss_map.get(ent);
 				if (boss_name.equalsIgnoreCase("unholy_priest")) {
 					dmg = dmg * 5;
-					ent.getWorld().playSound(ent.getLocation(), Sound.ENDERMAN_SCREAM, 1F, 0.3F); // Ou!
+					ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_ENDERMEN_SCREAM, 1F, 0.3F); // Ou!
 
 					try {
 						ParticleEffect.sendToLocation(ParticleEffect.LARGE_EXPLODE, p.getLocation().add(0, 1, 0),
@@ -4957,7 +4959,6 @@ public class MonsterMechanics implements Listener {
 			power_strike.remove(ent);
 			special_attack.remove(ent);
 
-			LivingEntity le = (LivingEntity) ent;
 			le.setCustomName(
 					generateOverheadBar(ent, mob_health.get(ent), max_mob_health.get(ent), getMobTier(ent), is_elite));
 		}
@@ -5018,13 +5019,13 @@ public class MonsterMechanics implements Listener {
 		if (e.getDamager() instanceof Player) {
 			if (getMobType(ent, true).equalsIgnoreCase("goblin")) {
 				Player pl = (Player) e.getDamager();
-				pl.getWorld().playSound(ent.getLocation(), Sound.ZOMBIE_PIG_ANGRY, 1, 0.75F);
+				pl.getWorld().playSound(ent.getLocation(), Sound.ENTITY_ZOMBIE_PIG_ANGRY, 1, 0.75F);
 				// pl.playSound(pl.getLocation(), Sound.ZOMBIE_PIG_ANGRY, 4,
 				// 0.75F);
 			}
 			if (getMobType(ent, true).equalsIgnoreCase("forest troll")) {
 				Player pl = (Player) e.getDamager();
-				pl.getWorld().playSound(ent.getLocation(), Sound.ZOMBIE_PIG_IDLE, 1, 0.85F);
+				pl.getWorld().playSound(ent.getLocation(), Sound.ENTITY_ZOMBIE_PIG_AMBIENT, 1, 0.85F);
 				// pl.playSound(pl.getLocation(), Sound.ZOMBIE_PIG_IDLE, 4,
 				// 0.85F);
 
@@ -5118,8 +5119,8 @@ public class MonsterMechanics implements Listener {
 			}
 		}
 
-		// LivingEntity le = (LivingEntity)ent;
-		ItemStack weapon = CraftItemStack.asBukkitCopy(((CraftEntity) ent).getHandle().getEquipment()[0]);
+		LivingEntity le = (LivingEntity)ent;
+		ItemStack weapon = le.getEquipment().getItemInMainHand();
 		boolean is_elite = false;
 		if (weapon.getEnchantments().containsKey(Enchantment.KNOCKBACK)) {
 			is_elite = true;
@@ -5134,7 +5135,7 @@ public class MonsterMechanics implements Listener {
 					whirlwind.put(ent, 1);
 					special_attack.put(ent, 1);
 
-					ent.getWorld().playSound(ent.getLocation(), Sound.CREEPER_HISS, 1F, 4.0F);
+					ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 1F, 4.0F);
 				}
 			}
 			if (mob_tier == 2) {
@@ -5142,7 +5143,7 @@ public class MonsterMechanics implements Listener {
 					whirlwind.put(ent, 1);
 					special_attack.put(ent, 1);
 
-					ent.getWorld().playSound(ent.getLocation(), Sound.CREEPER_HISS, 1F, 4.0F);
+					ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 1F, 4.0F);
 				}
 			}
 			if (mob_tier == 3) {
@@ -5150,7 +5151,7 @@ public class MonsterMechanics implements Listener {
 					whirlwind.put(ent, 1);
 					special_attack.put(ent, 1);
 
-					ent.getWorld().playSound(ent.getLocation(), Sound.CREEPER_HISS, 1F, 4.0F);
+					ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 1F, 4.0F);
 				}
 			}
 			if (mob_tier == 4) {
@@ -5158,7 +5159,7 @@ public class MonsterMechanics implements Listener {
 					whirlwind.put(ent, 1);
 					special_attack.put(ent, 1);
 
-					ent.getWorld().playSound(ent.getLocation(), Sound.CREEPER_HISS, 1F, 4.0F);
+					ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 1F, 4.0F);
 				}
 			}
 			if (mob_tier == 5) {
@@ -5166,7 +5167,7 @@ public class MonsterMechanics implements Listener {
 					whirlwind.put(ent, 1);
 					special_attack.put(ent, 1);
 
-					ent.getWorld().playSound(ent.getLocation(), Sound.CREEPER_HISS, 1F, 4.0F);
+					ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 1F, 4.0F);
 				}
 			}
 			if (mob_tier == -1 && BossMechanics.boss_map.containsKey(ent)
@@ -5175,7 +5176,7 @@ public class MonsterMechanics implements Listener {
 					whirlwind.put(ent, 1);
 					special_attack.put(ent, 1);
 
-					ent.getWorld().playSound(ent.getLocation(), Sound.CREEPER_HISS, 1F, 4.0F);
+					ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 1F, 4.0F);
 				}
 			}
 
@@ -5190,7 +5191,7 @@ public class MonsterMechanics implements Listener {
 					power_strike.put(ent, 1);
 					special_attack.put(ent, 1);
 
-					ent.getWorld().playSound(ent.getLocation(), Sound.PISTON_EXTEND, 1F, 2.0F);
+					ent.getWorld().playSound(ent.getLocation(), Sound.BLOCK_PISTON_EXTEND, 1F, 2.0F);
 				}
 			}
 			if (mob_tier == 2) {
@@ -5198,7 +5199,7 @@ public class MonsterMechanics implements Listener {
 					power_strike.put(ent, 1);
 					special_attack.put(ent, 1);
 
-					ent.getWorld().playSound(ent.getLocation(), Sound.PISTON_EXTEND, 1F, 2.0F);
+					ent.getWorld().playSound(ent.getLocation(), Sound.BLOCK_PISTON_EXTEND, 1F, 2.0F);
 				}
 			}
 			if (mob_tier == 3) {
@@ -5206,7 +5207,7 @@ public class MonsterMechanics implements Listener {
 					power_strike.put(ent, 1);
 					special_attack.put(ent, 1);
 
-					ent.getWorld().playSound(ent.getLocation(), Sound.PISTON_EXTEND, 1F, 2.0F);
+					ent.getWorld().playSound(ent.getLocation(), Sound.BLOCK_PISTON_EXTEND, 1F, 2.0F);
 				}
 			}
 			if (mob_tier == 4) {
@@ -5214,7 +5215,7 @@ public class MonsterMechanics implements Listener {
 					power_strike.put(ent, 1);
 					special_attack.put(ent, 1);
 
-					ent.getWorld().playSound(ent.getLocation(), Sound.PISTON_EXTEND, 1F, 2.0F);
+					ent.getWorld().playSound(ent.getLocation(), Sound.BLOCK_PISTON_EXTEND, 1F, 2.0F);
 				}
 			}
 			if (mob_tier == 5) {
@@ -5222,7 +5223,7 @@ public class MonsterMechanics implements Listener {
 					power_strike.put(ent, 1);
 					special_attack.put(ent, 1);
 
-					ent.getWorld().playSound(ent.getLocation(), Sound.PISTON_EXTEND, 1F, 2.0F);
+					ent.getWorld().playSound(ent.getLocation(), Sound.BLOCK_PISTON_EXTEND, 1F, 2.0F);
 				}
 			}
 			if (mob_tier == -1 && BossMechanics.boss_map.containsKey(ent)
@@ -5231,7 +5232,7 @@ public class MonsterMechanics implements Listener {
 					power_strike.put(ent, 1);
 					special_attack.put(ent, 1);
 
-					ent.getWorld().playSound(ent.getLocation(), Sound.PISTON_EXTEND, 1F, 2.0F);
+					ent.getWorld().playSound(ent.getLocation(), Sound.BLOCK_PISTON_EXTEND, 1F, 2.0F);
 				}
 			}
 		}
@@ -5254,8 +5255,8 @@ public class MonsterMechanics implements Listener {
 				if (le.getEquipment().getHelmet() != null
 						&& le.getEquipment().getHelmet().getType() == Material.SKULL_ITEM) {
 					ItemStack h = le.getEquipment().getHelmet();
-					net.minecraft.server.v1_7_R2.ItemStack mItem = CraftItemStack.asNMSCopy(h);
-					NBTTagCompound tag = mItem.tag;
+					net.minecraft.server.v1_9_R1.ItemStack mItem = CraftItemStack.asNMSCopy(h);
+					NBTTagCompound tag = mItem.getTag();
 					String skin_name = tag.getString("SkullOwner");
 					if (skin_name.equalsIgnoreCase("dEr_t0d") || skin_name.equalsIgnoreCase("niv330")) {
 						mob_type = "Goblin";
@@ -5330,8 +5331,8 @@ public class MonsterMechanics implements Listener {
 				if (le.getEquipment().getHelmet() != null
 						&& le.getEquipment().getHelmet().getType() == Material.SKULL_ITEM) {
 					ItemStack h = le.getEquipment().getHelmet();
-					net.minecraft.server.v1_7_R2.ItemStack mItem = CraftItemStack.asNMSCopy(h);
-					NBTTagCompound tag = mItem.tag;
+					net.minecraft.server.v1_9_R1.ItemStack mItem = CraftItemStack.asNMSCopy(h);
+					NBTTagCompound tag = mItem.getTag();
 					String skin_name = tag.getString("SkullOwner");
 					if (skin_name.equalsIgnoreCase("dEr_t0d") || skin_name.equalsIgnoreCase("niv330")) {
 						mob_type = "Goblin";
@@ -5552,22 +5553,29 @@ public class MonsterMechanics implements Listener {
 			e.getDrops().clear();
 			return;
 		}
+		
+		if (Bukkit.getPlayer(p_name) == null){
+			e.getDrops().clear();
+			return;
+		}
+		
+		Player player = Bukkit.getPlayer(p_name);
 
 		if (RecordMechanics.mob_kills.containsKey(p_name)) {
 			int lmob_kills = RecordMechanics.mob_kills.get(p_name);
 			lmob_kills = lmob_kills + 1;
 			if (lmob_kills >= 100) {
-				AchievementMechanics.addAchievement(p_name, "Monster Hunter I");
+				AchievementMechanics.addAchievement(player, "Monster Hunter I");
 				if (lmob_kills >= 300) {
-					AchievementMechanics.addAchievement(p_name, "Monster Hunter II");
+					AchievementMechanics.addAchievement(player, "Monster Hunter II");
 					if (lmob_kills >= 500) {
-						AchievementMechanics.addAchievement(p_name, "Monster Hunter III");
+						AchievementMechanics.addAchievement(player, "Monster Hunter III");
 						if (lmob_kills >= 1000) {
-							AchievementMechanics.addAchievement(p_name, "Monster Hunter IV");
+							AchievementMechanics.addAchievement(player, "Monster Hunter IV");
 							if (lmob_kills >= 1500) {
-								AchievementMechanics.addAchievement(p_name, "Monster Hunter V");
+								AchievementMechanics.addAchievement(player, "Monster Hunter V");
 								if (lmob_kills >= 2000) {
-									AchievementMechanics.addAchievement(p_name, "Monster Hunter VI");
+									AchievementMechanics.addAchievement(player, "Monster Hunter VI");
 								}
 							}
 						}
@@ -5611,7 +5619,7 @@ public class MonsterMechanics implements Listener {
 				Player pl = Bukkit.getPlayer(p_name);
 				if (pl.getItemInHand().getType() == Material.BOW
 						&& ent.getLastDamageCause().getCause() == DamageCause.PROJECTILE) {
-					AchievementMechanics.addAchievement(p_name, "Crack Shot");
+					AchievementMechanics.addAchievement(player, "Crack Shot");
 				}
 			}
 			if (ent.getType() == EntityType.COW) {
@@ -5631,7 +5639,7 @@ public class MonsterMechanics implements Listener {
 			}
 
 			if (kill_list.split(",").length >= 5) {
-				AchievementMechanics.addAchievement(p_name, "Passive Hunter");
+				AchievementMechanics.addAchievement(player, "Passive Hunter");
 			}
 
 			passive_hunter_achiev.put(p_name, kill_list);
@@ -6409,9 +6417,10 @@ public class MonsterMechanics implements Listener {
 	public static ItemStack getHead(String player_name) {
 
 		ItemStack c_mask = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-		net.minecraft.server.v1_7_R2.ItemStack mItem = CraftItemStack.asNMSCopy(c_mask);
-		NBTTagCompound tag = mItem.tag = new NBTTagCompound();
+		net.minecraft.server.v1_9_R1.ItemStack mItem = CraftItemStack.asNMSCopy(c_mask);
+		NBTTagCompound tag = new NBTTagCompound();
 		tag.setString("SkullOwner", player_name);
+		mItem.setTag(tag);
 		return CraftItemStack.asBukkitCopy(mItem);
 	}
 
@@ -6559,7 +6568,7 @@ public class MonsterMechanics implements Listener {
 			if (bandit_type == 2) {
 				skin_name = "TheNextPaladin"; // niv330
 			}
-			ent.setEquipment(4, CraftItemStack.asNMSCopy(getHead(skin_name)));
+			ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(getHead(skin_name)));
 
 			if (custom_name.contains("Mayel The Cruel") && e instanceof CraftSkeleton) {
 				((CraftSkeleton) e).getHandle().setSkeletonType(1);
@@ -6600,11 +6609,11 @@ public class MonsterMechanics implements Listener {
 				legs.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
 			}
 
-			ent.setEquipment(0, CraftItemStack.asNMSCopy(weapon));
-			ent.setEquipment(1, CraftItemStack.asNMSCopy(boots));
-			ent.setEquipment(2, CraftItemStack.asNMSCopy(legs));
-			ent.setEquipment(3, CraftItemStack.asNMSCopy(chest));
-			ent.setEquipment(4, CraftItemStack.asNMSCopy(helmet));
+			ent.setEquipment(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(weapon));
+			ent.setEquipment(EnumItemSlot.FEET, CraftItemStack.asNMSCopy(boots));
+			ent.setEquipment(EnumItemSlot.LEGS, CraftItemStack.asNMSCopy(legs));
+			ent.setEquipment(EnumItemSlot.CHEST, CraftItemStack.asNMSCopy(chest));
+			ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(helmet));
 
 			LivingEntity le = (LivingEntity) e;
 			le.setFireTicks(Integer.MAX_VALUE); // Always burninggggg.
@@ -6646,13 +6655,13 @@ public class MonsterMechanics implements Listener {
 				legs.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
 			}
 
-			ent.setEquipment(0, CraftItemStack.asNMSCopy(weapon));
-			ent.setEquipment(1, CraftItemStack.asNMSCopy(boots));
-			ent.setEquipment(2, CraftItemStack.asNMSCopy(legs));
-			ent.setEquipment(3, CraftItemStack.asNMSCopy(chest));
+			ent.setEquipment(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(weapon));
+			ent.setEquipment(EnumItemSlot.FEET, CraftItemStack.asNMSCopy(boots));
+			ent.setEquipment(EnumItemSlot.LEGS, CraftItemStack.asNMSCopy(legs));
+			ent.setEquipment(EnumItemSlot.CHEST, CraftItemStack.asNMSCopy(chest));
 			if (helmet != null) {
 				// Will be null if we are using bandit head, silly.
-				ent.setEquipment(4, CraftItemStack.asNMSCopy(helmet));
+				ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(helmet));
 			}
 
 			LivingEntity le = (LivingEntity) e;
@@ -6692,10 +6701,10 @@ public class MonsterMechanics implements Listener {
 				legs.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
 			}
 
-			ent.setEquipment(0, CraftItemStack.asNMSCopy(weapon));
-			ent.setEquipment(1, CraftItemStack.asNMSCopy(boots));
-			ent.setEquipment(2, CraftItemStack.asNMSCopy(legs));
-			ent.setEquipment(3, CraftItemStack.asNMSCopy(chest));
+			ent.setEquipment(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(weapon));
+			ent.setEquipment(EnumItemSlot.FEET, CraftItemStack.asNMSCopy(boots));
+			ent.setEquipment(EnumItemSlot.LEGS, CraftItemStack.asNMSCopy(legs));
+			ent.setEquipment(EnumItemSlot.CHEST, CraftItemStack.asNMSCopy(chest));
 
 			LivingEntity le = (LivingEntity) e;
 			le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name);
@@ -6718,10 +6727,10 @@ public class MonsterMechanics implements Listener {
 			gear_list.add(legs);
 			gear_list.add(chest);
 
-			ent.setEquipment(0, CraftItemStack.asNMSCopy(weapon));
-			ent.setEquipment(1, CraftItemStack.asNMSCopy(boots));
-			ent.setEquipment(2, CraftItemStack.asNMSCopy(legs));
-			ent.setEquipment(3, CraftItemStack.asNMSCopy(chest));
+			ent.setEquipment(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(weapon));
+			ent.setEquipment(EnumItemSlot.FEET, CraftItemStack.asNMSCopy(boots));
+			ent.setEquipment(EnumItemSlot.LEGS, CraftItemStack.asNMSCopy(legs));
+			ent.setEquipment(EnumItemSlot.CHEST, CraftItemStack.asNMSCopy(chest));
 
 			LivingEntity le = (LivingEntity) e;
 			le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name);
@@ -6765,11 +6774,11 @@ public class MonsterMechanics implements Listener {
 				legs.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
 			}
 
-			ent.setEquipment(0, CraftItemStack.asNMSCopy(weapon));
-			ent.setEquipment(1, CraftItemStack.asNMSCopy(boots));
-			ent.setEquipment(2, CraftItemStack.asNMSCopy(legs));
-			ent.setEquipment(3, CraftItemStack.asNMSCopy(chest));
-			ent.setEquipment(4, CraftItemStack.asNMSCopy(helmet));
+			ent.setEquipment(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(weapon));
+			ent.setEquipment(EnumItemSlot.FEET, CraftItemStack.asNMSCopy(boots));
+			ent.setEquipment(EnumItemSlot.LEGS, CraftItemStack.asNMSCopy(legs));
+			ent.setEquipment(EnumItemSlot.CHEST, CraftItemStack.asNMSCopy(chest));
+			ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(helmet));
 
 			LivingEntity le = (LivingEntity) e;
 			le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name);
@@ -6810,11 +6819,11 @@ public class MonsterMechanics implements Listener {
 				legs.addUnsafeEnchantment(EnchantMechanics.getCustomEnchant(), 1);
 			}
 
-			ent.setEquipment(0, CraftItemStack.asNMSCopy(weapon));
-			ent.setEquipment(1, CraftItemStack.asNMSCopy(boots));
-			ent.setEquipment(2, CraftItemStack.asNMSCopy(legs));
-			ent.setEquipment(3, CraftItemStack.asNMSCopy(chest));
-			ent.setEquipment(4, CraftItemStack.asNMSCopy(helmet));
+			ent.setEquipment(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(weapon));
+			ent.setEquipment(EnumItemSlot.FEET, CraftItemStack.asNMSCopy(boots));
+			ent.setEquipment(EnumItemSlot.LEGS, CraftItemStack.asNMSCopy(legs));
+			ent.setEquipment(EnumItemSlot.CHEST, CraftItemStack.asNMSCopy(chest));
+			ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(helmet));
 
 			LivingEntity le = (LivingEntity) e;
 			le.setCustomName(ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + custom_name);
@@ -6994,7 +7003,7 @@ public class MonsterMechanics implements Listener {
 						new ItemStack(Material.AIR), new ItemStack(Material.AIR)));
 
 		int gear_check = new Random().nextInt(3) + 1; // 1, 2, 3, 4
-		net.minecraft.server.v1_7_R2.ItemStack weapon = null;
+		net.minecraft.server.v1_9_R1.ItemStack weapon = null;
 		ItemStack is_weapon = null;
 
 		if (et == EntityType.WOLF || et == EntityType.IRON_GOLEM || et == EntityType.ENDERMAN || et == EntityType.BLAZE
@@ -7335,13 +7344,13 @@ public class MonsterMechanics implements Listener {
 		dmg_range.add((int) Math.round(max_dmg));
 		// Spawns the custom zombie if they have a bow
 		if (et == EntityType.ZOMBIE && is_weapon != null && is_weapon.getType() == Material.BOW) {
-			net.minecraft.server.v1_7_R2.World ws = ((CraftWorld) l.getWorld()).getHandle();
+			net.minecraft.server.v1_9_R1.World ws = ((CraftWorld) l.getWorld()).getHandle();
 			ZombieArcher za = new ZombieArcher(ws);
 			za.teleportTo(l, true);
 			ws.addEntity(za);
 			e = za.getBukkitEntity();
 		} else if (et == EntityType.IRON_GOLEM) {
-			net.minecraft.server.v1_7_R2.World ws = ((CraftWorld) l.getWorld()).getHandle();
+			net.minecraft.server.v1_9_R1.World ws = ((CraftWorld) l.getWorld()).getHandle();
 			Golem golem = new Golem(ws);
 			golem.setLocation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 			ws.addEntity(golem, SpawnReason.CUSTOM);

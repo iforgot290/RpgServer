@@ -26,7 +26,7 @@ public class CommandP implements CommandExecutor {
 			}
 
 			if (!(PartyMechanics.party_only.contains(p.getName()))) {
-				PartyMechanics.party_only.add(p.getName());
+				PartyMechanics.party_only.add(p.getUniqueId());
 				p.sendMessage(ChatColor.LIGHT_PURPLE + "Messages will now be default sent to <P>. Type "
 						+ ChatColor.UNDERLINE + "/l <msg>" + ChatColor.LIGHT_PURPLE + " to speak in local.");
 				p.sendMessage(ChatColor.GRAY + "To change this back, type " + ChatColor.BOLD + "/p" + ChatColor.GRAY

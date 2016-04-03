@@ -337,7 +337,7 @@ public class RealmMechanics implements Listener {
 							if (pl.getWorld().getPlayers().size() == 0 && pl.getWorld().getName() != main_world_name) {
 								Bukkit.unloadWorld(pl.getWorld().getName(), true);
 							}
-							player_god_mode.put(pl.getName(), System.currentTimeMillis());
+							player_god_mode.put(pl.getUniqueId(), System.currentTimeMillis());
 							pl.setFallDistance(0.0F);
 							pl.setAllowFlight(false);
 							pl.teleport(saved_locations.get(pl.getName()));
@@ -355,7 +355,7 @@ public class RealmMechanics implements Listener {
 							Main.plugin.getServer().getScheduler().scheduleAsyncDelayedTask(Main.plugin,
 									new Runnable() {
 										public void run() {
-											player_god_mode.remove(pl.getName());
+											player_god_mode.remove(pl.getUniqueId());
 										}
 									}, 60L);
 
@@ -364,7 +364,7 @@ public class RealmMechanics implements Listener {
 								pl.teleport(InstanceMechanics.saved_location_instance.get(pl.getName()));
 							} else if (pl.getWorld().getName().equalsIgnoreCase(Bukkit.getWorlds().get(0).getName())
 									|| InstanceMechanics.isInstance(pl.getWorld().getName())) {
-								pl.teleport(SpawnMechanics.getRandomSpawnPoint(pl.getName()));
+								pl.teleport(SpawnMechanics.getRandomSpawnPoint(pl));
 							}
 						}
 

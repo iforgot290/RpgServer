@@ -18,7 +18,7 @@ public class CommandClearsShops implements CommandExecutor {
 		if (pl == null)
 			return true;
 
-		if (!pl.isOp() || !Main.isMaster(pl.getName())) {
+		if (!pl.isOp() || !Main.isMaster(pl.getUniqueId())) {
 			pl.sendMessage(ChatColor.RED + "You don't have the required permission for this command.");
 			return true;
 		}

@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.bukkit.entity.EntityType;
 
-import minecade.dungeonrealms.PetMechanics.MountSpider;
 import net.minecraft.server.v1_9_R1.BiomeBase;
 import net.minecraft.server.v1_9_R1.BiomeBase.BiomeMeta;
 import net.minecraft.server.v1_9_R1.EntityInsentient;
@@ -20,9 +19,9 @@ import net.minecraft.server.v1_9_R1.EntityZombie;
 public enum CustomEntityType {
 
 	ZOMBIE("Zombie", 54, EntityType.ZOMBIE, EntityZombie.class, ZombieArcher.class), IRON_GOLEM("IronGolem", 99,
-			EntityType.IRON_GOLEM, EntityIronGolem.class, Golem.class), SPIDER_MOUNT("Spider", 52, EntityType.SPIDER,
+			EntityType.IRON_GOLEM, EntityIronGolem.class, Golem.class), /*SPIDER_MOUNT("Spider", 52, EntityType.SPIDER,
 					EntitySpider.class,
-					MountSpider.class), WOLF("Wolf", 95, EntityType.WOLF, EntityWolf.class, CustomWolf.class);// ,
+					MountSpider.class),*/ WOLF("Wolf", 95, EntityType.WOLF, EntityWolf.class, CustomWolf.class);// ,
 																												// CHICKEN("Chicken",
 																												// 93,
 																												// EntityType.CHICKEN,

@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,7 +25,6 @@ import org.bukkit.scoreboard.ScoreboardManager;
 
 import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.ChatMechanics.ChatMechanics;
-import minecade.dungeonrealms.CommunityMechanics.CommunityMechanics;
 import minecade.dungeonrealms.DuelMechanics.DuelMechanics;
 import minecade.dungeonrealms.PartyMechanics.commands.CommandP;
 import minecade.dungeonrealms.PartyMechanics.commands.CommandPAccept;
@@ -36,9 +34,6 @@ import minecade.dungeonrealms.PartyMechanics.commands.CommandPKick;
 import minecade.dungeonrealms.PartyMechanics.commands.CommandPLoot;
 import minecade.dungeonrealms.PartyMechanics.commands.CommandPQuit;
 import minecade.dungeonrealms.PartyMechanics.commands.CommandParty;
-import net.minecraft.server.v1_9_R1.EntityPlayer;
-import net.minecraft.server.v1_9_R1.PacketPlayOutEntityEquipment;
-import net.minecraft.server.v1_9_R1.PacketPlayOutNamedEntitySpawn;
 
 public class PartyMechanics implements Listener {
 	static Logger log = Logger.getLogger("Minecraft");
@@ -232,7 +227,7 @@ public class PartyMechanics implements Listener {
 
 	}
 
-	public static void sendPartyColor(Player p_to_send, Player p_viewer, boolean in_party) {
+	/*public static void sendPartyColor(Player p_to_send, Player p_viewer, boolean in_party) {
 		if (p_to_send.getName().equalsIgnoreCase(p_viewer.getName())) {
 			return;
 		}
@@ -253,7 +248,7 @@ public class PartyMechanics implements Listener {
 		String r_name = p_to_send.getName();
 
 		EntityPlayer ent_p_edited = ((CraftPlayer) p_to_send).getHandle();
-		net.minecraft.server.v1_7_R2.ItemStack boots = null, legs = null, chest = null, head = null;
+		net.minecraft.server.v1_9_R1.ItemStack boots = null, legs = null, chest = null, head = null;
 
 		try {
 			if (ent_p_edited.getEquipment(1) != null) {
@@ -301,7 +296,7 @@ public class PartyMechanics implements Listener {
 		}
 
 		ent_p_edited.displayName = ChatColor.stripColor(r_name);
-	}
+	}*/
 
 	public static boolean arePartyMembers(String p1, String p2) {
 		if (party_map.containsKey(p1) && party_map.containsKey(p2)) {
@@ -518,10 +513,10 @@ public class PartyMechanics implements Listener {
 
 		for (Player pl : to_send) {
 			ChatColor p_color = ChatMechanics.getPlayerColor(sender, pl);
-			String prefix = ChatMechanics.getPlayerPrefix(sender.getName(), true);
+			String prefix = ChatMechanics.getPlayerPrefix(sender, true);
 
 			String personal_msg = raw_msg;
-			if (ChatMechanics.hasAdultFilter(pl.getName())) {
+			if (ChatMechanics.hasAdultFilter(pl)) {
 				personal_msg = ChatMechanics.censorMessage(personal_msg);
 			}
 			personal_msg.trim();

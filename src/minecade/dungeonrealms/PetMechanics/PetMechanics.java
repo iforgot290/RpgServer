@@ -28,8 +28,6 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftCreeper;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftLivingEntity;
@@ -102,7 +100,6 @@ import minecade.dungeonrealms.database.ConnectionPool;
 import net.minecraft.server.v1_9_R1.EntityCreature;
 import net.minecraft.server.v1_9_R1.EntityCreeper;
 import net.minecraft.server.v1_9_R1.EntityInsentient;
-import net.minecraft.server.v1_9_R1.PacketPlayOutWorldEvent;
 
 public class PetMechanics implements Listener {
 	static Logger log = Logger.getLogger("Minecraft");
@@ -111,7 +108,7 @@ public class PetMechanics implements Listener {
 	public static File templatePath = new File(templatePath_s);
 
 	/**
-	 * Player UUIDs mapped to their pets (UUID converted)
+	 * Player UUIDs mapped to their pets
 	 */
 	public static HashMap<UUID, List<String>> player_pets = new HashMap<UUID, List<String>>();
 
@@ -121,7 +118,7 @@ public class PetMechanics implements Listener {
 	 * UUID mapped to pets
 	 */
 	public static volatile ConcurrentHashMap<UUID, List<Entity>> pet_map = new ConcurrentHashMap<UUID, List<Entity>>();
-	public static ConcurrentHashMap<Entity, String> inv_pet_map = new ConcurrentHashMap<Entity, String>();
+	public static ConcurrentHashMap<Entity, UUID> inv_pet_map = new ConcurrentHashMap<Entity, UUID>();
 
 	public static HashMap<Entity, List<Entity>> baby_chick_map = new HashMap<Entity, List<Entity>>();
 	public static HashMap<Entity, Integer> chicken_count = new HashMap<Entity, Integer>();
@@ -246,7 +243,7 @@ public class PetMechanics implements Listener {
 			public void run() {
 				for (Entity ent : inv_pet_map.keySet()) {
 					if (ent.getType() == EntityType.GIANT) {
-						String owner = inv_pet_map.get(ent);
+						UUID owner = inv_pet_map.get(ent);
 						ent.remove();
 						removePetFromSpawnedList(owner, ent);
 						inv_pet_map.remove(ent);
@@ -294,7 +291,7 @@ public class PetMechanics implements Listener {
 					}
 					// le.getWorld().spawnParticle(le.getLocation().add(0, 1.5,
 					// 0), Particle.LARGE_EXPLODE, 1F, 20);
-					le.getWorld().playSound(le.getLocation(), Sound.EXPLODE, 2F, 1F);
+					le.getWorld().playSound(le.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 2F, 1F);
 				}
 				creeper_chase.clear();
 			}
@@ -302,11 +299,11 @@ public class PetMechanics implements Listener {
 
 		Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
 			public void run() {
-				for (Entry<Entity, String> data : inv_pet_map.entrySet()) {
+				for (Entry<Entity, UUID> data : inv_pet_map.entrySet()) {
 					Entity e = data.getKey();
-					String p_name = data.getValue();
+					UUID id = data.getValue();
 
-					if (Bukkit.getPlayer(p_name) == null) {
+					if (Bukkit.getPlayer(id) == null) {
 						continue;
 					}
 					// Player p = Bukkit.getPlayer(p_name);
@@ -376,11 +373,11 @@ public class PetMechanics implements Listener {
 				// HashMap<Entity, String> to_update = new HashMap<Entity,
 				// String>();
 				// List<Entity> to_remove = new ArrayList<Entity>();
-				for (Entry<Entity, String> data : inv_pet_map.entrySet()) {
+				for (Entry<Entity, UUID> data : inv_pet_map.entrySet()) {
 					Entity e = data.getKey();
-					String p_name = data.getValue();
+					UUID id = data.getValue();
 
-					Player p = Bukkit.getPlayer(p_name);
+					Player p = Bukkit.getPlayer(id);
 					LivingEntity le = (LivingEntity) e;
 					if (p != null) {
 						float speed = 1.2F;
@@ -414,7 +411,7 @@ public class PetMechanics implements Listener {
 							if (hiss == 0) {
 								EntityCreeper ec = (EntityCreeper) (((CraftCreeper) le).getHandle());
 								ec.a(1);
-								le.getWorld().playSound(le.getLocation(), Sound.CREEPER_HISS, 1F, 1F);
+								le.getWorld().playSound(le.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 1F, 1F);
 							}
 							int explode = new Random().nextInt(100);
 							if (explode == 0) {
@@ -426,12 +423,12 @@ public class PetMechanics implements Listener {
 												|| p_ent.getPlayerListName().equalsIgnoreCase("")) {
 											continue;
 										}
-										if (inv_pet_map.get(le).equalsIgnoreCase(p_ent.getName())) {
+										if (inv_pet_map.get(le).equals(p_ent.getUniqueId())) {
 											continue;
 										}
 										EntityCreeper ec = (EntityCreeper) (((CraftCreeper) le).getHandle());
 										CraftPlayer cp = (CraftPlayer) p_ent;
-										ec.setTarget((net.minecraft.server.v1_7_R2.Entity) cp.getHandle());
+										ec.setGoalTarget((net.minecraft.server.v1_9_R1.EntityLiving) cp.getHandle());
 										creeper_chase.put(e, ent);
 										walkTo(le, p_ent.getLocation().getX(), p_ent.getLocation().getY(),
 												p_ent.getLocation().getZ(), 2.0F);
@@ -445,7 +442,7 @@ public class PetMechanics implements Listener {
 							speed = 1.20F;
 							EntityCreature ec = (EntityCreature) ((CraftEntity) e).getHandle();
 							CraftPlayer cp = (CraftPlayer) p;
-							ec.setTarget((net.minecraft.server.v1_7_R2.Entity) cp.getHandle());
+							ec.setGoalTarget((net.minecraft.server.v1_9_R1.EntityLiving) cp.getHandle());
 						}
 
 						if (lptt.equalsIgnoreCase("Beta Slime")) {
@@ -490,7 +487,7 @@ public class PetMechanics implements Listener {
 								// Don't just continue, remove the fucker!
 								inv_pet_map.remove(le);
 								le.remove();
-								removePetFromSpawnedList(p.getName(), le);
+								removePetFromSpawnedList(p.getUniqueId(), le);
 								continue;
 							}
 						}
@@ -504,7 +501,7 @@ public class PetMechanics implements Listener {
 			public void run() {
 				for (Entity pet : inv_pet_map.keySet()) {
 					Entity partner = null;
-					String owner_name = inv_pet_map.get(pet);
+					UUID owner_id = inv_pet_map.get(pet);
 					if (pet.getType() == EntityType.MUSHROOM_COW) {
 						for (Entity ent : pet.getNearbyEntities(3, 3, 3)) {
 							if (ent.getType() == EntityType.MUSHROOM_COW) {
@@ -554,8 +551,8 @@ public class PetMechanics implements Listener {
 					}
 
 					if (pet.getType() == EntityType.ZOMBIE) {
-						if (Bukkit.getPlayer(owner_name) != null) {
-							Player owner = Bukkit.getPlayer(owner_name);
+						if (Bukkit.getPlayer(owner_id) != null) {
+							Player owner = Bukkit.getPlayer(owner_id);
 							try {
 								if (pet.getWorld().getName().equalsIgnoreCase(owner.getWorld().getName())
 										&& (pet.getLocation().distanceSquared(owner.getLocation()) >= 25.0D
@@ -565,14 +562,14 @@ public class PetMechanics implements Listener {
 							} catch (IllegalArgumentException iae) {
 								inv_pet_map.remove(pet);
 								pet.remove();
-								removePetFromSpawnedList(owner.getName(), pet);
+								removePetFromSpawnedList(owner.getUniqueId(), pet);
 								continue;
 							}
 						}
 						for (Entity ent : pet.getNearbyEntities(7, 7, 7)) {
 							if (ent.getType() == EntityType.PLAYER) {
 								Player p = (Player) ent;
-								if (owner_name.equalsIgnoreCase(p.getName())) {
+								if (owner_id.equals(p.getUniqueId())) {
 									continue; // Owner.
 								}
 								if (p.getName().contains("[S]")) {
@@ -590,7 +587,7 @@ public class PetMechanics implements Listener {
 								if (p.getPlayerListName().equalsIgnoreCase("")) {
 									continue;
 								}
-								if (ModerationMechanics.isPlayerVanished(p.getName())) {
+								if (ModerationMechanics.isPlayerVanished(p)) {
 									continue;
 								}
 								partner = ent;
@@ -606,14 +603,14 @@ public class PetMechanics implements Listener {
 							} else {
 								partner.setPassenger(pet);
 								// Same world so it should be fine.
-								Packet particles = new PacketPlayOutWorldEvent(2001,
+								/*Packet particles = new PacketPlayOutWorldEvent(2001,
 										(int) Math.round(pet.getLocation().getX()),
 										(int) Math.round(pet.getLocation().getY()),
 										(int) Math.round(pet.getLocation().getZ()), 152, false);
 								((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
 										pet.getLocation().getX(), pet.getLocation().getY(), pet.getLocation().getZ(),
-										24, ((CraftWorld) pet.getWorld()).getHandle().dimension, particles);
-								pet.getWorld().playSound(pet.getLocation(), Sound.BURP, 1.5F, .8F);
+										24, ((CraftWorld) pet.getWorld()).getHandle().dimension, particles);*/
+								pet.getWorld().playSound(pet.getLocation(), Sound.ENTITY_PLAYER_BURP, 1.5F, .8F);
 								continue;
 							}
 						}
@@ -735,8 +732,8 @@ public class PetMechanics implements Listener {
 		}
 	}
 
-	public static void addPetToPlayer(String p_name, String pet) {
-		List<String> pet_list = downloadPetData(p_name);
+	public static void addPetToPlayer(UUID id, String pet) {
+		List<String> pet_list = downloadPetData(id);
 		String pet_string = "";
 
 		for (String s : pet_list) {
@@ -756,7 +753,7 @@ public class PetMechanics implements Listener {
 
 		try {
 			PreparedStatement pst = ConnectionPool.getConnection()
-					.prepareStatement("INSERT INTO player_database (p_name, pets)" + " VALUES" + "('" + p_name + "', '"
+					.prepareStatement("INSERT INTO player_database (p_name, pets)" + " VALUES" + "('" + id.toString() + "', '"
 							+ pet_string + "') ON DUPLICATE KEY UPDATE pets = '" + pet_string + "'");
 
 			pst.executeUpdate();
@@ -769,8 +766,8 @@ public class PetMechanics implements Listener {
 			log.log(Level.SEVERE, ex.getMessage(), ex);
 		}
 
-		if (Bukkit.getPlayer(p_name) != null) {
-			Player pl = Bukkit.getPlayer(p_name);
+		if (Bukkit.getPlayer(id) != null) {
+			Player pl = Bukkit.getPlayer(id);
 			if (pl.getInventory().firstEmpty() != -1) {
 				// Add egg.
 				if (pet.equalsIgnoreCase("baby_zombie")) {
@@ -859,8 +856,8 @@ public class PetMechanics implements Listener {
 
 	//TODO this method
 	public static List<String> downloadPetData(UUID id) {
-		if (player_pets.containsKey(pname)) {
-			return player_pets.get(pname);
+		if (player_pets.containsKey(id)) {
+			return player_pets.get(id);
 		}
 
 		PreparedStatement pst = null;
@@ -871,7 +868,7 @@ public class PetMechanics implements Listener {
 			// Hive.sql_password);
 
 			pst = ConnectionPool.getConnection()
-					.prepareStatement("SELECT pets FROM player_database WHERE p_name = '" + pname + "'");
+					.prepareStatement("SELECT pets FROM player_database WHERE p_name = '" + id.toString() + "'");
 
 			pst.execute();
 			ResultSet rs = pst.getResultSet();
@@ -1330,7 +1327,7 @@ public class PetMechanics implements Listener {
 	public void onPlayerJoinEvent(PlayerJoinEvent e) {
 		final Player p = e.getPlayer();
 
-		pet_map.put(p.getName(), new ArrayList<Entity>());
+		pet_map.put(p.getUniqueId(), new ArrayList<Entity>());
 
 		if (!(player_pets.containsKey(p.getName()))) {
 			return;
@@ -1492,8 +1489,8 @@ public class PetMechanics implements Listener {
 		if (!(e.getEntity() instanceof Player)) {
 			Entity ent = e.getEntity();
 			if (inv_pet_map.containsKey(ent)) {
-				String owner_name = inv_pet_map.get(ent);
-				Player owner = Bukkit.getPlayer(owner_name);
+				UUID id = inv_pet_map.get(ent);
+				Player owner = Bukkit.getPlayer(id);
 				if (owner != null) {
 					ent.teleport(owner);
 				}
@@ -1501,35 +1498,35 @@ public class PetMechanics implements Listener {
 		}
 	}
 
-	public void addPetToSpawnedList(String p_name, Entity pet) {
-		if (!(pet_map.containsKey(p_name))) {
+	public void addPetToSpawnedList(UUID id, Entity pet) {
+		if (!(pet_map.containsKey(id))) {
 			return; // They're not even in map, so.
 		}
-		List<Entity> pet_list = pet_map.get(p_name);
+		List<Entity> pet_list = pet_map.get(id);
 		if (!(pet_list.contains(pet))) {
 			pet_list.add(pet);
 		}
-		pet_map.put(p_name, pet_list);
+		pet_map.put(id, pet_list);
 	}
 
-	public void removePetFromSpawnedList(String p_name, Entity pet) {
-		List<Entity> pet_list = pet_map.get(p_name);
+	public void removePetFromSpawnedList(UUID id, Entity pet) {
+		List<Entity> pet_list = pet_map.get(id);
 		if ((pet_list.contains(pet))) {
 			pet_list.remove(pet);
 		}
-		pet_map.put(p_name, pet_list);
+		pet_map.put(id, pet_list);
 	}
 
 	@EventHandler
 	public void onPlayerChangeWorldEvent(PlayerChangedWorldEvent e) {
 		final Player p = e.getPlayer();
-		if (pet_map.containsKey(p.getName())) {
+		if (pet_map.containsKey(p.getUniqueId())) {
 			CopyOnWriteArrayList<Entity> ent_list = new CopyOnWriteArrayList<Entity>(pet_map.get(p.getName()));
 			for (final Entity ent : ent_list) {
 				final String old_name = ChatMechanics.censorMessage(getPetName(ent));
 				inv_pet_map.remove(ent);
 				ent.remove();
-				removePetFromSpawnedList(p.getName(), ent);
+				removePetFromSpawnedList(p.getUniqueId(), ent);
 				if (!e.getEventName().equalsIgnoreCase("DungeonRealms")) {
 					// Dont respawn the mob since its not in the real world
 					return;
@@ -1557,7 +1554,7 @@ public class PetMechanics implements Listener {
 							ms.setBaby();
 							ms.setAgeLock(true);
 							ms.setCustomName(old_name);
-							p.playSound(p.getLocation(), Sound.COW_IDLE, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_COW_AMBIENT, 1F, 1F);
 							new_e.setMetadata("petname", new FixedMetadataValue(Main.plugin, old_name));
 						}
 						if (lptt.equalsIgnoreCase("Baby Cat")) {
@@ -1569,7 +1566,7 @@ public class PetMechanics implements Listener {
 							oc.setOwner((AnimalTamer) p);
 							oc.setCustomName(old_name);
 							// oc.setSitting(false);
-							p.playSound(p.getLocation(), Sound.CAT_MEOW, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_CAT_PURREOW, 1F, 1F);
 							new_e.setMetadata("petname", new FixedMetadataValue(Main.plugin, old_name));
 						}
 						if (lptt.equalsIgnoreCase("Sheep O' Luck")) {
@@ -1581,7 +1578,7 @@ public class PetMechanics implements Listener {
 							s.setColor(DyeColor.LIME);
 							s.setCustomName(old_name);
 							// oc.setSitting(false);
-							p.playSound(p.getLocation(), Sound.SHEEP_IDLE, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_SHEEP_AMBIENT, 1F, 1F);
 							new_e.setMetadata("petname", new FixedMetadataValue(Main.plugin, old_name));
 						}
 						if (lptt.equalsIgnoreCase("Easter's Chicken")) {
@@ -1590,7 +1587,7 @@ public class PetMechanics implements Listener {
 							c.setBreed(false);
 							c.setCustomName(old_name);
 							// oc.setSitting(false);
-							p.playSound(p.getLocation(), Sound.CHICKEN_IDLE, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_CHICKEN_AMBIENT, 1F, 1F);
 							new_e.setMetadata("petname", new FixedMetadataValue(Main.plugin, old_name));
 						}
 						if (lptt.equalsIgnoreCase("Jeepers Creepers")) {
@@ -1599,7 +1596,7 @@ public class PetMechanics implements Listener {
 							cr.setCanPickupItems(false);
 							cr.setCustomName(old_name);
 							// oc.setSitting(false);
-							p.playSound(p.getLocation(), Sound.CREEPER_HISS, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 1F, 1F);
 							new_e.setMetadata("petname", new FixedMetadataValue(Main.plugin, old_name));
 						}
 						if (lptt.equalsIgnoreCase("Beta Slime")) {
@@ -1608,7 +1605,7 @@ public class PetMechanics implements Listener {
 							s.setSize(1);
 							s.setCanPickupItems(false);
 							s.setCustomName(old_name);
-							p.playSound(p.getLocation(), Sound.SLIME_WALK, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_SLIME_SQUISH, 1F, 1F);
 							new_e.setMetadata("petname", new FixedMetadataValue(Main.plugin, old_name));
 						}
 						if (lptt.equalsIgnoreCase("Creeper of Independence")) {
@@ -1617,7 +1614,7 @@ public class PetMechanics implements Listener {
 							cr.setCanPickupItems(false);
 							cr.setCustomName(old_name);
 							cr.setPowered(true);
-							p.playSound(p.getLocation(), Sound.CREEPER_HISS, 0.5F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 0.5F, 1F);
 							new_e.setMetadata("petname", new FixedMetadataValue(Main.plugin, old_name));
 						}
 						/*
@@ -1648,8 +1645,8 @@ public class PetMechanics implements Listener {
 							h1.setTarget(p);
 
 							((Entity) h1).setMetadata("petname", new FixedMetadataValue(Main.plugin, old_name));
-							inv_pet_map.put((Entity) h1, p.getName());
-							addPetToSpawnedList(p.getName(), (Entity) h1);
+							inv_pet_map.put((Entity) h1, p.getUniqueId());
+							addPetToSpawnedList(p.getUniqueId(), (Entity) h1);
 							// }
 
 							// TODO: Horse sound.
@@ -1658,8 +1655,8 @@ public class PetMechanics implements Listener {
 						}
 
 						if (new_e != null && !(inv_pet_map.containsKey(new_e))) {
-							inv_pet_map.put(new_e, p.getName());
-							addPetToSpawnedList(p.getName(), new_e);
+							inv_pet_map.put(new_e, p.getUniqueId());
+							addPetToSpawnedList(p.getUniqueId(), new_e);
 						}
 					}
 				}, 30L);
@@ -1731,12 +1728,12 @@ public class PetMechanics implements Listener {
 		}
 		if (inv_pet_map.containsKey(ent)) {
 			Player p = e.getPlayer();
-			String owner_name = inv_pet_map.get(ent);
+			UUID owner_id = inv_pet_map.get(ent);
 			String pet_name = getPetName(ent);
 			String pet_type = getPetType(ent);
 
 			if (pet_type.equalsIgnoreCase("Baby Cat")) {
-				if (p.getName().equalsIgnoreCase(owner_name)) {
+				if (p.getUniqueId().equals(owner_id)) {
 					Ocelot oc = (Ocelot) ent;
 					if (oc.isSitting()) {
 						oc.setSitting(false);
@@ -1756,7 +1753,7 @@ public class PetMechanics implements Listener {
 			if (((CraftEntity) ent).getHandle() instanceof EntityCreature) {
 				EntityCreature ec = (EntityCreature) ((CraftEntity) ent).getHandle();
 				CraftPlayer cp = (CraftPlayer) p;
-				ec.setTarget((net.minecraft.server.v1_7_R2.Entity) cp.getHandle());
+				ec.setGoalTarget((net.minecraft.server.v1_9_R1.EntityLiving) cp.getHandle());
 			}
 
 			e.setCancelled(true);
@@ -1767,7 +1764,7 @@ public class PetMechanics implements Listener {
 	public void onEntityInteractWithMooshroom(PlayerInteractEntityEvent e) {
 		if (e.getRightClicked() instanceof MushroomCow) {
 			Player p = (Player) e.getPlayer();
-			if (p.getItemInHand() != null && p.getItemInHand().getType() == Material.BOWL) {
+			if (p.getInventory().getItemInMainHand() != null && p.getInventory().getItemInMainHand().getType() == Material.BOWL) {
 				e.setCancelled(true);
 				p.damage(0);
 				p.sendMessage(ChatColor.RED + "You cannot do this!");
@@ -1786,14 +1783,14 @@ public class PetMechanics implements Listener {
 
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent e) {
-		String p_name = e.getEntity().getName();
-		if (pet_map.containsKey(p_name)) {
-			List<Entity> pet_list = pet_map.get(p_name);
+		UUID id = e.getEntity().getUniqueId();
+		if (pet_map.containsKey(id)) {
+			List<Entity> pet_list = pet_map.get(id);
 			for (Entity pet : pet_list) {
 				pet.remove();
 				inv_pet_map.remove(pet);
 			}
-			pet_map.put(p_name, new ArrayList<Entity>());
+			pet_map.put(id, new ArrayList<Entity>());
 		}
 	}
 
@@ -1843,7 +1840,7 @@ public class PetMechanics implements Listener {
 						z.setBaby(true);
 						z.setCustomName(name);
 
-						p.playSound(p.getLocation(), Sound.ZOMBIE_HURT, 1F, 1.5F);
+						p.playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_HURT, 1F, 1.5F);
 					}
 
 					if (lpet_type.equalsIgnoreCase("Baby Mooshroom")) {
@@ -1852,7 +1849,7 @@ public class PetMechanics implements Listener {
 						ms.setBaby();
 						ms.setAgeLock(true);
 						ms.setCustomName(name);
-						p.playSound(p.getLocation(), Sound.COW_IDLE, 1F, 1F);
+						p.playSound(p.getLocation(), Sound.ENTITY_COW_AMBIENT, 1F, 1F);
 					}
 
 					if (lpet_type.equalsIgnoreCase("Baby Cat")) {
@@ -1864,7 +1861,7 @@ public class PetMechanics implements Listener {
 						oc.setOwner((AnimalTamer) p);
 						oc.setCustomName(name);
 						// oc.setSitting(false);
-						p.playSound(p.getLocation(), Sound.CAT_MEOW, 1F, 1F);
+						p.playSound(p.getLocation(), Sound.ENTITY_CAT_PURREOW, 1F, 1F);
 					}
 					if (lpet_type.equalsIgnoreCase("Sheep O' Luck")) {
 						pet = p.getWorld().spawnEntity(p.getLocation().add(0, 2, 0), EntityType.SHEEP);
@@ -1874,7 +1871,7 @@ public class PetMechanics implements Listener {
 						s.setAgeLock(true);
 						s.setColor(DyeColor.LIME);
 						s.setCustomName(name);
-						p.playSound(p.getLocation(), Sound.SHEEP_IDLE, 1F, 1F);
+						p.playSound(p.getLocation(), Sound.ENTITY_SHEEP_AMBIENT, 1F, 1F);
 					}
 					if (lpet_type.equalsIgnoreCase("Easter's Chicken")) {
 						pet = p.getWorld().spawnEntity(p.getLocation().add(0, 2, 0), EntityType.CHICKEN);
@@ -1882,7 +1879,7 @@ public class PetMechanics implements Listener {
 						c.setBreed(false);
 						c.setCustomName(name);
 						// oc.setSitting(false);
-						p.playSound(p.getLocation(), Sound.CHICKEN_IDLE, 1F, 1F);
+						p.playSound(p.getLocation(), Sound.ENTITY_CHICKEN_AMBIENT, 1F, 1F);
 					}
 					if (lpet_type.equalsIgnoreCase("Jeepers Creepers")) {
 						pet = p.getWorld().spawnEntity(p.getLocation().add(0, 2, 0), EntityType.CREEPER);
@@ -1890,7 +1887,7 @@ public class PetMechanics implements Listener {
 						cr.setCanPickupItems(false);
 						cr.setCustomName(name);
 						// oc.setSitting(false);
-						p.playSound(p.getLocation(), Sound.CREEPER_HISS, 1F, 1F);
+						p.playSound(p.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 1F, 1F);
 					}
 					if (lpet_type.equalsIgnoreCase("Beta Slime")) {
 						pet = p.getWorld().spawnEntity(p.getLocation().add(0, 2, 0), EntityType.SLIME);
@@ -1899,7 +1896,7 @@ public class PetMechanics implements Listener {
 						s.setCanPickupItems(false);
 						s.setCustomName(name);
 						// oc.setSitting(false);
-						p.playSound(p.getLocation(), Sound.SLIME_WALK, 1F, 1F);
+						p.playSound(p.getLocation(), Sound.ENTITY_SLIME_SQUISH, 1F, 1F);
 					}
 					if (lpet_type.equalsIgnoreCase("Creeper of Independence")) {
 						pet = p.getWorld().spawnEntity(p.getLocation().add(0, 2, 0), EntityType.CREEPER);
@@ -1907,7 +1904,7 @@ public class PetMechanics implements Listener {
 						cr.setCanPickupItems(false);
 						cr.setCustomName(name);
 						cr.setPowered(true);
-						p.playSound(p.getLocation(), Sound.CREEPER_HISS, 1F, 0.5F);
+						p.playSound(p.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 1F, 0.5F);
 						pet.setMetadata("petname", new FixedMetadataValue(Main.plugin, name));
 					}
 					if (lpet_type.equalsIgnoreCase("Baby Horses")) {
@@ -1933,11 +1930,11 @@ public class PetMechanics implements Listener {
 							b.setCanPickupItems(false);
 							b.setCustomName(name);
 							pet.setMetadata("petname", new FixedMetadataValue(Main.plugin, name));
-							inv_pet_map.put(pet, p.getName());
-							addPetToSpawnedList(p.getName(), pet);
+							inv_pet_map.put(pet, p.getUniqueId());
+							addPetToSpawnedList(p.getUniqueId(), pet);
 						}
 
-						p.playSound(p.getLocation(), Sound.BAT_TAKEOFF, 0.5F, 1F);
+						p.playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0.5F, 1F);
 					}
 
 					for (ItemStack is : p.getInventory().getContents()) {
@@ -1974,12 +1971,12 @@ public class PetMechanics implements Listener {
 					}
 
 					for (Entity ent : to_remove) {
-						removePetFromSpawnedList(p.getName(), ent);
+						removePetFromSpawnedList(p.getUniqueId(), ent);
 					}
 
 					if (!(inv_pet_map.containsKey(pet))) {
-						addPetToSpawnedList(p.getName(), pet);
-						inv_pet_map.put(pet, p.getName());
+						addPetToSpawnedList(p.getUniqueId(), pet);
+						inv_pet_map.put(pet, p.getUniqueId());
 					}
 
 					naming_pet.remove(p.getName());
@@ -1987,7 +1984,7 @@ public class PetMechanics implements Listener {
 					if (((CraftEntity) pet).getHandle() instanceof EntityCreature) {
 						EntityCreature ec = (EntityCreature) ((CraftEntity) pet).getHandle();
 						CraftPlayer cp = (CraftPlayer) p;
-						ec.setTarget((net.minecraft.server.v1_7_R2.Entity) cp.getHandle());
+						ec.setGoalTarget((net.minecraft.server.v1_9_R1.EntityLiving) cp.getHandle());
 					}
 
 					pet.setMetadata("petname", new FixedMetadataValue(Main.plugin, name));
@@ -2044,7 +2041,7 @@ public class PetMechanics implements Listener {
 
 							if (spawned_type.equalsIgnoreCase(spawning_type)) { // Dismiss
 																				// pet.
-								removePetFromSpawnedList(p.getName(), pet);
+								removePetFromSpawnedList(p.getUniqueId(), pet);
 								inv_pet_map.remove(pet);
 								LivingEntity le = (LivingEntity) pet;
 								Damageable poo = (Damageable) le;
@@ -2054,19 +2051,19 @@ public class PetMechanics implements Listener {
 								}
 								le.playEffect(EntityEffect.DEATH);
 								if (spawned_type.equalsIgnoreCase("Baby Zombie")) {
-									p.playSound(p.getLocation(), Sound.ZOMBIE_DEATH, 1F, 1.5F);
+									p.playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_DEATH, 1F, 1.5F);
 								}
 								if (spawned_type.equalsIgnoreCase("Baby Mooshroom")) {
-									p.playSound(p.getLocation(), Sound.COW_HURT, 1F, 1F);
+									p.playSound(p.getLocation(), Sound.ENTITY_COW_HURT, 1F, 1F);
 								}
 								if (spawned_type.equalsIgnoreCase("Baby Cat")) {
-									p.playSound(p.getLocation(), Sound.CAT_PURREOW, 1F, 1F);
+									p.playSound(p.getLocation(), Sound.ENTITY_CAT_PURREOW, 1F, 1F);
 								}
 								if (spawned_type.equalsIgnoreCase("Sheep O' Luck")) {
-									p.playSound(p.getLocation(), Sound.SHEEP_SHEAR, 1F, 1F);
+									p.playSound(p.getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1F, 1F);
 								}
 								if (spawned_type.equalsIgnoreCase("Easter's Chicken")) {
-									p.playSound(p.getLocation(), Sound.CHICKEN_HURT, 1F, 1F);
+									p.playSound(p.getLocation(), Sound.ENTITY_CHICKEN_HURT, 1F, 1F);
 									if (baby_chick_map.containsKey(pet)) {
 										for (Entity baby : baby_chick_map.get(pet)) {
 											LivingEntity baby_le = (LivingEntity) baby;
@@ -2078,19 +2075,19 @@ public class PetMechanics implements Listener {
 									}
 								}
 								if (spawned_type.equalsIgnoreCase("Jeepers Creepers")) {
-									p.playSound(p.getLocation(), Sound.CREEPER_DEATH, 1F, 1F);
+									p.playSound(p.getLocation(), Sound.ENTITY_CREEPER_DEATH, 1F, 1F);
 								}
 								if (spawned_type.equalsIgnoreCase("Creeper of Independence")) {
-									p.playSound(p.getLocation(), Sound.CREEPER_DEATH, 1F, 0.5F);
+									p.playSound(p.getLocation(), Sound.ENTITY_CREEPER_DEATH, 1F, 0.5F);
 								}
 								if (spawned_type.equalsIgnoreCase("Beta Slime")) {
-									p.playSound(p.getLocation(), Sound.SLIME_ATTACK, 1F, 1F);
+									p.playSound(p.getLocation(), Sound.ENTITY_SLIME_ATTACK, 1F, 1F);
 								}
 								if (spawned_type.equalsIgnoreCase("Baby Horses")) {
-									p.playSound(p.getLocation(), Sound.COW_HURT, 1F, 0.2F);
+									p.playSound(p.getLocation(), Sound.ENTITY_COW_HURT, 1F, 0.2F);
 								}
 								if (spawned_type.equalsIgnoreCase("Spooky Bats")) {
-									p.playSound(p.getLocation(), Sound.BAT_TAKEOFF, 1F, 1F);
+									p.playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
 								}
 								break;
 							}
@@ -2111,7 +2108,7 @@ public class PetMechanics implements Listener {
 
 							if (spawned_type.equalsIgnoreCase(spawning_type)) { // Dismiss
 																				// pet.
-								removePetFromSpawnedList(p.getName(), pet);
+								removePetFromSpawnedList(p.getUniqueId(), pet);
 								inv_pet_map.remove(pet);
 								LivingEntity le = (LivingEntity) pet;
 								Damageable poo = (Damageable) le;
@@ -2121,19 +2118,19 @@ public class PetMechanics implements Listener {
 								}
 								le.playEffect(EntityEffect.DEATH);
 								if (spawned_type.equalsIgnoreCase("Baby Zombie")) {
-									p.playSound(p.getLocation(), Sound.ZOMBIE_DEATH, 1F, 1.5F);
+									p.playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_DEATH, 1F, 1.5F);
 								}
 								if (spawned_type.equalsIgnoreCase("Baby Mooshroom")) {
-									p.playSound(p.getLocation(), Sound.COW_HURT, 1F, 1F);
+									p.playSound(p.getLocation(), Sound.ENTITY_COW_HURT, 1F, 1F);
 								}
 								if (spawned_type.equalsIgnoreCase("Baby Cat")) {
-									p.playSound(p.getLocation(), Sound.CAT_PURREOW, 1F, 1F);
+									p.playSound(p.getLocation(), Sound.ENTITY_CAT_PURREOW, 1F, 1F);
 								}
 								if (spawned_type.equalsIgnoreCase("Sheep O' Luck")) {
-									p.playSound(p.getLocation(), Sound.SHEEP_SHEAR, 1F, 1F);
+									p.playSound(p.getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1F, 1F);
 								}
 								if (spawned_type.equalsIgnoreCase("Easter's Chicken")) {
-									p.playSound(p.getLocation(), Sound.CHICKEN_HURT, 1F, 1F);
+									p.playSound(p.getLocation(), Sound.ENTITY_CHICKEN_HURT, 1F, 1F);
 									if (baby_chick_map.containsKey(pet)) {
 										for (Entity baby : baby_chick_map.get(pet)) {
 											LivingEntity baby_le = (LivingEntity) baby;
@@ -2145,19 +2142,19 @@ public class PetMechanics implements Listener {
 									}
 								}
 								if (spawned_type.equalsIgnoreCase("Jeepers Creepers")) {
-									p.playSound(p.getLocation(), Sound.CREEPER_DEATH, 1F, 1F);
+									p.playSound(p.getLocation(), Sound.ENTITY_CREEPER_DEATH, 1F, 1F);
 								}
 								if (spawned_type.equalsIgnoreCase("Beta Slime")) {
-									p.playSound(p.getLocation(), Sound.SLIME_ATTACK, 1F, 1F);
+									p.playSound(p.getLocation(), Sound.ENTITY_SLIME_ATTACK, 1F, 1F);
 								}
 								if (spawned_type.equalsIgnoreCase("Creeper of Independence")) {
-									p.playSound(p.getLocation(), Sound.CREEPER_DEATH, 1F, 0.5F);
+									p.playSound(p.getLocation(), Sound.ENTITY_CREEPER_DEATH, 1F, 0.5F);
 								}
 								if (spawned_type.equalsIgnoreCase("Baby Horses")) {
-									p.playSound(p.getLocation(), Sound.COW_HURT, 1F, 0.2F);
+									p.playSound(p.getLocation(), Sound.ENTITY_COW_HURT, 1F, 0.2F);
 								}
 								if (spawned_type.equalsIgnoreCase("Spooky Bats")) {
-									p.playSound(p.getLocation(), Sound.BAT_DEATH, 1F, 1F);
+									p.playSound(p.getLocation(), Sound.ENTITY_BAT_DEATH, 1F, 1F);
 								}
 							}
 						}
@@ -2170,8 +2167,8 @@ public class PetMechanics implements Listener {
 	@EventHandler
 	public void onPlayerAnimationEvent(PlayerAnimationEvent e) {
 		Player p = e.getPlayer();
-		if (p.getItemInHand().getType() == Material.MONSTER_EGG
-				|| p.getItemInHand().getType() == Material.MONSTER_EGGS) {
+		if (p.getInventory().getItemInMainHand().getType() == Material.MONSTER_EGG
+				|| p.getInventory().getItemInMainHand().getType() == Material.MONSTER_EGGS) {
 			e.setCancelled(true);
 			return;
 		}
@@ -2240,7 +2237,7 @@ public class PetMechanics implements Listener {
 
 						// If code reaches this point, the pet is already out so
 						// kill it.
-						removePetFromSpawnedList(p.getName(), ent);
+						removePetFromSpawnedList(p.getUniqueId(), ent);
 						inv_pet_map.remove(ent);
 						LivingEntity le = (LivingEntity) ent;
 						Damageable poo = (Damageable) ent;
@@ -2250,19 +2247,19 @@ public class PetMechanics implements Listener {
 						}
 						le.playEffect(EntityEffect.DEATH);
 						if (pet_type.equalsIgnoreCase("Baby Zombie")) {
-							p.playSound(p.getLocation(), Sound.ZOMBIE_DEATH, 1F, 1.5F);
+							p.playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_DEATH, 1F, 1.5F);
 						}
 						if (spawned_type.equalsIgnoreCase("Baby Mooshroom")) {
-							p.playSound(p.getLocation(), Sound.COW_HURT, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_COW_HURT, 1F, 1F);
 						}
 						if (spawned_type.equalsIgnoreCase("Baby Cat")) {
-							p.playSound(p.getLocation(), Sound.CAT_PURREOW, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_CAT_PURREOW, 1F, 1F);
 						}
 						if (spawned_type.equalsIgnoreCase("Sheep O' Luck")) {
-							p.playSound(p.getLocation(), Sound.SHEEP_SHEAR, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1F, 1F);
 						}
 						if (spawned_type.equalsIgnoreCase("Easter's Chicken")) {
-							p.playSound(p.getLocation(), Sound.CHICKEN_HURT, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_CHICKEN_HURT, 1F, 1F);
 							if (baby_chick_map.containsKey(ent)) {
 								for (Entity baby : baby_chick_map.get(ent)) {
 									LivingEntity baby_le = (LivingEntity) baby;
@@ -2274,19 +2271,19 @@ public class PetMechanics implements Listener {
 							}
 						}
 						if (spawned_type.equalsIgnoreCase("Jeepers Creepers")) {
-							p.playSound(p.getLocation(), Sound.CREEPER_DEATH, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_CREEPER_DEATH, 1F, 1F);
 						}
 						if (spawned_type.equalsIgnoreCase("Beta Slime")) {
-							p.playSound(p.getLocation(), Sound.SLIME_ATTACK, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_SLIME_ATTACK, 1F, 1F);
 						}
 						if (spawned_type.equalsIgnoreCase("Creeper of Independence")) {
-							p.playSound(p.getLocation(), Sound.CREEPER_DEATH, 1F, 0.5F);
+							p.playSound(p.getLocation(), Sound.ENTITY_CREEPER_DEATH, 1F, 0.5F);
 						}
 						if (spawned_type.equalsIgnoreCase("Baby Horses")) {
-							p.playSound(p.getLocation(), Sound.COW_HURT, 1F, 0.2F);
+							p.playSound(p.getLocation(), Sound.ENTITY_COW_HURT, 1F, 0.2F);
 						}
 						if (spawned_type.equalsIgnoreCase("Spooky Bats")) {
-							p.playSound(p.getLocation(), Sound.BAT_DEATH, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_BAT_DEATH, 1F, 1F);
 						}
 						return;
 					}
@@ -2343,7 +2340,7 @@ public class PetMechanics implements Listener {
 							z.setBaby(true);
 							z.setCustomName(ChatMechanics.censorMessage(getPetName(in_hand)));
 
-							p.playSound(p.getLocation(), Sound.ZOMBIE_HURT, 1F, 1.5F);
+							p.playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_HURT, 1F, 1.5F);
 						}
 
 						if (pet_type.equalsIgnoreCase("Baby Mooshroom")) {
@@ -2352,7 +2349,7 @@ public class PetMechanics implements Listener {
 							ms.setBaby();
 							ms.setAgeLock(true);
 							ms.setCustomName(ChatMechanics.censorMessage(getPetName(in_hand)));
-							p.playSound(p.getLocation(), Sound.COW_IDLE, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_COW_AMBIENT, 1F, 1F);
 						}
 
 						if (pet_type.equalsIgnoreCase("Baby Cat")) {
@@ -2364,7 +2361,7 @@ public class PetMechanics implements Listener {
 							oc.setOwner((AnimalTamer) p);
 							oc.setCustomName(ChatMechanics.censorMessage(getPetName(in_hand)));
 							// oc.setSitting(false);
-							p.playSound(p.getLocation(), Sound.CAT_MEOW, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_CAT_PURREOW, 1F, 1F);
 						}
 						if (pet_type.equalsIgnoreCase("Sheep O' Luck")) {
 							pet = p.getWorld().spawnEntity(p.getLocation().add(0, 2, 0), EntityType.SHEEP);
@@ -2374,7 +2371,7 @@ public class PetMechanics implements Listener {
 							s.setAgeLock(true);
 							s.setColor(DyeColor.LIME);
 							s.setCustomName(ChatMechanics.censorMessage(getPetName(in_hand)));
-							p.playSound(p.getLocation(), Sound.SHEEP_IDLE, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_SHEEP_AMBIENT, 1F, 1F);
 						}
 						if (pet_type.equalsIgnoreCase("Easter's Chicken")) {
 							pet = p.getWorld().spawnEntity(p.getLocation().add(0, 2, 0), EntityType.CHICKEN);
@@ -2382,7 +2379,7 @@ public class PetMechanics implements Listener {
 							Chicken c = (Chicken) pet;
 							c.setBreed(false);
 							c.setCustomName(ChatMechanics.censorMessage(getPetName(in_hand)));
-							p.playSound(p.getLocation(), Sound.CHICKEN_IDLE, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_CHICKEN_AMBIENT, 1F, 1F);
 						}
 						if (pet_type.equalsIgnoreCase("Jeepers Creepers")) {
 							pet = p.getWorld().spawnEntity(p.getLocation().add(0, 2, 0), EntityType.CREEPER);
@@ -2390,7 +2387,7 @@ public class PetMechanics implements Listener {
 							Creeper cr = (Creeper) pet;
 							cr.setCanPickupItems(false);
 							cr.setCustomName(ChatMechanics.censorMessage(getPetName(in_hand)));
-							p.playSound(p.getLocation(), Sound.CREEPER_HISS, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 1F, 1F);
 						}
 						if (pet_type.equalsIgnoreCase("Beta Slime")) {
 							pet = p.getWorld().spawnEntity(p.getLocation().add(0, 2, 0), EntityType.SLIME);
@@ -2399,7 +2396,7 @@ public class PetMechanics implements Listener {
 							s.setSize(1);
 							s.setCanPickupItems(false);
 							s.setCustomName(ChatMechanics.censorMessage(getPetName(in_hand)));
-							p.playSound(p.getLocation(), Sound.SLIME_WALK, 1F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_SLIME_SQUISH, 1F, 1F);
 						}
 						if (pet_type.equalsIgnoreCase("Creeper of Independence")) {
 							pet = p.getWorld().spawnEntity(p.getLocation().add(0, 2, 0), EntityType.CREEPER);
@@ -2407,7 +2404,7 @@ public class PetMechanics implements Listener {
 							cr.setCanPickupItems(false);
 							cr.setCustomName(ChatMechanics.censorMessage(getPetName(in_hand)));
 							cr.setPowered(true);
-							p.playSound(p.getLocation(), Sound.CREEPER_HISS, 0.5F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 0.5F, 1F);
 						}
 						if (pet_type.equalsIgnoreCase("Spooky Bats")) {
 							for (int x = 3; x > 0; x--) {
@@ -2418,11 +2415,11 @@ public class PetMechanics implements Listener {
 								b.setCustomName(ChatMechanics.censorMessage(getPetName(in_hand)));
 								pet.setMetadata("petname", new FixedMetadataValue(Main.plugin,
 										ChatMechanics.censorMessage(getPetName(in_hand))));
-								inv_pet_map.put(pet, p.getName());
-								addPetToSpawnedList(p.getName(), pet);
+								inv_pet_map.put(pet, p.getUniqueId());
+								addPetToSpawnedList(p.getUniqueId(), pet);
 							}
 
-							p.playSound(p.getLocation(), Sound.BAT_TAKEOFF, 0.5F, 1F);
+							p.playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0.5F, 1F);
 						}
 						if (pet_type.equalsIgnoreCase("Baby Horses")) {
 							Location loc = p.getLocation().add(0, 2, 0);
@@ -2441,8 +2438,8 @@ public class PetMechanics implements Listener {
 						}
 
 						if (!(inv_pet_map.containsKey(pet))) {
-							addPetToSpawnedList(p.getName(), pet);
-							inv_pet_map.put(pet, p.getName());
+							addPetToSpawnedList(p.getUniqueId(), pet);
+							inv_pet_map.put(pet, p.getUniqueId());
 						}
 
 						PetMechanics.pet_type.put(p.getName(), pet_type);
@@ -2450,7 +2447,7 @@ public class PetMechanics implements Listener {
 						if (((CraftEntity) pet).getHandle() instanceof EntityCreature) {
 							EntityCreature ec = (EntityCreature) ((CraftEntity) pet).getHandle();
 							CraftPlayer cp = (CraftPlayer) p;
-							ec.setTarget((net.minecraft.server.v1_7_R2.Entity) cp.getHandle());
+							ec.setGoalTarget((net.minecraft.server.v1_9_R1.EntityLiving) cp.getHandle());
 						}
 
 						p.sendMessage(ChatColor.GREEN + ChatMechanics.censorMessage(pet_name) + ": " + ChatColor.GRAY

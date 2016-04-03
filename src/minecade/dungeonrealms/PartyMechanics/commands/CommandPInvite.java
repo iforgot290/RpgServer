@@ -12,6 +12,7 @@ import minecade.dungeonrealms.ModerationMechanics.ModerationMechanics;
 import minecade.dungeonrealms.PartyMechanics.PartyMechanics;
 import minecade.dungeonrealms.managers.PlayerManager;
 
+//TODO make this cross server
 public class CommandPInvite implements CommandExecutor {
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -37,10 +38,12 @@ public class CommandPInvite implements CommandExecutor {
 			p.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + p_name + ChatColor.RED + " is OFFLINE");
 			return true;
 		}
+		
+		Player pl = Bukkit.getPlayer(p_name);
 
-		if (PlayerManager.getPlayerModel(p_name).getToggleList() != null
-				&& PlayerManager.getPlayerModel(p_name).getToggleList().contains("party")) {
-			if (!CommunityMechanics.isPlayerOnBuddyList(p_name, p.getName())) {
+		if (PlayerManager.getPlayerModel(pl).getToggleList() != null
+				&& PlayerManager.getPlayerModel(pl).getToggleList().contains("party")) {
+			if (!CommunityMechanics.isPlayerOnBuddyList(pl, p)) {
 				// They're not buddies and this player doesn't want non-bud
 				// invites.
 				p.sendMessage(ChatColor.RED + p_name + " has Non-BUD party invites " + ChatColor.BOLD + "DISABLED");
@@ -49,8 +52,8 @@ public class CommandPInvite implements CommandExecutor {
 		}
 
 		Player to_invite = Bukkit.getPlayer(p_name);
-		if (CommunityMechanics.isPlayerOnIgnoreList(to_invite, p.getName())
-				|| ModerationMechanics.isPlayerVanished(p_name)) {
+		if (CommunityMechanics.isPlayerOnIgnoreList(pl, p)
+				|| ModerationMechanics.isPlayerVanished(pl)) {
 			p.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + p_name + ChatColor.RED + " is OFFLINE.");
 			return true;
 		}

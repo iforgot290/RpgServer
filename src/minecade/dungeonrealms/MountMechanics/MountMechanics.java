@@ -179,14 +179,14 @@ public class MountMechanics implements Listener {
 	public static HashMap<String, Location> horse_safe_location = new HashMap<String, Location>();
 	// Used as a hack for horse movement. Still needs some work.
 
-	public static ConcurrentHashMap<String, Integer> summon_mount = new ConcurrentHashMap<String, Integer>();
-	// Mount summoning delay.
+	/** Mount summoning delay */
+	public static ConcurrentHashMap<UUID, Integer> summon_mount = new ConcurrentHashMap<UUID, Integer>();
 
-	public static HashMap<String, Location> summon_location = new HashMap<String, Location>();
-	// Mount summoning location.
+	/** Mount summoning location */
+	public static HashMap<UUID, Location> summon_location = new HashMap<UUID, Location>();
 
-	public static HashMap<String, ItemStack> summon_item = new HashMap<String, ItemStack>();
-	// Determines type of mount that is summoned. (horse/mule)
+	/** Stores the type of mount that will be summoned */
+	public static HashMap<UUID, ItemStack> summon_item = new HashMap<UUID, ItemStack>();
 
 	public static ConcurrentHashMap<String, Entity> mount_map = new ConcurrentHashMap<String, Entity>();
 	// Player_Name, Their mount
@@ -194,11 +194,11 @@ public class MountMechanics implements Listener {
 	public static ConcurrentHashMap<Entity, String> inv_mount_map = new ConcurrentHashMap<Entity, String>();
 	// ENTITY, Mount Owner (if exists)
 
-	public static ConcurrentHashMap<String, Entity> mule_map = new ConcurrentHashMap<String, Entity>();
-	// Player_Name, Their mule
+	/** UUID, their mule */
+	public static ConcurrentHashMap<UUID, Entity> mule_map = new ConcurrentHashMap<UUID, Entity>();
 
-	public static ConcurrentHashMap<Entity, String> inv_mule_map = new ConcurrentHashMap<Entity, String>();
-	// Mule, Owner (player_name)
+	/** Mule, UUID owner */
+	public static ConcurrentHashMap<Entity, UUID> inv_mule_map = new ConcurrentHashMap<Entity, UUID>();
 
 	/**
 	 * Player UUID, Mule inventory
@@ -263,28 +263,28 @@ public class MountMechanics implements Listener {
 		Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
 			@SuppressWarnings("static-access")
 			public void run() {
-				for (Entry<String, Integer> data : summon_mount.entrySet()) {
-					final String p_name = data.getKey();
+				for (Entry<UUID, Integer> data : summon_mount.entrySet()) {
+					final UUID id = data.getKey();
 					int seconds = data.getValue();
 
-					if (Bukkit.getPlayer(p_name) == null) {
-						summon_mount.remove(p_name);
-						summon_location.remove(p_name);
-						summon_item.remove(p_name);
+					if (Bukkit.getPlayer(id) == null) {
+						summon_mount.remove(id);
+						summon_location.remove(id);
+						summon_item.remove(id);
 						continue;
 					}
 
-					final Player pl = Bukkit.getPlayer(p_name);
+					final Player pl = Bukkit.getPlayer(id);
 					seconds--;
 
 					if (seconds <= 0) {
-						summon_mount.remove(p_name);
-						summon_location.remove(p_name);
+						summon_mount.remove(id);
+						summon_location.remove(id);
 
-						ItemStack is = summon_item.get(p_name);
+						ItemStack is = summon_item.get(id);
 						int tier = ItemMechanics.getItemTier(is);
 
-						summon_item.remove(p_name);
+						summon_item.remove(id);
 						if (isMule(is)) {
 							Entity emule = pl.getWorld().spawnEntity(
 									pl.getTargetBlock(transparent, 4).getLocation().add(0, 1, 0), EntityType.HORSE);
@@ -309,7 +309,8 @@ public class MountMechanics implements Listener {
 							// Tie them to a freaking rope
 							h.setLeashHolder(pl);
 
-							eh.getAttributeInstance(GenericAttributes.d).setValue(0.35D); // 0.2
+							
+							eh.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.35D); // 0.2
 																							// Default
 																							// (speed)
 
@@ -323,8 +324,8 @@ public class MountMechanics implements Listener {
 							// pl.getWorld().spawnParticle(emule.getLocation().add(0,
 							// 1.5, 0), Particle.CRIT, 0.25F, 60);
 
-							mule_map.put(p_name, emule);
-							inv_mule_map.put(emule, p_name);
+							mule_map.put(id, emule);
+							inv_mule_map.put(emule, id);
 						}
 						if (isMount(is)) {
 							Entity emount = pl.getWorld().spawnEntity(pl.getLocation(), EntityType.HORSE);
@@ -345,7 +346,7 @@ public class MountMechanics implements Listener {
 							 * pl.getWorld().spawnEntity(pl.getLocation(),
 							 * EntityType.BOAT); boat.setPassenger(pl); }
 							 */
-							if (p_name.equalsIgnoreCase("availer") || Main.isMaster(p_name)) {
+							if (Main.isMaster(id)) {
 								h.setColor(Color.WHITE);
 							}
 
@@ -368,7 +369,7 @@ public class MountMechanics implements Listener {
 									eh.inventoryChest.setItem(1,
 											CraftItemStack.asNMSCopy(new ItemStack(Material.getMaterial(417))));
 								}
-								eh.getAttributeInstance(GenericAttributes.d).setValue(0.25D); // 0.2
+								eh.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.25D); // 0.2
 																								// Default
 								eh.getAttributeInstance(eh.attributeJumpStrength).setValue(0.75D); // 0.7
 																									// Default
@@ -378,7 +379,7 @@ public class MountMechanics implements Listener {
 									eh.inventoryChest.setItem(1,
 											CraftItemStack.asNMSCopy(new ItemStack(Material.getMaterial(419))));
 								}
-								eh.getAttributeInstance(GenericAttributes.d).setValue(0.30D);
+								eh.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.30D);
 								eh.getAttributeInstance(eh.attributeJumpStrength).setValue(0.80D);
 							}
 							if (tier == 5) {
@@ -386,7 +387,7 @@ public class MountMechanics implements Listener {
 									eh.inventoryChest.setItem(1,
 											CraftItemStack.asNMSCopy(new ItemStack(Material.getMaterial(418))));
 								}
-								eh.getAttributeInstance(GenericAttributes.d).setValue(0.40D);
+								eh.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.40D);
 								eh.getAttributeInstance(eh.attributeJumpStrength).setValue(0.9D);
 							}
 
@@ -413,7 +414,7 @@ public class MountMechanics implements Listener {
 
 							Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 								public void run() {
-									if (!(summon_mount.containsKey(p_name))) {
+									if (!(summon_mount.containsKey(id))) {
 										return;
 									}
 									for (Player player : Bukkit.getOnlinePlayers()) {
@@ -429,7 +430,7 @@ public class MountMechanics implements Listener {
 					pl.sendMessage(ChatColor.WHITE + "" + ChatColor.BOLD + "SUMMONING" + ChatColor.WHITE + " ... "
 							+ seconds + ChatColor.BOLD + "s");
 
-					ItemStack is = summon_item.get(p_name);
+					ItemStack is = summon_item.get(id);
 					if (isMount(is)) {
 						try {
 							ParticleEffect.sendToLocation(ParticleEffect.SPELL, pl.getLocation().add(0, 0.15, 0),
@@ -456,7 +457,7 @@ public class MountMechanics implements Listener {
 						// 75);
 					}
 
-					summon_mount.put(p_name, seconds);
+					summon_mount.put(id, seconds);
 				}
 			}
 		}, 5 * 20L, 20L);
@@ -518,7 +519,7 @@ public class MountMechanics implements Listener {
 
 						Horse h = (Horse) p_rider.getVehicle();
 
-						String rider_align = KarmaMechanics.getRawAlignment(p_rider.getName());
+						String rider_align = KarmaMechanics.getRawAlignment(p_rider);
 						Location to_loc = h.getLocation();
 
 						if ((rider_align.equalsIgnoreCase("evil") && DuelMechanics.isPvPDisabled(to_loc))
@@ -559,17 +560,17 @@ public class MountMechanics implements Listener {
 
 		Main.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
 			public void run() {
-				for (Entry<Entity, String> data : inv_mule_map.entrySet()) {
+				for (Entry<Entity, UUID> data : inv_mule_map.entrySet()) {
 					Entity ent = data.getKey();
-					String p_name = data.getValue();
+					UUID id = data.getValue();
 
-					if (Bukkit.getPlayer(p_name) == null) {
+					if (Bukkit.getPlayer(id) == null) {
 						ent.remove();
 						inv_mule_map.remove(ent);
 						continue;
 					}
 
-					Player pl = Bukkit.getPlayer(p_name);
+					Player pl = Bukkit.getPlayer(id);
 					if (!pl.getWorld().getName().equalsIgnoreCase(ent.getWorld().getName())
 							|| pl.getLocation().distanceSquared(ent.getLocation()) >= 1600) { // 40
 																								// blocks.
@@ -991,7 +992,7 @@ public class MountMechanics implements Listener {
 		final Location loc = p.getLocation();
 		if (e.getRightClicked() instanceof Horse) {
 			Entity ent = e.getRightClicked();
-			if (inv_mule_map.containsKey(ent) && inv_mule_map.get(ent).equalsIgnoreCase(e.getPlayer().getName())) {
+			if (inv_mule_map.containsKey(ent) && inv_mule_map.get(ent).equals(e.getPlayer().getUniqueId())) {
 				// Open mule inventory.
 				e.setCancelled(true); // Don't mount it.
 
@@ -1012,7 +1013,7 @@ public class MountMechanics implements Listener {
 						}
 
 						p.openInventory(mule_inv);
-						p.playSound(p.getLocation(), Sound.CHEST_OPEN, 1F, 1F);
+						p.playSound(p.getLocation(), Sound.BLOCK_CHEST_OPEN, 1F, 1F);
 					}
 				}, 1L);
 
@@ -1024,7 +1025,7 @@ public class MountMechanics implements Listener {
 			}
 		}
 		if (e.getRightClicked() instanceof Pig) {
-			if (p.getItemInHand().getType() == Material.SADDLE) {
+			if (p.getInventory().getItemInMainHand().getType() == Material.SADDLE) {
 				e.setCancelled(true);
 				p.updateInventory();
 				return;
@@ -1048,7 +1049,7 @@ public class MountMechanics implements Listener {
 			// p.sendMessage(ChatColor.GRAY + "Animal Tamer: " + ChatColor.WHITE
 			// + "I have nothing to sell you yet, come back in a bit.");
 
-			p.playSound(p.getLocation(), Sound.WOOD_CLICK, 1.0F, 1.0F);
+			p.playSound(p.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1.0F, 1.0F);
 			in_shop.add(p.getName());
 			p.openInventory(TradeWindow);
 		}
@@ -1060,7 +1061,7 @@ public class MountMechanics implements Listener {
 			Player pl = (Player) e.getWhoClicked();
 			Damageable damp = (Damageable) pl;
 			if (mule_inventory.containsKey(pl.getName()) && damp.getHealth() > 0) {
-				mule_inventory.put(pl.getName(), pl.getOpenInventory().getTopInventory());
+				mule_inventory.put(pl.getUniqueId(), pl.getOpenInventory().getTopInventory());
 			}
 		}
 	}
@@ -1070,9 +1071,9 @@ public class MountMechanics implements Listener {
 		if (e.getInventory().getName().equalsIgnoreCase("Mobile Storage Chest")) {
 			Player pl = (Player) e.getPlayer();
 			Damageable damp = (Damageable) pl;
-			if (mule_inventory.containsKey(pl.getName()) && damp.getHealth() > 0) {
-				mule_inventory.put(pl.getName(), e.getInventory());
-				pl.playSound(pl.getLocation(), Sound.CHEST_CLOSE, 1F, 1F);
+			if (mule_inventory.containsKey(pl.getUniqueId()) && damp.getHealth() > 0) {
+				mule_inventory.put(pl.getUniqueId(), e.getInventory());
+				pl.playSound(pl.getLocation(), Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
 			}
 		}
 	}
@@ -1106,14 +1107,14 @@ public class MountMechanics implements Listener {
 						ChatColor.RED + "" + ChatColor.BOLD + "-" + ChatColor.RED + price + ChatColor.BOLD + "G");
 				pl.sendMessage(ChatColor.GREEN + "Transaction successful.");
 				if (isMount(product)) {
-					AchievementMechanics.addAchievement(pl.getName(), "Saddle Up!");
+					AchievementMechanics.addAchievement(pl, "Saddle Up!");
 					pl.sendMessage(ChatColor.GRAY + "You are now the proud owner of a mount -- " + ChatColor.UNDERLINE
 							+ "to summon your new mount, simply right click with the saddle in your player's hand.");
-					Hive.sql_query.add("UPDATE statistics SET hasHorse = 1 WHERE pname = '" + pl.getName() + "'");
+					Hive.sql_query.add("UPDATE statistics SET hasHorse = 1 WHERE pname = '" + pl.getUniqueId().toString() + "'");
 				} else if (isMule(product)) {
 					pl.sendMessage(ChatColor.GRAY + "You are now the proud owner of a mule -- " + ChatColor.UNDERLINE
 							+ "to summon your new mule, simply right click with the harness in your player's hand.");
-					Hive.sql_query.add("UPDATE statistics SET hasMule = 1 WHERE pname = '" + pl.getName() + "'");
+					Hive.sql_query.add("UPDATE statistics SET hasMule = 1 WHERE pname = '" + pl.getUniqueId().toString() + "'");
 				}
 				mount_being_bought.remove(pl.getName());
 			} else {
@@ -1145,7 +1146,7 @@ public class MountMechanics implements Listener {
 				e.setCurrentItem(CraftItemStack.asCraftCopy(t3_mule));
 			}
 
-			pl.playSound(pl.getLocation(), Sound.LEVEL_UP, 1F, 1F);
+			pl.playSound(pl.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
 			pl.updateInventory();
 
 			if (pl.getOpenInventory().getTopInventory().getTitle().equalsIgnoreCase("Mobile Storage Chest")) {
@@ -1155,8 +1156,8 @@ public class MountMechanics implements Listener {
 
 			// Now we need to upgrade inventory slots as well if it's already
 			// loaded.
-			if (mule_inventory.containsKey(pl.getName())) {
-				Inventory old_mule_inventory = mule_inventory.get(pl.getName());
+			if (mule_inventory.containsKey(pl.getUniqueId())) {
+				Inventory old_mule_inventory = mule_inventory.get(pl.getUniqueId());
 				Inventory new_mule_inventory = Bukkit.createInventory(null,
 						getMuleSlots(ItemMechanics.getItemTier(e.getCurrentItem())), "Mobile Storage Chest");
 
@@ -1170,7 +1171,7 @@ public class MountMechanics implements Listener {
 					new_mule_inventory.setItem(index, is);
 				}
 
-				mule_inventory.put(pl.getName(), new_mule_inventory);
+				mule_inventory.put(pl.getUniqueId(), new_mule_inventory);
 			}
 		}
 		if (isMountArmor(e.getCursor()) && isMount(e.getCurrentItem())) {
@@ -1196,7 +1197,7 @@ public class MountMechanics implements Listener {
 				e.setCurrentItem(CraftItemStack.asCraftCopy(t5_horse_mount));
 			}
 
-			pl.playSound(pl.getLocation(), Sound.LEVEL_UP, 1F, 1F);
+			pl.playSound(pl.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
 			pl.updateInventory();
 		}
 	}
@@ -1432,21 +1433,21 @@ public class MountMechanics implements Listener {
 							// getMuleSlots(ItemMechanics.getItemTier(i_mount)),
 							// "Mobile Storage Chest");
 							String inventory_string = mule_itemlist_string.get(pl.getName());
-							mule_inventory.put(pl.getName(), Hive.convertStringToInventory(null, inventory_string,
+							mule_inventory.put(pl.getUniqueId(), Hive.convertStringToInventory(null, inventory_string,
 									"Mobile Storage Chest", getMuleSlots(ItemMechanics.getItemTier(i_mount))));
 							mule_itemlist_string.remove(pl.getName());
 						} else {
 							// They have no inventory. Generate one.
-							mule_inventory.put(pl.getName(), Bukkit.createInventory(null,
+							mule_inventory.put(pl.getUniqueId(), Bukkit.createInventory(null,
 									getMuleSlots(ItemMechanics.getItemTier(i_mount)), "Mobile Storage Chest"));
 							mule_itemlist_string.remove(pl.getName());
 						}
 					}
 				}
 
-				summon_mount.put(pl.getName(), (int) seconds_left);
-				summon_item.put(pl.getName(), i_mount);
-				summon_location.put(pl.getName(), pl.getLocation());
+				summon_mount.put(pl.getUniqueId(), (int) seconds_left);
+				summon_item.put(pl.getUniqueId(), i_mount);
+				summon_location.put(pl.getUniqueId(), pl.getLocation());
 				return;
 			}
 
@@ -1548,7 +1549,7 @@ public class MountMechanics implements Listener {
 				return;
 			}
 			if (mount_map.containsKey(pl.getName())) {
-				HealthMechanics.in_combat.put(pl.getName(), System.currentTimeMillis());
+				HealthMechanics.in_combat.put(pl.getUniqueId(), System.currentTimeMillis());
 				Entity mount = mount_map.get(pl.getName());
 				inv_mount_map.remove(mount);
 				mount_map.remove(pl.getName());
@@ -1572,7 +1573,7 @@ public class MountMechanics implements Listener {
 					if (h.getPassenger() != null && h.getPassenger() instanceof Player) {
 						Player p_rider = (Player) h.getPassenger();
 						if (!(e.isCancelled()) && e.getDamage() > 0 && e.getCause() != DamageCause.FALL) {
-							HealthMechanics.in_combat.put(p_rider.getName(), System.currentTimeMillis());
+							HealthMechanics.in_combat.put(p_rider.getUniqueId(), System.currentTimeMillis());
 						}
 
 						e.setCancelled(true);
@@ -1597,8 +1598,8 @@ public class MountMechanics implements Listener {
 				if (((Horse) e.getEntity()).getVariant().equals(Variant.DONKEY)) {
 					// Its a mule
 					if (inv_mule_map.containsKey(e.getEntity())) {
-						String p_name = inv_mule_map.get(e.getEntity());
-						if (p_name.equalsIgnoreCase(attacker.getName())) {
+						UUID id = inv_mule_map.get(e.getEntity());
+						if (id.equals(attacker.getUniqueId())) {
 							Main.d("IT WAS THE PLAYERS MULE!");
 							e.setDamage(0);
 							e.setCancelled(true);
@@ -1610,9 +1611,9 @@ public class MountMechanics implements Listener {
 								e1.printStackTrace();
 							}
 							e.getEntity().remove();
-							((Player) attacker).playSound(attacker.getLocation(), Sound.WOOD_CLICK, 1F, 0.5F);
+							((Player) attacker).playSound(attacker.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1F, 0.5F);
 							inv_mule_map.remove(e.getEntity());
-							mule_map.remove(((Player) attacker).getName());
+							mule_map.remove(((Player) attacker).getUniqueId());
 						} else {
 							e.setCancelled(true);
 							e.setDamage(0);
@@ -1642,7 +1643,7 @@ public class MountMechanics implements Listener {
 				} else {
 					if (h.getPassenger() != null && h.getPassenger() instanceof Player) {
 						Player p_rider = (Player) h.getPassenger();
-						HealthMechanics.in_combat.put(p_rider.getName(), System.currentTimeMillis());
+						HealthMechanics.in_combat.put(p_rider.getUniqueId(), System.currentTimeMillis());
 						e.setCancelled(true);
 						e.setDamage(0.0D);
 					}
