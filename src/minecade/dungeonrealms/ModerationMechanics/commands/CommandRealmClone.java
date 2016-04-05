@@ -53,7 +53,7 @@ public class CommandRealmClone implements CommandExecutor {
 		p.getWorld().playEffect(portal_location, Effect.ENDER_SIGNAL, 20, 5);
 		p.playSound(p.getLocation(), Sound.ENTITY_ENDERMEN_TELEPORT, 5F, 1.25F);
 		RealmMechanics.has_portal.put(p.getName(), true);
-		RealmMechanics.makePortal(p.getName(), portal_location.subtract(0, 2, 0), 60);
+		RealmMechanics.makePortal(p.getUniqueId(), portal_location.subtract(0, 2, 0), 60);
 
 		Thread t = new Thread(new Runnable() {
 			public void run() {

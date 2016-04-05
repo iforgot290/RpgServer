@@ -20,7 +20,7 @@ public class CommandRealm implements CommandExecutor {
 			}
 		}
 
-		RealmMechanics.realm_title.put(p.getName(), msg);
+		RealmMechanics.realm_title.put(p.getUniqueId(), msg);
 		p.sendMessage("");
 		p.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "                       " + "* REALM TITLE SET *");
 		p.sendMessage(ChatColor.GRAY + "\"" + msg + "\"");

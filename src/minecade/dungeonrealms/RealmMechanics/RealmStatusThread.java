@@ -1,9 +1,9 @@
 package minecade.dungeonrealms.RealmMechanics;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import minecade.dungeonrealms.database.ConnectionPool;
 
@@ -15,25 +15,24 @@ public class RealmStatusThread extends Thread {
 				Thread.sleep(250);
 			} catch (Exception err) {
 			}
-			for (String p_name : RealmMechanics.async_realm_status) {
-				Connection con = null;
+			for (UUID id : RealmMechanics.async_realm_status) {
 				PreparedStatement pst = null;
 
 				try {
 					pst = ConnectionPool.getConnection().prepareStatement(
-							"SELECT realm_loaded FROM player_database WHERE p_name = '" + p_name + "'");
+							"SELECT realm_loaded FROM player_database WHERE p_name = '" + id.toString() + "'");
 
 					pst.execute();
 					ResultSet rs = pst.getResultSet();
 					if (rs.next() == false) {
-						RealmMechanics.realm_loaded_status.put(p_name, false);
-						RealmMechanics.async_realm_status.remove(p_name);
+						RealmMechanics.realm_loaded_status.put(id, false);
+						RealmMechanics.async_realm_status.remove(id);
 						continue;
 					}
 
 					Boolean loaded = rs.getBoolean("realm_loaded");
-					RealmMechanics.realm_loaded_status.put(p_name, loaded);
-					RealmMechanics.async_realm_status.remove(p_name);
+					RealmMechanics.realm_loaded_status.put(id, loaded);
+					RealmMechanics.async_realm_status.remove(id);
 					continue;
 
 				} catch (SQLException ex) {
@@ -44,17 +43,14 @@ public class RealmStatusThread extends Thread {
 						if (pst != null) {
 							pst.close();
 						}
-						if (con != null) {
-							con.close();
-						}
 
 					} catch (SQLException ex) {
 						ex.printStackTrace();
 					}
 				}
 
-				RealmMechanics.realm_loaded_status.put(p_name, false);
-				RealmMechanics.async_realm_status.remove(p_name);
+				RealmMechanics.realm_loaded_status.put(id, false);
+				RealmMechanics.async_realm_status.remove(id);
 				continue;
 			}
 		}

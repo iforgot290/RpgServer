@@ -1,17 +1,15 @@
 package minecade.dungeonrealms.MonsterMechanics;
 
 import java.lang.reflect.Field;
-import java.util.Random;
 
-import org.bukkit.craftbukkit.v1_9_R1.event.CraftEventFactory;
 import org.bukkit.craftbukkit.v1_9_R1.util.UnsafeList;
 
-import net.minecraft.server.v1_9_R1.EntityArrow;
 import net.minecraft.server.v1_9_R1.EntityHuman;
 import net.minecraft.server.v1_9_R1.EntityLiving;
 import net.minecraft.server.v1_9_R1.EntityZombie;
 import net.minecraft.server.v1_9_R1.EnumItemSlot;
 import net.minecraft.server.v1_9_R1.IRangedEntity;
+import net.minecraft.server.v1_9_R1.ItemStack;
 import net.minecraft.server.v1_9_R1.Items;
 import net.minecraft.server.v1_9_R1.PathfinderGoal;
 import net.minecraft.server.v1_9_R1.PathfinderGoalArrowAttack;
@@ -25,7 +23,7 @@ import net.minecraft.server.v1_9_R1.World;
 public class ZombieArcher extends EntityZombie implements IRangedEntity {
 
 	private PathfinderGoalArrowAttack bp = new PathfinderGoalArrowAttack(this, 1.0D, 20, 60, 15.0F);
-	private PathfinderGoalMeleeAttack bq = new PathfinderGoalMeleeAttack(this, EntityHuman.class, 1.2D, false);
+	private PathfinderGoalMeleeAttack bq = new PathfinderGoalMeleeAttack(this, 1.2D, false);
 
 	public ZombieArcher(World world) {
 		super(world);
@@ -33,9 +31,7 @@ public class ZombieArcher extends EntityZombie implements IRangedEntity {
 		this.goalSelector.a(0, new PathfinderGoalRandomStroll(this, .6F));
 		this.goalSelector.a(1, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 8.0F));
 		this.goalSelector.a(2, new PathfinderGoalRandomLookaround(this));
-		if (world != null && !world.isStatic) {
-			this.bZ();
-		}
+		bZ();
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -52,15 +48,15 @@ public class ZombieArcher extends EntityZombie implements IRangedEntity {
 		}
 	}
 
-	public void setEquipment(int i, ItemStack itemstack) {
-		super.setEquipment(i, itemstack);
+	public void setEquipment(EnumItemSlot slot, ItemStack itemstack) {
+		super.setEquipment(slot, itemstack);
 		this.bZ();
 	}
 
 	public boolean bZ() {
 		this.goalSelector.a((PathfinderGoal) this.bq);
 		this.goalSelector.a((PathfinderGoal) this.bp);
-		ItemStack itemstack = this.getEquipment(0);
+		ItemStack itemstack = this.getEquipment(EnumItemSlot.MAINHAND);
 
 		if (itemstack != null && itemstack.getItem() == Items.BOW) {
 			this.goalSelector.a(4, this.bp);
@@ -70,9 +66,14 @@ public class ZombieArcher extends EntityZombie implements IRangedEntity {
 		return false;
 	}
 
-	public void a(EntityLiving entityliving, float f) {
+	@Override
+	public void a(EntityLiving arg0, float arg1) {
+		
+	}
+
+	/*public void a(EntityLiving entityliving, float f) {
 		EntityArrow entityarrow = new EntityArrow(this.world, this, entityliving, 1.6F,
-				(float) (14 - this.world.difficulty.a() * 4));
+				(float) (14 - this.world.getDifficulty().a() * 4));
 		// int i =
 		// EnchantmentManager.getEnchantmentLevel(Enchantment.ARROW_DAMAGE.id,
 		// this.bd());
@@ -98,6 +99,6 @@ public class ZombieArcher extends EntityZombie implements IRangedEntity {
 
 		this.makeSound("random.bow", 1.0F, 1.0F / (new Random().nextFloat() * 0.4F + 0.8F));
 		// this.world.addEntity(entityarrow); // CraftBukkit - moved up
-	}
+	}*/
 
 }

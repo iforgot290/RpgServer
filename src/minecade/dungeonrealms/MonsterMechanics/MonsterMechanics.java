@@ -7374,25 +7374,25 @@ public class MonsterMechanics implements Listener {
 			pz.setBaby(true);
 		}
 
-		ent.setEquipment(0, weapon);
+		ent.setEquipment(EnumItemSlot.MAINHAND, weapon);
 
 		if (boots != null) {
-			ent.setEquipment(1, CraftItemStack.asNMSCopy(gear_list.get(1)));
+			ent.setEquipment(EnumItemSlot.FEET, CraftItemStack.asNMSCopy(gear_list.get(1)));
 		}
 		if (legs != null) {
-			ent.setEquipment(2, CraftItemStack.asNMSCopy(gear_list.get(2)));
+			ent.setEquipment(EnumItemSlot.LEGS, CraftItemStack.asNMSCopy(gear_list.get(2)));
 		}
 		if (chest != null) {
-			ent.setEquipment(3, CraftItemStack.asNMSCopy(gear_list.get(3)));
+			ent.setEquipment(EnumItemSlot.CHEST, CraftItemStack.asNMSCopy(gear_list.get(3)));
 		}
 		if (helmet != null && meta_data.equalsIgnoreCase("")) {
-			ent.setEquipment(4, CraftItemStack.asNMSCopy(gear_list.get(4)));
+			ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(gear_list.get(4)));
 		}
 
 		if (!meta_data.equalsIgnoreCase("")) {
 			if (meta_data.equalsIgnoreCase("acolyte")) {
 				String skin_name = "InfinityWarrior_";
-				ent.setEquipment(4, CraftItemStack.asNMSCopy(getHead(skin_name)));
+				ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(getHead(skin_name)));
 			}
 
 			if (meta_data.equalsIgnoreCase("tripoli solider")) {
@@ -7403,7 +7403,7 @@ public class MonsterMechanics implements Listener {
 					skin_name = "Xmattpt";
 				}
 
-				ent.setEquipment(4, CraftItemStack.asNMSCopy(getHead(skin_name)));
+				ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(getHead(skin_name)));
 			}
 			if (meta_data.equalsIgnoreCase("ocelot")) {
 				Ocelot oc = (Ocelot) ent;
@@ -7421,7 +7421,7 @@ public class MonsterMechanics implements Listener {
 					skin_name = "Das_Doktor";
 				}
 
-				ent.setEquipment(4, CraftItemStack.asNMSCopy(getHead(skin_name)));
+				ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(getHead(skin_name)));
 			}
 			if (meta_data.equalsIgnoreCase("lizardman")) {
 				int solider_type = 0; // new Random().nextInt(2); // 0, 1
@@ -7431,7 +7431,7 @@ public class MonsterMechanics implements Listener {
 					skin_name = "_Kashi_";
 				}
 
-				ent.setEquipment(4, CraftItemStack.asNMSCopy(getHead(skin_name)));
+				ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(getHead(skin_name)));
 			}
 			if (meta_data.equalsIgnoreCase("troll")) {
 				int troll_type = new Random().nextInt(2);
@@ -7444,16 +7444,16 @@ public class MonsterMechanics implements Listener {
 					skin_name = "Malware";
 				}
 
-				ent.setEquipment(4, CraftItemStack.asNMSCopy(getHead(skin_name)));
+				ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(getHead(skin_name)));
 			}
 			if (meta_data.equalsIgnoreCase("goblin")) {
 				int goblin_type = new Random().nextInt(2);
 
 				if (goblin_type == 0) {
-					ent.setEquipment(4, CraftItemStack.asNMSCopy(getHead("dEr_t0d")));
+					ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(getHead("dEr_t0d")));
 				}
 				if (goblin_type == 1) {
-					ent.setEquipment(4, CraftItemStack.asNMSCopy(getHead("niv330")));
+					ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(getHead("niv330")));
 				}
 
 			}
@@ -7461,7 +7461,7 @@ public class MonsterMechanics implements Listener {
 
 				if (chest == null) { // They don't normally have the torso.
 					chest = gear_list.get(3);
-					ent.setEquipment(3, CraftItemStack.asNMSCopy(chest));
+					ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(chest));
 				}
 
 				int bandit_type = new Random().nextInt(2) + 1;
@@ -7476,12 +7476,12 @@ public class MonsterMechanics implements Listener {
 				if (bandit_type == 2) {
 					skin_name = "TheNextPaladin"; // niv330
 				}
-				ent.setEquipment(4, CraftItemStack.asNMSCopy(getHead(skin_name)));
+				ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(getHead(skin_name)));
 			}
 			if (meta_data.equalsIgnoreCase("monk")) {
 				if (chest == null) { // They don't normally have the torso.
 					chest = gear_list.get(3);
-					ent.setEquipment(3, CraftItemStack.asNMSCopy(chest));
+					ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(chest));
 				}
 
 				int bandit_type = 0;
@@ -7491,7 +7491,7 @@ public class MonsterMechanics implements Listener {
 					skin_name = "Yhmen";
 				}
 
-				ent.setEquipment(4, CraftItemStack.asNMSCopy(getHead(skin_name)));
+				ent.setEquipment(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(getHead(skin_name)));
 			}
 		}
 
@@ -7617,209 +7617,209 @@ public class MonsterMechanics implements Listener {
 			int do_i_elemental = 15;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "Poison";
-				elemental_prefix = ChatColor.DARK_GREEN.toString(); // +
+				//elemental_type = "Poison";
+				//elemental_prefix = ChatColor.DARK_GREEN.toString(); // +
 																	// Chatcolor.BOLD.toString()
 																	// + "P";
-				attachPotionEffect(le, 0x669900);
+				//attachPotionEffect(le, 0x669900);
 			}
 		}
 		if (et == EntityType.IRON_GOLEM) { // Ice
 			int do_i_elemental = 30;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "Ice";
-				elemental_prefix = ChatColor.BLUE.toString(); // +
+				//elemental_type = "Ice";
+				//elemental_prefix = ChatColor.BLUE.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "I";
-				attachPotionEffect(le, 0x33FFFF);
+				//attachPotionEffect(le, 0x33FFFF);
 			}
 		}
 		if (et == EntityType.MAGMA_CUBE) {
 			int do_i_elemental = 15;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "Fire";
-				elemental_prefix = ChatColor.RED.toString(); // +
+				//elemental_type = "Fire";
+				//elemental_prefix = ChatColor.RED.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "I";
-				attachPotionEffect(le, 0xCC0033);
+				//attachPotionEffect(le, 0xCC0033);
 			}
 		}
 		if (et == EntityType.BLAZE) {
 			int do_i_elemental = 15;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "Fire";
-				elemental_prefix = ChatColor.RED.toString(); // +
+				//elemental_type = "Fire";
+				//elemental_prefix = ChatColor.RED.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "I";
-				attachPotionEffect(le, 0xCC0033);
+				//attachPotionEffect(le, 0xCC0033);
 			}
 		}
 		if (et == EntityType.WITCH) {
 			int do_i_elemental = 15;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "Poison";
-				elemental_prefix = ChatColor.DARK_GREEN.toString(); // +
+				//elemental_type = "Poison";
+				//elemental_prefix = ChatColor.DARK_GREEN.toString(); // +
 																	// Chatcolor.BOLD.toString()
 																	// + "I";
-				attachPotionEffect(le, 0x669900);
+				//attachPotionEffect(le, 0x669900);
 			}
 		}
 		if (et == EntityType.SILVERFISH) {
 			int do_i_elemental = 15;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "Ice";
-				elemental_prefix = ChatColor.BLUE.toString(); // +
+				//elemental_type = "Ice";
+				//elemental_prefix = ChatColor.BLUE.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "I";
-				attachPotionEffect(le, 0x33FFFF);
+				//attachPotionEffect(le, 0x33FFFF);
 			}
 		}
 		if (et == EntityType.ENDERMAN) {
 			int do_i_elemental = 15;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "pure";
-				elemental_prefix = ChatColor.GOLD.toString(); // +
+				//elemental_type = "pure";
+				//elemental_prefix = ChatColor.GOLD.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "I";
-				attachPotionEffect(le, 0xFFFFFF);
+				//attachPotionEffect(le, 0xFFFFFF);
 			}
 		}
 		if (mob_name.equalsIgnoreCase("Acolyte")) {
 			int do_i_elemental = 20;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "Fire";
-				elemental_prefix = ChatColor.RED.toString(); // +
+				//elemental_type = "Fire";
+				//elemental_prefix = ChatColor.RED.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "I";
-				attachPotionEffect(le, 0xCC0033);
+				//attachPotionEffect(le, 0xCC0033);
 			}
 		}
 		if (mob_name.equalsIgnoreCase("Imp")) {
 			int do_i_elemental = 15;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "Fire";
-				elemental_prefix = ChatColor.RED.toString(); // +
+				//elemental_type = "Fire";
+				//elemental_prefix = ChatColor.RED.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "I";
-				attachPotionEffect(le, 0xCC0033);
+				//attachPotionEffect(le, 0xCC0033);
 			}
 		}
 		if (mob_name.equalsIgnoreCase("Daemon")) {
 			int do_i_elemental = 10;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "pure";
-				elemental_prefix = ChatColor.GOLD.toString(); // +
+				//elemental_type = "pure";
+				//elemental_prefix = ChatColor.GOLD.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "P";
-				attachPotionEffect(le, 0xFFFFFF);
+				//attachPotionEffect(le, 0xFFFFFF);
 			}
 		}
 		if (mob_name.equalsIgnoreCase("zombie")) { // Fire
 			int do_i_elemental = 10;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "Fire";
-				elemental_prefix = ChatColor.RED.toString(); // +
+				//elemental_type = "Fire";
+				//elemental_prefix = ChatColor.RED.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "F";
-				attachPotionEffect(le, 0xCC0033);
+				//attachPotionEffect(le, 0xCC0033);
 			}
 		}
 		if (mob_name.equalsIgnoreCase("skeleton")) { // PURE DMG
 			int do_i_elemental = 5;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "pure";
-				elemental_prefix = ChatColor.GOLD.toString(); // +
+				//elemental_type = "pure";
+				//elemental_prefix = ChatColor.GOLD.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "P";
-				attachPotionEffect(le, 0xFFFFFF);
+				//attachPotionEffect(le, 0xFFFFFF);
 			}
 		}
 		if (mob_name.equalsIgnoreCase("chaos skeleton")) { // PURE DMG
 			int do_i_elemental = 5;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "pure";
-				elemental_prefix = ChatColor.GOLD.toString(); // +
+				//elemental_type = "pure";
+				//elemental_prefix = ChatColor.GOLD.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "P";
-				attachPotionEffect(le, 0xFFFFFF);
+				//attachPotionEffect(le, 0xFFFFFF);
 			}
 		}
 		if (mob_name.equalsIgnoreCase("troll")) {
 			int do_i_elemental = 20;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "Poison";
-				elemental_prefix = ChatColor.DARK_GREEN.toString(); // +
+				//elemental_type = "Poison";
+				//elemental_prefix = ChatColor.DARK_GREEN.toString(); // +
 																	// Chatcolor.BOLD.toString()
 																	// + "P";
-				attachPotionEffect(le, 0x669900);
+				//attachPotionEffect(le, 0x669900);
 			}
 		}
 		if (mob_name.equalsIgnoreCase("goblin")) {
 			int do_i_elemental = 20;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "Fire";
-				elemental_prefix = ChatColor.RED.toString(); // +
+				//elemental_type = "Fire";
+				//elemental_prefix = ChatColor.RED.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "F";
-				attachPotionEffect(le, 0xCC0033);
+				//attachPotionEffect(le, 0xCC0033);
 			}
 		}
 		if (mob_name.equalsIgnoreCase("naga")) {
 			int do_i_elemental = 25;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "Ice";
-				elemental_prefix = ChatColor.BLUE.toString(); // +
+				//elemental_type = "Ice";
+				//elemental_prefix = ChatColor.BLUE.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "I";
-				attachPotionEffect(le, 0x33FFFF);
+				//attachPotionEffect(le, 0x33FFFF);
 			}
 		}
 		if (mob_name.equalsIgnoreCase("tripoli soldier")) {
 			int do_i_elemental = 3;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "pure";
-				elemental_prefix = ChatColor.WHITE.toString(); // +
+				//elemental_type = "pure";
+				//elemental_prefix = ChatColor.WHITE.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "P";
-				attachPotionEffect(le, 0xFFFFFF);
+				//attachPotionEffect(le, 0xFFFFFF);
 			}
 		}
 		if (mob_name.equalsIgnoreCase("lizardman")) {
 			int do_i_elemental = 10;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "Fire";
-				elemental_prefix = ChatColor.RED.toString(); // +
+				//elemental_type = "Fire";
+				//elemental_prefix = ChatColor.RED.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "F";
-				attachPotionEffect(le, 0xCC0033);
+				//attachPotionEffect(le, 0xCC0033);
 			}
 		}
 		if (mob_name.equalsIgnoreCase("spider") || et == EntityType.CAVE_SPIDER || mob_name.equalsIgnoreCase("wolf")) {
 			int do_i_elemental = 10;
 			if (do_i_elemental >= elemental_chance) {
 				// Give them elemental damage!
-				elemental_type = "Ice";
-				elemental_prefix = ChatColor.BLUE.toString(); // +
+				//elemental_type = "Ice";
+				//elemental_prefix = ChatColor.BLUE.toString(); // +
 																// Chatcolor.BOLD.toString()
 																// + "F";
-				attachPotionEffect(le, 0x33FFFF);
+				//attachPotionEffect(le, 0x33FFFF);
 			}
 		}
 
@@ -8191,7 +8191,7 @@ public class MonsterMechanics implements Listener {
 			// elemental_prefix = color
 
 			is_weapon.addUnsafeEnchantment(Enchantment.LOOT_BONUS_MOBS, 1);
-			ent.setEquipment(0, CraftItemStack.asNMSCopy(is_weapon));
+			ent.setEquipment(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(is_weapon));
 
 			mob_name = elemental_prefix + mob_name;
 			String formal_elemental_type = elemental_type;
@@ -8216,8 +8216,10 @@ public class MonsterMechanics implements Listener {
 
 		if (custom_name != "") {
 			mob_name = custom_name.replaceAll("_", " ");
+			
+			mob_name = ChatColor.translateAlternateColorCodes('&', mob_name);
 
-			mob_name = mob_name.replaceAll("&0", ChatColor.BLACK.toString());
+			/*mob_name = mob_name.replaceAll("&0", ChatColor.BLACK.toString());
 			mob_name = mob_name.replaceAll("&1", ChatColor.DARK_BLUE.toString());
 			mob_name = mob_name.replaceAll("&2", ChatColor.DARK_GREEN.toString());
 			mob_name = mob_name.replaceAll("&3", ChatColor.DARK_AQUA.toString());
@@ -8237,7 +8239,7 @@ public class MonsterMechanics implements Listener {
 			mob_name = mob_name.replaceAll("&u", ChatColor.UNDERLINE.toString());
 			mob_name = mob_name.replaceAll("&s", ChatColor.BOLD.toString());
 			mob_name = mob_name.replaceAll("&i", ChatColor.ITALIC.toString());
-			mob_name = mob_name.replaceAll("&m", ChatColor.MAGIC.toString());
+			mob_name = mob_name.replaceAll("&m", ChatColor.MAGIC.toString());*/
 		}
 
 		if (elite) {

@@ -17,7 +17,7 @@ public class CommandResetRealm implements CommandExecutor {
 				&& RealmMechanics.realm_loaded_status.get(p.getName()) == true) {
 			p.sendMessage(ChatColor.RED + "Your realm is still LOADED on another server.");
 			p.sendMessage(ChatColor.GRAY + "Wait 2 minute(s) and try again, or rejoin the other server.");
-			RealmMechanics.async_realm_status.add(p.getName());
+			RealmMechanics.async_realm_status.add(p.getUniqueId());
 			return true;
 		}
 		if (RealmMechanics.realm_reset_cd.containsKey(p.getName())) {
@@ -30,7 +30,7 @@ public class CommandResetRealm implements CommandExecutor {
 		}
 		p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "REALM RESET RUNNING..." + ChatColor.RED + " 0%");
 		RealmMechanics.resetRealm(p);
-		RealmMechanics.realm_tier.put(p.getName(), 1);
+		RealmMechanics.realm_tier.put(p.getUniqueId(), 1);
 		int slot = -1;
 		if (p.getInventory().contains(Material.NETHER_STAR)) {
 			slot = p.getInventory().first(Material.NETHER_STAR);

@@ -1,5 +1,7 @@
 package minecade.dungeonrealms.RealmMechanics.commands;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -32,8 +34,10 @@ public class CommandSetRealmTier implements CommandExecutor {
 			pl.sendMessage(ChatColor.RED + "The player '" + p_name + "' is not online.");
 			return true;
 		}
+		
+		UUID id = Bukkit.getPlayer(p_name).getUniqueId();
 
-		RealmMechanics.realm_tier.put(p_name, tier);
+		RealmMechanics.realm_tier.put(id, tier);
 		pl.sendMessage(ChatColor.GREEN + "Set player " + p_name + "'s realm tier to " + tier);
 		return true;
 	}

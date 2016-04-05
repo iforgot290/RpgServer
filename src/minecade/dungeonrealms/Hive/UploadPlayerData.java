@@ -90,7 +90,7 @@ public class UploadPlayerData extends Thread {
 				HearthstoneMechanics.saveData(id);
 
 				if (RealmMechanics.isWorldLoaded(id.toString())) {
-					RealmMechanics.uploadWorld(id, id.toString()); // mumoxx was
+					RealmMechanics.uploadWorld(id); // mumoxx was
 																// here
 				}
 
