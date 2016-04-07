@@ -2599,7 +2599,7 @@ public class ProfessionMechanics implements Listener {
 					int effect_time = Integer.parseInt(s.substring(s.lastIndexOf("(") + 1, s.lastIndexOf("s")));
 
 					fish_energy_regen.put(pl.getName(), bonus_percent);
-					RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xa47c48, (effect_time * 20));
+					//RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xa47c48, (effect_time * 20));
 					pl.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "      " + ChatColor.GREEN
 							+ (int) bonus_percent + ChatColor.BOLD + " Energy/s" + ChatColor.GREEN + " FROM "
 							+ is.getItemMeta().getDisplayName() + ChatColor.GRAY + " [" + effect_time + "s]");
@@ -2619,7 +2619,7 @@ public class ProfessionMechanics implements Listener {
 					int effect_time = Integer.parseInt(s.substring(s.lastIndexOf("(") + 1, s.lastIndexOf("s")));
 
 					fish_bonus_dmg.put(pl.getName(), bonus_percent);
-					RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xdd0000, (effect_time * 20));
+					//RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xdd0000, (effect_time * 20));
 					pl.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "      +" + ChatColor.GREEN
 							+ (int) bonus_percent + ChatColor.BOLD + "% DMG" + ChatColor.GREEN + " FROM "
 							+ is.getItemMeta().getDisplayName() + ChatColor.GRAY + " [" + effect_time + "s]");
@@ -2639,7 +2639,7 @@ public class ProfessionMechanics implements Listener {
 					int effect_time = Integer.parseInt(s.substring(s.lastIndexOf("(") + 1, s.lastIndexOf("s")));
 
 					fish_bonus_armor.put(pl.getName(), bonus_percent);
-					RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xacacac, (effect_time * 20));
+					//RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xacacac, (effect_time * 20));
 					pl.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "+" + ChatColor.GREEN + (int) bonus_percent
 							+ ChatColor.BOLD + "% ARMOR" + ChatColor.GREEN + " FROM "
 							+ is.getItemMeta().getDisplayName() + ChatColor.GRAY + " [" + effect_time + "s]");
@@ -2659,7 +2659,7 @@ public class ProfessionMechanics implements Listener {
 					int effect_time = Integer.parseInt(s.substring(s.lastIndexOf("(") + 1, s.lastIndexOf("s")));
 
 					fish_bonus_block.put(pl.getName(), bonus_percent);
-					RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0x014421, (effect_time * 20));
+					//RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0x014421, (effect_time * 20));
 					pl.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "+" + ChatColor.GREEN + (int) bonus_percent
 							+ ChatColor.BOLD + "% BLOCK" + ChatColor.GREEN + " FROM "
 							+ is.getItemMeta().getDisplayName() + ChatColor.GRAY + " [" + effect_time + "s]");
@@ -2679,7 +2679,7 @@ public class ProfessionMechanics implements Listener {
 					int effect_time = Integer.parseInt(s.substring(s.lastIndexOf("(") + 1, s.lastIndexOf("s")));
 
 					fish_bonus_lifesteal.put(pl.getName(), bonus_percent);
-					RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0x4d2177, (effect_time * 20));
+					//RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0x4d2177, (effect_time * 20));
 					pl.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "+" + ChatColor.GREEN + (int) bonus_percent
 							+ ChatColor.BOLD + "% LIFESTEAL" + ChatColor.GREEN + " FROM "
 							+ is.getItemMeta().getDisplayName() + ChatColor.GRAY + " [" + effect_time + "s]");
@@ -2699,7 +2699,7 @@ public class ProfessionMechanics implements Listener {
 					int effect_time = Integer.parseInt(s.substring(s.lastIndexOf("(") + 1, s.lastIndexOf("s")));
 
 					fish_bonus_critical_hit.put(pl.getName(), bonus_percent);
-					RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xe52d00, (effect_time * 20));
+					//RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xe52d00, (effect_time * 20));
 					pl.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "+" + ChatColor.GREEN + (int) bonus_percent
 							+ ChatColor.BOLD + "% CRIT" + ChatColor.GREEN + " FROM " + is.getItemMeta().getDisplayName()
 							+ ChatColor.GRAY + " [" + effect_time + "s]");
@@ -2902,7 +2902,7 @@ public class ProfessionMechanics implements Listener {
 						int effect_time = Integer.parseInt(s.substring(s.lastIndexOf("(") + 1, s.lastIndexOf("s")));
 
 						fish_energy_regen.put(pl.getName(), bonus_percent);
-						RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xa47c48, (effect_time * 20));
+						//RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xa47c48, (effect_time * 20));
 						pl.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "      " + ChatColor.GREEN
 								+ (int) bonus_percent + ChatColor.BOLD + " Energy/s" + ChatColor.GREEN + " FROM "
 								+ is.getItemMeta().getDisplayName() + ChatColor.GRAY + " [" + effect_time + "s]");
@@ -2922,7 +2922,7 @@ public class ProfessionMechanics implements Listener {
 						int effect_time = Integer.parseInt(s.substring(s.lastIndexOf("(") + 1, s.lastIndexOf("s")));
 
 						fish_bonus_dmg.put(pl.getName(), bonus_percent);
-						RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xdd0000, (effect_time * 20));
+						//RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xdd0000, (effect_time * 20));
 						pl.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "+" + ChatColor.GREEN
 								+ (int) bonus_percent + ChatColor.BOLD + "% DMG" + ChatColor.GREEN + " FROM "
 								+ is.getItemMeta().getDisplayName() + ChatColor.GRAY + " [" + effect_time + "s]");
@@ -2942,7 +2942,7 @@ public class ProfessionMechanics implements Listener {
 						int effect_time = Integer.parseInt(s.substring(s.lastIndexOf("(") + 1, s.lastIndexOf("s")));
 
 						fish_bonus_armor.put(pl.getName(), bonus_percent);
-						RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xacacac, (effect_time * 20));
+						//RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xacacac, (effect_time * 20));
 						pl.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "+" + ChatColor.GREEN
 								+ (int) bonus_percent + ChatColor.BOLD + "% ARMOR" + ChatColor.GREEN + " FROM "
 								+ is.getItemMeta().getDisplayName() + ChatColor.GRAY + " [" + effect_time + "s]");
@@ -2962,7 +2962,7 @@ public class ProfessionMechanics implements Listener {
 						int effect_time = Integer.parseInt(s.substring(s.lastIndexOf("(") + 1, s.lastIndexOf("s")));
 
 						fish_bonus_block.put(pl.getName(), bonus_percent);
-						RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0x014421, (effect_time * 20));
+						//RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0x014421, (effect_time * 20));
 						pl.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "+" + ChatColor.GREEN
 								+ (int) bonus_percent + ChatColor.BOLD + "% BLOCK" + ChatColor.GREEN + " FROM "
 								+ is.getItemMeta().getDisplayName() + ChatColor.GRAY + " [" + effect_time + "s]");
@@ -2982,7 +2982,7 @@ public class ProfessionMechanics implements Listener {
 						int effect_time = Integer.parseInt(s.substring(s.lastIndexOf("(") + 1, s.lastIndexOf("s")));
 
 						fish_bonus_lifesteal.put(pl.getName(), bonus_percent);
-						RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0x4d2177, (effect_time * 20));
+						//RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0x4d2177, (effect_time * 20));
 						pl.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "+" + ChatColor.GREEN
 								+ (int) bonus_percent + ChatColor.BOLD + "% LIFESTEAL" + ChatColor.GREEN + " FROM "
 								+ is.getItemMeta().getDisplayName() + ChatColor.GRAY + " [" + effect_time + "s]");
@@ -3002,7 +3002,7 @@ public class ProfessionMechanics implements Listener {
 						int effect_time = Integer.parseInt(s.substring(s.lastIndexOf("(") + 1, s.lastIndexOf("s")));
 
 						fish_bonus_critical_hit.put(pl.getName(), bonus_percent);
-						RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xe52d00, (effect_time * 20));
+						//RealmMechanics.playPotionEffect(pl, (LivingEntity) pl, 0xe52d00, (effect_time * 20));
 						pl.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "+" + ChatColor.GREEN
 								+ (int) bonus_percent + ChatColor.BOLD + "% CRIT" + ChatColor.GREEN + " FROM "
 								+ is.getItemMeta().getDisplayName() + ChatColor.GRAY + " [" + effect_time + "s]");

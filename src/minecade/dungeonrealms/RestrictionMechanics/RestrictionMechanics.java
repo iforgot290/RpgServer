@@ -3,6 +3,7 @@ package minecade.dungeonrealms.RestrictionMechanics;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -200,7 +201,7 @@ public class RestrictionMechanics implements Listener {
 								ChatColor.GREEN + "                " + ChatColor.BOLD + "*** SAFE ZONE (DMG-OFF) ***");
 						// p.addPotionEffect(new
 						// PotionEffect(PotionEffectType.BLINDNESS, 25, 2));
-						p.playSound(p.getLocation(), Sound.WITHER_SHOOT, 0.25F, 0.30F);
+						p.playSound(p.getLocation(), Sound.ENTITY_WITHER_SHOOT, 0.25F, 0.30F);
 						continue;
 					}
 					if (isPvPDisabled && !isDamageDisabled) { // Damage is on,
@@ -214,7 +215,7 @@ public class RestrictionMechanics implements Listener {
 								+ "*** WILDERNESS (MOBS-ON, PVP-OFF) ***");
 						// p.addPotionEffect(new
 						// PotionEffect(PotionEffectType.BLINDNESS, 25, 2));
-						p.playSound(p.getLocation(), Sound.WITHER_SHOOT, 0.25F, 0.30F);
+						p.playSound(p.getLocation(), Sound.ENTITY_WITHER_SHOOT, 0.25F, 0.30F);
 						continue;
 					}
 					if (!isPvPDisabled && !isDamageDisabled) { // Damage AND PvP
@@ -228,7 +229,7 @@ public class RestrictionMechanics implements Listener {
 								ChatColor.RED + "                " + ChatColor.BOLD + "*** CHAOTIC ZONE (PVP-ON) ***");
 						// p.addPotionEffect(new
 						// PotionEffect(PotionEffectType.BLINDNESS, 25, 2));
-						p.playSound(p.getLocation(), Sound.WITHER_SHOOT, 0.25F, 0.30F);
+						p.playSound(p.getLocation(), Sound.ENTITY_WITHER_SHOOT, 0.25F, 0.30F);
 						continue;
 					}
 				}
@@ -356,7 +357,7 @@ public class RestrictionMechanics implements Listener {
 
 		if (cmd.startsWith("/tpall") || cmd.startsWith("/say") || cmd.startsWith("/stop")) {
 			log.info(cmd + " issued!");
-			if (!(Main.isMaster(p.getName()))) {
+			if (!(Main.isMaster(p.getUniqueId()))) {
 				e.setCancelled(true);
 				return;
 			}
@@ -685,7 +686,7 @@ public class RestrictionMechanics implements Listener {
 		try {
 			Player pl = e.getPlayer();
 
-			if (pl.getTargetBlock(null, 6).getType() == Material.ITEM_FRAME && !pl.isOp()
+			if (pl.getTargetBlock((Set<Material>) null, 6).getType() == Material.ITEM_FRAME && !pl.isOp()
 					&& !PermissionMechanics.isStaff(pl)) {
 				e.setCancelled(true);
 			}
@@ -1029,7 +1030,7 @@ public class RestrictionMechanics implements Listener {
 			}
 
 			p.updateInventory();
-			p.playSound(p.getLocation(), Sound.FIZZ, 0.6F, 0.2F);
+			p.playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.6F, 0.2F);
 			p.sendMessage(ChatColor.GRAY + "This item was " + ChatColor.ITALIC + "untradeable" + ChatColor.GRAY
 					+ ", so it has " + ChatColor.UNDERLINE + "vanished.");
 
@@ -1675,7 +1676,7 @@ public class RestrictionMechanics implements Listener {
 				}
 				// p.getInventory().setItem(p.getInventory().firstEmpty(),
 				// scroll);
-				p.playSound(p.getLocation(), Sound.ITEM_PICKUP, 1F, 1F);
+				p.playSound(p.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1F, 1F);
 			}
 		}
 	}

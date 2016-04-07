@@ -106,9 +106,7 @@ public class ShopMechanics implements Listener {
 	static HashMap<Block, Hologram> shop_nameplates = new HashMap<Block, Hologram>();
 	// NPC linked list that assigns an NPC to a given shop block.
 
-	/**
-	 * Locally stored shop level/tier
-	 */
+	/** Locally stored shop level/tier */
 	public static HashMap<UUID, Integer> shop_level = new HashMap<UUID, Integer>();
 
 	static HashMap<Block, String> shop_names = new HashMap<Block, String>();
@@ -124,16 +122,16 @@ public class ShopMechanics implements Listener {
 	// Allows us to get the owner w/o using List<Block>, the blocks will always
 	// have the inverse values of each other.
 
-	public static HashMap<String, Block> inverse_shop_owners = new HashMap<String, Block>();
+	public static HashMap<UUID, Block> inverse_shop_owners = new HashMap<UUID, Block>();
 	// Find block_1 of the shop owned by PLAYER_NAME
 
-	public static HashMap<String, Inventory> shop_stock = new HashMap<String, Inventory>();
-	// The current shop stock (inventory format) of PLAYER_NAME.
+	/** The current shop stock of a player */
+	public static HashMap<UUID, Inventory> shop_stock = new HashMap<UUID, Inventory>();
 
-	public static HashMap<String, ItemStack> current_item_being_stocked = new HashMap<String, ItemStack>();
+	public static HashMap<UUID, ItemStack> current_item_being_stocked = new HashMap<UUID, ItemStack>();
 	// Async Chat event.
 
-	public static HashMap<String, Integer> current_item_being_bought = new HashMap<String, Integer>();
+	public static HashMap<UUID, Integer> current_item_being_bought = new HashMap<UUID, Integer>();
 	// Async Chat event.
 
 	/**
@@ -175,8 +173,8 @@ public class ShopMechanics implements Listener {
 	// Used with an item is put in shop and needs to update price of other
 	// items. (right click reprice)
 
-	public static List<String> openning_shop = new ArrayList<String>();
-	// Pending shop open -- "PLEASE ENTER SHOP NAME!"
+	/** Pending shop open */
+	public static List<UUID> opening_shop = new ArrayList<UUID>();
 
 	public static List<String> shop_name_list = new ArrayList<String>();
 	// List of all shop names. Prevents duplicate names.
@@ -189,9 +187,8 @@ public class ShopMechanics implements Listener {
 
 	public static boolean shop_shutdown = false;
 
-	public static volatile CopyOnWriteArrayList<String> need_sql_update = new CopyOnWriteArrayList<String>();
-	// A list of all shop owner's that need their shop contents updated SQL
-	// side.
+	/** A list of all shop owners that need their shop sent to SQL */
+	public static volatile CopyOnWriteArrayList<UUID> need_sql_update = new CopyOnWriteArrayList<UUID>();
 
 	public static boolean all_collection_bins_uploaded = false;
 
@@ -283,7 +280,7 @@ public class ShopMechanics implements Listener {
 				if (openclose_cooldown.size() <= 0) {
 					return;
 				}
-				if (Bukkit.getOnlinePlayers().length <= 0)
+				if (Bukkit.getOnlinePlayers().size() <= 0)
 					return;
 				for (Player pl : Bukkit.getOnlinePlayers()) {
 					if (pl == null)
@@ -439,9 +436,9 @@ public class ShopMechanics implements Listener {
 	}
 
 	// Run on crash.
-	public static void backupStoreData(String p_name) {
-		if (shop_stock.containsKey(p_name)) {
-			Inventory i = shop_stock.get(p_name);
+	public static void backupStoreData(UUID id) {
+		if (shop_stock.containsKey(id)) {
+			Inventory i = shop_stock.get(id);
 			List<ItemStack> li = new ArrayList<ItemStack>();
 
 			for (ItemStack is : i.getContents()) {
@@ -460,23 +457,23 @@ public class ShopMechanics implements Listener {
 					}
 					cb.setItem(cb.firstEmpty(), is);
 				}
-				collection_bin.put(p_name, cb);
+				collection_bin.put(id, cb);
 
-				if (!(Hive.player_inventory.containsKey(p_name))) {
+				if (!(Hive.player_inventory.containsKey(id))) {
 					// If they're not online, upload the data here instead of
 					// uploadShopDatabaseData().
-					uploadCollectionBinData(p_name);
+					uploadCollectionBinData(id);
 				}
 			}
 		}
 	}
 
-	public static int getServerLocationOfShop(String p_name) {
-		if (shop_server.containsKey(p_name)) {
-			return shop_server.get(p_name);
+	public static int getServerLocationOfShop(UUID id) {
+		if (shop_server.containsKey(id)) {
+			return shop_server.get(id);
 		}
 
-		shop_server.put(p_name, -1);
+		shop_server.put(id, -1);
 		return -1;
 	}
 
@@ -680,7 +677,7 @@ public class ShopMechanics implements Listener {
 		}
 	}
 
-	public static void uploadCollectionBinData(String p_name) {
+	public static void uploadCollectionBinData(UUID id) {
 		// This function is used to upload data on serverStop for players who
 		// may not be on this server. Now, this presents a unique challenge
 		// because if players are on ANOTHER server
@@ -690,11 +687,11 @@ public class ShopMechanics implements Listener {
 		// cause the occasional issue...
 
 		// Send socket -> THEN update the SQL.
-		if (!(collection_bin.containsKey(p_name))) {
+		if (!(collection_bin.containsKey(id))) {
 			return; // No one cares.
 		}
 
-		String collection_bin_s = Hive.convertInventoryToString(null, collection_bin.get(p_name), false);
+		String collection_bin_s = Hive.convertInventoryToString(null, collection_bin.get(id), false);
 
 		if (collection_bin_s.length() <= 0) {
 			collection_bin_s = "null";
@@ -706,10 +703,10 @@ public class ShopMechanics implements Listener {
 			// ConnectProtocol.sendResultCrossServer("*", "@collection_bin@" +
 			// p_name + collection_bin.get(p_name));
 			List<Object> query = new ArrayList<Object>();
-			query.add("@collection_bin@" + p_name + "&" + collection_bin.get(p_name));
+			query.add("@collection_bin@" + id.toString() + "&" + collection_bin.get(id));
 			query.add(null);
 			query.add(true);
-			CommunityMechanics.social_query_list.put(p_name, query);
+			CommunityMechanics.social_query_list.put(id.toString(), query);
 		}
 
 		PreparedStatement pst = null;
@@ -717,7 +714,7 @@ public class ShopMechanics implements Listener {
 		try {
 
 			pst = ConnectionPool.getConnection()
-					.prepareStatement("INSERT INTO shop_database (p_name, collection_bin)" + " VALUES" + "('" + p_name
+					.prepareStatement("INSERT INTO shop_database (p_name, collection_bin)" + " VALUES" + "('" + id.toString()
 							+ "', '" + StringEscapeUtils.escapeSql(collection_bin_s)
 							+ "') ON DUPLICATE KEY UPDATE collection_bin='"
 							+ StringEscapeUtils.escapeSql(collection_bin_s) + "'");
@@ -737,22 +734,22 @@ public class ShopMechanics implements Listener {
 			}
 		}
 
-		log.info("[ShopMechanics] Uploaded collection bin data for " + p_name + "...");
+		log.info("[ShopMechanics] Uploaded collection bin data for " + id.toString() + "...");
 
 		if (!shop_shutdown) {
 			// If we're shutting down, then the system won't remove the
 			// collection_bin string... why?
-			collection_bin.remove(p_name);
+			collection_bin.remove(id);
 		}
 
-		asyncSetShopServerSQL(p_name, -1);
+		asyncSetShopServerSQL(id, -1);
 	}
 
 	public static void uploadAllCollectionBinData() {
-		for (String p_name : collection_bin.keySet()) {
+		for (UUID id : collection_bin.keySet()) {
 			// if(Bukkit.getPlayer(p_name) == null &&
 			// !(Hive.pending_upload.contains(p_name))){
-			uploadCollectionBinData(p_name);
+			uploadCollectionBinData(id);
 			// }
 		}
 		Main.plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "uploadAllCollectionBinData() called");
@@ -824,7 +821,7 @@ public class ShopMechanics implements Listener {
 	@SuppressWarnings("unchecked")
 	public static void saveOpenShopsToCollBin() {
 		int shop_count = 0;
-		Iterator<Map.Entry<String, Block>> iter = new HashMap<String, Block>(inverse_shop_owners).entrySet().iterator(); // Probably
+		Iterator<Map.Entry<UUID, Block>> iter = new HashMap<UUID, Block>(inverse_shop_owners).entrySet().iterator(); // Probably
 																															// not
 																															// the
 																															// best
@@ -834,17 +831,17 @@ public class ShopMechanics implements Listener {
 																															// this,
 																															// but
 																															// w/e.
-		Map.Entry<String, Block> entry;
+		Map.Entry<UUID, Block> entry;
 		while (iter.hasNext()) {
 			entry = iter.next();
-			String p = entry.getKey();
+			UUID id = entry.getKey();
 			try {
-				final Block b1 = inverse_shop_owners.get(p);
+				final Block b1 = inverse_shop_owners.get(id);
 				final Block b2 = chest_partners.get(b1);
-				Player s_owner = Bukkit.getPlayer(p);
+				Player s_owner = Bukkit.getPlayer(id);
 
-				if (shop_stock.containsKey(p)) {
-					Inventory i = shop_stock.get(p);
+				if (shop_stock.containsKey(id)) {
+					Inventory i = shop_stock.get(id);
 					List<ItemStack> li = new ArrayList<ItemStack>();
 
 					for (ItemStack is : i.getContents()) {
@@ -859,8 +856,8 @@ public class ShopMechanics implements Listener {
 						for (ItemStack is : li) {
 							cb.setItem(cb.firstEmpty(), is);
 						}
-						collection_bin.put(p, cb);
-						log.info("[ShopMechanics] >> Saved " + p + "'s shop contents to collection bin.");
+						collection_bin.put(id, cb);
+						log.info("[ShopMechanics] >> Saved " + id.toString() + "'s shop contents to collection bin.");
 						if (s_owner != null) {
 							s_owner.sendMessage(ChatColor.GREEN
 									+ "Your shop was saved and can now be found in your Collection Bin.");
@@ -868,17 +865,16 @@ public class ShopMechanics implements Listener {
 					}
 
 					// concurrency man... ridiculous
-					for (HumanEntity e : (List<HumanEntity>) ((ArrayList<HumanEntity>) shop_stock.get(p).getViewers())
+					for (HumanEntity e : (List<HumanEntity>) ((ArrayList<HumanEntity>) shop_stock.get(id).getViewers())
 							.clone()) {
 						if (e instanceof Player) {
-							((Player) e).playSound(e.getLocation(), Sound.CHEST_CLOSE, 1F, 1F);
+							((Player) e).playSound(e.getLocation(), Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
 						}
 						e.closeInventory();
 					}
 
 				}
 
-				final String shop_owner_n = p;
 				b1.setType(Material.AIR);
 				b2.setType(Material.AIR);
 
@@ -891,11 +887,11 @@ public class ShopMechanics implements Listener {
 						.substring(shop_names.get(b1).indexOf(" ") + 1, shop_names.get(b1).length())));
 				shop_names.remove(b1);
 				shop_owners.remove(b1);
-				inverse_shop_owners.remove(shop_owner_n);
-				shop_stock.remove(shop_owner_n);
-				current_item_being_stocked.remove(shop_owner_n);
+				inverse_shop_owners.remove(id);
+				shop_stock.remove(id);
+				current_item_being_stocked.remove(id);
 
-				openning_shop.remove(shop_owner_n);
+				opening_shop.remove(id);
 				open_shops.remove(b1);
 				// modifying_stock.remove(shop_owner_n);
 
@@ -909,10 +905,10 @@ public class ShopMechanics implements Listener {
 				shop_owners.remove(other_chest);
 				open_shops.remove(other_chest);
 
-				asyncSetShopServerSQL(shop_owner_n, -1);
+				asyncSetShopServerSQL(id, -1);
 
-				if (!(need_sql_update.contains(p))) {
-					need_sql_update.add(p);
+				if (!(need_sql_update.contains(id))) {
+					need_sql_update.add(id);
 				}
 				shop_count++;
 			} catch (Exception err) {
@@ -925,12 +921,12 @@ public class ShopMechanics implements Listener {
 	}
 
 	public static void removeShop(Player p) {
-		if (inverse_shop_owners.containsKey(p.getName())) {
+		UUID id = p.getUniqueId();
+		if (inverse_shop_owners.containsKey(id)) {
 			try {
-				final Block b1 = inverse_shop_owners.get(p.getName());
+				final Block b1 = inverse_shop_owners.get(id);
 				final Block b2 = chest_partners.get(b1);
 
-				final String shop_owner_n = p.getName();
 				b1.setType(Material.AIR);
 				b2.setType(Material.AIR);
 
@@ -943,11 +939,11 @@ public class ShopMechanics implements Listener {
 						.substring(shop_names.get(b1).indexOf(" ") + 1, shop_names.get(b1).length())));
 				shop_names.remove(b1);
 				shop_owners.remove(b1);
-				inverse_shop_owners.remove(shop_owner_n);
-				shop_stock.remove(shop_owner_n);
-				current_item_being_stocked.remove(shop_owner_n);
+				inverse_shop_owners.remove(id);
+				shop_stock.remove(id);
+				current_item_being_stocked.remove(id);
 
-				openning_shop.remove(shop_owner_n);
+				opening_shop.remove(id);
 				open_shops.remove(b1);
 				// modifying_stock.remove(shop_owner_n);
 
@@ -961,10 +957,10 @@ public class ShopMechanics implements Listener {
 				shop_owners.remove(other_chest);
 				open_shops.remove(other_chest);
 
-				asyncSetShopServerSQL(shop_owner_n, -1);
+				asyncSetShopServerSQL(id, -1);
 
-				if (!(need_sql_update.contains(p.getName()))) {
-					need_sql_update.add(p.getName()); // Update SQL after an
+				if (!(need_sql_update.contains(id))) {
+					need_sql_update.add(id); // Update SQL after an
 														// item is sold from the
 														// shop.
 				}
@@ -987,9 +983,9 @@ public class ShopMechanics implements Listener {
 
 		final int f_new_level = r_new_level;
 
-		shop_level.put(p.getName(), r_new_level);
+		shop_level.put(p.getUniqueId(), r_new_level);
 
-		Inventory stock = shop_stock.get(p.getName());
+		Inventory stock = shop_stock.get(p.getUniqueId());
 		Inventory i = Bukkit.createInventory(null, getShopSlots(r_new_level), stock.getName());
 		for (ItemStack is : stock.getContents()) {
 			if (is != null && !(is.getType() == Material.AIR)
@@ -1013,7 +1009,7 @@ public class ShopMechanics implements Listener {
 		i.setItem((i.getSize() - 1), gray_button); // Set the last slot to the
 													// open/close button.
 
-		shop_stock.put(p.getName(), i);
+		shop_stock.put(p.getUniqueId(), i);
 	}
 
 	public static int getShopSlots(int level) {
@@ -1050,8 +1046,8 @@ public class ShopMechanics implements Listener {
 		return 0;
 	}
 
-	public static boolean doesPlayerHaveShopSQL(String p_name) {
-		int server_num = getServerLocationOfShop(p_name);
+	public static boolean doesPlayerHaveShopSQL(UUID id) {
+		int server_num = getServerLocationOfShop(id);
 		if (server_num == -1) {
 			return false;
 		}
@@ -1059,7 +1055,6 @@ public class ShopMechanics implements Listener {
 	}
 
 	public static void runSyncQuery(String query) {
-		Connection con = null;
 		PreparedStatement pst = null;
 
 		try {
@@ -1075,9 +1070,6 @@ public class ShopMechanics implements Listener {
 			try {
 				if (pst != null) {
 					pst.close();
-				}
-				if (con != null) {
-					con.close();
 				}
 
 			} catch (SQLException ex) {
@@ -1126,8 +1118,8 @@ public class ShopMechanics implements Listener {
 		return orig_i;
 	}
 
-	public static boolean hasLocalShop(String p_name) {
-		if (shop_stock.containsKey(p_name)) {
+	public static boolean hasLocalShop(UUID id) {
+		if (shop_stock.containsKey(id)) {
 			return true;
 		}
 		return false;
@@ -1313,19 +1305,17 @@ public class ShopMechanics implements Listener {
 		re.setLines(lines);
 	}
 
-	public static boolean hasCollectionBinItems(String p_name) {
-		if (collection_bin.containsKey(p_name)) {
-			return true;
-		}
-		return false;
+	public static boolean hasCollectionBinItems(UUID id) {
+		return collection_bin.containsKey(id);
 	}
 
 	@EventHandler
 	public void onPlayerMoveEvent(PlayerMoveEvent e) {
 		Player p = e.getPlayer(); // The person MOVING.
+		UUID id = p.getUniqueId();
 
-		if (current_item_being_stocked.containsKey(p.getName())) {
-			Block shop = inverse_shop_owners.get(p.getName());
+		if (current_item_being_stocked.containsKey(id)) {
+			Block shop = inverse_shop_owners.get(id);
 			if (!(p.getWorld().getName().equalsIgnoreCase(shop.getWorld().getName()))
 					|| p.getLocation().distanceSquared(shop.getLocation()) > 16) { // They're
 																					// too
@@ -1339,18 +1329,18 @@ public class ShopMechanics implements Listener {
 																					// them.
 				p.sendMessage(ChatColor.RED + "Pricing of item cancelled. >4 blocks from shop.");
 				p.getInventory().setItem(p.getInventory().firstEmpty(),
-						removePrice(current_item_being_stocked.get(p.getName())));
-				current_item_being_stocked.remove(p.getName());
+						removePrice(current_item_being_stocked.get(id)));
+				current_item_being_stocked.remove(id);
 				p.updateInventory();
 			}
 		}
 
-		if (current_item_being_bought.containsKey(p.getName())) {
+		if (current_item_being_bought.containsKey(id)) {
 			if (!(shop_being_browsed.containsKey(p.getName()))) {
-				current_item_being_bought.remove(p.getName());
+				current_item_being_bought.remove(id);
 				return;
 			}
-			Block shop = inverse_shop_owners.get(shop_being_browsed.get(p.getName()));
+			Block shop = inverse_shop_owners.get(shop_being_browsed.get(id));
 			if (shop == null || !(p.getWorld().getName().equalsIgnoreCase(shop.getWorld().getName()))
 					|| p.getLocation().distanceSquared(shop.getLocation()) > 36) { // They're
 																					// too
@@ -1363,7 +1353,7 @@ public class ShopMechanics implements Listener {
 																					// for
 																					// them.
 				p.sendMessage(ChatColor.RED + "Purchase of item cancelled. >6 blocks from shop.");
-				current_item_being_bought.remove(p.getName());
+				current_item_being_bought.remove(id);
 				shop_being_browsed.remove(p.getName());
 				p.updateInventory();
 			}
@@ -1511,7 +1501,7 @@ public class ShopMechanics implements Listener {
 			return;
 		}
 
-		if (openning_shop.contains(p.getName())) {
+		if (opening_shop.contains(p.getName())) {
 			if (isShopOwner(p, e.getClickedBlock())) {
 				// TODO: Left click an opening shop = remove it instantly.
 			}
@@ -1711,7 +1701,7 @@ public class ShopMechanics implements Listener {
 		// modifying_stock.add(p.getName());
 		String default_shop_name = " Shop";
 
-		openning_shop.add(p.getName());
+		opening_shop.add(p.getName());
 		p.sendMessage(ChatColor.YELLOW + "Please enter a " + ChatColor.BOLD + "SHOP NAME." + ChatColor.YELLOW
 				+ " [max. 12 characters]");
 		p.playSound(p.getLocation(), Sound.WOOD_CLICK, 1F, 0.8F);
@@ -2525,7 +2515,7 @@ public class ShopMechanics implements Listener {
 					inverse_shop_owners.remove(shop_owner);
 					shop_stock.remove(shop_owner);
 					current_item_being_stocked.remove(shop_owner);
-					openning_shop.remove(shop_owner);
+					opening_shop.remove(shop_owner);
 					open_shops.remove(chest);
 					// modifying_stock.remove(shop_owner);
 
@@ -2604,7 +2594,7 @@ public class ShopMechanics implements Listener {
 	public void onAsyncPlayerChatEvent(AsyncPlayerChatEvent e) {
 		final Player p = e.getPlayer();
 
-		if (openning_shop.contains(p.getName())) {
+		if (opening_shop.contains(p.getName())) {
 			e.setCancelled(true);
 
 			String msg = e.getMessage();
@@ -2656,7 +2646,7 @@ public class ShopMechanics implements Listener {
 																				// button.
 
 			p.sendMessage(ChatColor.YELLOW + "Shop name assigned.");
-			openning_shop.remove(p.getName());
+			opening_shop.remove(p.getName());
 			p.sendMessage("");
 			p.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "YOU'VE CREATED A SHOP!");
 			p.sendMessage(ChatColor.YELLOW + "To stock your shop, simply drag items into your shop's inventory.");
@@ -3004,7 +2994,7 @@ public class ShopMechanics implements Listener {
 				inverse_shop_owners.remove(shop_owner);
 				shop_stock.remove(shop_owner);
 				current_item_being_stocked.remove(shop_owner);
-				openning_shop.remove(shop_owner);
+				opening_shop.remove(shop_owner);
 				open_shops.remove(chest);
 				// modifying_stock.remove(shop_owner);
 
@@ -3247,7 +3237,7 @@ public class ShopMechanics implements Listener {
 				shop_stock.remove(p.getName());
 				current_item_being_stocked.remove(p.getName());
 				price_update_needed.remove(p);
-				openning_shop.remove(p.getName());
+				opening_shop.remove(p.getName());
 				open_shops.remove(b);
 				// modifying_stock.remove(p.getName());
 
@@ -3265,7 +3255,7 @@ public class ShopMechanics implements Listener {
 				shop_stock.remove(p.getName());
 				current_item_being_stocked.remove(p.getName());
 				price_update_needed.remove(p);
-				openning_shop.remove(p.getName());
+				opening_shop.remove(p.getName());
 				open_shops.remove(b);
 				// modifying_stock.remove(p.getName());
 
@@ -3360,7 +3350,7 @@ public class ShopMechanics implements Listener {
 		}
 		Block b = e.getClickedBlock();
 		Player p = e.getPlayer();
-		if (openning_shop.contains(p.getName())) {
+		if (opening_shop.contains(p.getName())) {
 			p.sendMessage(ChatColor.RED + "You must NAME your shop first. Simply enter any name you desire into chat.");
 			e.setCancelled(true);
 			return;
@@ -3494,7 +3484,7 @@ public class ShopMechanics implements Listener {
 			current_item_being_stocked.remove(p.getName());
 		}
 
-		if (openning_shop.contains(p.getName())) {
+		if (opening_shop.contains(p.getName())) {
 			final Block b1 = inverse_shop_owners.get(p.getName());
 			final Block b2 = chest_partners.get(b1);
 
@@ -3514,7 +3504,7 @@ public class ShopMechanics implements Listener {
 			shop_stock.remove(shop_owner_n);
 			current_item_being_stocked.remove(shop_owner_n);
 
-			openning_shop.remove(shop_owner_n);
+			opening_shop.remove(shop_owner_n);
 			open_shops.remove(b1);
 			// modifying_stock.remove(shop_owner_n);
 
