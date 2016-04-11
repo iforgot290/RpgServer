@@ -1871,8 +1871,8 @@ public class ItemMechanics implements Listener {
 			total_str_val += getStrVal(i);
 		}
 
-		if (getStrVal(p.getItemInHand()) != 0) {
-			total_str_val += getStrVal(p.getItemInHand());
+		if (getStrVal(p.getInventory().getItemInMainHand()) != 0) {
+			total_str_val += getStrVal(p.getInventory().getItemInMainHand());
 		}
 
 		total_str_val += PlayerManager.getPlayerModel(p).getPlayerLevel().getStrPoints();
@@ -1892,8 +1892,8 @@ public class ItemMechanics implements Listener {
 			total_dex_val += getDexVal(i);
 		}
 
-		if (getDexVal(p.getItemInHand()) != 0) {
-			total_dex_val += getDexVal(p.getItemInHand());
+		if (getDexVal(p.getInventory().getItemInMainHand()) != 0) {
+			total_dex_val += getDexVal(p.getInventory().getItemInMainHand());
 		}
 
 		total_dex_val += PlayerManager.getPlayerModel(p).getPlayerLevel().getDexPoints();
@@ -1913,8 +1913,8 @@ public class ItemMechanics implements Listener {
 			total_vit_val += getVitVal(i);
 		}
 
-		if (getVitVal(p.getItemInHand()) != 0) {
-			total_vit_val += getVitVal(p.getItemInHand());
+		if (getVitVal(p.getInventory().getItemInMainHand()) != 0) {
+			total_vit_val += getVitVal(p.getInventory().getItemInMainHand());
 		}
 
 		total_vit_val += PlayerManager.getPlayerModel(p).getPlayerLevel().getVitPoints();
@@ -3157,21 +3157,21 @@ public class ItemMechanics implements Listener {
 			Player pl = e.getPlayer();
 			e.setCancelled(true);
 
-			if (pl.getItemInHand().getAmount() > 1) {
-				int amount = pl.getItemInHand().getAmount();
+			if (pl.getInventory().getItemInMainHand().getAmount() > 1) {
+				int amount = pl.getInventory().getItemInMainHand().getAmount();
 				amount -= 1;
-				ItemStack is = pl.getItemInHand();
+				ItemStack is = pl.getInventory().getItemInMainHand();
 				is.setAmount(amount);
-				pl.setItemInHand(is);
-			} else if (pl.getItemInHand().getAmount() == 1) {
-				pl.setItemInHand(new ItemStack(Material.AIR));
+				pl.getInventory().setItemInMainHand(is);
+			} else if (pl.getInventory().getItemInMainHand().getAmount() == 1) {
+				pl.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 			}
 			int should_i_drop_whiteScroll = new Random().nextInt(100);
 			int should_i_drop_scroll = new Random().nextInt(100);
 			int should_i_give_orb = new Random().nextInt(100);
 			int Tierscroll = new Random().nextInt(5);
 			if (should_i_drop_scroll >= 10) {// 10%
-				int p_tier = LevelMechanics.getPlayerTier(pl);
+				//int p_tier = LevelMechanics.getPlayerTier(pl);
 				ItemStack to_give = null;
 				if (Tierscroll == 1) {
 					to_give = Math.random() >= .5F ? EnchantMechanics.t1_armor_scroll : EnchantMechanics.t1_wep_scroll;
@@ -3192,7 +3192,7 @@ public class ItemMechanics implements Listener {
 				return;
 			}
 			if (should_i_drop_whiteScroll == 1) {
-				int p_tier = LevelMechanics.getPlayerTier(pl);
+				//int p_tier = LevelMechanics.getPlayerTier(pl);
 				ItemStack to_give = null;
 				if (Tierscroll == 1) {
 					to_give = EnchantMechanics.t1_white_scroll;
@@ -3256,9 +3256,9 @@ public class ItemMechanics implements Listener {
 	public void onPlayerAttemptBowFire(PlayerInteractEvent e) {
 		if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Player p = e.getPlayer();
-			if (p.getItemInHand().getType() == Material.BOW) {
+			if (p.getInventory().getItemInMainHand().getType() == Material.BOW) {
 				@SuppressWarnings("unused")
-				int bow_tier = getItemTier(p.getItemInHand());
+				int bow_tier = getItemTier(p.getInventory().getItemInMainHand());
 				// if(!doesPlayerHaveArrows(p, bow_tier)) {
 				if (!doesPlayerHaveAnyArrows(p)) {
 					p.playSound(p.getLocation(), Sound.ENTITY_IRONGOLEM_HURT, 0.3F, 2.0F);
@@ -3266,7 +3266,7 @@ public class ItemMechanics implements Listener {
 					p.updateInventory();
 				}
 			}
-			if (p.getItemInHand().getType() == Material.MAGMA_CREAM) {
+			if (p.getInventory().getItemInMainHand().getType() == Material.MAGMA_CREAM) {
 				p.sendMessage(ChatColor.RED + "To use an " + ChatColor.BOLD + "ORB OF ALTERATION" + ChatColor.RED
 						+ ", simply drag it ontop of the piece of equipment you wish to apply it to in your inventory.");
 			}
@@ -3526,7 +3526,7 @@ public class ItemMechanics implements Listener {
 			}
 			if (e_attacker instanceof Player) {
 				Player p_attacker = (Player) e_attacker;
-				wep = p_attacker.getItemInHand();
+				wep = p_attacker.getInventory().getItemInMainHand();
 
 				// So the issue with this right now is that after 1 fireball
 				// hits from a barrage, it removes the data and
@@ -4079,7 +4079,7 @@ public class ItemMechanics implements Listener {
 		if (tier == 0) {
 			Main.d("DUDE THE TIER WAS 0");
 		}
-		int bow_tier = getItemTier(p.getItemInHand());
+		int bow_tier = getItemTier(p.getInventory().getItemInMainHand());
 
 		Arrow a = (Arrow) e.getProjectile();
 		int percent_for_homing = new Random().nextInt(100);
@@ -4094,9 +4094,9 @@ public class ItemMechanics implements Listener {
 			arrow_replace.remove(p.getName());
 			p.updateInventory();
 		}
-		arrow_shooter.put(a, p.getItemInHand());
+		arrow_shooter.put(a, p.getInventory().getItemInMainHand());
 		a.setMetadata("tier", new FixedMetadataValue(Main.plugin, tier));
-		String dmg_data = getDamageData(p.getItemInHand());
+		String dmg_data = getDamageData(p.getInventory().getItemInMainHand());
 
 		if (dmg_data.contains("edmg=")) {
 			String elemental_type = dmg_data.split("edmg=")[1].split(":")[0].replaceAll(red.toString(), "");
@@ -4787,7 +4787,7 @@ public class ItemMechanics implements Listener {
 
 		if (dmg_data.contains("blind=true") && !le.hasPotionEffect(PotionEffectType.BLINDNESS)
 				&& !le.hasMetadata("blind")) {
-			int tier = getItemTier(p.getItemInHand());
+			int tier = getItemTier(p.getInventory().getItemInMainHand());
 			boolean blind = true;
 
 			if (le.hasMetadata("blind")) {
@@ -4968,7 +4968,7 @@ public class ItemMechanics implements Listener {
 			return; // Prevents infinite loop w/ polearm AOE.
 		}
 
-		ItemStack weapon = p_attacker.getItemInHand();
+		ItemStack weapon = p_attacker.getInventory().getItemInMainHand();
 
 		if (processing_proj_event.contains(p_attacker.getName())) {
 			if (spoofed_weapon.containsKey(p_attacker.getName())) {
@@ -5227,15 +5227,15 @@ public class ItemMechanics implements Listener {
 						// log.info("" + new_health_display);
 						p_attacker.setHealth((int) new_health_display);
 					}
-					double xpt = le.getLocation().getX(); // (p_attacker.getLocation().getX()
+					//double xpt = le.getLocation().getX(); // (p_attacker.getLocation().getX()
 															// +
 															// le.getLocation().getX())
 															// / 2;
-					double ypt = le.getLocation().getY(); // (p_attacker.getLocation().getY()
+					//double ypt = le.getLocation().getY(); // (p_attacker.getLocation().getY()
 															// +
 															// le.getLocation().getY())
 															// / 2;
-					double zpt = le.getLocation().getZ(); // (p_attacker.getLocation().getZ()
+					//double zpt = le.getLocation().getZ(); // (p_attacker.getLocation().getZ()
 															// +
 															// le.getLocation().getZ())
 															// / 2;
@@ -5484,15 +5484,15 @@ public class ItemMechanics implements Listener {
 						p_attacker.setHealth((int) new_health_display);
 					}
 				}
-				double xpt = le.getLocation().getX(); // (p_attacker.getLocation().getX()
+				//double xpt = le.getLocation().getX(); // (p_attacker.getLocation().getX()
 														// +
 														// le.getLocation().getX())
 														// / 2;
-				double ypt = le.getLocation().getY(); // (p_attacker.getLocation().getY()
+				//double ypt = le.getLocation().getY(); // (p_attacker.getLocation().getY()
 														// +
 														// le.getLocation().getY())
 														// / 2;
-				double zpt = le.getLocation().getZ(); // (p_attacker.getLocation().getZ()
+				//double zpt = le.getLocation().getZ(); // (p_attacker.getLocation().getZ()
 														// +
 														// le.getLocation().getZ())
 														// / 2;
@@ -5740,15 +5740,15 @@ public class ItemMechanics implements Listener {
 						p_attacker.setHealth((int) new_health_display);
 					}
 				}
-				double xpt = le.getLocation().getX(); // (p_attacker.getLocation().getX()
+				//double xpt = le.getLocation().getX(); // (p_attacker.getLocation().getX()
 														// +
 														// le.getLocation().getX())
 														// / 2;
-				double ypt = le.getLocation().getY(); // (p_attacker.getLocation().getY()
+				//double ypt = le.getLocation().getY(); // (p_attacker.getLocation().getY()
 														// +
 														// le.getLocation().getY())
 														// / 2;
-				double zpt = le.getLocation().getZ(); // (p_attacker.getLocation().getZ()
+				//double zpt = le.getLocation().getZ(); // (p_attacker.getLocation().getZ()
 														// +
 														// le.getLocation().getZ())
 														// / 2;
@@ -6043,15 +6043,15 @@ public class ItemMechanics implements Listener {
 						p_attacker.setHealth((int) new_health_display);
 					}
 				}
-				double xpt = le.getLocation().getX(); // (p_attacker.getLocation().getX()
+				//double xpt = le.getLocation().getX(); // (p_attacker.getLocation().getX()
 														// +
 														// le.getLocation().getX())
 														// / 2;
-				double ypt = le.getLocation().getY(); // (p_attacker.getLocation().getY()
+				//double ypt = le.getLocation().getY(); // (p_attacker.getLocation().getY()
 														// +
 														// le.getLocation().getY())
 														// / 2;
-				double zpt = le.getLocation().getZ(); // (p_attacker.getLocation().getZ()
+				//double zpt = le.getLocation().getZ(); // (p_attacker.getLocation().getZ()
 														// +
 														// le.getLocation().getZ())
 														// / 2;
@@ -6694,7 +6694,6 @@ public class ItemMechanics implements Listener {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onPlayerShootWand(PlayerInteractEvent e) {
 		Player pl = e.getPlayer();

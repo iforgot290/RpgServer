@@ -495,7 +495,7 @@ public class LevelMechanics implements Listener {
 																								// formula
 		// int xp = mob_level * 15 + new Random().nextInt(50) + 5;
 		// int level = getPlayerLevel(player);
-		ItemStack weapon = kill.getEquipment().getItemInHand();
+		ItemStack weapon = kill.getEquipment().getItemInMainHand();
 
 		// if (level - 8 > mob_level)
 		// return 0;

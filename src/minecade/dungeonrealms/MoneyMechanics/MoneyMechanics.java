@@ -1,7 +1,6 @@
 package minecade.dungeonrealms.MoneyMechanics;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,14 +18,12 @@ import java.util.logging.Logger;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
@@ -48,7 +45,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.AchievementMechanics.AchievementMechanics;
@@ -58,7 +54,6 @@ import minecade.dungeonrealms.InstanceMechanics.InstanceMechanics;
 import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.MerchantMechanics.MerchantMechanics;
 import minecade.dungeonrealms.MoneyMechanics.commands.CommandMNote;
-import minecade.dungeonrealms.PetMechanics.PetMechanics;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
 import minecade.dungeonrealms.ShopMechanics.ShopMechanics;
 import minecade.dungeonrealms.TradeMechanics.TradeMechanics;
@@ -1400,7 +1395,7 @@ public class MoneyMechanics implements Listener {
 							+ " Please enter the amount you'd like to sign an additional bank note for. Alternatively, type "
 							+ ChatColor.RED + "'cancel'" + ChatColor.GRAY + " to stop this operation.");
 			split_map.put(p, 0);
-			p.setItemInHand(markSplitting(i));
+			p.getInventory().setItemInMainHand(markSplitting(i));
 		}
 	}
 
@@ -1467,7 +1462,7 @@ public class MoneyMechanics implements Listener {
 				}
 			}
 
-			if (!ShopMechanics.hasCollectionBinItems(p.getName())) {
+			if (!ShopMechanics.hasCollectionBinItems(p.getUniqueId())) {
 				p.sendMessage(ChatColor.RED + "You have no items in your collection bin. To access your bank account, "
 						+ ChatColor.UNDERLINE + "RIGHT CLICK" + ChatColor.RED + " the bank chest.");
 				return;
@@ -1572,7 +1567,7 @@ public class MoneyMechanics implements Listener {
 				return;
 			}
 
-			if (ShopMechanics.hasCollectionBinItems(p.getName())) {
+			if (ShopMechanics.hasCollectionBinItems(p.getUniqueId())) {
 				p.sendMessage(ChatColor.GRAY + "Banker: " + ChatColor.WHITE + "Hello " + p.getName()
 						+ ", you have some items waiting for you in your collection bin! If you want to access your bank inventory instead, just "
 						+ ChatColor.UNDERLINE + "SNEAK + LEFT CLICK" + ChatColor.WHITE + " the bank chest.");
@@ -1674,8 +1669,8 @@ public class MoneyMechanics implements Listener {
 		if (e.getInventory().getName().equalsIgnoreCase("Collection Bin")) {
 			// They can't possible have a store open if they have a collection
 			// bin.
-			ShopMechanics.shop_stock.remove(p.getName());
-			ShopMechanics.need_sql_update.add(p.getName());
+			ShopMechanics.shop_stock.remove(p.getUniqueId());
+			ShopMechanics.need_sql_update.add(p.getUniqueId());
 
 			Inventory cb = e.getInventory();
 			if (cb.contains(Material.NETHER_STAR)) {
@@ -1702,9 +1697,9 @@ public class MoneyMechanics implements Listener {
 				}
 			}
 			if (items_left <= 0) {
-				ShopMechanics.collection_bin.remove(p.getName());
-				ShopMechanics.shop_stock.remove(p.getName());
-				ShopMechanics.need_sql_update.add(p.getName()); // Remove
+				ShopMechanics.collection_bin.remove(p.getUniqueId());
+				ShopMechanics.shop_stock.remove(p.getUniqueId());
+				ShopMechanics.need_sql_update.add(p.getUniqueId()); // Remove
 																// shop_backup
 																// data since
 																// collection_bin

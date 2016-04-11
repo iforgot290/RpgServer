@@ -34,6 +34,7 @@ public class ItemGenerator {
 
 	private int mobTier = -1;
 	private boolean isReroll = false;
+	@SuppressWarnings("unused")
 	private int pLevel;
 
 	private ItemStack item;

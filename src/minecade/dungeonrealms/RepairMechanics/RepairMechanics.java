@@ -12,8 +12,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -46,7 +44,6 @@ import minecade.dungeonrealms.ItemMechanics.ItemMechanics;
 import minecade.dungeonrealms.ProfessionMechanics.ProfessionMechanics;
 import minecade.dungeonrealms.RealmMechanics.RealmMechanics;
 import minecade.dungeonrealms.managers.PlayerManager;
-import net.minecraft.server.v1_9_R1.PacketPlayOutWorldEvent;
 
 public class RepairMechanics implements Listener {
 	static Logger log = Logger.getLogger("Minecraft");
@@ -72,6 +69,7 @@ public class RepairMechanics implements Listener {
 		Main.plugin.getServer().getPluginManager().registerEvents(this, Main.plugin);
 
 		Main.plugin.getServer().getScheduler().runTaskTimerAsynchronously(Main.plugin, new Runnable() {
+			@SuppressWarnings("unused")
 			public void run() {
 				for (Entry<Player, Integer> data : repair_state.entrySet()) {
 					int step = data.getValue();
@@ -110,14 +108,8 @@ public class RepairMechanics implements Listener {
 						if (floater.getItemStack().getType().name().toUpperCase().contains("GOLD")) {
 							particleID = 41;
 						}
-
-						Packet particles = new PacketPlayOutWorldEvent(2001,
-								(int) Math.round(anvil.getLocation().getX()),
-								(int) Math.round(anvil.getLocation().getY()),
-								(int) Math.round(anvil.getLocation().getZ()), particleID, false);
-						((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
-								anvil.getLocation().getX(), anvil.getLocation().getY(), anvil.getLocation().getZ(), 24,
-								((CraftWorld) anvil.getWorld()).getHandle().dimension, particles);
+						
+						//TODO repair particles
 
 						step += 1;
 						repair_state.put(p, step);
@@ -346,17 +338,17 @@ public class RepairMechanics implements Listener {
 			if (item_type.equalsIgnoreCase("wep")) { // Break the weapon!
 				if (ProfessionMechanics.isSkillItem(i) && ProfessionMechanics.getItemLevel(i) == 100) {
 					// TODO: Transform to T1 pickaxe w/ stats.
-					p.setItemInHand(ProfessionMechanics.resetToNoviceSkillItem(i));
-					p.playSound(p.getLocation(), Sound.LEVEL_UP, 1F, 1F);
+					p.getInventory().setItemInMainHand(ProfessionMechanics.resetToNoviceSkillItem(i));
+					p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
 				} else {
-					p.setItemInHand(new ItemStack(Material.AIR, 1));
-					p.playSound(p.getLocation(), Sound.ITEM_BREAK, 1F, 1F);
+					p.getInventory().setItemInMainHand(new ItemStack(Material.AIR, 1));
+					p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1F, 1F);
 					p.updateInventory();
 
 					Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 						public void run() {
-							if (p.getItemInHand() == i) {
-								p.setItemInHand(new ItemStack(Material.AIR, 1));
+							if (p.getInventory().getItemInMainHand() == i) {
+								p.getInventory().setItemInMainHand(new ItemStack(Material.AIR, 1));
 								// p.playSound(p.getLocation(),
 								// Sound.ITEM_BREAK, 1F, 1F);
 								p.updateInventory();
@@ -407,12 +399,12 @@ public class RepairMechanics implements Listener {
 				float minX = 0.20f;
 				float maxX = 0.25f;
 				float pitch_mod = 1.0F - (r.nextFloat() * (maxX - minX) + minX);
-				p.playSound(p.getLocation(), Sound.ITEM_BREAK, 1.00F, pitch_mod);
+				p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.00F, pitch_mod);
 
-				HealthMechanics.health_data.put(p.getName(), new_max);
+				HealthMechanics.health_data.put(p.getUniqueId(), new_max);
 				ItemMechanics.need_update.add(p.getName());
 
-				HealthMechanics.setPlayerHP(p.getName(), new_max);
+				HealthMechanics.setPlayerHP(p.getUniqueId(), new_max);
 				// p.setLevel(new_max);
 				p.setHealth(20);
 
@@ -450,7 +442,7 @@ public class RepairMechanics implements Listener {
 
 			if (item_type.equalsIgnoreCase("armor") && new_dur <= 150 && new_dur >= 140) {
 				// 10%
-				p.playSound(p.getLocation(), Sound.ANVIL_BREAK, 0.5F, 1F);
+				p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 0.5F, 1F);
 				p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "      *10% DURABILITY " + ChatColor.RED
 						+ "LEFT ON " + i.getItemMeta().getDisplayName() + ChatColor.RED.toString() + "*");
 				warned_durability.put(i.getItemMeta().getDisplayName(), System.currentTimeMillis());
@@ -458,7 +450,7 @@ public class RepairMechanics implements Listener {
 
 			if (item_type.equalsIgnoreCase("armor") && new_dur <= 30 && new_dur >= 20) {
 				// 2%
-				p.playSound(p.getLocation(), Sound.ANVIL_BREAK, 0.5F, 1F);
+				p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 0.5F, 1F);
 				p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "      *2% DURABILITY " + ChatColor.RED + "LEFT ON "
 						+ i.getItemMeta().getDisplayName() + ChatColor.RED.toString() + "*");
 				warned_durability.put(i.getItemMeta().getDisplayName(), System.currentTimeMillis());
@@ -466,7 +458,7 @@ public class RepairMechanics implements Listener {
 
 			if (item_type.equalsIgnoreCase("wep") && new_dur <= 100 && new_dur >= 90) {
 				// 10%
-				p.playSound(p.getLocation(), Sound.ANVIL_BREAK, 0.5F, 1F);
+				p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 0.5F, 1F);
 				p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "      *10% DURABILITY " + ChatColor.RED
 						+ "LEFT ON " + i.getItemMeta().getDisplayName() + ChatColor.RED.toString() + "*");
 				warned_durability.put(i.getItemMeta().getDisplayName(), System.currentTimeMillis());
@@ -474,7 +466,7 @@ public class RepairMechanics implements Listener {
 
 			if (item_type.equalsIgnoreCase("wep") && new_dur <= 20 && new_dur >= 10) {
 				// 2%
-				p.playSound(p.getLocation(), Sound.ANVIL_BREAK, 0.5F, 1F);
+				p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 0.5F, 1F);
 				p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "      *2% DURABILITY " + ChatColor.RED + "LEFT ON "
 						+ i.getItemMeta().getDisplayName() + ChatColor.RED.toString() + "*");
 				warned_durability.put(i.getItemMeta().getDisplayName(), System.currentTimeMillis());
@@ -491,17 +483,17 @@ public class RepairMechanics implements Listener {
 			if (item_type.equalsIgnoreCase("wep")) { // Break the weapon!
 				if (ProfessionMechanics.isSkillItem(i) && ProfessionMechanics.getItemLevel(i) == 100) {
 					// TODO: Transform to T1 pickaxe w/ stats.
-					p.setItemInHand(ProfessionMechanics.resetToNoviceSkillItem(i));
-					p.playSound(p.getLocation(), Sound.LEVEL_UP, 1F, 1F);
+					p.getInventory().setItemInMainHand(ProfessionMechanics.resetToNoviceSkillItem(i));
+					p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
 				} else {
-					p.setItemInHand(new ItemStack(Material.AIR, 1));
-					p.playSound(p.getLocation(), Sound.ITEM_BREAK, 1F, 1F);
+					p.getInventory().setItemInMainHand(new ItemStack(Material.AIR, 1));
+					p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1F, 1F);
 					p.updateInventory();
 
 					Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 						public void run() {
-							if (p.getItemInHand() == i) {
-								p.setItemInHand(new ItemStack(Material.AIR, 1));
+							if (p.getInventory().getItemInMainHand() == i) {
+								p.getInventory().setItemInMainHand(new ItemStack(Material.AIR, 1));
 								// p.playSound(p.getLocation(),
 								// Sound.ITEM_BREAK, 1F, 1F);
 								p.updateInventory();
@@ -552,12 +544,12 @@ public class RepairMechanics implements Listener {
 				float minX = 0.20f;
 				float maxX = 0.25f;
 				float pitch_mod = 1.0F - (r.nextFloat() * (maxX - minX) + minX);
-				p.playSound(p.getLocation(), Sound.ITEM_BREAK, 1.00F, pitch_mod);
+				p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.00F, pitch_mod);
 
-				HealthMechanics.health_data.put(p.getName(), new_max);
+				HealthMechanics.health_data.put(p.getUniqueId(), new_max);
 				ItemMechanics.need_update.add(p.getName());
 
-				HealthMechanics.setPlayerHP(p.getName(), new_max);
+				HealthMechanics.setPlayerHP(p.getUniqueId(), new_max);
 				// p.setLevel(new_max);
 				p.setHealth(20);
 
@@ -977,6 +969,7 @@ public class RepairMechanics implements Listener {
 				p.updateInventory();
 			}
 
+			@SuppressWarnings("unused")
 			int particleID = 1;
 			// log.info(floater.getType().getName().toUpperCase());
 			if (in_slot.getType().name().toUpperCase().contains("BOW")) {
@@ -1004,12 +997,7 @@ public class RepairMechanics implements Listener {
 				particleID = 41;
 			}
 
-			Packet particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(p.getLocation().getX()),
-					(int) Math.round(p.getLocation().getY() + 2), (int) Math.round(p.getLocation().getZ()), particleID,
-					false);
-			((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(p.getLocation().getX(),
-					p.getLocation().getY(), p.getLocation().getZ(), 36,
-					((CraftWorld) p.getWorld()).getHandle().dimension, particles);
+			//TODO repair particles
 
 			if (PlayerManager.getPlayerModel(p).getToggleList() != null) {
 				if (PlayerManager.getPlayerModel(p).getToggleList().contains("debug")) {
@@ -1075,7 +1063,7 @@ public class RepairMechanics implements Listener {
 					ChatColor.RED + "" + ChatColor.BOLD + "-" + ChatColor.RED + repair_cost + ChatColor.BOLD + "G");
 			anvil_map.remove(p);
 
-			p.playSound(p.getLocation(), Sound.ANVIL_USE, 1F, 1F);
+			p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1F, 1F);
 			repair_state.put(p, 0);
 			return;
 		}

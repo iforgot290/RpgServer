@@ -23,13 +23,13 @@ public class Utils {
 		if (i == null) {
 			return i;
 		}
-		net.minecraft.server.v1_7_R2.ItemStack x = CraftItemStack.asNMSCopy(i);
+		net.minecraft.server.v1_9_R1.ItemStack x = CraftItemStack.asNMSCopy(i);
 		try {
-			net.minecraft.server.v1_7_R2.NBTTagList cpe = new net.minecraft.server.v1_7_R2.NBTTagList();
+			net.minecraft.server.v1_9_R1.NBTTagList cpe = new net.minecraft.server.v1_9_R1.NBTTagList();
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setByte("Id", (byte) 6);
 			cpe.add(tag);
-			x.tag.set("CustomPotionEffects", cpe);
+			x.getTag().set("CustomPotionEffects", cpe);
 		} catch (NullPointerException npe) {
 			return CraftItemStack.asBukkitCopy(x);
 		}

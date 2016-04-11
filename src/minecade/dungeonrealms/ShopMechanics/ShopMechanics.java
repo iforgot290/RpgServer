@@ -24,11 +24,11 @@ import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
@@ -89,10 +89,9 @@ import minecade.dungeonrealms.holograms.Hologram;
 import minecade.dungeonrealms.jsonlib.JsonBuilder;
 import minecade.dungeonrealms.models.LogModel;
 import net.citizensnpcs.api.CitizensAPI;
-import net.minecraft.server.v1_9_R1.EntityPlayer;
+import net.minecraft.server.v1_9_R1.EntityHuman;
 import net.minecraft.server.v1_9_R1.EntityTracker;
 import net.minecraft.server.v1_9_R1.EntityTrackerEntry;
-import net.minecraft.server.v1_9_R1.PacketPlayOutWorldEvent;
 import net.minecraft.server.v1_9_R1.WorldServer;
 
 @SuppressWarnings("deprecation")
@@ -1529,7 +1528,7 @@ public class ShopMechanics implements Listener {
 			return;
 		}
 
-		if (hasCollectionBinItems(p.getName())
+		if (hasCollectionBinItems(p.getUniqueId())
 				&& (!collectionBinHasPrices(p.getName()) || !DuelMechanics.isDamageDisabled(p.getLocation()))) {
 			p.sendMessage(ChatColor.RED + "You have item(s) waiting in your collection bin.");
 			p.sendMessage(ChatColor.GRAY + "Access your bank chest to claim them.");
@@ -1543,13 +1542,13 @@ public class ShopMechanics implements Listener {
 			return;
 		}
 
-		if (KarmaMechanics.getRawAlignment(p.getName()).equalsIgnoreCase("evil")) {
+		if (KarmaMechanics.getRawAlignment(p).equalsIgnoreCase("evil")) {
 			p.sendMessage(ChatColor.RED + "You " + ChatColor.UNDERLINE + "cannot" + ChatColor.RED
 					+ " place your shop while chaotic.");
 			return;
 		}
 
-		if (hasLocalShop(p.getName()) && inverse_shop_owners.containsKey(p.getName())) {
+		if (hasLocalShop(p.getUniqueId()) && inverse_shop_owners.containsKey(p.getName())) {
 			Block shop = inverse_shop_owners.get(p.getName());
 			p.sendMessage(ChatColor.YELLOW + "You already have an open shop on " + ChatColor.UNDERLINE + "this"
 					+ ChatColor.YELLOW + " server.");
@@ -1598,8 +1597,8 @@ public class ShopMechanics implements Listener {
 			// p.sendMessage(ChatColor.GRAY + "REQ: 2 AIR Blocks above spot.");
 		}
 
-		if (doesPlayerHaveShopSQL(p.getName())) {
-			int server_num = getServerLocationOfShop(p.getName());
+		if (doesPlayerHaveShopSQL(p.getUniqueId())) {
+			int server_num = getServerLocationOfShop(p.getUniqueId());
 			String prefix = "US-";
 
 			String motd = Bukkit.getMotd();
@@ -1694,17 +1693,17 @@ public class ShopMechanics implements Listener {
 		b2.setType(Material.CHEST);
 		shop_owners.put(b1, p.getName());
 		shop_owners.put(b2, p.getName());
-		inverse_shop_owners.put(p.getName(), b1);
+		inverse_shop_owners.put(p.getUniqueId(), b1);
 		// inverse_shop_owners.put(p.getName(), b2);
 		chest_partners.put(b1, b2);
 		chest_partners.put(b2, b1);
 		// modifying_stock.add(p.getName());
 		String default_shop_name = " Shop";
 
-		opening_shop.add(p.getName());
+		opening_shop.add(p.getUniqueId());
 		p.sendMessage(ChatColor.YELLOW + "Please enter a " + ChatColor.BOLD + "SHOP NAME." + ChatColor.YELLOW
 				+ " [max. 12 characters]");
-		p.playSound(p.getLocation(), Sound.WOOD_CLICK, 1F, 0.8F);
+		p.playSound(p.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1F, 0.8F);
 
 		// TODO: Make sure this still works.
 		Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
@@ -1747,7 +1746,7 @@ public class ShopMechanics implements Listener {
 		}
 
 		if (count > 0) {
-			collection_bin.put(p.getName(), p.getOpenInventory().getTopInventory());
+			collection_bin.put(p.getUniqueId(), p.getOpenInventory().getTopInventory());
 		} else if (count <= 0) {
 			log.info("[ShopMechanics] Removing local collection_bin data for " + p.getName()
 					+ ", no items left in bin!");
@@ -1774,6 +1773,7 @@ public class ShopMechanics implements Listener {
 
 		final String owner_name = e.getInventory().getTitle()
 				.substring(e.getInventory().getTitle().lastIndexOf("@") + 1, e.getInventory().getTitle().length());
+		final OfflinePlayer op = Bukkit.getOfflinePlayer(owner_name);
 		int shop_slots = getShopSlots(getShopLevel(owner_name));
 
 		if (slot >= shop_slots && (!(e.isShiftClick()) || (!shop_stock.containsKey(p.getName())
@@ -1835,7 +1835,7 @@ public class ShopMechanics implements Listener {
 				open_shops.add(chest_partners.get(p_shop));
 				// modifying_stock.remove(p.getName());
 				setStoreColor(p_shop, ChatColor.GREEN);
-				p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 1.3F);
+				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1.3F);
 				return;
 			}
 			if (i.getItem(slot).getDurability() == (short) 10) {
@@ -1852,7 +1852,7 @@ public class ShopMechanics implements Listener {
 				open_shops.remove(p_shop);
 				open_shops.remove(chest_partners.get(p_shop));
 				// modifying_stock.add(p.getName());
-				p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 0.70F);
+				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0.70F);
 				setStoreColor(p_shop, ChatColor.RED);
 
 				List<Player> viewers = new ArrayList<Player>();
@@ -1864,7 +1864,7 @@ public class ShopMechanics implements Listener {
 					}
 					for (Player he_p : viewers) {
 						if (!he_p.getName().equalsIgnoreCase(p.getName())) {
-							he_p.playSound(p.getLocation(), Sound.CHEST_CLOSE, 1F, 1F);
+							he_p.playSound(p.getLocation(), Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
 							he_p.closeInventory();
 							// he_p.sendMessage(ChatColor.RED + "Shop closed.");
 							continue;
@@ -1928,7 +1928,7 @@ public class ShopMechanics implements Listener {
 					return;
 				}
 
-				current_item_being_stocked.put(p.getName(), e.getCurrentItem());
+				current_item_being_stocked.put(p.getUniqueId(), e.getCurrentItem());
 				price_update_needed.add(p);
 				e.setCurrentItem(new ItemStack(Material.AIR));
 
@@ -2030,8 +2030,8 @@ public class ShopMechanics implements Listener {
 																	// dupe
 																	// item.
 					e.setCancelled(true);
-					shop_stock.put(p.getName(), i);
-					current_item_being_stocked.put(p.getName(), i_added);
+					shop_stock.put(p.getUniqueId(), i);
+					current_item_being_stocked.put(p.getUniqueId(), i_added);
 
 					Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 						public void run() {
@@ -2179,7 +2179,7 @@ public class ShopMechanics implements Listener {
 											}
 										}, 2L);
 
-								current_item_being_stocked.put(p.getName(), to_stock);
+								current_item_being_stocked.put(p.getUniqueId(), to_stock);
 							} else {
 								in_stock = i.getItem(i.first(cur_item.getType()));
 								price = getPrice(in_stock);
@@ -2192,7 +2192,7 @@ public class ShopMechanics implements Listener {
 
 							// e.setCurrentItem(to_stock);
 							// i.setItem(i.firstEmpty(), to_stock);
-							shop_stock.put(p.getName(), i);
+							shop_stock.put(p.getUniqueId(), i);
 						}
 						if (slot < (i.getSize() - 1)) {
 							e.setCurrentItem(removePrice(e.getCurrentItem()));
@@ -2291,7 +2291,7 @@ public class ShopMechanics implements Listener {
 				Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 					public void run() {
 						p.closeInventory();
-						p.playSound(p.getLocation(), Sound.CHEST_CLOSE, 1F, 1F);
+						p.playSound(p.getLocation(), Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
 						p.sendMessage(ChatColor.RED + "This shop has closed.");
 					}
 				}, 2L);
@@ -2337,7 +2337,7 @@ public class ShopMechanics implements Listener {
 			}
 
 			if (!e.isShiftClick()) {
-				current_item_being_bought.put(p.getName(), e.getRawSlot());
+				current_item_being_bought.put(p.getUniqueId(), e.getRawSlot());
 				shop_being_browsed.put(p.getName(), owner_name);
 				int total_price = price * being_bought.getAmount();
 				Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
@@ -2370,12 +2370,12 @@ public class ShopMechanics implements Listener {
 					return;
 				}
 
-				if (Bukkit.getPlayer(owner_name) != null && Bukkit.getPlayer(owner_name).isOnline()) {
+				if (Bukkit.getPlayer(owner_name) != null) {
+					Player p_owner_name = Bukkit.getPlayer(owner_name);
 					int old_net = MoneyMechanics.bank_map.get(owner_name);
 					int new_net = old_net + total_price;
-					MoneyMechanics.bank_map.put(owner_name, new_net);
+					MoneyMechanics.bank_map.put(p_owner_name.getUniqueId(), new_net);
 
-					Player p_owner_name = Bukkit.getPlayer(owner_name);
 					if (being_bought != null && hasCustomName(being_bought)) {
 						CraftItemStack css = (CraftItemStack) being_bought;
 						String i_name = CraftItemStack.asNMSCopy(css).getTag().getCompound("display").getString("Name");
@@ -2402,7 +2402,7 @@ public class ShopMechanics implements Listener {
 												.setData("damage", being_bought.getDurability())
 												.setData("amount", being_bought.getAmount()).getJson());
 					}
-				} else if (Bukkit.getPlayer(owner_name) == null || !(Bukkit.getPlayer(owner_name).isOnline())) {
+				} else if (Bukkit.getPlayer(owner_name) == null) {
 					// They're not online locally.
 					String i_name = being_bought.getType().toString().toLowerCase();
 					if (being_bought != null && hasCustomName(being_bought)) {
@@ -2414,14 +2414,14 @@ public class ShopMechanics implements Listener {
 
 					Main.plugin.getServer().getScheduler().scheduleAsyncDelayedTask(Main.plugin, new Runnable() {
 						public void run() {
-							boolean online_global = Hive.isPlayerOnline(owner_name);
+							boolean online_global = Hive.isPlayerOnline(op.getUniqueId());
 							if (online_global == true) {
 								// They're online SOME server, so this is gonna
 								// be a pain in the ass.
 								// We need to notify them of their sold item AND
 								// update their information. We'll need a
 								// socket!
-								int server_num = Hive.getPlayerServer(owner_name, false);
+								int server_num = Hive.getPlayerServer(op, false);
 								String server_ip = CommunityMechanics.server_list.get(server_num);
 								// // @money@vaquxine,50.1:availer#epic sword#
 								List<Object> query = new ArrayList<Object>();
@@ -2450,12 +2450,12 @@ public class ShopMechanics implements Listener {
 				e.setCurrentItem(new ItemStack(Material.AIR));
 
 				p.sendMessage(ChatColor.GREEN + "Transaction successful.");
-				p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 1F);
+				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
 				// p.getWorld().spawnParticle(p.getLocation().add(0, 2.5, 0),
 				// Particle.HAPPY_VILLAGER, 0.5F, 20);
 				p.updateInventory();
 
-				AchievementMechanics.addAchievement(owner_name, "A Merchant");
+				AchievementMechanics.addAchievement(op.getUniqueId(), "A Merchant");
 
 				int items_left = 0;
 				for (ItemStack is : i.getContents()) {
@@ -2477,7 +2477,7 @@ public class ShopMechanics implements Listener {
 					open_shops.remove(chest);
 					open_shops.remove(chest_partners.get(chest));
 
-					p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 0.70F);
+					p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0.70F);
 
 					List<Player> viewers = new ArrayList<Player>();
 
@@ -2491,7 +2491,7 @@ public class ShopMechanics implements Listener {
 
 					for (Player pl : viewers) {
 						if (!pl.getName().equalsIgnoreCase(p.getName())) {
-							pl.playSound(p.getLocation(), Sound.CHEST_CLOSE, 1F, 1F);
+							pl.playSound(p.getLocation(), Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
 							pl.closeInventory();
 							continue;
 						}
@@ -2531,37 +2531,22 @@ public class ShopMechanics implements Listener {
 							chest.setType(Material.AIR);
 							other_chest.setType(Material.AIR);
 
-							Packet b_particles = new PacketPlayOutWorldEvent(2001,
-									(int) Math.round(chest.getLocation().getX()),
-									(int) Math.round(chest.getLocation().getY()),
-									(int) Math.round(chest.getLocation().getZ()), 54, false);
-							((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
-									chest.getLocation().getX(), chest.getLocation().getY(), chest.getLocation().getZ(),
-									24, ((CraftWorld) chest.getWorld()).getHandle().dimension, b_particles);
+							//TODO block break particles
 
-							Packet other_chest_particles = new PacketPlayOutWorldEvent(2001,
-									(int) Math.round(other_chest.getLocation().getX()),
-									(int) Math.round(other_chest.getLocation().getY()),
-									(int) Math.round(other_chest.getLocation().getZ()), 54, false);
-							((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
-									other_chest.getLocation().getX(), other_chest.getLocation().getY(),
-									other_chest.getLocation().getZ(), 24,
-									((CraftWorld) other_chest.getWorld()).getHandle().dimension, other_chest_particles);
-
-							asyncSetShopServerSQL(shop_owner, -1);
+							asyncSetShopServerSQL(op.getUniqueId(), -1);
 						}
 					}, 5L);
 
-					if (!(need_sql_update.contains(p.getName()))) {
-						need_sql_update.add(p.getName()); // Update SQL after an
+					if (!(need_sql_update.contains(p.getUniqueId()))) {
+						need_sql_update.add(p.getUniqueId()); // Update SQL after an
 															// item is sold from
 															// the shop.
 					}
 					return;
 				}
 
-				if (!(need_sql_update.contains(p.getName()))) {
-					need_sql_update.add(p.getName()); // Update SQL after an
+				if (!(need_sql_update.contains(p.getUniqueId()))) {
+					need_sql_update.add(p.getUniqueId()); // Update SQL after an
 														// item is sold from the
 														// shop.
 				}
@@ -2651,8 +2636,8 @@ public class ShopMechanics implements Listener {
 			p.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "YOU'VE CREATED A SHOP!");
 			p.sendMessage(ChatColor.YELLOW + "To stock your shop, simply drag items into your shop's inventory.");
 
-			if (hasCollectionBinItems(p.getName()) && DuelMechanics.isDamageDisabled(p.getLocation())) {
-				Inventory cb = collection_bin.get(p.getName());
+			if (hasCollectionBinItems(p.getUniqueId()) && DuelMechanics.isDamageDisabled(p.getLocation())) {
+				Inventory cb = collection_bin.get(p.getUniqueId());
 				if (getPrice(cb.getItem(0)) != -1) {
 					for (ItemStack is : cb) {
 						if (is == null || is.getType() == Material.AIR) {
@@ -2664,13 +2649,13 @@ public class ShopMechanics implements Listener {
 						new_shop_inv.setItem(new_shop_inv.firstEmpty(), is);
 					}
 					cb.clear();
-					collection_bin.remove(p.getName());
+					collection_bin.remove(p.getUniqueId());
 					p.sendMessage("");
 					p.sendMessage(ChatColor.GREEN + "Previous shop stock " + ChatColor.BOLD + "LOADED.");
 					p.sendMessage("");
 				}
-			} else if (hasCollectionBinItems(p.getName()) && !DuelMechanics.isDamageDisabled(p.getLocation())) {
-				Inventory cb = collection_bin.get(p.getName());
+			} else if (hasCollectionBinItems(p.getUniqueId()) && !DuelMechanics.isDamageDisabled(p.getLocation())) {
+				Inventory cb = collection_bin.get(p.getUniqueId());
 				List<ItemStack> new_contents = new ArrayList<ItemStack>();
 				for (ItemStack is : cb.getContents()) {
 					if (is == null || is.getType() == Material.AIR) {
@@ -2685,11 +2670,11 @@ public class ShopMechanics implements Listener {
 					cb.setItem(cb.firstEmpty(), is);
 				}
 
-				collection_bin.put(p.getName(), cb);
+				collection_bin.put(p.getUniqueId(), cb);
 			}
 
-			shop_stock.put(p.getName(), new_shop_inv);
-			p.playSound(p.getLocation(), Sound.CHEST_OPEN, 1F, 1F);
+			shop_stock.put(p.getUniqueId(), new_shop_inv);
+			p.playSound(p.getLocation(), Sound.BLOCK_CHEST_OPEN, 1F, 1F);
 
 			String motd = Bukkit.getMotd();
 			int server_num = Integer.parseInt(motd.substring(motd.indexOf("-") + 1, motd.indexOf(" ")));
@@ -2702,7 +2687,7 @@ public class ShopMechanics implements Listener {
 			if (motd.contains("US-YT")) {
 				server_num += 3000;
 			}
-			asyncSetShopServerSQL(p.getName(), server_num);
+			asyncSetShopServerSQL(p.getUniqueId(), server_num);
 			p.openInventory(new_shop_inv);
 		}
 
@@ -2740,7 +2725,7 @@ public class ShopMechanics implements Listener {
 				p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "*** SHOP UPGRADE TO LEVEL " + new_tier
 						+ " COMPLETE ***");
 				p.sendMessage(ChatColor.GRAY + "You now have " + getShopSlots(new_tier) + " shop slots available.");
-				p.playSound(p.getLocation(), Sound.LEVEL_UP, 1F, 1.25F);
+				p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1.25F);
 			} else {
 				p.sendMessage(ChatColor.RED + "Invalid authentication code entered. Shop upgrade cancelled.");
 				shop_upgrade_codes.remove(p.getName());
@@ -2765,17 +2750,18 @@ public class ShopMechanics implements Listener {
 			}
 
 			final String shop_owner = shop_being_browsed.get(p.getName());
+			final OfflinePlayer op = Bukkit.getOfflinePlayer(shop_owner);
 
-			if (!(isShopOpen(inverse_shop_owners.get(shop_owner)))) {
+			if (!(isShopOpen(inverse_shop_owners.get(op.getUniqueId())))) {
 				p.sendMessage(ChatColor.RED + "The shop is no longer available.");
-				current_item_being_bought.remove(p.getName());
+				current_item_being_bought.remove(p.getUniqueId());
 				shop_being_browsed.remove(p.getName());
 				return;
 			}
 
-			Inventory shop_inv = shop_stock.get(shop_owner);
-			Block b = inverse_shop_owners.get(shop_owner);
-			int slot = current_item_being_bought.get(p.getName());
+			Inventory shop_inv = shop_stock.get(op.getUniqueId());
+			Block b = inverse_shop_owners.get(op.getUniqueId());
+			int slot = current_item_being_bought.get(p.getUniqueId());
 			if (shop_inv.getItem(slot) == null) {
 				p.sendMessage(ChatColor.RED + "Attempted to purchase null item, aborted.");
 				return;
@@ -2785,7 +2771,7 @@ public class ShopMechanics implements Listener {
 			if (p.getLocation().distanceSquared(b.getLocation()) > 16) {
 				p.sendMessage(
 						ChatColor.RED + "You are too far away from the shop [>4 blocks], purchase of item CANCELLED.");
-				current_item_being_bought.remove(p.getName());
+				current_item_being_bought.remove(p.getUniqueId());
 				shop_being_browsed.remove(p.getName());
 				return;
 			}
@@ -2857,9 +2843,9 @@ public class ShopMechanics implements Listener {
 			}
 
 			if (Bukkit.getPlayer(shop_owner) != null && Bukkit.getPlayer(shop_owner).isOnline()) {
-				int old_net = MoneyMechanics.bank_map.get(shop_owner);
+				int old_net = MoneyMechanics.bank_map.get(op.getUniqueId());
 				int new_net = old_net + total_price;
-				MoneyMechanics.bank_map.put(shop_owner, new_net);
+				MoneyMechanics.bank_map.put(op.getUniqueId(), new_net);
 
 				Player p_shop_owner = Bukkit.getPlayer(shop_owner);
 				if (i != null && hasCustomName(i)) {
@@ -2904,14 +2890,14 @@ public class ShopMechanics implements Listener {
 							i_name = CraftItemStack.asNMSCopy(css).getTag().getCompound("display").getString("Name");
 						}
 
-						boolean online_global = Hive.isPlayerOnline(shop_owner);
+						boolean online_global = Hive.isPlayerOnline(op.getUniqueId());
 						if (online_global) {
 							// They're online SOME server, so this is gonna be a
 							// pain in the ass.
 							// We need to notify them of their sold item AND
 							// update their information. We'll need a socket!
 							// TODO: Socket
-							int server_num = Hive.getPlayerServer(shop_owner, false);
+							int server_num = Hive.getPlayerServer(op.getUniqueId(), false);
 							String server_ip = CommunityMechanics.server_list.get(server_num);
 
 							List<Object> query = new ArrayList<Object>();
@@ -2935,13 +2921,13 @@ public class ShopMechanics implements Listener {
 				p.getInventory().setItem(p.getInventory().firstEmpty(), removePrice(bought_stack));
 			}
 
-			current_item_being_bought.remove(p.getName());
+			current_item_being_bought.remove(p.getUniqueId());
 			shop_being_browsed.remove(p.getName());
 
 			p.sendMessage(
 					ChatColor.RED + "" + ChatColor.BOLD + "-" + ChatColor.RED + total_price + ChatColor.BOLD + "G");
 			p.sendMessage(ChatColor.GREEN + "Transaction successful.");
-			p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 1F);
+			p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
 			// p.getWorld().spawnParticle(p.getLocation().add(0, 2.5, 0),
 			// Particle.HAPPY_VILLAGER, 0.5F, 20);
 			p.updateInventory();
@@ -2955,12 +2941,12 @@ public class ShopMechanics implements Listener {
 
 			if (items_left <= 0) {
 				// CLOSE shop, it's EMPTY.
-				final Block chest = inverse_shop_owners.get(shop_owner);
+				final Block chest = inverse_shop_owners.get(op.getUniqueId());
 				final Block other_chest = chest_partners.get(chest);
 				open_shops.remove(chest);
 				open_shops.remove(chest_partners.get(chest));
 
-				p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 0.70F);
+				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0.70F);
 
 				List<Player> viewers = new ArrayList<Player>();
 
@@ -2970,7 +2956,7 @@ public class ShopMechanics implements Listener {
 
 				for (Player he_p : viewers) {
 					if (!he_p.getName().equalsIgnoreCase(p.getName())) {
-						he_p.playSound(p.getLocation(), Sound.CHEST_CLOSE, 1F, 1F);
+						he_p.playSound(p.getLocation(), Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
 						he_p.closeInventory();
 						continue;
 					}
@@ -2991,10 +2977,10 @@ public class ShopMechanics implements Listener {
 						.substring(shop_names.get(chest).indexOf(" ") + 1, shop_names.get(chest).length())));
 				shop_names.remove(chest);
 				shop_owners.remove(chest);
-				inverse_shop_owners.remove(shop_owner);
-				shop_stock.remove(shop_owner);
-				current_item_being_stocked.remove(shop_owner);
-				opening_shop.remove(shop_owner);
+				inverse_shop_owners.remove(op.getUniqueId());
+				shop_stock.remove(op.getUniqueId());
+				current_item_being_stocked.remove(op.getUniqueId());
+				opening_shop.remove(op.getUniqueId());
 				open_shops.remove(chest);
 				// modifying_stock.remove(shop_owner);
 
@@ -3010,44 +2996,29 @@ public class ShopMechanics implements Listener {
 						chest.setType(Material.AIR);
 						other_chest.setType(Material.AIR);
 
-						Packet b_particles = new PacketPlayOutWorldEvent(2001,
-								(int) Math.round(chest.getLocation().getX()),
-								(int) Math.round(chest.getLocation().getY()),
-								(int) Math.round(chest.getLocation().getZ()), 54, false);
-						((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
-								chest.getLocation().getX(), chest.getLocation().getY(), chest.getLocation().getZ(), 24,
-								((CraftWorld) chest.getWorld()).getHandle().dimension, b_particles);
+						//TODO block break particles
 
-						Packet other_chest_particles = new PacketPlayOutWorldEvent(2001,
-								(int) Math.round(other_chest.getLocation().getX()),
-								(int) Math.round(other_chest.getLocation().getY()),
-								(int) Math.round(other_chest.getLocation().getZ()), 54, false);
-						((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
-								other_chest.getLocation().getX(), other_chest.getLocation().getY(),
-								other_chest.getLocation().getZ(), 24,
-								((CraftWorld) other_chest.getWorld()).getHandle().dimension, other_chest_particles);
-
-						asyncSetShopServerSQL(shop_owner, -1);
+						asyncSetShopServerSQL(op.getUniqueId(), -1);
 					}
 				}, 5L);
 
-				if (!(need_sql_update.contains(p.getName()))) {
-					need_sql_update.add(p.getName()); // Update SQL after a new
+				if (!(need_sql_update.contains(p.getUniqueId()))) {
+					need_sql_update.add(p.getUniqueId()); // Update SQL after a new
 														// item is added to
 														// stock.
 				}
 				return;
 			}
 
-			if (!(need_sql_update.contains(p.getName()))) {
-				need_sql_update.add(p.getName()); // Update SQL after a new item
+			if (!(need_sql_update.contains(p.getUniqueId()))) {
+				need_sql_update.add(p.getUniqueId()); // Update SQL after a new item
 													// is added to stock.
 			}
 		}
 
-		if (current_item_being_stocked.containsKey(p.getName())) {
+		if (current_item_being_stocked.containsKey(p.getUniqueId())) {
 			e.setCancelled(true);
-			ItemStack i = current_item_being_stocked.get(p.getName());
+			ItemStack i = current_item_being_stocked.get(p.getUniqueId());
 			int price_per = 0;
 			if (e.getMessage().equalsIgnoreCase("cancel")) {
 				p.sendMessage(ChatColor.RED + "Pricing of item - " + ChatColor.BOLD + "CANCELLED");
@@ -3071,8 +3042,8 @@ public class ShopMechanics implements Listener {
 			}
 
 			ItemStack i_format = setPrice(removePrice(i), price_per);
-			final Inventory shop_i = shop_stock.get(p.getName());
-			current_item_being_stocked.remove(p.getName());
+			final Inventory shop_i = shop_stock.get(p.getUniqueId());
+			current_item_being_stocked.remove(p.getUniqueId());
 
 			shop_i.setItem(shop_i.firstEmpty(), i_format);
 			if (price_update_needed.contains(p)) {
@@ -3098,9 +3069,9 @@ public class ShopMechanics implements Listener {
 				}
 			}.runTask(Main.plugin);
 
-			p.playSound(p.getLocation(), Sound.CLICK, 1F, 1.25F);
-			if (!(need_sql_update.contains(p.getName()))) {
-				need_sql_update.add(p.getName()); // Update SQL after a new item
+			p.playSound(p.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1F, 1.25F);
+			if (!(need_sql_update.contains(p.getUniqueId()))) {
+				need_sql_update.add(p.getUniqueId()); // Update SQL after a new item
 													// is added to stock.
 			}
 		}
@@ -3109,11 +3080,11 @@ public class ShopMechanics implements Listener {
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onInventoryClose(InventoryCloseEvent e) {
 		Player p = (Player) e.getPlayer();
-		if (!(shop_stock.containsKey(p.getName()))) {
+		if (!(shop_stock.containsKey(p.getUniqueId()))) {
 			return;
 		}
-		if (e.getInventory().getName().equalsIgnoreCase(shop_stock.get(p.getName()).getName())) {
-			shop_stock.put(p.getName(), e.getInventory());
+		if (e.getInventory().getName().equalsIgnoreCase(shop_stock.get(p.getUniqueId()).getName())) {
+			shop_stock.put(p.getUniqueId(), e.getInventory());
 			if (e.getInventory().firstEmpty() == -1 && e.getInventory().getSize() <= 54) {
 				p.sendMessage(ChatColor.GRAY + "Merchant: " + ChatColor.WHITE + "To purchase more shop slots, "
 						+ ChatColor.GREEN + ChatColor.BOLD + "SNEAK + RIGHT-CLICK" + ChatColor.WHITE
@@ -3127,13 +3098,13 @@ public class ShopMechanics implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onShopInteraction(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
-		if (!(shop_stock.containsKey(p.getName()))) {
+		if (!(shop_stock.containsKey(p.getUniqueId()))) {
 			return;
 		}
-		if (e.getInventory().getName().equalsIgnoreCase(shop_stock.get(p.getName()).getName())) {
-			shop_stock.put(p.getName(), e.getInventory());
-			if (!(need_sql_update.contains(p.getName()))) {
-				need_sql_update.add(p.getName()); // Update SQL after owner
+		if (e.getInventory().getName().equalsIgnoreCase(shop_stock.get(p.getUniqueId()).getName())) {
+			shop_stock.put(p.getUniqueId(), e.getInventory());
+			if (!(need_sql_update.contains(p.getUniqueId()))) {
+				need_sql_update.add(p.getUniqueId()); // Update SQL after owner
 													// closes the shop.
 			}
 			// log.info("[ShopMechanics] Updated saved shop stock for "+
@@ -3145,7 +3116,7 @@ public class ShopMechanics implements Listener {
 	public void ShopCloseEvent(InventoryCloseEvent e) {
 		final Player p = (Player) e.getPlayer();
 		if (e.getInventory().getName().contains("@")) {
-			p.playSound(p.getLocation(), Sound.CHEST_CLOSE, 1F, 1F);
+			p.playSound(p.getLocation(), Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
 			Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 				public void run() {
 					p.updateInventory();
@@ -3153,16 +3124,16 @@ public class ShopMechanics implements Listener {
 			}, 5L);
 
 			if (e.getInventory().getName().contains(p.getName())) {
-				if (!(need_sql_update.contains(p.getName()))) {
-					need_sql_update.add(p.getName()); // Update SQL after owner
+				if (!(need_sql_update.contains(p.getUniqueId()))) {
+					need_sql_update.add(p.getUniqueId()); // Update SQL after owner
 														// closes the shop.
 				}
 			}
 		}
 
 		if (e.getInventory().getName().equalsIgnoreCase("Collection Bin")) {
-			if (!(need_sql_update.contains(p.getName()))) {
-				need_sql_update.add(p.getName()); // Update SQL after owner
+			if (!(need_sql_update.contains(p.getUniqueId()))) {
+				need_sql_update.add(p.getUniqueId()); // Update SQL after owner
 													// closes the shop.
 			}
 		}
@@ -3192,8 +3163,8 @@ public class ShopMechanics implements Listener {
 				return;
 			}
 			try {
-				if (shop_stock.containsKey(p.getName())) {
-					Inventory i = shop_stock.get(p.getName());
+				if (shop_stock.containsKey(p.getUniqueId())) {
+					Inventory i = shop_stock.get(p.getUniqueId());
 					List<ItemStack> li = new ArrayList<ItemStack>();
 
 					for (ItemStack is : i.getContents()) {
@@ -3209,17 +3180,17 @@ public class ShopMechanics implements Listener {
 						for (ItemStack is : li) {
 							cb.setItem(cb.firstEmpty(), is);
 						}
-						collection_bin.put(p.getName(), cb);
+						collection_bin.put(p.getUniqueId(), cb);
 					}
 				}
 
-				if (current_item_being_stocked.containsKey(p.getName())) {
+				if (current_item_being_stocked.containsKey(p.getUniqueId())) {
 					if (p.getInventory().firstEmpty() != -1) {
 						p.getInventory().setItem(p.getInventory().firstEmpty(),
-								removePrice(current_item_being_stocked.get(p.getName())));
+								removePrice(current_item_being_stocked.get(p.getUniqueId())));
 					} else {
 						p.getWorld().dropItem(p.getLocation(),
-								removePrice(current_item_being_stocked.get(p.getName())));
+								removePrice(current_item_being_stocked.get(p.getUniqueId())));
 					}
 				}
 
@@ -3233,9 +3204,9 @@ public class ShopMechanics implements Listener {
 						shop_names.get(b).substring(shop_names.get(b).indexOf(" ") + 1, shop_names.get(b).length())));
 				shop_names.remove(b);
 				shop_owners.remove(b);
-				inverse_shop_owners.remove(p.getName());
+				inverse_shop_owners.remove(p.getUniqueId());
 				shop_stock.remove(p.getName());
-				current_item_being_stocked.remove(p.getName());
+				current_item_being_stocked.remove(p.getUniqueId());
 				price_update_needed.remove(p);
 				opening_shop.remove(p.getName());
 				open_shops.remove(b);
@@ -3251,9 +3222,9 @@ public class ShopMechanics implements Listener {
 				shop_nameplates.remove(b);
 				shop_names.remove(b);
 				shop_owners.remove(b);
-				inverse_shop_owners.remove(p.getName());
+				inverse_shop_owners.remove(p.getUniqueId());
 				shop_stock.remove(p.getName());
-				current_item_being_stocked.remove(p.getName());
+				current_item_being_stocked.remove(p.getUniqueId());
 				price_update_needed.remove(p);
 				opening_shop.remove(p.getName());
 				open_shops.remove(b);
@@ -3271,25 +3242,11 @@ public class ShopMechanics implements Listener {
 
 			Main.plugin.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
 				public void run() {
-					p.playSound(p.getLocation(), Sound.ITEM_PICKUP, 1F, 0.75F);
+					p.playSound(p.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1F, 0.75F);
 					b.setType(Material.AIR);
 					other_chest.setType(Material.AIR);
 
-					Packet b_particles = new PacketPlayOutWorldEvent(2001, (int) Math.round(b.getLocation().getX()),
-							(int) Math.round(b.getLocation().getY()), (int) Math.round(b.getLocation().getZ()), 54,
-							false);
-					((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
-							b.getLocation().getX(), b.getLocation().getY(), b.getLocation().getZ(), 24,
-							((CraftWorld) b.getWorld()).getHandle().dimension, b_particles);
-
-					Packet other_chest_particles = new PacketPlayOutWorldEvent(2001,
-							(int) Math.round(other_chest.getLocation().getX()),
-							(int) Math.round(other_chest.getLocation().getY()),
-							(int) Math.round(other_chest.getLocation().getZ()), 54, false);
-					((CraftServer) Main.plugin.getServer()).getServer().getPlayerList().sendPacketNearby(
-							other_chest.getLocation().getX(), other_chest.getLocation().getY(),
-							other_chest.getLocation().getZ(), 24,
-							((CraftWorld) other_chest.getWorld()).getHandle().dimension, other_chest_particles);
+					//TODO block break particles
 
 					// TODO: At this point, they are breaking their shop block.
 					// Their items
@@ -3298,16 +3255,16 @@ public class ShopMechanics implements Listener {
 					// int server_num =
 					// Integer.parseInt(motd.substring(motd.indexOf("US-") + 3,
 					// motd.indexOf(" ")));
-					asyncSetShopServerSQL(p.getName(), -1);
+					asyncSetShopServerSQL(p.getUniqueId(), -1);
 					p.sendMessage(ChatColor.YELLOW + "You have " + ChatColor.BOLD + "CLOSED" + ChatColor.YELLOW
 							+ " your shop.");
 
-					if (collection_bin.containsKey(p.getName())) {
+					if (collection_bin.containsKey(p.getUniqueId())) {
 						p.sendMessage(ChatColor.YELLOW + "Your shop's contents have been moved to your bank chest.");
 					}
 
-					if (!(need_sql_update.contains(p.getName()))) {
-						need_sql_update.add(p.getName()); // Update SQL after an
+					if (!(need_sql_update.contains(p.getUniqueId()))) {
+						need_sql_update.add(p.getUniqueId()); // Update SQL after an
 															// item is sold from
 															// the shop.
 					}
@@ -3453,15 +3410,15 @@ public class ShopMechanics implements Listener {
 			return;
 		}
 		p.openInventory(shop_i);
-		p.playSound(p.getLocation(), Sound.CHEST_OPEN, 1F, 1F);
+		p.playSound(p.getLocation(), Sound.BLOCK_CHEST_OPEN, 1F, 1F);
 
 		if (!(last_shop_open.containsKey(p.getName()))
 				|| System.currentTimeMillis() - last_shop_open.get(p.getName()) >= 1000) {
-			if (owner != null && inverse_shop_owners.containsKey(owner.getName())) {
+			if (owner != null && inverse_shop_owners.containsKey(owner.getUniqueId())) {
 				if (p.getName().equalsIgnoreCase(owner.getName())) {
 					return; // Owner cannot up own views.
 				}
-				Block shop_block = inverse_shop_owners.get(owner.getName());
+				Block shop_block = inverse_shop_owners.get(owner.getUniqueId());
 
 				// NPC nshop_tag = shop_nameplates.get(shop_block);
 				Hologram nshop_tag = shop_nameplates.get(shop_block);
@@ -3518,7 +3475,7 @@ public class ShopMechanics implements Listener {
 			shop_owners.remove(other_chest);
 			open_shops.remove(other_chest);
 
-			asyncSetShopServerSQL(shop_owner_n, -1);
+			asyncSetShopServerSQL(p.getUniqueId(), -1);
 		}
 
 		shop_being_browsed.remove(p.getName());
@@ -3533,7 +3490,6 @@ public class ShopMechanics implements Listener {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public static void updateEntity(Entity entity, List<Player> observers) {
 		if (entity == null)
 			return;
@@ -3543,7 +3499,7 @@ public class ShopMechanics implements Listener {
 		EntityTracker tracker = worldServer.tracker;
 		EntityTrackerEntry entry = (EntityTrackerEntry) tracker.trackedEntities.get(entity.getEntityId());
 
-		List<EntityPlayer> nmsPlayers = getNmsPlayers(observers);
+		List<EntityHuman> nmsPlayers = getNmsPlayers(observers);
 		if (nmsPlayers == null) {
 			return;
 		}
@@ -3554,8 +3510,8 @@ public class ShopMechanics implements Listener {
 		entry.scanPlayers(nmsPlayers);
 	}
 
-	private static List<EntityPlayer> getNmsPlayers(List<Player> players) {
-		List<EntityPlayer> nsmPlayers = new ArrayList<EntityPlayer>();
+	private static List<EntityHuman> getNmsPlayers(List<Player> players) {
+		List<EntityHuman> nsmPlayers = new ArrayList<EntityHuman>();
 
 		for (Player bukkitPlayer : players) {
 			CraftPlayer craftPlayer = (CraftPlayer) bukkitPlayer;

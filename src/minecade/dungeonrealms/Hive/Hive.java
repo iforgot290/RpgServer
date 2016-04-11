@@ -883,7 +883,7 @@ public class Hive implements Listener {
 									+ "[HIVE (SLAVE Edition)] Player " + id.toString() + "'s NPC has been despawned."
 									+ Ansi.ansi().fg(Ansi.Color.WHITE).boldOff().toString());
 							List<Player> lpl = new ArrayList<Player>();
-							for (Entity ent : n.getBukkitEntity().getNearbyEntities(32, 32, 32)) {
+							for (Entity ent : n.getEntity().getNearbyEntities(32, 32, 32)) {
 								if (ent instanceof Player) {
 									lpl.add((Player) ent);
 								}
@@ -1031,7 +1031,7 @@ public class Hive implements Listener {
 		server_lock = true;
 		force_kick = true;
 
-		for (String s : ShopMechanics.shop_stock.keySet()) {
+		for (UUID s : ShopMechanics.shop_stock.keySet()) {
 			// This will convert all shop stocks to collection bins in
 			// collection_bin, and upload the data of any players not online.
 			// uploadShopDatabaseData() will take care of online players.
@@ -2925,6 +2925,7 @@ public class Hive implements Listener {
 	public void onPlayerAsyncChatEvent(final AsyncPlayerChatEvent e) {
 		Bukkit.getScheduler().runTask(Main.plugin, new Runnable() {
 
+			@SuppressWarnings("deprecation")
 			public void run() {
 				Player pl = e.getPlayer();
 				if (player_bio.containsKey(pl.getUniqueId())) {
@@ -4987,7 +4988,7 @@ public class Hive implements Listener {
 				Hive.player_item_in_hand.remove(ply.getName());
 				Hive.player_mule_inventory.remove(ply.getName());
 				List<Player> lpl = new ArrayList<Player>();
-				for (Entity ent : n.getBukkitEntity().getNearbyEntities(32, 32, 32)) {
+				for (Entity ent : n.getEntity().getNearbyEntities(32, 32, 32)) {
 					if (ent instanceof Player) {
 						lpl.add((Player) ent);
 					}

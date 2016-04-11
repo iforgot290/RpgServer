@@ -1,6 +1,7 @@
 package minecade.dungeonrealms.AchievementMechanics;
 
 import java.util.Random;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -183,26 +184,35 @@ public class AchievementMechanics implements Listener {
 			}
 		}
 	}
+	
+	/**
+	 * Adds achievement to player, also checks for a few other achievements
+	 * @param player player to add achievement to
+	 * @param achieve achievement to add
+	 */
+	public static void addAchievement(Player player, String achieve){
+		addAchievement(player.getUniqueId(), achieve);
+	}
 
 	/**
 	 * Adds achievement to player, also checks for a few other achievements
 	 * 
-	 * @param player
+	 * @param id
 	 *            player to add achievement to
 	 * @param achieve
 	 *            achievement to add
 	 */
-	public static void addAchievement(Player player, String achieve) {
-		if (hasAchievement(player, achieve)) {
+	public static void addAchievement(UUID id, String achieve) {
+		if (hasAchievement(id, achieve)) {
 			return;
 		}
 
-		if (PlayerManager.getPlayerModel(player).getAchievements() == null) {
-			PlayerManager.getPlayerModel(player).setAchievements(achieve);
+		if (PlayerManager.getPlayerModel(id).getAchievements() == null) {
+			PlayerManager.getPlayerModel(id).setAchievements(achieve);
 			return;
 		}
 
-		String other_achieve = PlayerManager.getPlayerModel(player).getAchievements();
+		String other_achieve = PlayerManager.getPlayerModel(id).getAchievements();
 
 		if (other_achieve.endsWith(",")) {
 			other_achieve = other_achieve + achieve + ",";
@@ -210,9 +220,10 @@ public class AchievementMechanics implements Listener {
 			other_achieve = other_achieve + "," + achieve + ",";
 		}
 
-		PlayerManager.getPlayerModel(player).setAchievements(other_achieve);
+		PlayerManager.getPlayerModel(id).setAchievements(other_achieve);
 
-		if (player != null) {
+		if (Bukkit.getPlayer(id) != null) {
+			Player player = Bukkit.getPlayer(id);
 			if (achieve.equalsIgnoreCase("Explorer: The Lost City of Avalon")) {
 				LevelMechanics.addXP(player, 1000);
 			} else if (achieve.equalsIgnoreCase("Explorer: Avalon Peaks")) {
@@ -244,46 +255,55 @@ public class AchievementMechanics implements Listener {
 			}
 		}
 
-		log.info("[AchievementMechanics] Added achievement '" + achieve + "' to player " + player.getName() + "!");
+		log.info("[AchievementMechanics] Added achievement '" + achieve + "' to player " + id.toString() + "!");
 
 		int achievement_count = other_achieve.split(",").length;
 		if (achievement_count >= 10) {
-			addAchievement(player, "Dungeon Realms Novice");
+			addAchievement(id, "Dungeon Realms Novice");
 			if (achievement_count >= 25) {
-				addAchievement(player, "Dungeon Realms Apprentice");
+				addAchievement(id, "Dungeon Realms Apprentice");
 				if (achievement_count >= 50) {
-					addAchievement(player, "Dungeon Realms Adept");
+					addAchievement(id, "Dungeon Realms Adept");
 					if (achievement_count >= 100) {
-						addAchievement(player, "Dungeon Realms Expert");
+						addAchievement(id, "Dungeon Realms Expert");
 						if (achievement_count >= 200) {
-							addAchievement(player, "Dungeon Realms Master");
+							addAchievement(id, "Dungeon Realms Master");
 						}
 					}
 				}
 			}
 		}
 
-		int explorer_count = getExplorerAchievementCount(player);
+		int explorer_count = getExplorerAchievementCount(id);
 		if (explorer_count >= 10) {
-			addAchievement(player, "Tourist");
+			addAchievement(id, "Tourist");
 			if (explorer_count >= 20) {
-				addAchievement(player, "Adventurer");
+				addAchievement(id, "Adventurer");
 			}
 		}
 
+	}
+	
+	/**
+	 * Gets how many explorer achievements the player has
+	 * @param player player to check
+	 * @return amount of explorer achievements
+	 */
+	public static int getExplorerAchievementCount(Player player){
+		return getExplorerAchievementCount(player.getUniqueId());
 	}
 
 	/**
 	 * Gets how many explorer achievements the player has
 	 * 
-	 * @param player
+	 * @param id
 	 *            player to check
 	 * @return amount of explorer achievements
 	 */
-	public static int getExplorerAchievementCount(Player player) {
+	public static int getExplorerAchievementCount(UUID id) {
 		int count = 0;
-		if (PlayerManager.getPlayerModel(player).getAchievements() != null) {
-			for (String s : PlayerManager.getPlayerModel(player).getAchievements().split(",")) {
+		if (PlayerManager.getPlayerModel(id).getAchievements() != null) {
+			for (String s : PlayerManager.getPlayerModel(id).getAchievements().split(",")) {
 				if (s.toLowerCase().contains("explorer:")) {
 					count++;
 				}
@@ -303,10 +323,21 @@ public class AchievementMechanics implements Listener {
 	 * @return true if the player has the achievement
 	 */
 	public static boolean hasAchievement(Player player, String a) {
-		if (PlayerManager.getPlayerModel(player).getAchievements() == null) {
+		return hasAchievement(player.getUniqueId(), a);
+	}
+	
+	/**
+	 * Checks if the player has an achievement
+	 * 
+	 * @param id player to check
+	 * @param a achievement to check
+	 * @return true if the player has the achievement
+	 */
+	public static boolean hasAchievement(UUID id, String a){
+		if (PlayerManager.getPlayerModel(id).getAchievements() == null) {
 			return false;
 		}
-		String al = PlayerManager.getPlayerModel(player).getAchievements();
+		String al = PlayerManager.getPlayerModel(id).getAchievements();
 		for (String achiev : al.split(",")) {
 			if (achiev.equalsIgnoreCase(a)) {
 				return true;

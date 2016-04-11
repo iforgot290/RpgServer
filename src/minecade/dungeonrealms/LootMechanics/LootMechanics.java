@@ -22,8 +22,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
@@ -61,7 +59,6 @@ import minecade.dungeonrealms.PowerupMechanics.PowerupMechanics;
 import minecade.dungeonrealms.ShopMechanics.ShopMechanics;
 import minecade.dungeonrealms.TeleportationMechanics.TeleportationMechanics;
 import minecade.dungeonrealms.TutorialMechanics.TutorialMechanics;
-import net.minecraft.server.v1_9_R1.PacketPlayOutWorldEvent;
 
 public class LootMechanics implements Listener {
 	static HashMap<String, List<String>> loot_templates = new HashMap<String, List<String>>();
@@ -1244,7 +1241,6 @@ public class LootMechanics implements Listener {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent e) {
 		Player p = (Player) e.getPlayer();
@@ -1291,7 +1287,6 @@ public class LootMechanics implements Listener {
 		loot_spawn_location.remove(p);
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = false)
 	// LOW == So shops don't say 'locked chest' on destruction.
 	public void onPlayerInteract(PlayerInteractEvent e) {

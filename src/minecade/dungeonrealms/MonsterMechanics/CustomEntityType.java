@@ -10,7 +10,6 @@ import net.minecraft.server.v1_9_R1.BiomeBase;
 import net.minecraft.server.v1_9_R1.BiomeBase.BiomeMeta;
 import net.minecraft.server.v1_9_R1.EntityInsentient;
 import net.minecraft.server.v1_9_R1.EntityIronGolem;
-import net.minecraft.server.v1_9_R1.EntitySpider;
 import net.minecraft.server.v1_9_R1.EntityTypes;
 import net.minecraft.server.v1_9_R1.EntityWolf;
 import net.minecraft.server.v1_9_R1.EntityZombie;

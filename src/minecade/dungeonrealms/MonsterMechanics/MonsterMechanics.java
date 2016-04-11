@@ -135,10 +135,8 @@ import minecade.dungeonrealms.enums.Delay;
 import minecade.dungeonrealms.enums.ItemRarity;
 import minecade.dungeonrealms.enums.ItemTier;
 import minecade.dungeonrealms.enums.ItemType;
-import net.minecraft.server.v1_9_R1.DataWatcher;
 import net.minecraft.server.v1_9_R1.EntityCreature;
 import net.minecraft.server.v1_9_R1.EntityLiving;
-import net.minecraft.server.v1_9_R1.EntityPlayer;
 import net.minecraft.server.v1_9_R1.EnumItemSlot;
 import net.minecraft.server.v1_9_R1.NBTTagCompound;
 
@@ -1170,7 +1168,7 @@ public class MonsterMechanics implements Listener {
 				}
 				int step = data.getValue();
 				if (step <= 4) { // Charging...
-					EntityCreature ec = (EntityCreature) ((CraftEntity) ent).getHandle();
+					//EntityCreature ec = (EntityCreature) ((CraftEntity) ent).getHandle();
 					//ec.setTarget(null);
 
 					step += 1;
@@ -2493,7 +2491,7 @@ public class MonsterMechanics implements Listener {
 			LivingEntity le = (LivingEntity) e.getEntity();
 			if (le.getType() == EntityType.ZOMBIE || le.getType() == EntityType.SKELETON
 					|| le.getType() == EntityType.SILVERFISH) {
-				ItemStack item_in_hand = le.getEquipment().getItemInHand();
+				ItemStack item_in_hand = le.getEquipment().getItemInMainHand();
 				if (item_in_hand == null) {
 					return;
 				}
@@ -2550,7 +2548,7 @@ public class MonsterMechanics implements Listener {
 			LivingEntity shooter = (LivingEntity) ((Projectile) e.getEntity()).getShooter();
 			boolean ignite = false;
 			if (shooter instanceof Blaze) {
-				ItemStack weapon = shooter.getEquipment().getItemInHand();
+				ItemStack weapon = shooter.getEquipment().getItemInMainHand();
 				String dmg_data = ItemMechanics.getDamageData(weapon);
 				if (dmg_data.equalsIgnoreCase("no")) {
 					return;
@@ -3831,7 +3829,7 @@ public class MonsterMechanics implements Listener {
 		}
 
 		if (!(p.isOp())) {
-			p.setItemInHand(new ItemStack(Material.AIR));
+			p.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 			p.sendMessage(ChatColor.RED + "Illegal item detected, removing... (MOB SPAWNER)");
 			p.sendMessage(ChatColor.GRAY + "Account flagged for manual review.");
 			e.setCancelled(true);
@@ -5084,9 +5082,9 @@ public class MonsterMechanics implements Listener {
 		if (p != null) {
 			mob_target.put(ent, p.getName());
 
-			if (p.getItemInHand() != null) {
+			if (p.getInventory().getItemInMainHand() != null) {
 				int mob_tier = getMobTier(ent);
-				int wep_tier = ItemMechanics.getItemTier(p.getItemInHand());
+				int wep_tier = ItemMechanics.getItemTier(p.getInventory().getItemInMainHand());
 
 				if (wep_tier > mob_tier && mob_tier != -1) {
 					int dif = wep_tier - mob_tier;
@@ -5095,13 +5093,13 @@ public class MonsterMechanics implements Listener {
 					 * p.getItemInHand(), 4, "wep"); }
 					 */
 					if (dif == 2) {
-						RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 4, "wep"); // 5
+						RepairMechanics.subtractCustomDurability(p, p.getInventory().getItemInMainHand(), 4, "wep"); // 5
 					}
 					if (dif == 3) {
-						RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 6, "wep"); // 10
+						RepairMechanics.subtractCustomDurability(p, p.getInventory().getItemInMainHand(), 6, "wep"); // 10
 					}
 					if (dif == 4) {
-						RepairMechanics.subtractCustomDurability(p, p.getItemInHand(), 8, "wep"); // 10
+						RepairMechanics.subtractCustomDurability(p, p.getInventory().getItemInMainHand(), 8, "wep"); // 10
 					}
 				}
 			}

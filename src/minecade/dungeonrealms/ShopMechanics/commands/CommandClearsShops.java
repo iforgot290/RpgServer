@@ -43,7 +43,7 @@ public class CommandClearsShops implements CommandExecutor {
 				new BukkitRunnable() {
 					public void run() {
 						for (Player p : Bukkit.getOnlinePlayers()) {
-							ShopMechanics.need_sql_update.add(p.getName());
+							ShopMechanics.need_sql_update.add(p.getUniqueId());
 							Main.log.info("Loaded " + p.getName() + "'s shop data.");
 						}
 					}

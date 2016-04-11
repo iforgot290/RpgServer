@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 
 import org.bukkit.craftbukkit.v1_9_R1.util.UnsafeList;
 
-import net.minecraft.server.v1_9_R1.EntityHuman;
 import net.minecraft.server.v1_9_R1.EntityWolf;
 import net.minecraft.server.v1_9_R1.PathfinderGoalFloat;
 import net.minecraft.server.v1_9_R1.PathfinderGoalLeapAtTarget;

@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -29,23 +30,25 @@ public class CommandShop implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
 
-		if (!PermissionMechanics.getRank(p.getName()).equalsIgnoreCase("gm") && !(p.isOp())) {
+		if (!PermissionMechanics.getRank(p).equalsIgnoreCase("gm") && !(p.isOp())) {
 			return true;
 		}
 
 		if (args.length == 2) {
-			ShopMechanics.downloadShopDatabaseData(args[1]);
+			@SuppressWarnings("deprecation")
+			OfflinePlayer op = Bukkit.getOfflinePlayer(args[1]);
+			ShopMechanics.downloadShopDatabaseData(op.getUniqueId());
 			if (args[0].equalsIgnoreCase("info")) {
-				if (ShopMechanics.doesPlayerHaveShopSQL(args[1])) {
-					if (ShopMechanics.hasLocalShop(args[1]) && ShopMechanics.inverse_shop_owners.containsKey(args[1])) {
-						Block shop = ShopMechanics.inverse_shop_owners.get(args[1]);
+				if (ShopMechanics.doesPlayerHaveShopSQL(op.getUniqueId())) {
+					if (ShopMechanics.hasLocalShop(op.getUniqueId()) && ShopMechanics.inverse_shop_owners.containsKey(op.getUniqueId())) {
+						Block shop = ShopMechanics.inverse_shop_owners.get(op.getUniqueId());
 						p.sendMessage(ChatColor.YELLOW + "Player " + args[1] + " has "
 								+ (ShopMechanics.isShopOpen(shop) ? "a closed" : "an open") + " shop on this server.");
 						p.sendMessage(ChatColor.GRAY + "Shop Location: " + (int) shop.getLocation().getX() + ", "
 								+ (int) shop.getLocation().getY() + ", " + (int) shop.getLocation().getZ());
 						return true;
 					}
-					int server_num = ShopMechanics.getServerLocationOfShop(args[1]);
+					int server_num = ShopMechanics.getServerLocationOfShop(op.getUniqueId());
 					String motd = Bukkit.getMotd();
 					int local_server_num = Integer.parseInt(motd.substring(motd.indexOf("-") + 1, motd.indexOf(" ")));
 					String prefix = "US-";
@@ -74,10 +77,10 @@ public class CommandShop implements CommandExecutor {
 				}
 				return true;
 			} else if (args[0].equalsIgnoreCase("open")) {
-				if (!ShopMechanics.hasLocalShop(args[1]) || !ShopMechanics.inverse_shop_owners.containsKey(args[1])) {
+				if (!ShopMechanics.hasLocalShop(op.getUniqueId()) || !ShopMechanics.inverse_shop_owners.containsKey(args[1])) {
 					p.sendMessage(ChatColor.RED + "Player " + args[1] + " does not have a shop on this server.");
-					if (ShopMechanics.doesPlayerHaveShopSQL(args[1])) {
-						int server_num = ShopMechanics.getServerLocationOfShop(args[1]);
+					if (ShopMechanics.doesPlayerHaveShopSQL(op.getUniqueId())) {
+						int server_num = ShopMechanics.getServerLocationOfShop(op.getUniqueId());
 						String motd = Bukkit.getMotd();
 						int local_server_num = Integer
 								.parseInt(motd.substring(motd.indexOf("-") + 1, motd.indexOf(" ")));
@@ -103,11 +106,11 @@ public class CommandShop implements CommandExecutor {
 						p.sendMessage(ChatColor.RED + " Player " + args[1] + " does not have a shop on any server.");
 					}
 				} else {
-					Block shop = ShopMechanics.inverse_shop_owners.get(args[1]);
+					Block shop = ShopMechanics.inverse_shop_owners.get(op.getUniqueId());
 					if (ShopMechanics.isShopOpen(shop)) {
 						p.sendMessage(ChatColor.YELLOW + "Player " + args[1] + "'s shop is already open.");
 					} else {
-						Inventory i = ShopMechanics.shop_stock.get(args[1]);
+						Inventory i = ShopMechanics.shop_stock.get(op.getUniqueId());
 						int shop_slots = ShopMechanics.getShopSlots(ShopMechanics.getShopLevel(args[1]));
 						int slot = (shop_slots - 1);
 						// open the store
@@ -135,17 +138,17 @@ public class CommandShop implements CommandExecutor {
 						ShopMechanics.open_shops.add(ShopMechanics.chest_partners.get(shop));
 						// modifying_stock.remove(p.getName());
 						ShopMechanics.setStoreColor(shop, ChatColor.GREEN);
-						p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 1.3F);
+						p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1.3F);
 						p.sendMessage(ChatColor.GREEN + "Opened " + args[1] + "'s store.");
 						return true;
 					}
 				}
 				return true;
 			} else if (args[0].equalsIgnoreCase("close")) {
-				if (!ShopMechanics.hasLocalShop(args[1]) || !ShopMechanics.inverse_shop_owners.containsKey(args[1])) {
+				if (!ShopMechanics.hasLocalShop(op.getUniqueId()) || !ShopMechanics.inverse_shop_owners.containsKey(op.getUniqueId())) {
 					p.sendMessage(ChatColor.RED + "Player " + args[1] + " does not have a shop on this server.");
-					if (ShopMechanics.doesPlayerHaveShopSQL(args[1])) {
-						int server_num = ShopMechanics.getServerLocationOfShop(args[1]);
+					if (ShopMechanics.doesPlayerHaveShopSQL(op.getUniqueId())) {
+						int server_num = ShopMechanics.getServerLocationOfShop(op.getUniqueId());
 						String motd = Bukkit.getMotd();
 						int local_server_num = Integer
 								.parseInt(motd.substring(motd.indexOf("-") + 1, motd.indexOf(" ")));
@@ -172,18 +175,18 @@ public class CommandShop implements CommandExecutor {
 								+ " does not have a shop on any server. (This command is case sensitive!)");
 					}
 				} else {
-					Block shop = ShopMechanics.inverse_shop_owners.get(args[1]);
+					Block shop = ShopMechanics.inverse_shop_owners.get(op.getUniqueId());
 					if (!ShopMechanics.isShopOpen(shop)) {
 						p.sendMessage(ChatColor.YELLOW + "Player " + args[1] + "'s shop is already closed.");
 					} else {
-						Inventory i = ShopMechanics.shop_stock.get(args[1]);
+						Inventory i = ShopMechanics.shop_stock.get(op.getUniqueId());
 						// close the store
 						int button_slot = (i.getSize() - 1);
 						i.setItem(button_slot, ShopMechanics.gray_button);
 						ShopMechanics.open_shops.remove(shop);
 						ShopMechanics.open_shops.remove(ShopMechanics.chest_partners.get(shop));
 						// modifying_stock.add(p.getName());
-						p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 0.70F);
+						p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0.70F);
 						ShopMechanics.setStoreColor(shop, ChatColor.RED);
 
 						List<Player> viewers = new ArrayList<Player>();
@@ -195,7 +198,7 @@ public class CommandShop implements CommandExecutor {
 							}
 							for (Player he_p : viewers) {
 								if (!he_p.getName().equalsIgnoreCase(args[1])) {
-									he_p.playSound(p.getLocation(), Sound.CHEST_CLOSE, 1F, 1F);
+									he_p.playSound(p.getLocation(), Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
 									he_p.closeInventory();
 									// he_p.sendMessage(ChatColor.RED + "Shop
 									// closed.");
@@ -210,10 +213,10 @@ public class CommandShop implements CommandExecutor {
 				}
 				return true;
 			} else if (args[0].equalsIgnoreCase("see")) {
-				if (!ShopMechanics.hasLocalShop(args[1]) || !ShopMechanics.inverse_shop_owners.containsKey(args[1])) {
+				if (!ShopMechanics.hasLocalShop(op.getUniqueId()) || !ShopMechanics.inverse_shop_owners.containsKey(op.getUniqueId())) {
 					p.sendMessage(ChatColor.RED + "Player " + args[1] + " does not have a shop on this server.");
-					if (ShopMechanics.doesPlayerHaveShopSQL(args[1])) {
-						int server_num = ShopMechanics.getServerLocationOfShop(args[1]);
+					if (ShopMechanics.doesPlayerHaveShopSQL(op.getUniqueId())) {
+						int server_num = ShopMechanics.getServerLocationOfShop(op.getUniqueId());
 						String motd = Bukkit.getMotd();
 						int local_server_num = Integer
 								.parseInt(motd.substring(motd.indexOf("-") + 1, motd.indexOf(" ")));
@@ -241,7 +244,7 @@ public class CommandShop implements CommandExecutor {
 					}
 					return true;
 				} else {
-					p.openInventory(ShopMechanics.shop_stock.get(args[1]));
+					p.openInventory(ShopMechanics.shop_stock.get(op.getUniqueId()));
 					return true;
 				}
 			}

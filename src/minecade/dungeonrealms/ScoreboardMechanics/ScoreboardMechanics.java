@@ -29,7 +29,7 @@ public class ScoreboardMechanics implements Listener {
 
 		Objective objective = main.registerNewObjective("hpdisplay", "dummy");
 		objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-		objective.setDisplayName("§c" + "❤");
+		objective.setDisplayName("Â§c" + "â�¤");
 
 		Team green = main.registerNewTeam("green");
 		green.setPrefix(ChatColor.GREEN.toString());
@@ -66,7 +66,7 @@ public class ScoreboardMechanics implements Listener {
 
 			Objective objective = b.registerNewObjective("hpdisplay", "dummy");
 			objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-			objective.setDisplayName("§c" + "❤");
+			objective.setDisplayName("Â§c" + "â�¤");
 
 			Team green = b.registerNewTeam("green");
 			green.setPrefix(ChatColor.GREEN.toString());
@@ -119,8 +119,8 @@ public class ScoreboardMechanics implements Listener {
 			x.setCanSeeFriendlyInvisibles(t.canSeeFriendlyInvisibles());
 			x.setDisplayName(t.getDisplayName());
 			x.setPrefix(t.getPrefix());
-			for (OfflinePlayer o : t.getPlayers())
-				x.addPlayer(o);
+			for (String entry : t.getEntries())
+				x.addEntry(entry);
 		}
 	}
 
@@ -142,12 +142,12 @@ public class ScoreboardMechanics implements Listener {
 	public static void setOverheadHP(Player pl, int hp) {
 		for (Player p : Bukkit.getOnlinePlayers()) {
 
-			Score sc = ScoreboardMechanics.getBoard(p).getObjective(DisplaySlot.BELOW_NAME).getScore(pl);
+			Score sc = ScoreboardMechanics.getBoard(p).getObjective(DisplaySlot.BELOW_NAME).getScore(pl.getName());
 			sc.setScore(hp);
 
 		}
 		// ScoreboardMechanics.getBoard(pl).getObjective(DisplaySlot.BELOW_NAME).getScore(pl.getName()).setScore(hp);
-		main.getObjective(DisplaySlot.BELOW_NAME).getScore(pl);
+		main.getObjective(DisplaySlot.BELOW_NAME).getScore(pl.getName());
 	}
 
 	private static Team getTeam(Scoreboard sb, OfflinePlayer target) {
@@ -168,11 +168,11 @@ public class ScoreboardMechanics implements Listener {
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			Team t = new TeamBuild(getTeam(ScoreboardMechanics.getBoard(p), pl)).setLevel(level).setColor(color)
 					.getTeam();
-			if (!t.hasPlayer(pl))
-				t.addPlayer(pl);
+			if (!t.hasEntry(pl.getName()))
+				t.addEntry(pl.getName());
 		}
 		Team t = new TeamBuild(getTeam(main, pl)).setLevel(level).setColor(color).getTeam();
-		if (!t.hasPlayer(pl))
-			t.addPlayer(pl);
+		if (!t.hasEntry(pl.getName()))
+			t.addEntry(pl.getName());
 	}
 }

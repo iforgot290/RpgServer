@@ -3,6 +3,7 @@ package minecade.dungeonrealms.ShopMechanics;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -17,7 +18,7 @@ public class BackupStoreData extends BukkitRunnable {
 	public void run() {
 		if (ShopMechanics.need_sql_update.size() > 0) {
 			// Upload it all.
-			for (String shop_owner : ShopMechanics.need_sql_update) {
+			for (UUID shop_owner : ShopMechanics.need_sql_update) {
 				String shop_contents = "";
 				String collection_bin_s = "null";
 
@@ -45,7 +46,7 @@ public class BackupStoreData extends BukkitRunnable {
 
 				try {
 					String query = "INSERT INTO shop_database (p_name, shop_backup, collection_bin)" + " VALUES" + "('"
-							+ shop_owner + "', '" + StringEscapeUtils.escapeSql(shop_contents) + "', '"
+							+ shop_owner.toString() + "', '" + StringEscapeUtils.escapeSql(shop_contents) + "', '"
 							+ StringEscapeUtils.escapeSql(collection_bin_s)
 							+ "') ON DUPLICATE KEY UPDATE shop_backup = '" + StringEscapeUtils.escapeSql(shop_contents)
 							+ "', collection_bin='" + StringEscapeUtils.escapeSql(collection_bin_s) + "';";

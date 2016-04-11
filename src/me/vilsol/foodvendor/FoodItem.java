@@ -112,7 +112,7 @@ public class FoodItem implements MenuItem, ChatCallback, BonusItem<Integer> {
 					p.getInventory().setItem(p.getInventory().firstEmpty(), ShopMechanics.removePrice(buyingItem));
 
 					p.sendMessage(ChatColor.GREEN + "Transaction successful.");
-					p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 1F);
+					p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
 					p.updateInventory();
 					ChatCallback.locked_players.remove(p);
 				} else {

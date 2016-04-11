@@ -597,8 +597,8 @@ public class RestrictionMechanics implements Listener {
 	public void onEntityDamage(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
-			if (p.getItemInHand() != null) {
-				ItemStack is = p.getItemInHand();
+			if (p.getInventory().getItemInMainHand() != null) {
+				ItemStack is = p.getInventory().getItemInMainHand();
 				if (ItemMechanics.isWeapon(is)) {
 					if (!LevelMechanics.canPlayerUseTier(p, ItemMechanics.getItemTier(is))) {
 						// All of their energy.
@@ -617,6 +617,7 @@ public class RestrictionMechanics implements Listener {
 				if (e.getInventory().getName().equalsIgnoreCase("container.crafting")) {
 					if (ItemMechanics.isArmor(is)) {
 						int item_tier = ItemMechanics.getItemTier(is);
+						@SuppressWarnings("unused")
 						boolean cancel = false;
 						if (!LevelMechanics.canPlayerUseTier(p, item_tier)) {
 							if (ItemMechanics.isHelmet(is) && (p.getInventory().getItem(Armor.HELMET.getSlot()) == null
@@ -680,7 +681,6 @@ public class RestrictionMechanics implements Listener {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerAnimation(PlayerAnimationEvent e) {
 		try {
@@ -1116,12 +1116,12 @@ public class RestrictionMechanics implements Listener {
 			Block in_slot = e.getBlock();
 			Block next = e.getBlockAgainst();
 
-			if ((p.getItemInHand().getType() == Material.LAVA || p.getItemInHand().getType() == Material.LAVA_BUCKET)
+			if ((p.getInventory().getItemInMainHand().getType() == Material.LAVA || p.getInventory().getItemInMainHand().getType() == Material.LAVA_BUCKET)
 					&& (in_slot.getType() == Material.WATER || next.getType() == Material.WATER)) {
 				e.setCancelled(true);
 				p.updateInventory();
 			}
-			if ((p.getItemInHand().getType() == Material.WATER || p.getItemInHand().getType() == Material.WATER_BUCKET)
+			if ((p.getInventory().getItemInMainHand().getType() == Material.WATER || p.getInventory().getItemInMainHand().getType() == Material.WATER_BUCKET)
 					&& (in_slot.getType() == Material.LAVA || next.getType() == Material.WATER)) {
 				e.setCancelled(true);
 				p.updateInventory();
@@ -1135,7 +1135,7 @@ public class RestrictionMechanics implements Listener {
 			if (in_slot.getType() == Material.ENDER_CHEST) {
 				if (!(p.isOp())) {
 					e.setCancelled(true);
-					p.setItemInHand(new ItemStack(Material.AIR));
+					p.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 					p.updateInventory();
 				}
 			}

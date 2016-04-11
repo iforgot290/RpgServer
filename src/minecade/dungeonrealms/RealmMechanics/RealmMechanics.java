@@ -1463,7 +1463,7 @@ public class RealmMechanics implements Listener {
 					}
 				}
 
-				final String p_realm_name = p_realm.getName();
+				//final String p_realm_name = p_realm.getName();
 
 				Thread t = new Thread(new Runnable() {
 					public void run() {
@@ -2317,7 +2317,7 @@ public class RealmMechanics implements Listener {
 	public void onOrbUse(PlayerInteractEvent e) {
 		Player pl = e.getPlayer();
 
-		if (isOrbOfFlight(pl.getItemInHand())
+		if (isOrbOfFlight(pl.getInventory().getItemInMainHand())
 				&& (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
 			e.setCancelled(true);
 			e.setUseItemInHand(Result.DENY);
@@ -2336,15 +2336,15 @@ public class RealmMechanics implements Listener {
 				return;
 			}
 
-			int amount = pl.getItemInHand().getAmount();
-			ItemStack in_hand = pl.getItemInHand();
+			int amount = pl.getInventory().getItemInMainHand().getAmount();
+			ItemStack in_hand = pl.getInventory().getItemInMainHand();
 
 			if (amount <= 1) {
-				pl.setItemInHand(new ItemStack(Material.AIR));
+				pl.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 			} else if (amount > 1) {
 				amount--;
 				in_hand.setAmount(amount);
-				pl.setItemInHand(in_hand);
+				pl.getInventory().setItemInMainHand(in_hand);
 			}
 			pl.updateInventory();
 
@@ -2391,7 +2391,7 @@ public class RealmMechanics implements Listener {
 			 */
 		}
 
-		if (isOrbOfPeace(pl.getItemInHand())
+		if (isOrbOfPeace(pl.getInventory().getItemInMainHand())
 				&& (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
 			e.setCancelled(true);
 			e.setUseItemInHand(Result.DENY);
@@ -2410,15 +2410,15 @@ public class RealmMechanics implements Listener {
 				return;
 			}
 
-			int amount = pl.getItemInHand().getAmount();
-			ItemStack in_hand = pl.getItemInHand();
+			int amount = pl.getInventory().getItemInMainHand().getAmount();
+			ItemStack in_hand = pl.getInventory().getItemInMainHand();
 
 			if (amount <= 1) {
-				pl.setItemInHand(new ItemStack(Material.AIR));
+				pl.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 			} else if (amount > 1) {
 				amount--;
 				in_hand.setAmount(amount);
-				pl.setItemInHand(in_hand);
+				pl.getInventory().setItemInMainHand(in_hand);
 			}
 			pl.updateInventory();
 
@@ -2914,7 +2914,7 @@ public class RealmMechanics implements Listener {
 			p.getWorld().playEffect(portal_location, Effect.ENDER_SIGNAL, 10);
 			p.playSound(p.getLocation(), Sound.ENTITY_ENDERMEN_TELEPORT, 5F, 1.25F);
 			has_portal.put(p.getName(), true);
-			p.setItemInHand(makeTeleportRune(p));
+			p.getInventory().setItemInMainHand(makeTeleportRune(p));
 			makePortal(p.getUniqueId(), portal_location.subtract(0, 2, 0), 60);
 			if (new_realm == true) { // We don't need to load the world if we're
 										// just moving the portal.
