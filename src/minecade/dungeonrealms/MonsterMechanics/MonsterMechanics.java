@@ -1362,6 +1362,7 @@ public class MonsterMechanics implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void unloadChunks() {
 		List<Location> to_remove = new ArrayList<Location>();
 		for (final Location l : chunks_to_unload) {

@@ -15,6 +15,7 @@ import me.vilsol.menuengine.engine.MenuItem;
 import me.vilsol.menuengine.utils.Builder;
 import minecade.dungeonrealms.MerchantMechanics.MerchantMechanics;
 
+@SuppressWarnings("deprecation")
 public class SpawnTierTwoPotion implements MenuItem {
 
 	@Override

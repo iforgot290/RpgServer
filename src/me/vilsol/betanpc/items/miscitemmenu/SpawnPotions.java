@@ -15,6 +15,7 @@ import me.vilsol.menuengine.engine.MenuItem;
 import me.vilsol.menuengine.engine.MenuModel;
 import me.vilsol.menuengine.utils.Builder;
 
+@SuppressWarnings("deprecation")
 public class SpawnPotions implements MenuItem {
 
 	@Override

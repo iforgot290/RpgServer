@@ -4443,6 +4443,7 @@ public class RealmMechanics implements Listener {
 		folder.delete();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void fixChunks(final World w) {
 		// int x = 0;
 
