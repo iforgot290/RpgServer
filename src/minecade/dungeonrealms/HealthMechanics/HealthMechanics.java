@@ -51,7 +51,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import me.confuser.barapi.BarAPI;
 import me.vilsol.foodvendor.DynamicFoodVendor;
 import me.vilsol.foodvendor.MenuFoodVendor;
 import me.vilsol.menuengine.engine.DynamicMenuModel;
