@@ -7,5 +7,9 @@ public class PlayerData {
 	public static void savePlayerData(CrypticPlayer pl){
 		
 	}
+	
+	public static void saveInventory(CrypticPlayer pl){
+		
+	}
 
 }
