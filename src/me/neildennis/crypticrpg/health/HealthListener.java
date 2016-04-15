@@ -17,7 +17,7 @@ public class HealthListener implements Listener{
 	
 	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event){
-		PlayerManager.getCrypticPlayer(event.getPlayer()).getHealthManager().setLastHit(0);
+		PlayerManager.getCrypticPlayer(event.getPlayer()).getHealthData().setLastHit(0);
 	}
 
 }

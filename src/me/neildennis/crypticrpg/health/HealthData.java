@@ -1,5 +1,7 @@
 package me.neildennis.crypticrpg.health;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 
 import org.bukkit.Bukkit;
@@ -29,8 +31,14 @@ public class HealthData {
 	
 	private boolean god = false;
 	
-	public HealthData(CrypticPlayer cp){
+	public HealthData(CrypticPlayer cp, ResultSet data){
 		this.cp = cp;
+		
+		try {
+			currentHP = data.getInt("current_health");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void registerTasks(){

@@ -1,5 +1,6 @@
 package me.neildennis.crypticrpg.player;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -8,7 +9,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
+import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.health.HealthData;
+import me.neildennis.crypticrpg.moderation.ModerationData;
 import minecade.dungeonrealms.Main;
 
 public class CrypticPlayer {
@@ -20,6 +23,7 @@ public class CrypticPlayer {
 	private ArrayList<PlayerBuff> buffs;
 	
 	private HealthData healthData;
+	private ModerationData moderationData;
 	
 	public CrypticPlayer(UUID id){
 		this.id = id;
@@ -27,7 +31,11 @@ public class CrypticPlayer {
 		tasks = new ArrayList<BukkitTask>();
 		buffs = new ArrayList<PlayerBuff>();
 		
-		healthData = new HealthData(this);
+		Cloud.sendStatement("INSERT IGNORE INTO player_db (player_id) VALUES ('" + id.toString() + "')");
+		
+		ResultSet data = Cloud.sendQuery("SELECT * FROM player_db WHERE player_id = '" + id.toString() + "'");
+		
+		healthData = new HealthData(this, data);
 	}
 	
 	public void registerTasks(){
@@ -87,8 +95,12 @@ public class CrypticPlayer {
 		buffs.add(buff);
 	}
 	
-	public HealthData getHealthManager(){
+	public HealthData getHealthData(){
 		return healthData;
+	}
+	
+	public ModerationData getModerationData(){
+		return moderationData;
 	}
 	
 	

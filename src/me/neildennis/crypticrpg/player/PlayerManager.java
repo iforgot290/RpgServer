@@ -43,6 +43,7 @@ public class PlayerManager implements Listener{
 	public void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event){
 		if (event.getLoginResult() == Result.ALLOWED){
 			CrypticPlayer pl = new CrypticPlayer(event.getUniqueId());
+			players.add(pl);
 		}
 	}
 	

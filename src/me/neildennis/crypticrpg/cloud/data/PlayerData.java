@@ -6,13 +6,13 @@ import me.neildennis.crypticrpg.player.CrypticPlayer;
 public class PlayerData {
 
 	public static void savePlayerData(CrypticPlayer pl){
-		int hp = pl.getHealthManager().getCurrentHP();
+		int hp = pl.getHealthData().getCurrentHP();
 
 
 
 		String query = "UPDATE player_db SET current_health = '" + hp + "' WHERE player_id = '"
 				+ pl.getId().toString() + "'";
-		Cloud.sendQueryAsync(query);
+		Cloud.sendStatementAsync(query);
 	}
 
 	public static void saveInventory(CrypticPlayer pl){
