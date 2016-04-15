@@ -1,4 +1,4 @@
-package me.neildennis.crypticrpg.player.health;
+package me.neildennis.crypticrpg.health;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

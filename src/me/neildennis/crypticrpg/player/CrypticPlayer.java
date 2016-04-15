@@ -8,7 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import me.neildennis.crypticrpg.player.health.HealthData;
+import me.neildennis.crypticrpg.health.HealthData;
 import minecade.dungeonrealms.Main;
 
 public class CrypticPlayer {
