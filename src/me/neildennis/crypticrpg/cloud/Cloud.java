@@ -11,7 +11,7 @@ public class Cloud {
 	private ConcurrentSet<BukkitTask> tasks;
 	private static QueryThread querythread;
 	
-	public void onEnable(){
+	public Cloud(){
 		querythread = new QueryThread();
 	}
 	

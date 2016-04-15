@@ -8,7 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import me.neildennis.crypticrpg.player.health.HealthManager;
+import me.neildennis.crypticrpg.player.health.HealthData;
 import minecade.dungeonrealms.Main;
 
 public class CrypticPlayer {
@@ -19,7 +19,7 @@ public class CrypticPlayer {
 	private ArrayList<BukkitTask> tasks;
 	private ArrayList<PlayerBuff> buffs;
 	
-	private HealthManager healthManager;
+	private HealthData healthData;
 	
 	public CrypticPlayer(UUID id){
 		this.id = id;
@@ -27,11 +27,11 @@ public class CrypticPlayer {
 		tasks = new ArrayList<BukkitTask>();
 		buffs = new ArrayList<PlayerBuff>();
 		
-		healthManager = new HealthManager(this);
+		healthData = new HealthData(this);
 	}
 	
 	public void registerTasks(){
-		healthManager.registerTasks();
+		healthData.registerTasks();
 		
 		BukkitTask tickBuff = Bukkit.getScheduler().runTaskTimer(Main.plugin, new Runnable(){
 			
@@ -87,8 +87,8 @@ public class CrypticPlayer {
 		buffs.add(buff);
 	}
 	
-	public HealthManager getHealthManager(){
-		return healthManager;
+	public HealthData getHealthManager(){
+		return healthData;
 	}
 	
 	

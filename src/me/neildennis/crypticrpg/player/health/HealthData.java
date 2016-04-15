@@ -14,7 +14,7 @@ import minecade.dungeonrealms.Main;
 import minecade.dungeonrealms.LevelMechanics.LevelMechanics;
 import minecade.dungeonrealms.LevelMechanics.PlayerLevel;
 
-public class HealthManager {
+public class HealthData {
 	
 	private CrypticPlayer cp;
 	
@@ -29,7 +29,7 @@ public class HealthManager {
 	
 	private boolean god = false;
 	
-	public HealthManager(CrypticPlayer cp){
+	public HealthData(CrypticPlayer cp){
 		this.cp = cp;
 	}
 	

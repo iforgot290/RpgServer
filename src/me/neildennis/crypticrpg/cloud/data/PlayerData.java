@@ -1,5 +1,6 @@
 package me.neildennis.crypticrpg.cloud.data;
 
+import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 
 public class PlayerData {
@@ -11,6 +12,7 @@ public class PlayerData {
 
 		String query = "UPDATE player_db SET current_health = '" + hp + "' WHERE player_id = '"
 				+ pl.getId().toString() + "'";
+		Cloud.sendQueryAsync(query);
 	}
 
 	public static void saveInventory(CrypticPlayer pl){
