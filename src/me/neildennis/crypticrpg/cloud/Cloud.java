@@ -15,7 +15,10 @@ public class Cloud {
 	private static QueryThread querythread;
 
 	public Cloud(){
+		tasks = new ConcurrentSet<BukkitTask>();
+		
 		querythread = new QueryThread();
+		registerTasks();
 	}
 
 	public void registerTasks(){

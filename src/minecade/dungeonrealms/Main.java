@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neildennis.crypticrpg.Cryptic;
 import me.vilsol.betanpc.BetaNPC;
 import me.vilsol.foodvendor.FoodVendor;
 import me.vilsol.itemgenerator.ItemGenerator;
@@ -118,11 +119,16 @@ public class Main extends JavaPlugin implements Listener {
 
 	private static final List<String> devs = Arrays.asList("b9382a1d-e3a8-4816-9be4-78af397300de");
 	private static final List<String> masters = Arrays.asList("b9382a1d-e3a8-4816-9be4-78af397300de");
+	
+	private Cryptic cryptic;
 
 	public void onEnable() {
-
 		plugin = this;
-		log = this.getLogger();
+		
+		cryptic = new Cryptic();
+		cryptic.onEnable();
+		
+		/*log = this.getLogger();
 
 		int serverid = Integer.parseInt(getServer().getMotd().split("-")[1].split(" ")[0]);
 
@@ -244,7 +250,7 @@ public class Main extends JavaPlugin implements Listener {
 					h.updateToNearbyPlayers();
 				}
 			}
-		}.runTaskTimer(this, 20L * 5, 20L * 5);
+		}.runTaskTimer(this, 20L * 5, 20L * 5);*/
 	}
 
 	public void onDisable() {

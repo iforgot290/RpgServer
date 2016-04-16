@@ -3,6 +3,8 @@ main: minecade.dungeonrealms.Main
 softdepend: [Citizens, MenuEngine]
 version: 1.0
 commands:
+  itemtest:
+    usage: /<command>
   duel:
     description: Root command... for now.
     usage: /<command>

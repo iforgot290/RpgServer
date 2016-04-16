@@ -3,6 +3,7 @@ package me.neildennis.crypticrpg.moderation;
 import java.sql.ResultSet;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -47,6 +48,14 @@ public class ModerationManager implements Listener{
 	
 	public static String getKickedBannedMessage(String reason){
 		return "Banned: " + reason;
+	}
+	
+	public static String getKickedMessage(String reason){
+		return "Kicked: " + reason;
+	}
+	
+	public static void kickPlayer(Player player, String reason){
+		
 	}
 
 }

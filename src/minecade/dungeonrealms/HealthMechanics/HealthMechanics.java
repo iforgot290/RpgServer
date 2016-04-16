@@ -456,6 +456,7 @@ public class HealthMechanics implements Listener {
 		log.info("[HealthMechanics] V1.0 has been disabled.");
 	}
 
+	@SuppressWarnings("unused")
 	public static void setOverheadHP(Player pl, int hp) {
 		ScoreboardMechanics.setOverheadHP(pl, hp);
 		if (!pl.hasMetadata("NPC") && !pl.getPlayerListName().equalsIgnoreCase("")) {
@@ -480,17 +481,17 @@ public class HealthMechanics implements Listener {
 						+ ChatColor.GREEN.toString() + xplevel + "%";
 
 				String dash = ChatColor.BLACK.toString() + ChatColor.BOLD + " - ";
-				BarAPI.setMessage(pl,
+				/*BarAPI.setMessage(pl,
 						levelData + dash + ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP "
 								+ ChatColor.LIGHT_PURPLE + getPlayerHP(pl) + ChatColor.BOLD.toString() + " / "
 								+ ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl) + dash + xpData,
-								(float) (health_percent * 100F));
+								(float) (health_percent * 100F));*/
 			} else {
-				BarAPI.setMessage(pl,
+				/*BarAPI.setMessage(pl,
 						ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE
 						+ getPlayerHP(pl) + ChatColor.BOLD.toString() + " / "
 						+ ChatColor.LIGHT_PURPLE.toString() + getMaxHealthValue(pl),
-						(float) (health_percent * 100F));
+						(float) (health_percent * 100F));*/
 			}
 			// FakeDragon.setStatus(pl, ChatColor.LIGHT_PURPLE.toString() +
 			// ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE +

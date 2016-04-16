@@ -1,7 +1,9 @@
 package me.neildennis.crypticrpg;
 
 import me.neildennis.crypticrpg.cloud.Cloud;
+import me.neildennis.crypticrpg.items.commands.TestCommand;
 import me.neildennis.crypticrpg.player.PlayerManager;
+import minecade.dungeonrealms.Main;
 
 public class Cryptic {
 	
@@ -11,6 +13,7 @@ public class Cryptic {
 	public void onEnable(){
 		playerManager = new PlayerManager();
 		cloud = new Cloud();
+		Main.plugin.getCommand("itemtest").setExecutor(new TestCommand());
 	}
 	
 	public PlayerManager getPlayerManager(){
