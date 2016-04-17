@@ -36,4 +36,8 @@ public enum Rarity {
 		
 		}
 	}
+	
+	public static Rarity rarityFromDamage(int mindmg, int maxdmg){
+		return COMMON;
+	}
 }
