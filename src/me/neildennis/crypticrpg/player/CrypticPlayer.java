@@ -9,6 +9,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
+import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.health.HealthData;
 import me.neildennis.crypticrpg.moderation.ModerationData;
@@ -41,7 +42,7 @@ public class CrypticPlayer {
 	public void registerTasks(){
 		healthData.registerTasks();
 
-		BukkitTask tickBuff = Bukkit.getScheduler().runTaskTimer(Main.plugin, new Runnable(){
+		BukkitTask tickBuff = Bukkit.getScheduler().runTaskTimer(Cryptic.getPlugin(), new Runnable(){
 
 			public void run(){
 				for (PlayerBuff buff : buffs){
