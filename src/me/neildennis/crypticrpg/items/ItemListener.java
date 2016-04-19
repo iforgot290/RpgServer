@@ -11,7 +11,7 @@ public class ItemListener implements Listener {
 	
 	@EventHandler(ignoreCancelled = true)
 	public void onPlayerTPBookUse(PlayerInteractEvent event){
-		if (event.getAction() != Action.RIGHT_CLICK_AIR || event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+		if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 		
 		TeleportBook book = ItemManager.getTeleportBook(event.getItem());
 		if (book != null){
