@@ -26,6 +26,7 @@ public class PlayerData {
 	
 	public static String getItemString(ItemStack stack){
 		JsonArray main = new JsonArray();
+		return null;
 	}
 
 }

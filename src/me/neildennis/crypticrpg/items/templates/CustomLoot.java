@@ -1,4 +1,4 @@
-package me.neildennis.crypticrpg.items;
+package me.neildennis.crypticrpg.items.templates;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,6 +12,7 @@ import java.util.Random;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
+import me.neildennis.crypticrpg.items.custom.CrypticItem;
 import me.neildennis.crypticrpg.items.metadata.Attribute;
 import me.neildennis.crypticrpg.items.metadata.Attribute.AttributeType;
 import me.neildennis.crypticrpg.items.metadata.Rarity;
@@ -110,7 +111,8 @@ public class CustomLoot {
 			attrs.add(new Attribute(cust.type, upper, lower));
 		}
 		
-		return new CrypticItem(mat, name, lore, attrs, tier, rarity);
+		//return new CrypticItem(mat, name, lore, attrs, tier, rarity);
+		return null;
 	}
 	
 	private class CustomAttribute {

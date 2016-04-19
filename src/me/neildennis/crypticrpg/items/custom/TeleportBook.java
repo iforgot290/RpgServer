@@ -1,30 +1,27 @@
-package me.neildennis.crypticrpg.items.misc;
+package me.neildennis.crypticrpg.items.custom;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.neildennis.crypticrpg.Cryptic;
-import me.neildennis.crypticrpg.items.ItemInterface;
+import com.google.gson.JsonObject;
+
 import me.neildennis.crypticrpg.items.metadata.ItemType;
 
-public class TeleportBook implements ItemInterface{
+public class TeleportBook extends CrypticItem implements Interactable{
 
 	private String name;
 	private List<String> lore;
 	private boolean chaotic;
 	private Location loc;
 
-	private ItemStack item;
-
-	public TeleportBook(File file){
+	/*public TeleportBook(File file){
 
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -60,9 +57,11 @@ public class TeleportBook implements ItemInterface{
 		}
 		
 		generateItem();
-	}
+	}*/
 
 	public TeleportBook(String name, List<String> lore, boolean chaotic, Location loc){
+		super(ItemType.TELEPORT_BOOK);
+		
 		this.name = name;
 		this.lore = lore;
 		this.chaotic = chaotic;
@@ -76,16 +75,17 @@ public class TeleportBook implements ItemInterface{
 
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(ChatColor.WHITE + ChatColor.BOLD.toString() + name);
-		meta.getLore().clear();
+		List<String> displaylore = new ArrayList<String>();
 
 		for (String str : lore){
-			meta.getLore().add(ChatColor.WHITE + str);
+			displaylore.add(ChatColor.WHITE + str);
 		}
 
 		if (chaotic){
-			meta.getLore().add(ChatColor.RED + ChatColor.BOLD.toString() + "CHAOTIC");
+			displaylore.add(ChatColor.RED + ChatColor.BOLD.toString() + "CHAOTIC");
 		}
 
+		meta.setLore(displaylore);
 		item.setItemMeta(meta);
 	}
 
@@ -106,18 +106,21 @@ public class TeleportBook implements ItemInterface{
 	}
 
 	@Override
-	public String getSaveString() {
+	public void loadFromJson(JsonObject obj) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public JsonObject saveToJson() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ItemType getItemType() {
-		return ItemType.TELEPORT_BOOK;
-	}
-
-	@Override
-	public ItemStack getBukkitItem() {
-		return item.clone();
+	public void onInteract(PlayerInteractEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

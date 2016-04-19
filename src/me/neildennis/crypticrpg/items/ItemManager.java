@@ -12,8 +12,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neildennis.crypticrpg.Cryptic;
-import me.neildennis.crypticrpg.items.metadata.Attribute;
-import me.neildennis.crypticrpg.items.misc.TeleportBook;
+import me.neildennis.crypticrpg.items.custom.CrypticItem;
+import me.neildennis.crypticrpg.items.custom.TeleportBook;
+import me.neildennis.crypticrpg.items.templates.CustomLoot;
 
 public class ItemManager {
 
@@ -21,10 +22,14 @@ public class ItemManager {
 
 	private HashMap<String, CustomLoot> loot;
 	private static List<TeleportBook> tpbooks;
+	
+	private static HashMap<ItemStack, CrypticItem> items;
 
 	public ItemManager(){
 		loadLootTemplates();
 		loadTeleportBooks();
+		
+		items = new HashMap<ItemStack, CrypticItem>();
 		
 		Bukkit.getPluginManager().registerEvents(new ItemListener(), Cryptic.getPlugin());
 	}
@@ -55,6 +60,22 @@ public class ItemManager {
 				
 			}
 		}
+	}
+	
+	public static CrypticItem getCrypticItem(ItemStack stack){
+		return items.get(stack);
+	}
+	
+	public static void trackItem(CrypticItem item){
+		items.put(item.getItemStack(), item);
+	}
+	
+	public static void untrackItem(CrypticItem item){
+		items.remove(item.getItemStack());
+	}
+	
+	public static void untrackItem(ItemStack stack){
+		items.remove(stack);
 	}
 	
 	public static TeleportBook getTeleportBook(ItemStack stack){
@@ -93,24 +114,6 @@ public class ItemManager {
 
 	public CustomLoot getCustomLoot(String str){
 		return loot.get(loot);
-	}
-
-	public CrypticItem getCrypticItem(ItemStack stack){
-		if (stack.getAmount() > 1) return null;
-
-		String name;
-		List<String> lore;
-		List<Attribute> attrs;
-
-
-		ItemMeta meta = stack.getItemMeta();
-		String displayName = meta.getDisplayName();
-
-		if (ChatColor.stripColor(displayName).startsWith("[+")){
-			displayName = displayName.split("] ")[1];
-		}
-
-		return null;
 	}
 
 }
