@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.google.gson.JsonObject;
 
+import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.items.metadata.ItemType;
 
 public class TeleportBook extends CrypticItem implements Interactable{
@@ -58,6 +59,10 @@ public class TeleportBook extends CrypticItem implements Interactable{
 		
 		generateItem();
 	}*/
+	
+	public TeleportBook(){
+		
+	}
 
 	public TeleportBook(String name, List<String> lore, boolean chaotic, Location loc){
 		super(ItemType.TELEPORT_BOOK);
@@ -107,20 +112,26 @@ public class TeleportBook extends CrypticItem implements Interactable{
 
 	@Override
 	public void loadFromJson(JsonObject obj) {
-		// TODO Auto-generated method stub
+		this.name = "Nigga";
+		this.lore = new ArrayList<String>();
+		lore.add("fuckyou");
+		this.chaotic = false;
+		this.loc = new Location(Cryptic.getMainWorld(), 1, 1, 1);
+		this.type = ItemType.TELEPORT_BOOK;
 		
+		generateItem();
 	}
 
 	@Override
 	public JsonObject saveToJson() {
-		// TODO Auto-generated method stub
-		return null;
+		JsonObject obj = new JsonObject();
+		obj.addProperty("name", name);
+		return obj;
 	}
 
 	@Override
 	public void onInteract(PlayerInteractEvent event) {
-		// TODO Auto-generated method stub
-		
+		event.getPlayer().sendMessage("interacted");
 	}
 
 }

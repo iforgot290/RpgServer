@@ -12,8 +12,9 @@ import org.bukkit.scheduler.BukkitTask;
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.health.HealthData;
+import me.neildennis.crypticrpg.items.ItemData;
 import me.neildennis.crypticrpg.moderation.ModerationData;
-import minecade.dungeonrealms.Main;
+import me.neildennis.crypticrpg.permission.RankData;
 
 public class CrypticPlayer {
 
@@ -25,6 +26,8 @@ public class CrypticPlayer {
 
 	private HealthData healthData;
 	private ModerationData moderationData;
+	private ItemData itemData;
+	private RankData rankData;
 
 	public CrypticPlayer(UUID id){
 		this.id = id;
@@ -37,10 +40,17 @@ public class CrypticPlayer {
 		ResultSet data = Cloud.sendQuery("SELECT * FROM player_db WHERE player_id = '" + id.toString() + "'");
 
 		healthData = new HealthData(this, data);
+		itemData = new ItemData(this, data);
+		rankData = new RankData(this, data);
+	}
+	
+	public void online(Player pl){
+		healthData.online();
+		itemData.online(pl);
+		registerTasks();
 	}
 
-	public void registerTasks(){
-		healthData.registerTasks();
+	private void registerTasks(){
 
 		BukkitTask tickBuff = Bukkit.getScheduler().runTaskTimer(Cryptic.getPlugin(), new Runnable(){
 
@@ -104,6 +114,12 @@ public class CrypticPlayer {
 		return moderationData;
 	}
 
-
+	public ItemData getItemData(){
+		return itemData;
+	}
+	
+	public RankData getRankData(){
+		return rankData;
+	}
 
 }

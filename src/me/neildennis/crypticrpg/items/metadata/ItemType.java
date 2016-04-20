@@ -2,10 +2,30 @@ package me.neildennis.crypticrpg.items.metadata;
 
 import org.bukkit.Material;
 
+import me.neildennis.crypticrpg.items.custom.CrypticItem;
+import me.neildennis.crypticrpg.items.custom.CrypticSword;
+import me.neildennis.crypticrpg.items.custom.TeleportBook;
+
 public enum ItemType {
 	
-	SWORD, STAFF, AXE, HELMET, CHESTPLATE, LEGGINGS, BOOTS,
-	TELEPORT_BOOK;
+	SWORD(CrypticSword.class),
+	STAFF(null),
+	AXE(null),
+	HELMET(null),
+	CHESTPLATE(null),
+	LEGGINGS(null),
+	BOOTS(null),
+	TELEPORT_BOOK(TeleportBook.class);
+	
+	private Class<? extends CrypticItem> c;
+	
+	ItemType(Class<? extends CrypticItem> c){
+		this.c = c;
+	}
+	
+	public Class<? extends CrypticItem> getHandleClass(){
+		return c;
+	}
 	
 	public static Material getMaterialFromType(ItemType type){
 		return getMaterialFromType(type, 0);

@@ -11,10 +11,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.neildennis.crypticrpg.Cryptic;
-import me.neildennis.crypticrpg.items.ItemManager;
 import me.neildennis.crypticrpg.items.custom.TeleportBook;
 import me.neildennis.crypticrpg.items.metadata.Attribute;
 import me.neildennis.crypticrpg.items.metadata.Attribute.AttributeType;
+import me.neildennis.crypticrpg.player.CrypticPlayer;
+import me.neildennis.crypticrpg.player.PlayerManager;
 
 public class TestCommand implements CommandExecutor{
 
@@ -24,9 +25,11 @@ public class TestCommand implements CommandExecutor{
 		if (!(sender instanceof Player)) return true;
 		
 		Player pl = (Player) sender;
+		CrypticPlayer cp = PlayerManager.getCrypticPlayer(pl);
 		
 		if (pl.getInventory().getItemInMainHand().getType() == Material.AIR){
 			List<String> lore = new ArrayList<String>();
+			lore.add("Teleport book to test m8");
 			
 			List<Attribute> attribs = new ArrayList<Attribute>();
 			attribs.add(new Attribute(AttributeType.DAMAGE, 20, 10));
@@ -34,12 +37,12 @@ public class TestCommand implements CommandExecutor{
 			//CrypticItem item = new CrypticItem(Material.DIAMOND_SWORD, "Test Sword", lore, attribs, 4, Rarity.RARE, 3);
 			TeleportBook item = new TeleportBook("Test Book", lore, true, new Location(Cryptic.getMainWorld(), 1, 1, 1));
 			pl.getInventory().setItemInMainHand(item.getItemStack());
-			pl.sendMessage("Spawned sword");
-			ItemManager.trackItem(item);
+			pl.sendMessage("Spawned");
+			cp.getItemData().trackItem(item);
 			return true;
 		}
 		
-		if (ItemManager.getCrypticItem(pl.getInventory().getItemInMainHand()) != null){
+		if (cp.getItemData().getCrypticItem(pl.getInventory().getItemInMainHand()) != null){
 			pl.sendMessage("Item is in map");
 		}
 		

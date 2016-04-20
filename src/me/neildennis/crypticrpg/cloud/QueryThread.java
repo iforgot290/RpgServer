@@ -19,6 +19,7 @@ public class QueryThread implements Runnable{
 				try {
 					Statement statement = ConnectionPool.getConnection().createStatement();
 					statement.execute(queue.poll());
+					System.out.println("Executed statement");
 					statement.close();
 				} catch (SQLException e) {
 					e.printStackTrace();

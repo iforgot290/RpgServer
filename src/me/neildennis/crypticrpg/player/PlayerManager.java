@@ -9,8 +9,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.neildennis.crypticrpg.cloud.data.PlayerData;
 import minecade.dungeonrealms.Main;
@@ -48,9 +49,16 @@ public class PlayerManager implements Listener{
 	}
 	
 	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event){
+		CrypticPlayer pl = getCrypticPlayer(event.getPlayer());
+		pl.online(event.getPlayer());
+	}
+	
+	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event){
 		//TODO combat logging
 		CrypticPlayer pl = getCrypticPlayer(event.getPlayer());
+		pl.cancelTasks();
 		PlayerData.savePlayerData(pl);
 		players.remove(pl);
 	}

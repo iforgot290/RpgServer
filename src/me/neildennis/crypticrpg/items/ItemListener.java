@@ -6,12 +6,15 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.neildennis.crypticrpg.items.custom.CrypticItem;
 import me.neildennis.crypticrpg.items.custom.Interactable;
+import me.neildennis.crypticrpg.player.CrypticPlayer;
+import me.neildennis.crypticrpg.player.PlayerManager;
 
 public class ItemListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event){
-		CrypticItem item = ItemManager.getCrypticItem(event.getItem());
+		CrypticPlayer pl = PlayerManager.getCrypticPlayer(event.getPlayer());
+		CrypticItem item = pl.getItemData().getCrypticItem(event.getItem());
 		if (item != null){
 			if (item instanceof Interactable){
 				Interactable inter = (Interactable) item;
