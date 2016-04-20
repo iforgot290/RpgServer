@@ -123,7 +123,6 @@ public class HealthData {
 		if (bar == null){
 			bar = Bukkit.createBossBar("Loading", BarColor.PURPLE, BarStyle.SOLID);
 			bar.addPlayer(cp.getPlayer());
-			bar.setVisible(true);
 		}
 
 		double percent = ((double) getCurrentHP() / (double) getMaxHP());
