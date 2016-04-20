@@ -7,23 +7,42 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
 import io.netty.util.internal.ConcurrentSet;
-import minecade.dungeonrealms.Main;
+import me.neildennis.crypticrpg.Cryptic;
 
 public class Cloud {
 
 	private ConcurrentSet<BukkitTask> tasks;
 	private static QueryThread querythread;
+	
+	private static CrossServerReceive receive;
+	private static CrossServerSend send;
 
 	public Cloud(){
 		tasks = new ConcurrentSet<BukkitTask>();
 		
 		querythread = new QueryThread();
+		receive = new CrossServerReceive();
+		send = new CrossServerSend();
+		
+		if (ConnectionPool.getCloudSocket() != null){
+			System.out.println("Connected to the cloud");
+		} else {
+			System.out.println("Fatal error: No connection to the cloud");
+		}
+		
+		if (ConnectionPool.getConnection() != null){
+			System.out.println("Connected to the database");
+		} else {
+			System.out.println("Fatal error: No connection to the database");
+		}
+		
 		registerTasks();
 	}
 
 	public void registerTasks(){
-		BukkitTask querytask = Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, querythread);
-		tasks.add(querytask);
+		tasks.add(Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), querythread));
+		tasks.add(Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), receive));
+		tasks.add(Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), send));
 	}
 
 	public static void sendStatementAsync(String statement){
@@ -51,6 +70,10 @@ public class Cloud {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public static void sendCrossServer(String query){
+		send.sendCrossServer(query);
 	}
 
 }
