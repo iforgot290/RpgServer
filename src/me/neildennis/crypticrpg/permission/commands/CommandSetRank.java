@@ -29,8 +29,8 @@ public class CommandSetRank extends CrypticCommand{
 	}
 
 	@Override
-	public void command(Player pl, Command cmd, String label, String[] args) {
-		CrypticPlayer cp = PlayerManager.getCrypticPlayer(pl);
+	public void command(final Player pl, Command cmd, String label, String[] args) {
+		final CrypticPlayer cp = PlayerManager.getCrypticPlayer(pl);
 
 		if (cp.getRankData().getRank().getPriority() < Rank.ADMIN.getPriority()){
 			noPerms();
@@ -42,10 +42,10 @@ public class CommandSetRank extends CrypticCommand{
 			return;
 		}
 
-		UUID id;
-		String name;
-		CrypticPlayer toset;
-		Rank torank;
+		final UUID id;
+		final String name;
+		final CrypticPlayer toset;
+		final Rank torank;
 
 		if (args.length == 1) {
 			toset = cp;
