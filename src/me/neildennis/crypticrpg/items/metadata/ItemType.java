@@ -27,6 +27,14 @@ public enum ItemType {
 		return c;
 	}
 	
+	public Material getMaterial(){
+		return getMaterialFromType(this);
+	}
+	
+	public Material getMaterial(int tier){
+		return getMaterialFromType(this, tier);
+	}
+	
 	public static Material getMaterialFromType(ItemType type){
 		return getMaterialFromType(type, 0);
 	}

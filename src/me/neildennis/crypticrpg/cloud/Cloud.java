@@ -72,8 +72,8 @@ public class Cloud {
 		}
 	}
 	
-	public static void sendCrossServer(String query){
-		send.sendCrossServer(query);
+	public static void sendCrossServer(int to, String query){
+		send.sendCrossServer(to, query);
 	}
 
 }

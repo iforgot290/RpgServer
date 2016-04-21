@@ -43,8 +43,8 @@ public class CrossServerSend implements Runnable{
 		}
 	}
 	
-	void sendCrossServer(String query){
-		reqs.offer(query);
+	void sendCrossServer(int to, String query){
+		reqs.offer(to + ":" + query);
 	}
 
 }

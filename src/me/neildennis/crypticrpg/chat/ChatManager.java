@@ -1,30 +1,48 @@
 package me.neildennis.crypticrpg.chat;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.scheduler.BukkitTask;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
-import me.neildennis.crypticrpg.player.PlayerManager;
 
 public class ChatManager implements Listener{
+	
+	private static ConcurrentLinkedQueue<SyncMessage> syncmsg;
+	private List<BukkitTask> tasks;
 	
 	private static String globalPrefix = ChatColor.AQUA + "<G> ";
 	
 	public ChatManager(){
-		Bukkit.getPluginManager().registerEvents(this, Cryptic.getPlugin());
+		syncmsg = new ConcurrentLinkedQueue<SyncMessage>();
+		tasks = new ArrayList<BukkitTask>();
+		Bukkit.getPluginManager().registerEvents(new ChatListener(), Cryptic.getPlugin());
 	}
 	
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onAsyncChat(AsyncPlayerChatEvent event){
-		event.setCancelled(true);
-		CrypticPlayer pl = PlayerManager.getCrypticPlayer(event.getPlayer());
-		showGlobal(pl, event.getMessage());
+	public void registerTasks(){
+		tasks.add(Bukkit.getScheduler().runTaskTimer(Cryptic.getPlugin(), new Runnable(){
+
+			@Override
+			public void run() {
+				while (!syncmsg.isEmpty()){
+					SyncMessage msg = syncmsg.poll();
+					msg.getPlayer().sendMessage(msg.getMessage());
+				}
+			}
+			
+		}, 5L, 1L));
+	}
+	
+	public static void sendSyncMessage(Player pl, String msg){
+		syncmsg.offer(new SyncMessage(pl, msg));
 	}
 	
 	public static void showGlobal(CrypticPlayer pl, String message){

@@ -14,6 +14,7 @@ import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.health.HealthData;
 import me.neildennis.crypticrpg.items.ItemData;
 import me.neildennis.crypticrpg.moderation.ModerationData;
+import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.permission.RankData;
 
 public class CrypticPlayer {
@@ -120,6 +121,10 @@ public class CrypticPlayer {
 	
 	public RankData getRankData(){
 		return rankData;
+	}
+	
+	public Rank getRank(){
+		return rankData.getRank();
 	}
 
 }

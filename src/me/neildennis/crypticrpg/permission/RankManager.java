@@ -22,7 +22,7 @@ public class RankManager {
 	}
 	
 	public static boolean isDemote(Rank from, Rank to){
-		return from.getPriority() > to.getPriority();
+		return from.getPriority() >= to.getPriority();
 	}
 
 }
