@@ -32,7 +32,7 @@ public class Cryptic {
 		
 		mainworld = Bukkit.getWorld("Dungeonrealms");
 		
-		Main.plugin.getCommand("itemtest").setExecutor(new TestCommand());
+		getPlugin().getCommand("itemtest").setExecutor(new TestCommand());
 	}
 	
 	public Cloud getCloud(){

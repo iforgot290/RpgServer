@@ -14,23 +14,24 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import me.neildennis.crypticrpg.items.ItemManager;
-import me.neildennis.crypticrpg.items.metadata.Attribute;
+import me.neildennis.crypticrpg.items.generator.ItemGenerator;
+import me.neildennis.crypticrpg.items.metadata.ItemModifier;
+import me.neildennis.crypticrpg.items.metadata.ItemModifier.ModifierType;
 import me.neildennis.crypticrpg.items.metadata.ItemType;
 import me.neildennis.crypticrpg.items.metadata.Rarity;
-import me.neildennis.crypticrpg.items.metadata.Attribute.AttributeType;
 
-public abstract class CrypticWeapon extends Attributeable {
+public abstract class CrypticGear extends Attributeable {
 
 	protected String name;
 	protected List<String> lore;
 	protected int level;
 	protected Rarity rarity;
 
-	protected CrypticWeapon(){
+	protected CrypticGear(){
 		super();
 	}
 
-	protected CrypticWeapon(ItemType type, String name, List<String> lore, List<Attribute> attribs, int tier, Rarity rarity, int level){
+	protected CrypticGear(ItemType type, String name, List<String> lore, List<ItemModifier> attribs, int tier, Rarity rarity, int level){
 		super(type, tier, 1, attribs);
 
 		this.name = name;
@@ -84,15 +85,15 @@ public abstract class CrypticWeapon extends Attributeable {
 			}
 		}
 		
-		attribs = new ArrayList<Attribute>();
+		attribs = new ArrayList<ItemModifier>();
 		if (obj.get("attribs") != null && obj.get("attribs").isJsonArray()){
 			JsonArray jsonattr = obj.get("attribs").getAsJsonArray();
 			for (JsonElement ele : jsonattr){
 				JsonObject attrobj = (JsonObject)ele;
 				int max = attrobj.get("max").getAsInt();
 				int min = attrobj.get("min").getAsInt();
-				AttributeType type = AttributeType.valueOf(attrobj.get("type").getAsString());
-				Attribute attr = new Attribute(type, max, min);
+				ModifierType type = ModifierType.valueOf(attrobj.get("type").getAsString());
+				ItemModifier attr = new ItemModifier(type, max, min);
 				attribs.add(attr);
 			}
 		}
@@ -118,7 +119,7 @@ public abstract class CrypticWeapon extends Attributeable {
 		
 		if (attribs.size() > 0){
 			JsonArray jsonattr = new JsonArray();
-			for (Attribute attr : attribs){
+			for (ItemModifier attr : attribs){
 				JsonObject attrobj = new JsonObject();
 				attrobj.addProperty("type", attr.getType().name());
 				attrobj.addProperty("max", attr.getMax());
@@ -129,6 +130,24 @@ public abstract class CrypticWeapon extends Attributeable {
 		}
 
 		return obj;
+	}
+	
+	public CrypticGear generate(ItemGenerator gen){
+		this.type = gen.getType();
+		this.lore = gen.getLore();
+		this.name = gen.getName();
+		this.rarity = gen.getRarity();
+		this.level = gen.getLevel();
+		this.attribs = gen.getModifiers();
+		
+		if (level < 20) tier = 1;
+		else if (level < 40) tier = 2;
+		else if (level < 60) tier = 3;
+		else if (level < 80) tier = 4;
+		else tier = 5;
+		
+		initItem();
+		return this;
 	}
 
 }

@@ -2,23 +2,24 @@ package me.neildennis.crypticrpg.items.metadata;
 
 import java.util.Random;
 
-public class Attribute {
+public class ItemModifier {
 	
-	private AttributeType type;
+	private ModifierType type;
 	private int max;
 	private int min;
+	private Rarity rarity;
 	
-	public Attribute(AttributeType type, int value){
+	public ItemModifier(ModifierType type, int value){
 		this(type, value, value);
 	}
 	
-	public Attribute(AttributeType type, int max, int min){
+	public ItemModifier(ModifierType type, int max, int min){
 		this.type = type;
 		this.max = max;
 		this.min = min;
 	}
 	
-	public AttributeType getType(){
+	public ModifierType getType(){
 		return type;
 	}
 	
@@ -40,13 +41,21 @@ public class Attribute {
 		return min;
 	}
 	
-	public enum AttributeType {
+	public void setRarity(Rarity rarity){
+		this.rarity = rarity;
+	}
+	
+	public Rarity getRarity(){
+		return rarity;
+	}
+	
+	public enum ModifierType {
 		DAMAGE("DMG: ", "");
 		
 		private String pre;
 		private String post;
 		
-		AttributeType(String pre, String post){
+		ModifierType(String pre, String post){
 			this.pre = pre;
 			this.post = post;
 		}
@@ -59,7 +68,7 @@ public class Attribute {
 			return post;
 		}
 		
-		public static AttributeType getFromString(String str){
+		public static ModifierType getFromString(String str){
 			switch (str.toLowerCase()){
 			
 			case "damage": return DAMAGE;

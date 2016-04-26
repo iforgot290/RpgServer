@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import me.neildennis.crypticrpg.Cryptic;
+import me.neildennis.crypticrpg.items.generator.ModifierTemplate;
 import me.neildennis.crypticrpg.items.templates.CustomLoot;
 
 public class ItemManager {
@@ -16,6 +17,7 @@ public class ItemManager {
 
 	public ItemManager(){
 		loadLootTemplates();
+		ModifierTemplate.loadTemplates();
 		
 		Bukkit.getPluginManager().registerEvents(new ItemListener(), Cryptic.getPlugin());
 	}

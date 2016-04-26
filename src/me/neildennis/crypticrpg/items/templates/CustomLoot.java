@@ -13,8 +13,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
 import me.neildennis.crypticrpg.items.custom.CrypticItem;
-import me.neildennis.crypticrpg.items.metadata.Attribute;
-import me.neildennis.crypticrpg.items.metadata.Attribute.AttributeType;
+import me.neildennis.crypticrpg.items.metadata.ItemModifier;
+import me.neildennis.crypticrpg.items.metadata.ItemModifier.ModifierType;
 import me.neildennis.crypticrpg.items.metadata.Rarity;
 
 public class CustomLoot {
@@ -64,7 +64,7 @@ public class CustomLoot {
 					String[] args = line.split(" ");
 					if (args.length != 2) continue;
 					
-					AttributeType type = AttributeType.getFromString(args[0]);
+					ModifierType type = ModifierType.getFromString(args[0]);
 					CustomAttribute attr;
 					
 					if (args[1].contains("-")){
@@ -98,7 +98,7 @@ public class CustomLoot {
 	}
 	
 	public CrypticItem generateItem(){
-		List<Attribute> attrs = new ArrayList<Attribute>();
+		List<ItemModifier> attrs = new ArrayList<ItemModifier>();
 		Random random = new Random();
 		
 		for (CustomAttribute cust : attribs){
@@ -108,7 +108,7 @@ public class CustomLoot {
 			int upperRange = cust.uppermax - cust.lowermax;
 			int upper = cust.lowermax + random.nextInt(upperRange);
 			
-			attrs.add(new Attribute(cust.type, upper, lower));
+			attrs.add(new ItemModifier(cust.type, upper, lower));
 		}
 		
 		//return new CrypticItem(mat, name, lore, attrs, tier, rarity);
@@ -117,10 +117,10 @@ public class CustomLoot {
 	
 	private class CustomAttribute {
 		
-		public AttributeType type;
+		public ModifierType type;
 		public int lowermin, uppermin, lowermax, uppermax;
 		
-		private CustomAttribute(AttributeType type, int lowermin, int uppermin, int lowermax, int uppermax){
+		private CustomAttribute(ModifierType type, int lowermin, int uppermin, int lowermax, int uppermax){
 			this.type = type;
 			this.lowermin = lowermin;
 			this.uppermin = uppermin;

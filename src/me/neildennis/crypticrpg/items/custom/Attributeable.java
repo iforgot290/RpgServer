@@ -5,19 +5,19 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 
-import me.neildennis.crypticrpg.items.metadata.Attribute;
+import me.neildennis.crypticrpg.items.metadata.ItemModifier;
+import me.neildennis.crypticrpg.items.metadata.ItemModifier.ModifierType;
 import me.neildennis.crypticrpg.items.metadata.ItemType;
-import me.neildennis.crypticrpg.items.metadata.Attribute.AttributeType;
 
 public abstract class Attributeable extends CrypticItem {
 	
-	protected List<Attribute> attribs;
+	protected List<ItemModifier> attribs;
 
 	protected Attributeable(){
 		super();
 	}
 	
-	protected Attributeable(ItemType type, int tier, int amount, List<Attribute> attribs){
+	protected Attributeable(ItemType type, int tier, int amount, List<ItemModifier> attribs){
 		super(type, tier, amount);
 		
 		this.attribs = attribs;
@@ -26,7 +26,7 @@ public abstract class Attributeable extends CrypticItem {
 	protected List<String> getAttributeDisplay(){
 		List<String> display = new ArrayList<String>();
 		
-		for (Attribute attr : attribs){
+		for (ItemModifier attr : attribs){
 			String value;
 			
 			if (attr.getMax() == attr.getMin()) value = String.valueOf(attr.getMax());
@@ -39,31 +39,31 @@ public abstract class Attributeable extends CrypticItem {
 		return display;
 	}
 	
-	public List<Attribute> getAttributes(){
+	public List<ItemModifier> getAttributes(){
 		return attribs;
 	}
 	
-	public Attribute getAttribute(String str){
-		return getAttribute(AttributeType.getFromString(str));
+	public ItemModifier getAttribute(String str){
+		return getAttribute(ModifierType.getFromString(str));
 	}
 	
-	public Attribute getAttribute(AttributeType type){
-		for (Attribute attr : attribs)
+	public ItemModifier getAttribute(ModifierType type){
+		for (ItemModifier attr : attribs)
 			if (attr.getType() == type)
 				return attr;
 		return null;
 	}
 	
-	public void setAttribute(Attribute attr){
-		for (Attribute a : attribs)
+	public void setAttribute(ItemModifier attr){
+		for (ItemModifier a : attribs)
 			if (a.getType() == attr.getType())
 				attribs.remove(a);
 		
 		attribs.add(attr);
 	}
 	
-	public void removeAttribute(AttributeType type){
-		for (Attribute a : attribs)
+	public void removeAttribute(ModifierType type){
+		for (ItemModifier a : attribs)
 			if (a.getType() == type)
 				attribs.remove(a);
 	}

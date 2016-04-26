@@ -3,17 +3,15 @@ package me.neildennis.crypticrpg.items.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.neildennis.crypticrpg.Cryptic;
-import me.neildennis.crypticrpg.items.custom.TeleportBook;
-import me.neildennis.crypticrpg.items.metadata.Attribute;
-import me.neildennis.crypticrpg.items.metadata.Attribute.AttributeType;
+import me.neildennis.crypticrpg.items.custom.CrypticGear;
+import me.neildennis.crypticrpg.items.generator.ItemGenerator;
+import me.neildennis.crypticrpg.items.metadata.ItemType;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
 
@@ -31,14 +29,13 @@ public class TestCommand implements CommandExecutor{
 			List<String> lore = new ArrayList<String>();
 			lore.add("Teleport book to test m8");
 			
-			List<Attribute> attribs = new ArrayList<Attribute>();
-			attribs.add(new Attribute(AttributeType.DAMAGE, 20, 10));
+			CrypticGear gear = new ItemGenerator(ItemType.SWORD, 5).setLore(lore).setName("Test").generate();
 			
 			//CrypticItem item = new CrypticItem(Material.DIAMOND_SWORD, "Test Sword", lore, attribs, 4, Rarity.RARE, 3);
-			TeleportBook item = new TeleportBook("Test Book", lore, true, new Location(Cryptic.getMainWorld(), 1, 1, 1));
-			pl.getInventory().setItemInMainHand(item.getItemStack());
+			//TeleportBook item = new TeleportBook("Test Book", lore, true, new Location(Cryptic.getMainWorld(), 1, 1, 1));
+			pl.getInventory().setItemInMainHand(gear.getItemStack());
 			pl.sendMessage("Spawned");
-			cp.getItemData().trackItem(item);
+			cp.getItemData().trackItem(gear);
 			return true;
 		}
 		

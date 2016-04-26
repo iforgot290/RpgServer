@@ -4,7 +4,6 @@ import org.bukkit.Location;
 
 import com.google.gson.JsonObject;
 
-import me.neildennis.crypticrpg.monsters.MobStats;
 import me.neildennis.crypticrpg.monsters.MobType;
 
 public abstract class SpawnTemplate {
@@ -24,7 +23,6 @@ public abstract class SpawnTemplate {
 	}
 	
 	public abstract void spawnMob(Location loc);
-	public abstract void spawnMob(Location loc, MobStats stats);
 	
 	public void loadFromJson(JsonObject obj){
 		type = MobType.valueOf(obj.get("type").getAsString());
