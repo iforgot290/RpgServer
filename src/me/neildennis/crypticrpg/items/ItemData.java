@@ -2,6 +2,7 @@ package me.neildennis.crypticrpg.items;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -22,14 +23,14 @@ import me.neildennis.crypticrpg.player.CrypticPlayer;
 public class ItemData {
 
 	private CrypticPlayer pl;
-	private HashMap<ItemStack, CrypticItem> items;
+	private ArrayList<ItemTracker> items;
 
 	private HashMap<Integer, CrypticItem> loaded;
 	private HashMap<Integer, ItemStack> loadedVanilla;
 
 	public ItemData(CrypticPlayer pl, ResultSet data){
 		this.pl = pl;
-		this.items = new HashMap<ItemStack, CrypticItem>();
+		this.items = new ArrayList<ItemTracker>();
 		this.loaded = new HashMap<Integer, CrypticItem>();
 		this.loadedVanilla = new HashMap<Integer, ItemStack>();
 
@@ -78,11 +79,14 @@ public class ItemData {
 	}
 
 	public CrypticItem getCrypticItem(ItemStack stack){
-		return items.get(stack);
+		for (ItemTracker track : items)
+			if (track.getItemStack().equals(stack))
+				return track.getCrypticItem();
+		return null;
 	}
 
 	public void trackItem(CrypticItem item){
-		items.put(item.getItemStack(), item);
+		items.add(new ItemTracker(item.getItemStack(), item));
 	}
 
 	public void untrackItem(CrypticItem item){

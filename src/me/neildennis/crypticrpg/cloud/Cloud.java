@@ -21,8 +21,8 @@ public class Cloud {
 		tasks = new ConcurrentSet<BukkitTask>();
 		
 		querythread = new QueryThread();
-		receive = new CrossServerReceive();
-		send = new CrossServerSend();
+		//receive = new CrossServerReceive();
+		//send = new CrossServerSend();
 		
 		if (ConnectionPool.getCloudSocket() != null){
 			System.out.println("Connected to the cloud");
@@ -41,8 +41,8 @@ public class Cloud {
 
 	public void registerTasks(){
 		tasks.add(Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), querythread));
-		tasks.add(Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), receive));
-		tasks.add(Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), send));
+		//tasks.add(Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), receive));
+		//tasks.add(Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), send));
 	}
 
 	public static void sendStatementAsync(String statement){

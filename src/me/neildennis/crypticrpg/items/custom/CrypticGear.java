@@ -43,6 +43,8 @@ public abstract class CrypticGear extends Attributeable {
 	}
 	
 	private void initItem(){
+		item = new ItemStack(type.getMaterial(tier));
+		
 		List<String> displayMeta = new ArrayList<String>();
 
 		for (String str : lore){
@@ -57,7 +59,7 @@ public abstract class CrypticGear extends Attributeable {
 		String displayName = ItemManager.getTierColor(tier) + name;
 
 		if (level > 0){
-			displayName = ChatColor.RED + "[+" + level + "] " + displayName;
+			displayName = ChatColor.RED + "[" + level + "] " + displayName;
 		}
 
 		ItemMeta meta = item.getItemMeta();
@@ -71,7 +73,6 @@ public abstract class CrypticGear extends Attributeable {
 	@Override
 	public void loadFromJson(JsonObject obj) {
 		type = ItemType.valueOf(obj.get("type").getAsString());
-		item = new ItemStack(type.getMaterial());
 		tier = obj.get("tier").getAsInt();
 		name = obj.get("name").getAsString();
 		rarity = Rarity.valueOf(obj.get("rarity").getAsString());

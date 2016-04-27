@@ -24,7 +24,7 @@ public class SpawnBlock {
 	private int minlvl;
 	private int maxlvl;
 	
-	public SpawnBlock(int id, Location loc, int range, JsonObject json){
+	public SpawnBlock(int id, Location loc, int range, int minlvl, int maxlvl, JsonObject json){
 		this.id = id;
 		this.loc = loc;
 		this.range = range;

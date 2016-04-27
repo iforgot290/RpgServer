@@ -31,17 +31,14 @@ public class ItemGenerator {
 	}
 	
 	public CrypticGear generate(){
-		mods = new ModifierGenerator().setLevel(lvl).setType(type).generate();
-		
-		for (ItemModifier mod : mods)
-			if (mod.getRarity() != null)
-				rarity = mod.getRarity();
+		mods = new ModifierGenerator(type).setLevel(lvl).setRarity(rarity).generate();
 		
 		try {
 			CrypticItem item = type.getHandleClass().newInstance();
 			if (item instanceof CrypticGear){
 				CrypticGear gear = (CrypticGear)item;
 				gear.generate(this);
+				return gear;
 			}
 			return null;
 			
@@ -70,6 +67,11 @@ public class ItemGenerator {
 	
 	public ItemGenerator setLevel(int lvl){
 		this.lvl = lvl;
+		return this;
+	}
+	
+	public ItemGenerator setRarity(Rarity rarity){
+		this.rarity = rarity;
 		return this;
 	}
 	

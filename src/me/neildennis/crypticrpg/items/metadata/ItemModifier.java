@@ -7,13 +7,12 @@ public class ItemModifier {
 	private ModifierType type;
 	private int max;
 	private int min;
-	private Rarity rarity;
 	
 	public ItemModifier(ModifierType type, int value){
 		this(type, value, value);
 	}
 	
-	public ItemModifier(ModifierType type, int max, int min){
+	public ItemModifier(ModifierType type, int min, int max){
 		this.type = type;
 		this.max = max;
 		this.min = min;
@@ -39,14 +38,6 @@ public class ItemModifier {
 	
 	public int getMin(){
 		return min;
-	}
-	
-	public void setRarity(Rarity rarity){
-		this.rarity = rarity;
-	}
-	
-	public Rarity getRarity(){
-		return rarity;
 	}
 	
 	public enum ModifierType {
