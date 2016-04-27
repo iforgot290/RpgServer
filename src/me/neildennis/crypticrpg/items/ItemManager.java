@@ -1,12 +1,18 @@
 package me.neildennis.crypticrpg.items;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+
 import me.neildennis.crypticrpg.Cryptic;
+import me.neildennis.crypticrpg.items.generator.ItemGenerator;
 import me.neildennis.crypticrpg.items.generator.ModifierTemplate;
+import me.neildennis.crypticrpg.items.metadata.ItemType;
+import me.neildennis.crypticrpg.items.metadata.Rarity;
 import me.neildennis.crypticrpg.items.templates.CustomLoot;
 
 public class ItemManager {
@@ -56,6 +62,19 @@ public class ItemManager {
 
 	public CustomLoot getCustomLoot(String str){
 		return loot.get(loot);
+	}
+	
+	public static ArrayList<ItemGenerator> generateMobArmor(int level){
+		ArrayList<ItemGenerator> gear = new ArrayList<ItemGenerator>();
+		Random random = new Random();
+		
+		gear.add(new ItemGenerator().setLevel(level).setRarity(Rarity.getFromChance(random.nextInt(100))).setType(ItemType.HELMET));
+		gear.add(new ItemGenerator().setLevel(level).setRarity(Rarity.getFromChance(random.nextInt(100))).setType(ItemType.CHESTPLATE));
+		gear.add(new ItemGenerator().setLevel(level).setRarity(Rarity.getFromChance(random.nextInt(100))).setType(ItemType.LEGGINGS));
+		gear.add(new ItemGenerator().setLevel(level).setRarity(Rarity.getFromChance(random.nextInt(100))).setType(ItemType.BOOTS));
+		
+		
+		return gear;
 	}
 
 }

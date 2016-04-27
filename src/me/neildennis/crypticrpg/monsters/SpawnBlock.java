@@ -63,6 +63,7 @@ public class SpawnBlock {
 			if (!spawn.shouldSpawn()) continue;
 			int level = random.nextInt(maxlvl - minlvl) + minlvl;
 			spawn.spawnMob(getRandomLocation(), level);
+			spawn.applyGear();
 		}
 	}
 	

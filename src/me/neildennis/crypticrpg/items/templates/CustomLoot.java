@@ -53,7 +53,7 @@ public class CustomLoot {
 				}
 				
 				else if (line.startsWith("rarity=")){
-					rarity = Rarity.getFromString(line.replaceAll("rarity=", ""));
+					rarity = Rarity.valueOf(line.replaceAll("rarity=", ""));
 				}
 				
 				else if (line.startsWith("lore=")){

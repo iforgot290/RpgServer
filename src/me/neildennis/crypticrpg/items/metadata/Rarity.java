@@ -24,20 +24,11 @@ public enum Rarity {
 		return display;
 	}
 	
-	public static Rarity getFromString(String str){
-		switch (str.toLowerCase()){
-		
-		case "common": return COMMON;
-		case "uncommon": return UNCOMMON;
-		case "rare": return RARE;
-		case "unique": return UNIQUE;
-		
-		default: return COMMON;
-		
-		}
+	public static Rarity getFromChance(int c){
+		if (c < 60) return COMMON;
+		else if (c < 85) return UNCOMMON;
+		else if (c < 98) return RARE;
+		else return UNIQUE;
 	}
-	
-	public static Rarity rarityFromDamage(int mindmg, int maxdmg){
-		return COMMON;
-	}
+
 }

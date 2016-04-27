@@ -6,10 +6,10 @@ import me.neildennis.crypticrpg.items.metadata.ItemModifier;
 import me.neildennis.crypticrpg.items.metadata.ItemType;
 import me.neildennis.crypticrpg.items.metadata.Rarity;
 
-public class CrypticSword extends CrypticGear{
+public class CrypticSword extends CrypticWeapon{
 	
 	public CrypticSword(){
-		
+		super();
 	}
 	
 	public CrypticSword(String name, List<String> lore, List<ItemModifier> attribs, int tier, Rarity rarity, int level){
