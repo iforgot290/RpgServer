@@ -68,12 +68,13 @@ public class CommandSetRank extends CrypticCommand{
 				public void run() {
 					ResultSet res = Cloud.sendQuery("SELECT rank, server FROM player_db WHERE player_id = '"
 							+ id.toString() + "'");
-					if (res == null){
-						ChatManager.sendSyncMessage(pl, ChatColor.RED + "Player not found");
-						return;
-					}
 
 					try {
+						if (!res.next()){
+							ChatManager.sendSyncMessage(pl, ChatColor.RED + "Player not found");
+							return;
+						}
+						
 						Rank fromrank = Rank.valueOf(res.getString("rank"));
 						boolean cont = false;
 						if (RankManager.isDemote(fromrank, torank)){

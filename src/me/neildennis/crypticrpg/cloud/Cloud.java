@@ -63,9 +63,7 @@ public class Cloud {
 		try {
 			Statement statement = ConnectionPool.getConnection().createStatement();
 			ResultSet res = statement.executeQuery(query);
-			
-			if (res.next()) return res;
-			return null;
+			return res;
 		} catch (Exception e){
 			e.printStackTrace();
 			return null;

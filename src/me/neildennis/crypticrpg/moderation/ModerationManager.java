@@ -27,6 +27,7 @@ public class ModerationManager implements Listener{
 	public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event){
 		ResultSet result = Cloud.sendQuery("SELECT * FROM player_db WHERE player_id = '" + event.getUniqueId().toString() + "'");
 		try {
+			result.next();
 			if (result.getBoolean("banned")){
 				String reason = result.getString("banned_reason");
 				if (reason == null) reason = "The ban hammer has spoken!";

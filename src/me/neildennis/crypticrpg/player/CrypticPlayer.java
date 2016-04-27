@@ -1,6 +1,7 @@
 package me.neildennis.crypticrpg.player;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -39,10 +40,15 @@ public class CrypticPlayer {
 		Cloud.sendStatement("INSERT IGNORE INTO player_db (player_id) VALUES ('" + id.toString() + "')");
 
 		ResultSet data = Cloud.sendQuery("SELECT * FROM player_db WHERE player_id = '" + id.toString() + "'");
-
-		healthData = new HealthData(this, data);
-		itemData = new ItemData(this, data);
-		rankData = new RankData(this, data);
+		try {
+			data.next();
+			
+			healthData = new HealthData(this, data);
+			itemData = new ItemData(this, data);
+			rankData = new RankData(this, data);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void online(Player pl){
