@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 
 import me.neildennis.crypticrpg.items.metadata.ItemModifier;
 import me.neildennis.crypticrpg.items.metadata.ItemModifier.ModifierType;
+import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.items.metadata.ItemType;
 
 public abstract class Attributeable extends CrypticItem {
@@ -17,8 +18,8 @@ public abstract class Attributeable extends CrypticItem {
 		super();
 	}
 	
-	protected Attributeable(ItemType type, int tier, int amount, List<ItemModifier> attribs){
-		super(type, tier, amount);
+	protected Attributeable(ItemType type, int amount, List<ItemModifier> attribs){
+		super(type, amount);
 		
 		this.attribs = attribs;
 	}
@@ -51,6 +52,7 @@ public abstract class Attributeable extends CrypticItem {
 		for (ItemModifier attr : attribs)
 			if (attr.getType() == type)
 				return attr;
+		Log.debug("Type not found");
 		return null;
 	}
 	

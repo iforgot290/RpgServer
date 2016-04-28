@@ -1,19 +1,16 @@
 package me.neildennis.crypticrpg.items.commands;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
-import me.neildennis.crypticrpg.items.custom.CrypticGear;
-import me.neildennis.crypticrpg.items.generator.ItemGenerator;
-import me.neildennis.crypticrpg.items.metadata.ItemType;
-import me.neildennis.crypticrpg.items.metadata.Rarity;
+import me.neildennis.crypticrpg.monsters.MobManager;
+import me.neildennis.crypticrpg.monsters.SpawnBlock;
+import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
+import me.neildennis.crypticrpg.monsters.templates.ZombieTemplate;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
 
@@ -27,7 +24,7 @@ public class TestCommand implements CommandExecutor{
 		Player pl = (Player) sender;
 		CrypticPlayer cp = PlayerManager.getCrypticPlayer(pl);
 
-		if (pl.getInventory().getItemInMainHand().getType() == Material.AIR){
+		/*if (pl.getInventory().getItemInMainHand().getType() == Material.AIR){
 			List<String> lore = new ArrayList<String>();
 			lore.add("Teleport book to test m8");
 
@@ -48,7 +45,13 @@ public class TestCommand implements CommandExecutor{
 
 		else {
 			pl.sendMessage("Item is not in map");
-		}
+		}*/
+		
+		ArrayList<SpawnTemplate> spawns = new ArrayList<SpawnTemplate>();
+		spawns.add(new ZombieTemplate("Faggot", false, 10000));
+		
+		SpawnBlock block = new SpawnBlock(1, pl.getLocation(), 10, 25, 28, spawns);
+		MobManager.addSpawnBlock(block);
 
 		return true;
 	}

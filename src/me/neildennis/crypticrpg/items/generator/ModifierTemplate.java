@@ -14,7 +14,7 @@ public class ModifierTemplate {
 
 	public static void loadTemplates(){
 		templates = new ArrayList<ModifierTemplate>();
-		templates.add(new ModifierTemplate(ModifierType.DAMAGE, ItemType.SWORD, Rarity.UNIQUE, 0, 9, 1, 10, 20, 1000));
+		templates.add(new ModifierTemplate(ModifierType.DAMAGE, ItemType.SWORD, Rarity.UNIQUE, 0, 50, 1, 10, 20, 1000));
 	}
 
 	public static ArrayList<ModifierTemplate> getTemplates(){
@@ -57,7 +57,7 @@ public class ModifierTemplate {
 		Random random = new Random();
 
 		int lower = lvl + lowmin + random.nextInt(highmin - lowmin);
-		int upper = lower + random.nextInt(max - lower);
+		int upper = lower + random.nextInt(lvl + max - lower);
 		ItemModifier mod = new ItemModifier(type, lower, upper);
 		
 		return mod;

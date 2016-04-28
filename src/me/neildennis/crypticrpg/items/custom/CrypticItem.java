@@ -9,7 +9,6 @@ import me.neildennis.crypticrpg.items.metadata.ItemType;
 public abstract class CrypticItem {
 	
 	protected ItemType type;
-	protected int tier;
 	
 	protected ItemStack item;
 	
@@ -18,13 +17,12 @@ public abstract class CrypticItem {
 	}
 	
 	protected CrypticItem(ItemType type){
-		this(type, 0, 0);
+		this(type, 0);
 	}
 	
-	protected CrypticItem(ItemType type, int tier, int amount){
+	protected CrypticItem(ItemType type, int amount){
 		this.type = type;
-		this.tier = tier;
-		item = new ItemStack(ItemType.getMaterialFromType(type, tier), amount);
+		item = new ItemStack(ItemType.getMaterialFromType(type), amount);
 	}
 	
 	/*public CrypticItem(Material mat, String name, List<String> lore, List<Attribute> attribs, int tier, Rarity rare){
@@ -78,10 +76,6 @@ public abstract class CrypticItem {
 	
 	public ItemType getType(){
 		return type;
-	}
-	
-	public int getTier(){
-		return tier;
 	}
 
 }

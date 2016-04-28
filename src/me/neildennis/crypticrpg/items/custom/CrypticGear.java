@@ -13,10 +13,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import me.neildennis.crypticrpg.items.ItemManager;
 import me.neildennis.crypticrpg.items.generator.ItemGenerator;
 import me.neildennis.crypticrpg.items.metadata.ItemModifier;
 import me.neildennis.crypticrpg.items.metadata.ItemModifier.ModifierType;
+import me.neildennis.crypticrpg.utils.Utils;
 import me.neildennis.crypticrpg.items.metadata.ItemType;
 import me.neildennis.crypticrpg.items.metadata.Rarity;
 
@@ -25,20 +25,22 @@ public abstract class CrypticGear extends Attributeable {
 	protected String name;
 	protected List<String> lore;
 	protected int level;
+	protected int tier;
 	protected Rarity rarity;
 
 	protected CrypticGear(){
 		super();
 	}
 
-	protected CrypticGear(ItemType type, String name, List<String> lore, List<ItemModifier> attribs, int tier, Rarity rarity, int level){
-		super(type, tier, 1, attribs);
+	protected CrypticGear(ItemType type, String name, List<String> lore, List<ItemModifier> attribs, Rarity rarity, int level){
+		super(type, 1, attribs);
 
 		this.name = name;
 		this.lore = lore;
 		this.level = level;
 		this.rarity = rarity;
-
+		this.tier = Utils.getTierFromLevel(level);
+		
 		initItem();
 	}
 	
@@ -56,7 +58,7 @@ public abstract class CrypticGear extends Attributeable {
 
 		displayMeta.add(rarity.getColor() + rarity.getDisplay());
 
-		String displayName = ItemManager.getTierColor(tier) + name;
+		String displayName = Utils.getTierColor(tier) + name;
 
 		if (level > 0){
 			displayName = ChatColor.RED + "[" + level + "] " + displayName;

@@ -6,9 +6,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import me.neildennis.crypticrpg.chat.ChatManager;
 import me.neildennis.crypticrpg.cloud.Cloud;
+import me.neildennis.crypticrpg.health.HealthListener;
 import me.neildennis.crypticrpg.items.ItemManager;
 import me.neildennis.crypticrpg.items.commands.TestCommand;
 import me.neildennis.crypticrpg.moderation.ModerationManager;
+import me.neildennis.crypticrpg.monsters.MobManager;
 import me.neildennis.crypticrpg.player.PlayerManager;
 import minecade.dungeonrealms.Main;
 
@@ -19,6 +21,7 @@ public class Cryptic {
 	private ItemManager itemManager;
 	private ModerationManager modManager;
 	private ChatManager chatManager;
+	private MobManager mobManager;
 	
 	private static World mainworld;
 	
@@ -28,10 +31,12 @@ public class Cryptic {
 		itemManager = new ItemManager();
 		modManager = new ModerationManager();
 		chatManager = new ChatManager();
+		mobManager = new MobManager();
 		
 		
 		mainworld = Bukkit.getWorld("Dungeonrealms");
 		
+		Bukkit.getPluginManager().registerEvents(new HealthListener(), getPlugin());
 		getPlugin().getCommand("itemtest").setExecutor(new TestCommand());
 	}
 	
@@ -53,6 +58,10 @@ public class Cryptic {
 	
 	public ChatManager getChatManager(){
 		return chatManager;
+	}
+	
+	public MobManager getMobManager(){
+		return mobManager;
 	}
 
 	public static World getMainWorld() {

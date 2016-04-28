@@ -12,8 +12,8 @@ public abstract class CrypticWeapon extends CrypticGear {
 		super();
 	}
 
-	protected CrypticWeapon(ItemType type, String name, List<String> lore, List<ItemModifier> attribs, int tier, Rarity rarity, int level){
-		super(type, name, lore, attribs, tier, rarity, level);
+	protected CrypticWeapon(ItemType type, String name, List<String> lore, List<ItemModifier> attribs, Rarity rarity, int level){
+		super(type, name, lore, attribs, rarity, level);
 	}
 
 }

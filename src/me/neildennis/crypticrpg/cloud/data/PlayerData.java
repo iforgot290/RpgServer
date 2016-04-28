@@ -13,7 +13,7 @@ import me.neildennis.crypticrpg.player.CrypticPlayer;
 public class PlayerData {
 
 	public static void savePlayerData(CrypticPlayer pl){
-		int hp = pl.getHealthData().getCurrentHP();
+		double hp = pl.getPlayer().getHealth();
 
 
 

@@ -5,15 +5,13 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-
 import com.google.gson.JsonObject;
 
-import me.neildennis.crypticrpg.items.ItemManager;
 import me.neildennis.crypticrpg.items.custom.CrypticGear;
 import me.neildennis.crypticrpg.items.custom.CrypticWeapon;
-import me.neildennis.crypticrpg.items.metadata.ItemType;
 import me.neildennis.crypticrpg.monsters.MobType;
+import me.neildennis.crypticrpg.utils.Utils;
+import net.md_5.bungee.api.ChatColor;
 
 public abstract class SpawnTemplate {
 
@@ -25,9 +23,8 @@ public abstract class SpawnTemplate {
 
 	protected Entity ent;
 	protected long lastdeath = 0L;
+	protected long lasthit = 0L;
 	protected long respawn;
-	protected int health = 50;
-	protected int maxhealth = 50;
 
 	protected List<CrypticGear> gear;
 	protected CrypticWeapon weapon;
@@ -37,52 +34,50 @@ public abstract class SpawnTemplate {
 	protected SpawnTemplate(){
 		gear = new ArrayList<CrypticGear>();
 	}
+	
+	protected SpawnTemplate(MobType type, String name, boolean elite, int respawn){
+		this();
+		this.type = type;
+		this.name = name;
+		this.elite = elite;
+		this.respawn = respawn;
+	}
 
 	protected SpawnTemplate(JsonObject obj){
 		this();
 		loadFromJson(obj);
 	}
+	
+	public abstract boolean isAlive();
+	public abstract void applyGear();
+	public abstract void updateBar();
 
 	public void spawnMob(Location loc, int level){
 		this.level = level;
+		this.tier = Utils.getTierFromLevel(level);
 		this.dead = false;
 		gear.clear();
 		ent = loc.getWorld().spawnEntity(loc, type.getEntityType());
-		setName();
-	}
-
-	public void applyGear(){
-		if (ent instanceof LivingEntity && gear != null && !gear.isEmpty()){
-			LivingEntity le = (LivingEntity)ent;
-			for (CrypticGear gear : this.gear){
-				if (gear.getType() == ItemType.HELMET) le.getEquipment().setHelmet(gear.getItemStack());
-				else if (gear.getType() == ItemType.CHESTPLATE) le.getEquipment().setChestplate(gear.getItemStack());
-				else if (gear.getType() == ItemType.LEGGINGS) le.getEquipment().setLeggings(gear.getItemStack());
-				else if (gear.getType() == ItemType.BOOTS) le.getEquipment().setBoots(gear.getItemStack());
-			}
-
-			if (weapon != null)
-				le.getEquipment().setItemInMainHand(weapon.getItemStack());
-		}
 	}
 
 	public abstract String getTierPrefix(int tier);
 
-	public void setName(){
-		String name = getTierPrefix(tier) != null ? getTierPrefix(tier) + " " + type.getDefaultName() : type.getDefaultName();
-		setName(name);
-	}
-
-	public void setName(String str){
-		ent.setCustomName(ItemManager.getTierColor(tier) + str);
-		ent.setCustomNameVisible(true);
-	}
-
 	public void loadFromJson(JsonObject obj){
 		type = MobType.valueOf(obj.get("type").getAsString());
-		tier = obj.get("tier").getAsInt();
 		name = obj.has("name") ? obj.get("name").getAsString() : type.getDefaultName();
 		elite = obj.get("elite").getAsBoolean();
+		respawn = obj.get("respawn").getAsInt();
+	}
+	
+	public JsonObject saveToJson(){
+		JsonObject obj = new JsonObject();
+		
+		obj.addProperty("type", type.name());
+		obj.addProperty("name", name);
+		obj.addProperty("elite", elite);
+		obj.addProperty("respawn", respawn);
+		
+		return obj;
 	}
 
 	public void setLastDeath(){
@@ -109,12 +104,6 @@ public abstract class SpawnTemplate {
 	public long getLastDeath(){
 		return lastdeath;
 	}
-	
-	public void checkDead(){
-		if (ent == null) dead = true;
-		if (dead) return;
-		if (ent.isDead() || health <= 0) setLastDeath();
-	}
 
 	public boolean shouldSpawn(){
 		if (isAlive()) return false;
@@ -125,10 +114,13 @@ public abstract class SpawnTemplate {
 	public Entity getEntity(){
 		return ent;
 	}
-
-	public boolean isAlive(){
-		checkDead();
-		return !dead;
+	
+	public CrypticWeapon getWeapon(){
+		return weapon;
+	}
+	
+	public void hit(){
+		lasthit = System.currentTimeMillis();
 	}
 
 }

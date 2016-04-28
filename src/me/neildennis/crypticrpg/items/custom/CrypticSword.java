@@ -12,8 +12,8 @@ public class CrypticSword extends CrypticWeapon{
 		super();
 	}
 	
-	public CrypticSword(String name, List<String> lore, List<ItemModifier> attribs, int tier, Rarity rarity, int level){
-		super(ItemType.SWORD, name, lore, attribs, tier, rarity, level);
+	public CrypticSword(String name, List<String> lore, List<ItemModifier> attribs, Rarity rarity, int level){
+		super(ItemType.SWORD, name, lore, attribs, rarity, level);
 	}
 
 }

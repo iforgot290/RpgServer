@@ -5,16 +5,20 @@ import org.bukkit.Material;
 import me.neildennis.crypticrpg.items.custom.CrypticItem;
 import me.neildennis.crypticrpg.items.custom.CrypticSword;
 import me.neildennis.crypticrpg.items.custom.TeleportBook;
+import me.neildennis.crypticrpg.items.custom.armor.CrypticBoots;
+import me.neildennis.crypticrpg.items.custom.armor.CrypticChestplate;
+import me.neildennis.crypticrpg.items.custom.armor.CrypticHelmet;
+import me.neildennis.crypticrpg.items.custom.armor.CrypticLeggings;
 
 public enum ItemType {
 	
 	SWORD(CrypticSword.class),
 	STAFF(null),
 	AXE(null),
-	HELMET(null),
-	CHESTPLATE(null),
-	LEGGINGS(null),
-	BOOTS(null),
+	HELMET(CrypticHelmet.class),
+	CHESTPLATE(CrypticChestplate.class),
+	LEGGINGS(CrypticLeggings.class),
+	BOOTS(CrypticBoots.class),
 	TELEPORT_BOOK(TeleportBook.class);
 	
 	private Class<? extends CrypticItem> c;

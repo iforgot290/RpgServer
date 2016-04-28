@@ -41,7 +41,7 @@ public class ItemModifier {
 	}
 	
 	public enum ModifierType {
-		DAMAGE("DMG: ", "");
+		DAMAGE("DMG: ", ""), HEALTH("HEALTH: ", "");
 		
 		private String pre;
 		private String post;

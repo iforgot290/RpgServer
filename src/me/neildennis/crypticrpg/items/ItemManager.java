@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.items.generator.ItemGenerator;
@@ -39,20 +38,6 @@ public class ItemManager {
 				if (!file.getName().endsWith(".template")) continue;
 				loot.put(file.getName().replaceAll(".template", ""), new CustomLoot(file));
 			}
-		}
-	}
-
-	public static ChatColor getTierColor(int tier){
-		switch (tier){
-
-		case 1: return ChatColor.WHITE;
-		case 2: return ChatColor.GREEN;
-		case 3: return ChatColor.BLUE;
-		case 4: return ChatColor.LIGHT_PURPLE;
-		case 5: return ChatColor.YELLOW;
-
-		default: return ChatColor.WHITE;
-
 		}
 	}
 

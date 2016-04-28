@@ -17,6 +17,7 @@ import me.neildennis.crypticrpg.items.ItemData;
 import me.neildennis.crypticrpg.moderation.ModerationData;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.permission.RankData;
+import me.neildennis.crypticrpg.utils.Log;
 
 public class CrypticPlayer {
 
@@ -52,7 +53,9 @@ public class CrypticPlayer {
 	}
 	
 	public void online(Player pl){
-		healthData.online();
+		Log.debug("Attempting to initiate health");
+		healthData.online(pl);
+		Log.debug("Initiated");
 		itemData.online(pl);
 		registerTasks();
 	}

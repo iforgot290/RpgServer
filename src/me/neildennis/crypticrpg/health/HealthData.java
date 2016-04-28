@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.neildennis.crypticrpg.Cryptic;
@@ -17,6 +18,7 @@ import me.neildennis.crypticrpg.player.CrypticPlayer;
 public class HealthData {
 
 	private CrypticPlayer cp;
+	private Player p;
 
 	private BossBar bar;
 
@@ -39,9 +41,12 @@ public class HealthData {
 		}
 	}
 
-	public void online(){
+	public void online(Player pl){
+		p = pl;
+		p.setMaxHealth(maxHP);
+		p.setHealthScale(20);
+		p.setHealth(currentHP);
 		updateOverheadHP();
-
 		registerTasks();
 	}
 
@@ -50,26 +55,20 @@ public class HealthData {
 
 			@Override
 			public void run(){
-				if (getCurrentHP() <= 0 || cp.getPlayer().getHealth() <= 0) return;
+				if (p.getHealth() <= 0) return;
 				if (isStarving()) return;
 
 				if (!isInCombat()){
-					int max = getMaxHP();
-					int current = getCurrentHP();
+					double max = p.getMaxHealth();
+					double current = p.getHealth();
 					int toheal = 5 + getRegenAmount();
 
 					if (current >= max) return;
 
 					if (current + toheal >= max){
-						cp.getPlayer().setHealth(20);
-						setCurrentHP(max);
-					}
-
-					else {
-						setCurrentHP(current + toheal);
-						int hearts = (current * 20) / max;
-						if (hearts == 0) hearts++;
-						cp.getPlayer().setHealth(hearts);
+						p.setHealth(max);
+					} else {
+						p.setHealth(current + toheal);
 					}
 
 					updateOverheadHP();
@@ -89,16 +88,8 @@ public class HealthData {
 		return regen;
 	}
 
-	public int getMaxHP(){
-		return maxHP;
-	}
-
-	public void setCurrentHP(int hp){
-		this.currentHP = hp;
-	}
-
-	public int getCurrentHP(){
-		return currentHP;
+	public void damage(){
+		lasthit = System.currentTimeMillis();
 	}
 
 	public boolean isInCombat(){
@@ -125,21 +116,21 @@ public class HealthData {
 			bar.addPlayer(cp.getPlayer());
 		}
 
-		double percent = ((double) getCurrentHP() / (double) getMaxHP());
+		double percent = (p.getHealth() / p.getMaxHealth());
 		if (percent > 1.0){
 			percent = 1.0;
 		}
-		
-		bar.setTitle(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "HP " + ChatColor.LIGHT_PURPLE
-				+ getCurrentHP() + ChatColor.BOLD.toString() + " / "
-				+ ChatColor.LIGHT_PURPLE.toString() + getMaxHP());
+
+		bar.setTitle(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "Health " + ChatColor.LIGHT_PURPLE
+				+ (int) p.getHealth() + ChatColor.BOLD.toString() + " / "
+				+ ChatColor.LIGHT_PURPLE.toString() + (int) p.getMaxHealth());
 		bar.setProgress(percent);
 	}
 
 	public String getPipeHealthBar(){
 		int max_bar = 30;
-		int current = getCurrentHP();
-		int max = getMaxHP();
+		double current = p.getHealth();
+		double max = p.getMaxHealth();
 
 		ChatColor cc = null;
 
