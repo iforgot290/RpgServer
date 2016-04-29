@@ -41,7 +41,7 @@ public class CrypticPlayer {
 		tasks = new ArrayList<BukkitTask>();
 		buffs = new ArrayList<PlayerBuff>();
 
-		Cloud.sendStatement("INSERT IGNORE INTO player_db (player_id) VALUES ('" + id.toString() + "')");
+		Cloud.sendStatement("INSERT IGNORE INTO player_db (player_id, rank) VALUES ('" + id.toString() + "', 'NORMAL')");
 
 		ResultSet data = Cloud.sendQuery("SELECT * FROM player_db WHERE player_id = '" + id.toString() + "'");
 		try {
@@ -85,6 +85,12 @@ public class CrypticPlayer {
 		}
 
 		tasks.clear();
+	}
+	
+	public void sendMessage(String str){
+		if (getPlayer() != null){
+			getPlayer().sendMessage(str);
+		}
 	}
 
 	public void cancelBuffs(){

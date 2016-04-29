@@ -50,7 +50,7 @@ public class TestCommand implements CommandExecutor{
 			pl.sendMessage("Item is not in map");
 		}*/
 		
-		ArrayList<SpawnTemplate> spawns = new ArrayList<SpawnTemplate>();
+		/*ArrayList<SpawnTemplate> spawns = new ArrayList<SpawnTemplate>();
 		spawns.add(new ZombieTemplate("Faggot", false, 10000));
 		final SpawnBlock blk = MobManager.createNewSpawnBlock(pl.getLocation(), 10, 3, 9, spawns);
 
@@ -62,9 +62,12 @@ public class TestCommand implements CommandExecutor{
 				Log.debug("Saved new spawner");
 			}
 			
-		});
+		});*/
 		
-		Log.debug("Created new spawner");
+		CrypticPlayer cpl = PlayerManager.getCrypticPlayer(pl);
+		cpl.setMenu(null);
+		
+		Log.debug("Removed menu");
 		
 		return true;
 	}

@@ -9,6 +9,7 @@ import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.health.HealthListener;
 import me.neildennis.crypticrpg.items.ItemManager;
 import me.neildennis.crypticrpg.items.commands.TestCommand;
+import me.neildennis.crypticrpg.menu.MenuManager;
 import me.neildennis.crypticrpg.moderation.ModerationManager;
 import me.neildennis.crypticrpg.monsters.MobManager;
 import me.neildennis.crypticrpg.player.PlayerManager;
@@ -22,6 +23,7 @@ public class Cryptic {
 	private ModerationManager modManager;
 	private ChatManager chatManager;
 	private MobManager mobManager;
+	private MenuManager menuManager;
 	
 	private static World mainworld;
 	
@@ -32,6 +34,7 @@ public class Cryptic {
 		modManager = new ModerationManager();
 		chatManager = new ChatManager();
 		mobManager = new MobManager();
+		menuManager = new MenuManager();
 		
 		
 		mainworld = Bukkit.getWorld("Dungeonrealms");
@@ -62,6 +65,10 @@ public class Cryptic {
 	
 	public MobManager getMobManager(){
 		return mobManager;
+	}
+	
+	public MenuManager getMenuManager(){
+		return menuManager;
 	}
 
 	public static World getMainWorld() {

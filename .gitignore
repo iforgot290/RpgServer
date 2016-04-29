@@ -16,3 +16,4 @@
 
 #JRebel
 /src/rebel.xml
+/src/rebel-remote.xml

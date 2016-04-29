@@ -6,10 +6,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import me.neildennis.crypticrpg.player.CrypticPlayer;
+import me.neildennis.crypticrpg.player.PlayerManager;
+
 public abstract class CrypticCommand implements CommandExecutor{
 
 	protected abstract void sendUsage();
-	public abstract void command(Player pl, Command cmd, String label, String[] args);
+	public abstract void command(CrypticPlayer pl, Command cmd, String label, String[] args);
 	public abstract void console(Command cmd, String label, String[] args);
 	
 	protected CommandSender sender;
@@ -19,7 +22,8 @@ public abstract class CrypticCommand implements CommandExecutor{
 		
 		if (sender instanceof Player){
 			Player pl = (Player)sender;
-			command(pl, cmd, label, args);
+			CrypticPlayer cpl = PlayerManager.getCrypticPlayer(pl);
+			command(cpl, cmd, label, args);
 			return true;
 		}
 		

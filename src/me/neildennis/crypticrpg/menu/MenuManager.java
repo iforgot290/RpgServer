@@ -6,6 +6,7 @@ import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.Manager;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
+import me.neildennis.crypticrpg.utils.Log;
 
 public class MenuManager extends Manager{
 
@@ -22,12 +23,13 @@ public class MenuManager extends Manager{
 			public void run(){
 				for (CrypticPlayer pl : PlayerManager.getPlayers()){
 					if (pl.getCurrentMenu() != null){
-						
+						pl.getCurrentMenu().updateMenu();
+						pl.getCurrentMenu().tickMenu();
 					}
 				}
 			}
 			
-		}, 20L, 10L));
+		}, 20L, 5L));
 	}
 
 }

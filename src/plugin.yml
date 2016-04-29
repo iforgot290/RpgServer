@@ -5,6 +5,8 @@ version: 1.0
 commands:
   itemtest:
     usage: /<command>
+  spawner:
+    usage: /<command>
   duel:
     description: Root command... for now.
     usage: /<command>

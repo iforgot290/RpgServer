@@ -99,6 +99,11 @@ public class FancyMessage {
 
 		player.spigot().sendMessage(all);
 	}
+	
+	public TextComponent getMessage(){
+		if (text != null) all.addExtra(text);
+		return all;
+	}
 
 	/**
 	 * Sends the message to an array of players

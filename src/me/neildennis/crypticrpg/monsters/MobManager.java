@@ -14,6 +14,7 @@ import com.google.gson.JsonParser;
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.Manager;
 import me.neildennis.crypticrpg.cloud.Cloud;
+import me.neildennis.crypticrpg.monsters.commands.CommandSpawner;
 import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
 import me.neildennis.crypticrpg.utils.Utils;
 
@@ -27,6 +28,8 @@ public class MobManager extends Manager{
 		Bukkit.getPluginManager().registerEvents(new SpawnPlaceListener(), Cryptic.getPlugin());
 		Bukkit.getPluginManager().registerEvents(new MobListener(), Cryptic.getPlugin());
 		
+		Cryptic.getPlugin().getCommand("spawner").setExecutor(new CommandSpawner());
+		
 		loadMobSpawns();
 		registerTasks();
 	}
@@ -37,7 +40,9 @@ public class MobManager extends Manager{
 			
 			@Override
 			public void run(){
-				for (SpawnBlock block : spawners) block.tickSpawns();
+				for (SpawnBlock block : spawners){
+					block.tickSpawns();
+				}
 			}
 			
 		}, 20L, 20L));
@@ -60,9 +65,20 @@ public class MobManager extends Manager{
 		}
 	}
 	
+	public static ArrayList<SpawnBlock> getSpawnBlocks(){
+		return spawners;
+	}
+	
 	public static SpawnBlock getSpawnBlock(int id){
 		for (SpawnBlock blk : spawners)
 			if (blk.getId() == id)
+				return blk;
+		return null;
+	}
+	
+	public static SpawnBlock getSpawnBlock(Location loc){
+		for (SpawnBlock blk : spawners)
+			if (blk.getLocation().equals(loc))
 				return blk;
 		return null;
 	}

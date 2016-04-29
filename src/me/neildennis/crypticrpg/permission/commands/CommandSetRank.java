@@ -7,7 +7,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
-import org.bukkit.entity.Player;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.CrypticCommand;
@@ -29,10 +28,9 @@ public class CommandSetRank extends CrypticCommand{
 	}
 
 	@Override
-	public void command(final Player pl, Command cmd, String label, String[] args) {
-		final CrypticPlayer cp = PlayerManager.getCrypticPlayer(pl);
+	public void command(final CrypticPlayer pl, Command cmd, String label, String[] args) {
 
-		if (cp.getRankData().getRank().getPriority() < Rank.ADMIN.getPriority()){
+		if (pl.getRank().getPriority() < Rank.ADMIN.getPriority()){
 			noPerms();
 			return;
 		}
@@ -48,9 +46,9 @@ public class CommandSetRank extends CrypticCommand{
 		final Rank torank;
 
 		if (args.length == 1) {
-			toset = cp;
-			id = cp.getId();
-			name = cp.getPlayer().getName();
+			toset = pl;
+			id = pl.getId();
+			name = pl.getPlayer().getName();
 			torank = Rank.valueOf(args[0]);
 		} else {
 			@SuppressWarnings("deprecation")
@@ -71,17 +69,17 @@ public class CommandSetRank extends CrypticCommand{
 
 					try {
 						if (!res.next()){
-							ChatManager.sendSyncMessage(pl, ChatColor.RED + "Player not found");
+							ChatManager.sendSyncMessage(pl.getPlayer(), ChatColor.RED + "Player not found");
 							return;
 						}
 						
 						Rank fromrank = Rank.valueOf(res.getString("rank"));
 						boolean cont = false;
 						if (RankManager.isDemote(fromrank, torank)){
-							if (fromrank.getPriority() < cp.getRank().getPriority())
+							if (fromrank.getPriority() < pl.getRank().getPriority())
 								cont = true;
 						} else {
-							if (torank.getPriority() < cp.getRank().getPriority())
+							if (torank.getPriority() < pl.getRank().getPriority())
 								cont = true;
 						}
 
@@ -94,29 +92,29 @@ public class CommandSetRank extends CrypticCommand{
 								Cloud.sendCrossServer(server, "rank " + id.toString() + " " + torank.name());
 							}
 
-							ChatManager.sendSyncMessage(pl, ChatColor.GREEN + "Set " + name + "'s rank to "
+							ChatManager.sendSyncMessage(pl.getPlayer(), ChatColor.GREEN + "Set " + name + "'s rank to "
 									+ torank.toString());
 						} else {
-							ChatManager.sendSyncMessage(pl, ChatColor.RED + "You do not have permission to set "
+							ChatManager.sendSyncMessage(pl.getPlayer(), ChatColor.RED + "You do not have permission to set "
 									+ name + "'s rank to " + torank.toString());
 						}
 					} catch (SQLException e) {
-						ChatManager.sendSyncMessage(pl, ChatColor.RED + "Database error");
+						ChatManager.sendSyncMessage(pl.getPlayer(), ChatColor.RED + "Database error");
 						e.printStackTrace();
 					}
 				}
 
 			});
 		} else {
-			if (toset == cp){
-				if (RankManager.isDemote(cp.getRankData().getRank(), torank)){
-					cp.getRankData().setRank(torank);
-					PlayerData.savePlayerRank(cp);
-					pl.sendMessage(ChatColor.GREEN + "Set your own rank to " + torank.toString());
+			if (toset == pl){
+				if (RankManager.isDemote(pl.getRankData().getRank(), torank)){
+					pl.getRankData().setRank(torank);
+					PlayerData.savePlayerRank(pl);
+					pl.getPlayer().sendMessage(ChatColor.GREEN + "Set your own rank to " + torank.toString());
 					return;
 				}
 
-				pl.sendMessage(ChatColor.RED + "You are not allowed to promote yourself");
+				pl.getPlayer().sendMessage(ChatColor.RED + "You are not allowed to promote yourself");
 				return;
 			}
 			
@@ -124,19 +122,19 @@ public class CommandSetRank extends CrypticCommand{
 			boolean cont = false;
 
 			if (RankManager.isDemote(fromrank, torank)){
-				if (fromrank.getPriority() < cp.getRank().getPriority())
+				if (fromrank.getPriority() < pl.getRank().getPriority())
 					cont = true;
 			} else {
-				if (torank.getPriority() < cp.getRank().getPriority())
+				if (torank.getPriority() < pl.getRank().getPriority())
 					cont = true;
 			}
 
 			if (cont){
 				toset.getRankData().setRank(torank);
 				PlayerData.savePlayerRank(toset);
-				pl.sendMessage(ChatColor.GREEN + "Set " + name + "'s rank to " + torank.toString());
+				pl.getPlayer().sendMessage(ChatColor.GREEN + "Set " + name + "'s rank to " + torank.toString());
 			} else {
-				pl.sendMessage(ChatColor.RED + "You do not have permission to set "
+				pl.getPlayer().sendMessage(ChatColor.RED + "You do not have permission to set "
 						+ name + "'s rank to " + torank.toString());
 			}
 

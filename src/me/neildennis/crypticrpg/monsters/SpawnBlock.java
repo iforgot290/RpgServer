@@ -38,6 +38,9 @@ public class SpawnBlock {
 		this.minlvl = minlvl;
 		this.maxlvl = maxlvl;
 		spawns = new ArrayList<SpawnTemplate>();
+		
+		if (loc.getBlock().getType() == Material.MOB_SPAWNER) shown = true;
+		else loc.getBlock().setType(Material.AIR);
 	}
 
 	public SpawnBlock(int id, Location loc, int range, int minlvl, int maxlvl, JsonArray array){

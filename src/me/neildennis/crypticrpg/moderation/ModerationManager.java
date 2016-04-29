@@ -1,6 +1,7 @@
 package me.neildennis.crypticrpg.moderation;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,14 +28,15 @@ public class ModerationManager implements Listener{
 	public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event){
 		ResultSet result = Cloud.sendQuery("SELECT * FROM player_db WHERE player_id = '" + event.getUniqueId().toString() + "'");
 		try {
-			result.next();
+			if (!result.next()) return;
+			
 			if (result.getBoolean("banned")){
 				String reason = result.getString("banned_reason");
 				if (reason == null) reason = "The ban hammer has spoken!";
 				
 				event.disallow(Result.KICK_BANNED, getKickedBannedMessage(reason));
 			}
-		} catch (Exception e){
+		} catch (SQLException e){
 			e.printStackTrace();
 			event.disallow(Result.KICK_OTHER, ChatColor.RED + "Error contacting the database");
 		}
