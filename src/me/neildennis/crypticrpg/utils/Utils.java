@@ -14,6 +14,10 @@ public class Utils {
 		return loc;
 	}
 	
+	public static String getStringFromLoc(Location loc){
+		return loc.getWorld().getName() + ":" + loc.getBlockX() + ":" + loc.getBlockY() + ":" + loc.getBlockZ();
+	}
+	
 	public static int getTierFromLevel(int level){
 		if (level < 20) return 1;
 		else if (level < 40) return 2;

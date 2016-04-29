@@ -2,17 +2,20 @@ package me.neildennis.crypticrpg.items.commands;
 
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.monsters.MobManager;
 import me.neildennis.crypticrpg.monsters.SpawnBlock;
 import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
 import me.neildennis.crypticrpg.monsters.templates.ZombieTemplate;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
+import me.neildennis.crypticrpg.utils.Log;
 
 public class TestCommand implements CommandExecutor{
 
@@ -49,10 +52,20 @@ public class TestCommand implements CommandExecutor{
 		
 		ArrayList<SpawnTemplate> spawns = new ArrayList<SpawnTemplate>();
 		spawns.add(new ZombieTemplate("Faggot", false, 10000));
-		
-		SpawnBlock block = new SpawnBlock(1, pl.getLocation(), 10, 25, 28, spawns);
-		MobManager.addSpawnBlock(block);
+		final SpawnBlock blk = MobManager.createNewSpawnBlock(pl.getLocation(), 10, 3, 9, spawns);
 
+		Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), new Runnable(){
+
+			@Override
+			public void run() {
+				blk.save();
+				Log.debug("Saved new spawner");
+			}
+			
+		});
+		
+		Log.debug("Created new spawner");
+		
 		return true;
 	}
 

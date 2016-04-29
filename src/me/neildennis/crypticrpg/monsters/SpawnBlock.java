@@ -1,5 +1,8 @@
 package me.neildennis.crypticrpg.monsters;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -12,7 +15,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import me.neildennis.crypticrpg.cloud.Cloud;
+import me.neildennis.crypticrpg.cloud.ConnectionPool;
 import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
+import me.neildennis.crypticrpg.utils.Utils;
 
 public class SpawnBlock {
 
@@ -88,6 +94,36 @@ public class SpawnBlock {
 		}
 
 		return getRandomLocation();
+	}
+	
+	public void save(){
+		String loc = Utils.getStringFromLoc(this.loc);
+		JsonArray array = new JsonArray();
+		synchronized (spawns){
+			for (SpawnTemplate temp : spawns){
+				array.add(temp.saveToJson());
+			}
+		}
+		if (id == 0){
+			String savequery = "INSERT INTO monster_spawns(location, spawn_range, minlvl, maxlvl, monsters) VALUES('" +
+					loc + "', '" + range + "', '" + minlvl + "', '" + maxlvl + "', '" + array.toString() + "')";
+			try {
+				PreparedStatement state = ConnectionPool.getConnection().prepareStatement(savequery, new String[]{"spawner_id"});
+				state.executeUpdate();
+				ResultSet res = state.getGeneratedKeys();
+				if (res.next()){
+					id = res.getInt(1);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			
+		}
+	}
+	
+	public void addMob(SpawnTemplate template){
+		spawns.add(template);
 	}
 
 	public Location getLocation(){

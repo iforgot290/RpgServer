@@ -1,6 +1,8 @@
 package me.neildennis.crypticrpg.cloud;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.bukkit.Bukkit;
@@ -43,6 +45,15 @@ public class Cloud {
 		tasks.add(Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), querythread));
 		//tasks.add(Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), receive));
 		//tasks.add(Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), send));
+	}
+	
+	public static PreparedStatement getPreparedStatement(String str){
+		try {
+			return ConnectionPool.getConnection().prepareStatement(str, Statement.RETURN_GENERATED_KEYS);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public static void sendStatementAsync(String statement){

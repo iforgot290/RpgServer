@@ -10,6 +10,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityDeathEvent;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.items.custom.CrypticWeapon;
@@ -17,6 +18,7 @@ import me.neildennis.crypticrpg.items.metadata.ItemModifier.ModifierType;
 import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
+import me.neildennis.crypticrpg.utils.Log;
 
 public class MobListener implements Listener {
 	
@@ -71,6 +73,17 @@ public class MobListener implements Listener {
 			}
 			
 		});
+	}
+	
+	@EventHandler
+	public void onMobDeath(EntityDeathEvent event){
+		if (event.getEntityType() == EntityType.PLAYER) return;
+		if (!(event.getEntity() instanceof LivingEntity)) return;
+		
+		SpawnTemplate dead = MobManager.getCrypticEntity(event.getEntity());
+		if (dead == null) return;
+		
+		dead.setLastDeath();
 	}
 
 }

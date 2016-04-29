@@ -14,6 +14,7 @@ import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.health.HealthData;
 import me.neildennis.crypticrpg.items.ItemData;
+import me.neildennis.crypticrpg.menu.Menu;
 import me.neildennis.crypticrpg.moderation.ModerationData;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.permission.RankData;
@@ -31,6 +32,8 @@ public class CrypticPlayer {
 	private ModerationData moderationData;
 	private ItemData itemData;
 	private RankData rankData;
+	
+	private Menu menu;
 
 	public CrypticPlayer(UUID id){
 		this.id = id;
@@ -86,6 +89,18 @@ public class CrypticPlayer {
 
 	public void cancelBuffs(){
 		buffs.clear();
+	}
+	
+	public Menu getCurrentMenu(){
+		return menu;
+	}
+	
+	public void setMenu(Menu menu){
+		this.menu = menu;
+	}
+	
+	public void clearMenu(){
+		this.menu = null;
 	}
 
 	public UUID getId(){

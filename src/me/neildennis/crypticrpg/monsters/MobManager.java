@@ -67,6 +67,16 @@ public class MobManager extends Manager{
 		return null;
 	}
 	
+	public static SpawnBlock createNewSpawnBlock(Location loc, int range, int minlvl, int maxlvl){
+		return createNewSpawnBlock(loc, range, minlvl, maxlvl, new ArrayList<SpawnTemplate>());
+	}
+	
+	public static SpawnBlock createNewSpawnBlock(Location loc, int range, int minlvl, int maxlvl, ArrayList<SpawnTemplate> temps){
+		SpawnBlock block = new SpawnBlock(0, loc, range, minlvl, maxlvl, temps);
+		spawners.add(block);
+		return block;
+	}
+	
 	public static boolean addSpawnBlock(SpawnBlock spawner){
 		if (spawner.getId() != 0 && getSpawnBlock(spawner.getId()) != null) return false;
 		spawners.add(spawner);
