@@ -64,7 +64,7 @@ public class SpawnPlaceListener implements Listener {
 			String animation = "";
 			
 			for (int i = tick; i < 5; i++){
-				animation += "+";
+				animation += "-";
 			}
 			
 			tick++;

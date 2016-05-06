@@ -53,10 +53,10 @@ public class ItemManager {
 		ArrayList<ItemGenerator> gear = new ArrayList<ItemGenerator>();
 		Random random = new Random();
 		
-		gear.add(new ItemGenerator().setLevel(level).setRarity(Rarity.getFromChance(random.nextInt(100))).setType(ItemType.HELMET));
-		gear.add(new ItemGenerator().setLevel(level).setRarity(Rarity.getFromChance(random.nextInt(100))).setType(ItemType.CHESTPLATE));
-		gear.add(new ItemGenerator().setLevel(level).setRarity(Rarity.getFromChance(random.nextInt(100))).setType(ItemType.LEGGINGS));
-		gear.add(new ItemGenerator().setLevel(level).setRarity(Rarity.getFromChance(random.nextInt(100))).setType(ItemType.BOOTS));
+		gear.add(new ItemGenerator().setLevel(level).setRarity(Rarity.COMMON).setType(ItemType.HELMET));
+		gear.add(new ItemGenerator().setLevel(level).setRarity(Rarity.COMMON).setType(ItemType.CHESTPLATE));
+		gear.add(new ItemGenerator().setLevel(level).setRarity(Rarity.COMMON).setType(ItemType.LEGGINGS));
+		gear.add(new ItemGenerator().setLevel(level).setRarity(Rarity.COMMON).setType(ItemType.BOOTS));
 		
 		
 		return gear;

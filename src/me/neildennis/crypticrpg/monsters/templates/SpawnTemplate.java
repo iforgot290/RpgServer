@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import me.neildennis.crypticrpg.items.custom.CrypticGear;
 import me.neildennis.crypticrpg.items.custom.CrypticWeapon;
 import me.neildennis.crypticrpg.monsters.MobType;
+import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 

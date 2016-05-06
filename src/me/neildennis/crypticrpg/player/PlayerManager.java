@@ -13,8 +13,8 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.cloud.data.PlayerData;
-import minecade.dungeonrealms.Main;
 
 public class PlayerManager implements Listener{
 	
@@ -22,7 +22,7 @@ public class PlayerManager implements Listener{
 
 	public PlayerManager(){
 		players = new ArrayList<CrypticPlayer>();
-		Bukkit.getPluginManager().registerEvents(this, Main.plugin);
+		Bukkit.getPluginManager().registerEvents(this, Cryptic.getPlugin());
 	}
 	
 	public static ArrayList<CrypticPlayer> getPlayers(){

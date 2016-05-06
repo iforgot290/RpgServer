@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.cloud.ConnectionPool;
 import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
+import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.utils.Utils;
 
 public class SpawnBlock {
@@ -90,10 +91,10 @@ public class SpawnBlock {
 		spawnloc.add(x, 0, z);
 
 		int spawnery = loc.getBlockY();
-		for (int y = spawnery - range; y < spawnery + range; y++){
+		for (int y = spawnery + range; y > spawnery - range; y--){
 			spawnloc.setY(y);
-			if (spawnloc.getBlock().getType() == Material.AIR)
-				return spawnloc;
+			if (spawnloc.getBlock().getType() == Material.AIR && spawnloc.add(0, -1, 0).getBlock().getType() != Material.AIR)
+				return spawnloc.add(0, 1, 0);
 		}
 
 		return getRandomLocation();

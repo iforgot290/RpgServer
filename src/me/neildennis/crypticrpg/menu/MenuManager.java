@@ -6,7 +6,6 @@ import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.Manager;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
-import me.neildennis.crypticrpg.utils.Log;
 
 public class MenuManager extends Manager{
 

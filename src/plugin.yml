@@ -1,6 +1,5 @@
-name: DungeonRealms
-main: minecade.dungeonrealms.Main
-softdepend: [Citizens, MenuEngine]
+name: CrypticRPG
+main: me.neildennis.crypticrpg.Cryptic
 version: 1.0
 commands:
   itemtest:

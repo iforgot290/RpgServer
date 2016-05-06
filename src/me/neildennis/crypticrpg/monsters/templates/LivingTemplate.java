@@ -8,6 +8,7 @@ import me.neildennis.crypticrpg.items.metadata.ItemModifier;
 import me.neildennis.crypticrpg.items.metadata.ItemModifier.ModifierType;
 import me.neildennis.crypticrpg.items.metadata.ItemType;
 import me.neildennis.crypticrpg.monsters.MobType;
+import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 

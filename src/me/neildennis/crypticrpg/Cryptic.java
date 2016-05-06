@@ -12,10 +12,12 @@ import me.neildennis.crypticrpg.items.commands.TestCommand;
 import me.neildennis.crypticrpg.menu.MenuManager;
 import me.neildennis.crypticrpg.moderation.ModerationManager;
 import me.neildennis.crypticrpg.monsters.MobManager;
+import me.neildennis.crypticrpg.permission.RankManager;
 import me.neildennis.crypticrpg.player.PlayerManager;
-import minecade.dungeonrealms.Main;
 
-public class Cryptic {
+public class Cryptic extends JavaPlugin{
+	
+	private static Cryptic instance;
 	
 	private Cloud cloud;
 	private PlayerManager playerManager;
@@ -24,10 +26,13 @@ public class Cryptic {
 	private ChatManager chatManager;
 	private MobManager mobManager;
 	private MenuManager menuManager;
+	public static RankManager rankManager;
 	
 	private static World mainworld;
 	
 	public void onEnable(){
+		instance = this;
+		
 		cloud = new Cloud();
 		playerManager = new PlayerManager();
 		itemManager = new ItemManager();
@@ -35,6 +40,7 @@ public class Cryptic {
 		chatManager = new ChatManager();
 		mobManager = new MobManager();
 		menuManager = new MenuManager();
+		rankManager = new RankManager();
 		
 		
 		mainworld = Bukkit.getWorld("Dungeonrealms");
@@ -75,8 +81,8 @@ public class Cryptic {
 		return mainworld;
 	}
 	
-	public static JavaPlugin getPlugin(){
-		return Main.plugin;
+	public static Cryptic getPlugin(){
+		return instance;
 	}
 
 }

@@ -25,13 +25,15 @@ public class ItemData {
 	private CrypticPlayer pl;
 	private ArrayList<ItemTracker> items;
 
-	private HashMap<Integer, CrypticItem> loaded;
+	private HashMap<Integer, CrypticItem> inv;
 	private HashMap<Integer, ItemStack> loadedVanilla;
+	
+	private CrypticItem cursor;
 
 	public ItemData(CrypticPlayer pl, ResultSet data){
 		this.pl = pl;
 		this.items = new ArrayList<ItemTracker>();
-		this.loaded = new HashMap<Integer, CrypticItem>();
+		this.inv = new HashMap<Integer, CrypticItem>();
 		this.loadedVanilla = new HashMap<Integer, ItemStack>();
 
 		try {
@@ -52,7 +54,8 @@ public class ItemData {
 					ItemType type = ItemType.valueOf(strType);
 					CrypticItem item = type.getHandleClass().newInstance();
 					item.loadFromJson(obj);
-					loaded.put(obj.get("slot").getAsInt(), item);
+					int slot = obj.get("slot").getAsInt();
+					inv.put(slot, item);
 				}
 			}
 		} catch (SQLException e) {
@@ -68,7 +71,7 @@ public class ItemData {
 		Inventory inv = pl.getInventory();
 		inv.clear();
 
-		for (Entry<Integer, CrypticItem> entry : loaded.entrySet()){
+		for (Entry<Integer, CrypticItem> entry : this.inv.entrySet()){
 			inv.setItem(entry.getKey(), entry.getValue().getItemStack());
 			trackItem(entry.getValue());
 		}
@@ -77,7 +80,28 @@ public class ItemData {
 			inv.setItem(entry.getKey(), entry.getValue());
 		}
 	}
+	
+	public void setCursor(CrypticItem item){
+		this.cursor = item;
+	}
+	
+	public CrypticItem getCursor(){
+		return cursor;
+	}
+	
+	public void setItem(int slot, CrypticItem item){
+		inv.put(slot, item);
+	}
+	
+	public void removeItem(int slot){
+		inv.remove(slot);
+	}
+	
+	public CrypticItem getItem(int slot){
+		return inv.get(slot);
+	}
 
+	@Deprecated
 	public CrypticItem getCrypticItem(ItemStack stack){
 		for (ItemTracker track : items)
 			if (track.getItemStack().equals(stack))
@@ -85,14 +109,17 @@ public class ItemData {
 		return null;
 	}
 
+	@Deprecated
 	public void trackItem(CrypticItem item){
 		items.add(new ItemTracker(item.getItemStack(), item));
 	}
 
+	@Deprecated
 	public void untrackItem(CrypticItem item){
 		items.remove(item.getItemStack());
 	}
 
+	@Deprecated
 	public void untrackItem(ItemStack stack){
 		items.remove(stack);
 	}

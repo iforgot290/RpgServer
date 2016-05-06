@@ -16,6 +16,7 @@ import me.neildennis.crypticrpg.Manager;
 import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.monsters.commands.CommandSpawner;
 import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
+import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.utils.Utils;
 
 public class MobManager extends Manager{

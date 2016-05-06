@@ -15,6 +15,7 @@ public class ModifierTemplate {
 	public static void loadTemplates(){
 		templates = new ArrayList<ModifierTemplate>();
 		templates.add(new ModifierTemplate(ModifierType.DAMAGE, ItemType.SWORD, Rarity.UNIQUE, 0, 50, 1, 10, 20, 1000));
+		templates.add(new ModifierTemplate(ModifierType.HEALTH, ItemType.CHESTPLATE, Rarity.COMMON, 0, 50, 20, 50, 100, 1000));
 	}
 
 	public static ArrayList<ModifierTemplate> getTemplates(){

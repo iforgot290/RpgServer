@@ -12,16 +12,16 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 
+import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
-import minecade.dungeonrealms.Main;
 import net.md_5.bungee.api.ChatColor;
 
 public class ModerationManager implements Listener{
 
 	public ModerationManager(){
-		Bukkit.getPluginManager().registerEvents(this, Main.plugin);
+		Bukkit.getPluginManager().registerEvents(this, Cryptic.getPlugin());
 	}
 
 	@EventHandler(priority = EventPriority.LOW)

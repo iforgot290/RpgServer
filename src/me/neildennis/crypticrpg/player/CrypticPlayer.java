@@ -50,6 +50,7 @@ public class CrypticPlayer {
 			healthData = new HealthData(this, data);
 			itemData = new ItemData(this, data);
 			rankData = new RankData(this, data);
+			moderationData = new ModerationData(this, data);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
