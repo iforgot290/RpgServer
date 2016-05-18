@@ -57,7 +57,16 @@ public class ItemListener implements Listener {
 		case DROP_ONE_SLOT:
 			event.setCancelled(true);
 			break;
+		case HOTBAR_MOVE_AND_READD:
+			event.setCancelled(true);
+			break;
+		case HOTBAR_SWAP:
+			Log.debug(event.getSlot());
+			Log.debug(event.getRawSlot());
+			event.setCancelled(true);
+			break;
 		}
+		event.setCancelled(false);
 	}
 
 }

@@ -4,9 +4,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
+import me.neildennis.crypticrpg.player.CrypticPlayer;
+import me.neildennis.crypticrpg.player.PlayerManager;
+
 public class Utils {
 	
 	private Utils(){}
+	
+	public static boolean isPlayerNear(Location loc){
+		for (CrypticPlayer pl : PlayerManager.getPlayers()){
+			if (pl.getPlayer() == null) continue;
+			double distance = pl.getPlayer().getLocation().distanceSquared(loc);
+			if (distance < 10 * 10) return true;
+		}
+		return false;
+	}
 	
 	public static Location getLocFromString(String str){
 		String[] args = str.split(":");

@@ -19,6 +19,7 @@ import me.neildennis.crypticrpg.moderation.ModerationData;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.permission.RankData;
 import me.neildennis.crypticrpg.utils.Log;
+import me.neildennis.crypticrpg.zone.ZoneManager.ZoneState;
 
 public class CrypticPlayer {
 
@@ -32,6 +33,8 @@ public class CrypticPlayer {
 	private ModerationData moderationData;
 	private ItemData itemData;
 	private RankData rankData;
+	
+	private ZoneState zonestate;
 	
 	private Menu menu;
 
@@ -136,6 +139,14 @@ public class CrypticPlayer {
 
 	public void addBuff(PlayerBuff buff){
 		buffs.add(buff);
+	}
+	
+	public ZoneState getZoneState(){
+		return zonestate;
+	}
+	
+	public void setZoneState(ZoneState zonestate){
+		this.zonestate = zonestate;
 	}
 
 	public HealthData getHealthData(){

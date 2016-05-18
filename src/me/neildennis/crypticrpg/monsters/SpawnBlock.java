@@ -15,7 +15,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.cloud.ConnectionPool;
 import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
 import me.neildennis.crypticrpg.utils.Log;
@@ -72,6 +71,7 @@ public class SpawnBlock {
 
 	public void tickSpawns(){
 		if (!loc.getChunk().isLoaded()) return;
+		if (!Utils.isPlayerNear(loc)) return;
 		Random random = new Random();
 
 		for (SpawnTemplate spawn : spawns){

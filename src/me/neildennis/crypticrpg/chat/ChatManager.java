@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitTask;
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
+import me.neildennis.crypticrpg.player.PlayerManager;
 
 public class ChatManager implements Listener{
 	
@@ -20,6 +21,7 @@ public class ChatManager implements Listener{
 	private List<BukkitTask> tasks;
 	
 	private static String globalPrefix = ChatColor.AQUA + "<G> ";
+	private static String adminPrefix = ChatColor.RED + "<A> ";
 	
 	public ChatManager(){
 		syncmsg = new ConcurrentLinkedQueue<SyncMessage>();
@@ -43,6 +45,15 @@ public class ChatManager implements Listener{
 	
 	public static void sendSyncMessage(Player pl, String msg){
 		syncmsg.offer(new SyncMessage(pl, msg));
+	}
+	
+	public static void showAdmin(CrypticPlayer cpl, String message){
+		String broadcast = adminPrefix + cpl.getRank().getPrefix() + cpl.getPlayer().getDisplayName() + ChatColor.GRAY + ": ";
+		broadcast += ChatColor.translateAlternateColorCodes('&', message);
+		
+		for (CrypticPlayer cp : PlayerManager.search(pl -> pl.getRank().getPriority() >= Rank.ADMIN.getPriority())){
+			cp.sendMessage(broadcast);
+		}
 	}
 	
 	public static void showGlobal(CrypticPlayer pl, String message){

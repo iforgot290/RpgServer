@@ -14,6 +14,7 @@ import me.neildennis.crypticrpg.moderation.ModerationManager;
 import me.neildennis.crypticrpg.monsters.MobManager;
 import me.neildennis.crypticrpg.permission.RankManager;
 import me.neildennis.crypticrpg.player.PlayerManager;
+import me.neildennis.crypticrpg.zone.ZoneManager;
 
 public class Cryptic extends JavaPlugin{
 	
@@ -27,6 +28,7 @@ public class Cryptic extends JavaPlugin{
 	private MobManager mobManager;
 	private MenuManager menuManager;
 	public static RankManager rankManager;
+	private ZoneManager zoneManager;
 	
 	private static World mainworld;
 	
@@ -41,6 +43,7 @@ public class Cryptic extends JavaPlugin{
 		mobManager = new MobManager();
 		menuManager = new MenuManager();
 		rankManager = new RankManager();
+		zoneManager = new ZoneManager();
 		
 		
 		mainworld = Bukkit.getWorld("Dungeonrealms");
@@ -75,6 +78,10 @@ public class Cryptic extends JavaPlugin{
 	
 	public MenuManager getMenuManager(){
 		return menuManager;
+	}
+	
+	public ZoneManager getZoneManager(){
+		return zoneManager;
 	}
 
 	public static World getMainWorld() {

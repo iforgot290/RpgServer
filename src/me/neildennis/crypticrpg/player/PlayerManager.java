@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.cloud.data.PlayerData;
+import me.neildennis.crypticrpg.permission.Rank;
 
 public class PlayerManager implements Listener{
 	
@@ -29,6 +30,13 @@ public class PlayerManager implements Listener{
 		return players;
 	}
 	
+	public static ArrayList<CrypticPlayer> search(PlayerSearch criteria){
+		ArrayList<CrypticPlayer> toreturn = new ArrayList<CrypticPlayer>();
+		for (CrypticPlayer pl : players)
+			if (criteria.meetsCriteria(pl)) toreturn.add(pl);
+		return toreturn;
+	}
+	
 	public static CrypticPlayer getCrypticPlayer(OfflinePlayer pl){
 		return getCrypticPlayer(pl.getUniqueId());
 	}
@@ -38,6 +46,10 @@ public class PlayerManager implements Listener{
 			if (cp.getOfflinePlayer().getUniqueId().equals(id))
 				return cp;
 		return null;
+	}
+	
+	public interface PlayerSearch{
+		public boolean meetsCriteria(CrypticPlayer pl);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
