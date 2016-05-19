@@ -7,7 +7,10 @@ import java.util.Random;
 
 import org.bukkit.Bukkit;
 
+import com.google.gson.JsonArray;
+
 import me.neildennis.crypticrpg.Cryptic;
+import me.neildennis.crypticrpg.items.custom.CrypticItem;
 import me.neildennis.crypticrpg.items.generator.ItemGenerator;
 import me.neildennis.crypticrpg.items.generator.ModifierTemplate;
 import me.neildennis.crypticrpg.items.metadata.ItemType;
@@ -60,6 +63,10 @@ public class ItemManager {
 		
 		
 		return gear;
+	}
+	
+	public static ArrayList<CrypticItem> loadItemsFromJson(JsonArray json){
+		return null;
 	}
 
 }
