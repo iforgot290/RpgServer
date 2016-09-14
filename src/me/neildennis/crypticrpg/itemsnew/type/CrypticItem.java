@@ -2,18 +2,23 @@ package me.neildennis.crypticrpg.itemsnew.type;
 
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class CrypticItem {
 	
-	private String name;
-	private List<String> lore;
-	private CrypticItemType type;
+	protected String name;
+	protected List<String> lore;
+	protected CrypticItemType type;
 	
 	public CrypticItem(String name, List<String> lore, CrypticItemType type){
 		this.name = name;
 		this.lore = lore;
 		this.type = type;
+	}
+	
+	public CrypticItem(){
+		
 	}
 	
 	public String getName(){
@@ -29,7 +34,12 @@ public abstract class CrypticItem {
 	}
 	
 	public abstract List<String> getBukkitDisplayLore();
-	public abstract CrypticItem getItemFromItemStack(ItemStack is);
 	public abstract ItemStack generateItemStack();
+	
+	public CrypticItem getItemFromItemStack(ItemStack is){
+		name = ChatColor.stripColor(is.getItemMeta().getDisplayName());
+		type = CrypticItemType.fromMaterial(is.getType());
+		return this;
+	}
 
 }
