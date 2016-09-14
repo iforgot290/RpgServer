@@ -6,13 +6,14 @@ import java.util.List;
 import org.bukkit.Material;
 
 import me.neildennis.crypticrpg.itemsnew.attribs.Attribute;
+import me.neildennis.crypticrpg.itemsnew.attribs.Rarity;
 import me.neildennis.crypticrpg.itemsnew.attribs.Tier;
 import me.neildennis.crypticrpg.itemsnew.type.CrypticItemType;
 
 public class CrypticSword extends CrypticWeapon{
 	
-	public CrypticSword(String name, List<String> lore, CrypticItemType type, HashMap<Attribute, Integer> attribs, Tier tier) {
-		super(name, lore, type, attribs, tier);
+	public CrypticSword(String name, List<String> lore, CrypticItemType type, HashMap<Attribute, Integer> attribs, Tier tier, Rarity rarity) {
+		super(name, lore, type, attribs, tier, rarity);
 	}
 	
 	public CrypticSword(){

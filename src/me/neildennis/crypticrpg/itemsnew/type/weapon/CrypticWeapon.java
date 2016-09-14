@@ -23,10 +23,11 @@ public abstract class CrypticWeapon extends CrypticItem{
 	protected Tier tier;
 	protected Rarity rarity;
 	
-	public CrypticWeapon(String name, List<String> lore, CrypticItemType type, HashMap<Attribute, Integer> attribs, Tier tier) {
+	public CrypticWeapon(String name, List<String> lore, CrypticItemType type, HashMap<Attribute, Integer> attribs, Tier tier, Rarity rarity) {
 		super(name, lore, type);
 		this.attribs = attribs;
 		this.tier = tier;
+		this.rarity = rarity;
 	}
 	
 	public CrypticWeapon(){
