@@ -13,7 +13,6 @@ import org.bukkit.scheduler.BukkitTask;
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.health.HealthData;
-import me.neildennis.crypticrpg.items.ItemData;
 import me.neildennis.crypticrpg.menu.Menu;
 import me.neildennis.crypticrpg.moderation.ModerationData;
 import me.neildennis.crypticrpg.permission.Rank;
@@ -31,13 +30,16 @@ public class CrypticPlayer {
 
 	private HealthData healthData;
 	private ModerationData moderationData;
-	private ItemData itemData;
 	private RankData rankData;
 	
 	private ZoneState zonestate;
 	
 	private Menu menu;
 
+	/**
+	 * Loads asynchronously
+	 * @param id ID of player logging on
+	 */
 	public CrypticPlayer(UUID id){
 		this.id = id;
 		player = Bukkit.getOfflinePlayer(id);
@@ -51,7 +53,6 @@ public class CrypticPlayer {
 			data.next();
 			
 			healthData = new HealthData(this, data);
-			itemData = new ItemData(this, data);
 			rankData = new RankData(this, data);
 			moderationData = new ModerationData(this, data);
 		} catch (SQLException e) {
@@ -63,7 +64,6 @@ public class CrypticPlayer {
 		Log.debug("Attempting to initiate health");
 		healthData.online(pl);
 		Log.debug("Initiated");
-		itemData.online(pl);
 		registerTasks();
 	}
 
@@ -155,10 +155,6 @@ public class CrypticPlayer {
 
 	public ModerationData getModerationData(){
 		return moderationData;
-	}
-
-	public ItemData getItemData(){
-		return itemData;
 	}
 	
 	public RankData getRankData(){

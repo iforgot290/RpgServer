@@ -3,12 +3,10 @@ package me.neildennis.crypticrpg.monsters.templates;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
-import me.neildennis.crypticrpg.items.custom.CrypticGear;
-import me.neildennis.crypticrpg.items.metadata.ItemModifier;
-import me.neildennis.crypticrpg.items.metadata.ItemModifier.ModifierType;
-import me.neildennis.crypticrpg.items.metadata.ItemType;
+import me.neildennis.crypticrpg.items.attribs.Attribute;
+import me.neildennis.crypticrpg.items.type.CrypticItemType;
+import me.neildennis.crypticrpg.items.type.armor.CrypticArmor;
 import me.neildennis.crypticrpg.monsters.MobType;
-import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 
@@ -33,21 +31,18 @@ public abstract class LivingTemplate extends SpawnTemplate {
 	@Override
 	public void applyGear(){
 		le.setMaxHealth(10);
-		for (CrypticGear gear : this.gear){
-			if (gear.getType() == ItemType.HELMET) le.getEquipment().setHelmet(gear.getItemStack());
-			else if (gear.getType() == ItemType.CHESTPLATE) le.getEquipment().setChestplate(gear.getItemStack());
-			else if (gear.getType() == ItemType.LEGGINGS) le.getEquipment().setLeggings(gear.getItemStack());
-			else if (gear.getType() == ItemType.BOOTS) le.getEquipment().setBoots(gear.getItemStack());
+		for (CrypticArmor gear : this.gear){
+			if (gear.getType() == CrypticItemType.HELMET) le.getEquipment().setHelmet(gear.generateItemStack());
+			else if (gear.getType() == CrypticItemType.CHESTPLATE) le.getEquipment().setChestplate(gear.generateItemStack());
+			else if (gear.getType() == CrypticItemType.LEGGINGS) le.getEquipment().setLeggings(gear.generateItemStack());
+			else if (gear.getType() == CrypticItemType.BOOTS) le.getEquipment().setBoots(gear.generateItemStack());
 			
-			ItemModifier mod = gear.getAttribute(ModifierType.HEALTH);
-			if (mod != null){
-				le.setMaxHealth(le.getHealth() + mod.getValue());
-			}
+			le.setMaxHealth(le.getMaxHealth() + gear.getAttribute(Attribute.HEALTH));
 		}
 		le.setHealth(le.getMaxHealth());
 
 		if (weapon != null)
-			le.getEquipment().setItemInMainHand(weapon.getItemStack());
+			le.getEquipment().setItemInMainHand(weapon.generateItemStack());
 		updateBar();
 	}
 	

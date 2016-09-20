@@ -5,14 +5,13 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+
 import com.google.gson.JsonObject;
 
-import me.neildennis.crypticrpg.items.custom.CrypticGear;
-import me.neildennis.crypticrpg.items.custom.CrypticWeapon;
+import me.neildennis.crypticrpg.items.type.CrypticGear;
+import me.neildennis.crypticrpg.items.type.armor.CrypticArmor;
 import me.neildennis.crypticrpg.monsters.MobType;
-import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.utils.Utils;
-import net.md_5.bungee.api.ChatColor;
 
 public abstract class SpawnTemplate {
 
@@ -27,13 +26,13 @@ public abstract class SpawnTemplate {
 	protected long lasthit = 0L;
 	protected long respawn;
 
-	protected List<CrypticGear> gear;
-	protected CrypticWeapon weapon;
+	protected List<CrypticArmor> gear;
+	protected CrypticGear weapon;
 	
 	protected boolean dead = true;
 
 	protected SpawnTemplate(){
-		gear = new ArrayList<CrypticGear>();
+		gear = new ArrayList<CrypticArmor>();
 	}
 	
 	protected SpawnTemplate(MobType type, String name, boolean elite, int respawn){
@@ -116,7 +115,7 @@ public abstract class SpawnTemplate {
 		return ent;
 	}
 	
-	public CrypticWeapon getWeapon(){
+	public CrypticGear getWeapon(){
 		return weapon;
 	}
 	

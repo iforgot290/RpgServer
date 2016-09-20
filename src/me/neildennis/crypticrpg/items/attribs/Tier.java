@@ -1,4 +1,4 @@
-package me.neildennis.crypticrpg.itemsnew.attribs;
+package me.neildennis.crypticrpg.items.attribs;
 
 import org.bukkit.ChatColor;
 
@@ -18,6 +18,14 @@ public enum Tier {
 	
 	public ChatColor getColor(){
 		return color;
+	}
+	
+	public static Tier fromLevel(int lvl){
+		if (lvl < 20) return Tier.ONE;
+		else if (lvl < 40) return Tier.TWO;
+		else if (lvl < 60) return Tier.THREE;
+		else if (lvl < 80) return Tier.FOUR;
+		else return Tier.FIVE;
 	}
 
 }

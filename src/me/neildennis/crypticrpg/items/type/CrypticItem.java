@@ -1,4 +1,4 @@
-package me.neildennis.crypticrpg.itemsnew.type;
+package me.neildennis.crypticrpg.items.type;
 
 import java.util.List;
 

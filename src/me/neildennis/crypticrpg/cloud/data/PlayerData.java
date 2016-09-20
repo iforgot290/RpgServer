@@ -1,13 +1,10 @@
 package me.neildennis.crypticrpg.cloud.data;
 
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import me.neildennis.crypticrpg.cloud.Cloud;
-import me.neildennis.crypticrpg.items.custom.CrypticItem;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 
 public class PlayerData {
@@ -29,7 +26,7 @@ public class PlayerData {
 	}
 
 	private static String getInventoryString(CrypticPlayer pl){
-		JsonArray array = new JsonArray();
+		/*JsonArray array = new JsonArray();
 		Inventory inv = pl.getPlayer().getInventory();
 		
 		for (int x = 0; x < inv.getSize(); x++){
@@ -50,9 +47,11 @@ public class PlayerData {
 			array.add(obj);
 		}
 		
-		return array.toString();
+		return array.toString();*/
+		return "";
 	}
 	
+	@SuppressWarnings("unused")
 	private static JsonObject getDefaultSaveObject(ItemStack item){
 		JsonObject obj = new JsonObject();
 		

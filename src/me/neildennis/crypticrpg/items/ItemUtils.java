@@ -1,10 +1,10 @@
-package me.neildennis.crypticrpg.itemsnew;
+package me.neildennis.crypticrpg.items;
 
 import java.util.HashMap;
 import java.util.List;
 
-import me.neildennis.crypticrpg.itemsnew.attribs.Attribute;
-import me.neildennis.crypticrpg.itemsnew.attribs.Rarity;
+import me.neildennis.crypticrpg.items.attribs.Attribute;
+import me.neildennis.crypticrpg.items.attribs.Rarity;
 import net.md_5.bungee.api.ChatColor;
 
 public class ItemUtils {

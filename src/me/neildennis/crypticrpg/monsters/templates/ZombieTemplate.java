@@ -1,15 +1,17 @@
 package me.neildennis.crypticrpg.monsters.templates;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Zombie;
 
 import me.neildennis.crypticrpg.items.ItemManager;
-import me.neildennis.crypticrpg.items.custom.CrypticWeapon;
+import me.neildennis.crypticrpg.items.attribs.Rarity;
 import me.neildennis.crypticrpg.items.generator.ItemGenerator;
-import me.neildennis.crypticrpg.items.metadata.ItemType;
-import me.neildennis.crypticrpg.items.metadata.Rarity;
+import me.neildennis.crypticrpg.items.type.CrypticGear;
+import me.neildennis.crypticrpg.items.type.CrypticItemType;
+import me.neildennis.crypticrpg.items.type.armor.CrypticArmor;
 import me.neildennis.crypticrpg.monsters.MobType;
 
 public class ZombieTemplate extends LivingTemplate {
@@ -22,20 +24,21 @@ public class ZombieTemplate extends LivingTemplate {
 		super(MobType.ZOMBIE, name, elite, respawn);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void spawnMob(Location loc, int level) {
 		super.spawnMob(loc, level);
 		
-		ArrayList<ItemGenerator> generated = ItemManager.generateMobArmor(level);
+		List<ItemGenerator> generated = ItemManager.generateMobArmor(level);
 		
 		for (ItemGenerator gen : generated){
-			gear.add(gen.generate());
+			gear.add((CrypticArmor) gen.generate());
 		}
 		
 		Zombie zomb = (Zombie)ent;
 		zomb.setBaby(false);
-		zomb.setVillagerProfession(null);
-		weapon = (CrypticWeapon) new ItemGenerator().setType(ItemType.SWORD).setLevel(level).setRarity(Rarity.UNIQUE).generate();
+		zomb.setVillager(false);
+		weapon = (CrypticGear) new ItemGenerator(CrypticItemType.SWORD).setRarity(Rarity.UNIQUE).generate();
 	}
 	
 	@Override

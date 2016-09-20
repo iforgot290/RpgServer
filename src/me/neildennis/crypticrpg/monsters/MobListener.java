@@ -8,17 +8,21 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.event.entity.EntityCombustByEntityEvent;
+import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import me.neildennis.crypticrpg.Cryptic;
-import me.neildennis.crypticrpg.items.custom.CrypticWeapon;
-import me.neildennis.crypticrpg.items.metadata.ItemModifier.ModifierType;
+import me.neildennis.crypticrpg.items.ItemManager;
+import me.neildennis.crypticrpg.items.attribs.Attribute;
+import me.neildennis.crypticrpg.items.type.CrypticGear;
+import me.neildennis.crypticrpg.items.type.CrypticItem;
 import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
-import me.neildennis.crypticrpg.utils.Log;
 
 public class MobListener implements Listener {
 	
@@ -37,9 +41,9 @@ public class MobListener implements Listener {
 		if (temp == null) return;
 		
 		final CrypticPlayer pl = PlayerManager.getCrypticPlayer((Player)event.getEntity());
-		CrypticWeapon wep = temp.getWeapon();
+		CrypticGear wep = temp.getWeapon();
 		
-		int damage = wep.getAttribute(ModifierType.DAMAGE).getValue();
+		int damage = wep.getAttribute(Attribute.DAMAGE);
 		pl.getHealthData().damage();
 		event.setDamage(damage);
 		Bukkit.getScheduler().runTask(Cryptic.getPlugin(), new Runnable(){
@@ -50,6 +54,13 @@ public class MobListener implements Listener {
 			}
 			
 		});
+	}
+	
+	@EventHandler
+	public void onMonsterDamage(EntityCombustEvent event){
+		if (!(event instanceof EntityCombustByEntityEvent)){
+			event.setCancelled(true);
+		}
 	}
 	
 	@EventHandler
@@ -64,6 +75,15 @@ public class MobListener implements Listener {
 		
 		//CrypticPlayer damager = PlayerManager.getCrypticPlayer((Player)event.getDamager());
 		//TODO calc damage
+		Player damager = (Player) event.getDamager();
+		CrypticItem item = ItemManager.getItemFromStack(damager.getInventory().getItemInMainHand());
+		
+		if (item != null && item instanceof CrypticGear){
+			CrypticGear wep = (CrypticGear) item;
+			event.setDamage(wep.getAttribute(Attribute.DAMAGE));
+		} else {
+			event.setDamage(1);
+		}
 		
 		Bukkit.getScheduler().runTask(Cryptic.getPlugin(), new Runnable(){
 

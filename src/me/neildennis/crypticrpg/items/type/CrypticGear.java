@@ -1,4 +1,4 @@
-package me.neildennis.crypticrpg.itemsnew.type.weapon;
+package me.neildennis.crypticrpg.items.type;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,36 +6,39 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.neildennis.crypticrpg.itemsnew.ItemUtils;
-import me.neildennis.crypticrpg.itemsnew.attribs.Attribute;
-import me.neildennis.crypticrpg.itemsnew.attribs.Rarity;
-import me.neildennis.crypticrpg.itemsnew.attribs.Tier;
-import me.neildennis.crypticrpg.itemsnew.type.CrypticItem;
-import me.neildennis.crypticrpg.itemsnew.type.CrypticItemType;
+import me.neildennis.crypticrpg.items.ItemUtils;
+import me.neildennis.crypticrpg.items.attribs.Attribute;
+import me.neildennis.crypticrpg.items.attribs.Rarity;
+import me.neildennis.crypticrpg.items.attribs.Tier;
 import me.neildennis.crypticrpg.utils.StringUtils;
 
-public abstract class CrypticWeapon extends CrypticItem{
+public abstract class CrypticGear extends CrypticItem{
 
 	protected HashMap<Attribute, Integer> attribs;
 	protected Tier tier;
 	protected Rarity rarity;
 	
-	public CrypticWeapon(String name, List<String> lore, CrypticItemType type, HashMap<Attribute, Integer> attribs, Tier tier, Rarity rarity) {
+	public CrypticGear(String name, List<String> lore, CrypticItemType type, HashMap<Attribute, Integer> attribs, Tier tier, Rarity rarity) {
 		super(name, lore, type);
 		this.attribs = attribs;
 		this.tier = tier;
 		this.rarity = rarity;
 	}
 	
-	public CrypticWeapon(){
+	public CrypticGear(){
 		super();
 	}
 	
 	public HashMap<Attribute, Integer> getAttribs(){
 		return attribs;
+	}
+	
+	public int getAttribute(Attribute attr){
+		return attribs.get(attr);
 	}
 	
 	public int getValue(Attribute attrib){
@@ -58,9 +61,10 @@ public abstract class CrypticWeapon extends CrypticItem{
 		List<String> retlore = new ArrayList<String>();
 		
 		for (Attribute attr : attribs.keySet()){
-			retlore.add(attr.getPrefix() + attribs.get(attr) + attr.getPostfix());
+			retlore.add(ChatColor.RED + attr.getPrefix() + attribs.get(attr) + attr.getPostfix());
 		}
 		
+		retlore.add("");
 		retlore.add(rarity.getDisplay());
 		
 		if (lore != null && lore.size() > 0){
@@ -112,9 +116,11 @@ public abstract class CrypticWeapon extends CrypticItem{
 		ItemMeta meta = is.getItemMeta();
 		meta.setDisplayName(tier.getColor() + name);
 		meta.setLore(getBukkitDisplayLore());
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		is.setItemMeta(meta);
 		
-		return null;
+		return is;
 	}
 	
 

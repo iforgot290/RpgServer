@@ -1,73 +1,46 @@
 package me.neildennis.crypticrpg.items.generator;
 
-import java.util.ArrayList;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
 
-import me.neildennis.crypticrpg.items.custom.CrypticGear;
-import me.neildennis.crypticrpg.items.custom.CrypticItem;
-import me.neildennis.crypticrpg.items.metadata.ItemModifier;
-import me.neildennis.crypticrpg.items.metadata.ItemType;
-import me.neildennis.crypticrpg.items.metadata.Rarity;
+import me.neildennis.crypticrpg.items.attribs.Attribute;
+import me.neildennis.crypticrpg.items.attribs.Rarity;
+import me.neildennis.crypticrpg.items.attribs.Tier;
+import me.neildennis.crypticrpg.items.type.CrypticGear;
+import me.neildennis.crypticrpg.items.type.CrypticItemType;
+import me.neildennis.crypticrpg.items.type.weapon.CrypticSword;
 
 public class ItemGenerator {
 	
-	private ItemType type;
 	private String name;
 	private List<String> lore;
-	private Rarity rarity;
-	private List<ItemModifier> mods;
-	private int lvl;
+	private CrypticItemType type;
+	private HashMap<Attribute, Integer> attribs = new HashMap<Attribute, Integer>();
+	private Tier tier = Tier.ONE;
+	private Rarity rarity = Rarity.COMMON;
 	
-	public ItemGenerator(){
-		this(ItemType.SWORD, 1);
-	}
-	
-	public ItemGenerator(ItemType type, int lvl){
-		lore = new ArrayList<String>();
-		rarity = Rarity.COMMON;
-		name = "Default";
-		this.lvl = lvl;
+	public ItemGenerator(CrypticItemType type){
 		this.type = type;
 	}
 	
-	public CrypticGear generate(){
-		mods = new ModifierGenerator(type).setLevel(lvl).setRarity(rarity).generate();
-		
-		try {
-			CrypticItem item = type.getHandleClass().newInstance();
-			if (item instanceof CrypticGear){
-				CrypticGear gear = (CrypticGear)item;
-				gear.generate(this);
-				return gear;
-			}
-			return null;
-			
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public ItemGenerator setType(ItemType type){
+	public ItemGenerator setType(CrypticItemType type){
 		this.type = type;
 		return this;
 	}
 	
-	public ItemGenerator setName(String name){
-		this.name = name;
+	public CrypticItemType getType(){
+		return type;
+	}
+	
+	public ItemGenerator setTier(Tier tier){
+		this.tier = tier;
 		return this;
 	}
 	
-	public ItemGenerator setLore(List<String> lore){
-		this.lore = lore;
-		return this;
-	}
-	
-	public ItemGenerator setLevel(int lvl){
-		this.lvl = lvl;
-		return this;
+	public Tier getTier(){
+		return tier;
 	}
 	
 	public ItemGenerator setRarity(Rarity rarity){
@@ -75,28 +48,40 @@ public class ItemGenerator {
 		return this;
 	}
 	
-	public ItemType getType(){
-		return type;
-	}
-	
-	public String getName(){
-		return name;
-	}
-	
-	public List<String> getLore(){
-		return lore;
-	}
-	
 	public Rarity getRarity(){
 		return rarity;
 	}
 	
-	public int getLevel(){
-		return lvl;
+	public ItemGenerator setAttribute(Attribute attr, int value){
+		attribs.put(attr, value);
+		return this;
 	}
 	
-	public List<ItemModifier> getModifiers(){
-		return mods;
+	public boolean hasAttribute(Attribute attr){
+		return attribs.containsKey(attr);
+	}
+	
+	public int getAttribute(Attribute attr){
+		return attribs.get(attr);
+	}
+	
+	public CrypticGear generate(){
+		if (name == null) name = NameGenerator.generateName(this);
+		
+		for (Constructor<?> cons : type.getHandleClass().getDeclaredConstructors()){
+			if (cons.getParameterTypes().length == 0) continue;
+			
+			try {
+				return (CrypticGear) cons.newInstance(name, lore, type, attribs, tier, rarity);
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException e) {
+				//TODO: take this out of production
+				e.printStackTrace();
+				return new CrypticSword("Invalid generator", null, CrypticItemType.SWORD, null, Tier.ONE, Rarity.COMMON);
+			}
+		}
+		
+		return new CrypticSword("Invalid constructor", null, CrypticItemType.SWORD, null, Tier.ONE, Rarity.COMMON);
 	}
 
 }

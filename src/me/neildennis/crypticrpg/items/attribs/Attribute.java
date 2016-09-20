@@ -1,8 +1,9 @@
-package me.neildennis.crypticrpg.itemsnew.attribs;
+package me.neildennis.crypticrpg.items.attribs;
 
 public enum Attribute {
 	
-	DAMAGE("DMG: ", "");
+	DAMAGE("DMG: ", ""),
+	HEALTH("HEALTH: ", "");
 	
 	private String prefix, postfix;
 	

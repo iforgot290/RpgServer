@@ -1,14 +1,15 @@
-package me.neildennis.crypticrpg.itemsnew.type.weapon;
+package me.neildennis.crypticrpg.items.type.weapon;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Material;
 
-import me.neildennis.crypticrpg.itemsnew.attribs.Attribute;
-import me.neildennis.crypticrpg.itemsnew.attribs.Rarity;
-import me.neildennis.crypticrpg.itemsnew.attribs.Tier;
-import me.neildennis.crypticrpg.itemsnew.type.CrypticItemType;
+import me.neildennis.crypticrpg.items.attribs.Attribute;
+import me.neildennis.crypticrpg.items.attribs.Rarity;
+import me.neildennis.crypticrpg.items.attribs.Tier;
+import me.neildennis.crypticrpg.items.type.CrypticGear;
+import me.neildennis.crypticrpg.items.type.CrypticItemType;
 
 public class CrypticSword extends CrypticWeapon{
 	
