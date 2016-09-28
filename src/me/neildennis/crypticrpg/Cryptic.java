@@ -34,6 +34,7 @@ public class Cryptic extends JavaPlugin{
 	
 	public void onEnable(){
 		instance = this;
+		mainworld = Bukkit.getWorld("Dungeonrealms");
 		
 		cloud = new Cloud();
 		playerManager = new PlayerManager();
@@ -44,8 +45,6 @@ public class Cryptic extends JavaPlugin{
 		menuManager = new MenuManager();
 		rankManager = new RankManager();
 		zoneManager = new ZoneManager();
-		
-		mainworld = Bukkit.getWorld("Dungeonrealms");
 		
 		Bukkit.getPluginManager().registerEvents(new HealthListener(), getPlugin());
 		getPlugin().getCommand("item").setExecutor(new TestCommand());

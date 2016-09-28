@@ -1,12 +1,14 @@
 package me.neildennis.crypticrpg.zone;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -51,6 +53,7 @@ public class ZoneManager extends Manager implements Listener{
 		if (pl.getZoneState() != tostate){
 			Log.debug(pl.getPlayer().getName() + " has changed zone states");
 			pl.setZoneState(tostate);
+			ActionBarAPI.sendActionBar(pl.getPlayer(), tostate.getDisplay());
 		}
 	}
 
@@ -63,7 +66,9 @@ public class ZoneManager extends Manager implements Listener{
 	}
 
 	public enum ZoneState{
-		PEACEFUL("PEACEFUL"), MONSTERS("NEUTRAL"), PVP("CHAOTIC");
+		PEACEFUL(ChatColor.GREEN + "** Entering " + ChatColor.BOLD + "PEACEFUL" + ChatColor.GREEN + " zone **"),
+		MONSTERS(ChatColor.YELLOW + "** Entering " + ChatColor.BOLD + "NEUTRAL" + ChatColor.YELLOW + " zone **"),
+		PVP(ChatColor.RED + "** Entering " + ChatColor.BOLD + "CHAOTIC" + ChatColor.RED + " zone **");
 
 		private String display;
 

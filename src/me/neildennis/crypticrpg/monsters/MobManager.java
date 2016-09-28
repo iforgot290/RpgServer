@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Monster;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -35,6 +36,10 @@ public class MobManager extends Manager{
 		
 		loadMobSpawns();
 		registerTasks();
+		
+		//clear all mobs
+		for (Entity ent : Cryptic.getMainWorld().getEntities())
+			if (ent instanceof Monster) ent.remove();
 	}
 	
 	@Override

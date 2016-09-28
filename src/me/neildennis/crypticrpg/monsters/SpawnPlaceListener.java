@@ -8,12 +8,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 import me.neildennis.crypticrpg.monsters.spawnblock.SpawnBlockMenu;
 import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
+import me.neildennis.crypticrpg.utils.Log;
 
 public class SpawnPlaceListener implements Listener {
 	
@@ -36,6 +38,7 @@ public class SpawnPlaceListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void onBlockInteract(PlayerInteractEvent event){
+		if (event.getHand() != EquipmentSlot.HAND) return;
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 		if (event.getClickedBlock().getType() != Material.MOB_SPAWNER) return;
 		CrypticPlayer pl = PlayerManager.getCrypticPlayer(event.getPlayer());
