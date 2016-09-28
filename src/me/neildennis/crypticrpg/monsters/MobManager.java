@@ -3,6 +3,8 @@ package me.neildennis.crypticrpg.monsters;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -16,12 +18,12 @@ import me.neildennis.crypticrpg.Manager;
 import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.monsters.commands.CommandSpawner;
 import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
-import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.utils.Utils;
 
 public class MobManager extends Manager{
 	
 	private static ArrayList<SpawnBlock> spawners;
+	private static Random random = new Random();
 	
 	public MobManager(){
 		spawners = new ArrayList<SpawnBlock>();
@@ -53,7 +55,7 @@ public class MobManager extends Manager{
 		ResultSet data = Cloud.sendQuery("SELECT * FROM monster_spawns");
 		try {
 			while (data.next()){
-				int id = data.getInt("spawner_id");
+				UUID id = UUID.fromString(data.getString("uuid"));
 				Location loc = Utils.getLocFromString(data.getString("location"));
 				int range = data.getInt("spawn_range");
 				int minlvl = data.getInt("minlvl");
@@ -70,9 +72,9 @@ public class MobManager extends Manager{
 		return spawners;
 	}
 	
-	public static SpawnBlock getSpawnBlock(int id){
+	public static SpawnBlock getSpawnBlock(UUID id){
 		for (SpawnBlock blk : spawners)
-			if (blk.getId() == id)
+			if (blk.getId().equals(id))
 				return blk;
 		return null;
 	}
@@ -89,15 +91,13 @@ public class MobManager extends Manager{
 	}
 	
 	public static SpawnBlock createNewSpawnBlock(Location loc, int range, int minlvl, int maxlvl, ArrayList<SpawnTemplate> temps){
-		SpawnBlock block = new SpawnBlock(0, loc, range, minlvl, maxlvl, temps);
+		SpawnBlock block = new SpawnBlock(UUID.randomUUID(), loc, range, minlvl, maxlvl, temps);
 		spawners.add(block);
 		return block;
 	}
 	
-	public static boolean addSpawnBlock(SpawnBlock spawner){
-		if (spawner.getId() != 0 && getSpawnBlock(spawner.getId()) != null) return false;
+	public static void addSpawnBlock(SpawnBlock spawner){
 		spawners.add(spawner);
-		return true;
 	}
 	
 	public static SpawnTemplate getCrypticEntity(Entity ent){

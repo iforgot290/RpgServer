@@ -48,7 +48,7 @@ public class ModerationData {
 	}
 	
 	public boolean isMuted(){
-		return System.currentTimeMillis() >= unmuteTime;
+		return System.currentTimeMillis() <= unmuteTime;
 	}
 
 }

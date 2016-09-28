@@ -1,6 +1,5 @@
 package me.neildennis.crypticrpg.monsters.templates;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -18,6 +17,7 @@ public class ZombieTemplate extends LivingTemplate {
 	
 	public ZombieTemplate(){
 		super();
+		type = MobType.ZOMBIE;
 	}
 	
 	public ZombieTemplate(String name, boolean elite, int respawn){

@@ -45,8 +45,10 @@ public class ModerationManager implements Listener{
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerAsyncChat(AsyncPlayerChatEvent event){
 		CrypticPlayer pl = PlayerManager.getCrypticPlayer(event.getPlayer());
-		if (pl.getModerationData().isMuted())
+		if (pl.getModerationData().isMuted()){
+			pl.sendMessage(ChatColor.RED + "You are muted.");
 			event.setCancelled(true);
+		}
 	}
 	
 	public static String getKickedBannedMessage(String reason){

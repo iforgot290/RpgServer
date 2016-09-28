@@ -2,7 +2,6 @@ package me.neildennis.crypticrpg.monsters;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -10,13 +9,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import me.neildennis.crypticrpg.menu.Menu;
+import me.neildennis.crypticrpg.monsters.spawnblock.SpawnBlockMenu;
 import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
-import me.neildennis.crypticrpg.utils.FancyMessage;
-import me.neildennis.crypticrpg.utils.Log;
 
 public class SpawnPlaceListener implements Listener {
 	
@@ -31,6 +28,10 @@ public class SpawnPlaceListener implements Listener {
 		}
 		
 		SpawnBlock blk = MobManager.createNewSpawnBlock(event.getBlock().getLocation(), 5, 1, 10);
+		
+		pl.sendMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "You have registered a new spawn block");
+		pl.sendMessage(ChatColor.YELLOW + blk.getLocation().toString());
+		pl.sendMessage(ChatColor.YELLOW + "Range: " + blk.getRange() + "   LVL " + blk.getMinLvl() + "-" + blk.getMaxLvl());
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
@@ -38,54 +39,30 @@ public class SpawnPlaceListener implements Listener {
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 		if (event.getClickedBlock().getType() != Material.MOB_SPAWNER) return;
 		CrypticPlayer pl = PlayerManager.getCrypticPlayer(event.getPlayer());
-		if (pl.getRank() != Rank.OWNER) return;
+		if (pl.getRank().getPriority() < Rank.ADMIN.getPriority()) return;
 		
 		SpawnBlock blk = MobManager.getSpawnBlock(event.getClickedBlock().getLocation());
 		if (blk == null) return;
 		
-		pl.setMenu(new MainSpawnMenu(pl.getPlayer(), blk));
-	}
-	
-	public class MainSpawnMenu extends Menu{
+		event.setCancelled(true);
 		
-		private SpawnBlock blk;
-
-		public MainSpawnMenu(Player pl, SpawnBlock blk) {
-			super(pl);
-			this.blk = blk;
-		}
+		pl.sendMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "Spawn Block " + ChatColor.YELLOW + "@ " + blk.getLocation().toString());
+		pl.sendMessage(ChatColor.YELLOW + "Range: " + blk.getRange() + "   LVL " + blk.getMinLvl() + "-" + blk.getMaxLvl());
+		pl.sendMessage(ChatColor.YELLOW + "Mobs:" + (blk.getSpawns().size() == 0 ? " None" : ""));
+		for (SpawnTemplate spawn : blk.getSpawns())
+			pl.sendMessage(ChatColor.GRAY.toString() + spawn.getTier() + " " + spawn.getType().name() + " (" + spawn.getRespawnDelay() + "ms)");
 		
-		private int tick = 0;
-		
-		public void updateMenu(){
-			text.clear();
-			options.clear();
+		if (pl.getPlayer().isSneaking()){
+			SpawnBlockMenu menu = new SpawnBlockMenu(pl, blk);
 			
-			String animation = "";
+			pl.sendMessage("");
+			pl.sendMessage(ChatColor.YELLOW + "Entering spawn-block menu");
 			
-			for (int i = tick; i < 5; i++){
-				animation += "-";
-			}
-			
-			tick++;
-			if (tick == 5) tick = 0;
-			
-			text.add(new FancyMessage(animation));
-			text.add(new FancyMessage(""));
-			
-			text.add(new FancyMessage(ChatColor.GRAY + "Current mobs:"));
-			for (SpawnTemplate spawn : blk.getSpawns()){
-				FancyMessage msg = new FancyMessage("    ");
-				msg.then(ChatColor.GREEN + "[" + spawn.getLevel() + "] " + ChatColor.GRAY + spawn.getType().toString() +
-						" " + spawn.getName());
-				text.add(msg);
-			}
-			
-			options.add(new FancyMessage(ChatColor.GRAY + "Range: " + ChatColor.RED + blk.getRange()).tooltip("test"));
-		}
-		
-		public SpawnBlock getSpawnBlock(){
-			return blk;
+			pl.setMenu(menu);
+			menu.display();
+		} else {
+			pl.sendMessage("");
+			pl.sendMessage(ChatColor.YELLOW + "Shift right-click to enter editing mode");
 		}
 		
 	}

@@ -1,10 +1,10 @@
 package me.neildennis.crypticrpg.monsters;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -17,35 +17,34 @@ import com.google.gson.JsonObject;
 
 import me.neildennis.crypticrpg.cloud.ConnectionPool;
 import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
-import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.utils.Utils;
 
 public class SpawnBlock {
 
 	private Location loc;
-	private int id;
+	private UUID id;
 	private int range;
 	private ArrayList<SpawnTemplate> spawns;
 	private boolean shown = false;
 
 	private int minlvl;
 	private int maxlvl;
-	
-	public SpawnBlock(int id, Location loc, int range, int minlvl, int maxlvl){
+
+	public SpawnBlock(UUID id, Location loc, int range, int minlvl, int maxlvl){
 		this.id = id;
 		this.loc = loc;
 		this.range = range;
 		this.minlvl = minlvl;
 		this.maxlvl = maxlvl;
 		spawns = new ArrayList<SpawnTemplate>();
-		
+
 		if (loc.getBlock().getType() == Material.MOB_SPAWNER) shown = true;
 		else loc.getBlock().setType(Material.AIR);
 	}
 
-	public SpawnBlock(int id, Location loc, int range, int minlvl, int maxlvl, JsonArray array){
+	public SpawnBlock(UUID id, Location loc, int range, int minlvl, int maxlvl, JsonArray array){
 		this(id, loc, range, minlvl, maxlvl);
-		
+
 		for (JsonElement ele : array){
 			if (!ele.isJsonObject()) continue;
 			JsonObject obj = (JsonObject) ele;
@@ -62,10 +61,10 @@ public class SpawnBlock {
 			}
 		}
 	}
-	
-	public SpawnBlock(int id, Location loc, int range, int minlvl, int maxlvl, ArrayList<SpawnTemplate> spawns){
+
+	public SpawnBlock(UUID id, Location loc, int range, int minlvl, int maxlvl, ArrayList<SpawnTemplate> spawns){
 		this(id, loc, range, minlvl, maxlvl);
-		
+
 		this.spawns = spawns;
 	}
 
@@ -99,7 +98,7 @@ public class SpawnBlock {
 
 		return getRandomLocation();
 	}
-	
+
 	public void save(){
 		String loc = Utils.getStringFromLoc(this.loc);
 		JsonArray array = new JsonArray();
@@ -108,24 +107,17 @@ public class SpawnBlock {
 				array.add(temp.saveToJson());
 			}
 		}
-		if (id == 0){
-			String savequery = "INSERT INTO monster_spawns(location, spawn_range, minlvl, maxlvl, monsters) VALUES('" +
-					loc + "', '" + range + "', '" + minlvl + "', '" + maxlvl + "', '" + array.toString() + "')";
-			try {
-				PreparedStatement state = ConnectionPool.getConnection().prepareStatement(savequery, new String[]{"spawner_id"});
-				state.executeUpdate();
-				ResultSet res = state.getGeneratedKeys();
-				if (res.next()){
-					id = res.getInt(1);
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} else {
-			
+		
+		String savequery = "INSERT INTO monster_spawns(uuid, location, spawn_range, minlvl, maxlvl, monsters) VALUES('" +
+				id.toString() + loc + "', '" + range + "', '" + minlvl + "', '" + maxlvl + "', '" + array.toString() + "')";
+		try {
+			PreparedStatement state = ConnectionPool.getConnection().prepareStatement(savequery, new String[]{"spawner_id"});
+			state.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
-	
+
 	public void addMob(SpawnTemplate template){
 		spawns.add(template);
 	}
@@ -134,18 +126,35 @@ public class SpawnBlock {
 		return loc;
 	}
 
-	public int getId(){
+	public UUID getId(){
 		return id;
 	}
 
 	public int getRange(){
 		return range;
 	}
+	
+	public void setRange(int range){
+		this.range = range;
+	}
+
+	public int getMinLvl(){
+		return minlvl;
+	}
+
+	public int getMaxLvl(){
+		return maxlvl;
+	}
+	
+	public void setLevel(int min, int max){
+		this.minlvl = min < max ? min : max;
+		this.maxlvl = max > min ? max : min;
+	}
 
 	public ArrayList<SpawnTemplate> getSpawns(){
 		return spawns;
 	}
-	
+
 	public boolean isBlockShown(){
 		return shown;
 	}

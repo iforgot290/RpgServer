@@ -35,6 +35,7 @@ public abstract class SpawnTemplate {
 		gear = new ArrayList<CrypticArmor>();
 	}
 	
+	// Respawn in milliseconds
 	protected SpawnTemplate(MobType type, String name, boolean elite, int respawn){
 		this();
 		this.type = type;
@@ -92,6 +93,10 @@ public abstract class SpawnTemplate {
 	public String getName(){
 		return name;
 	}
+	
+	public void setName(String name){
+		this.name = name;
+	}
 
 	public int getTier(){
 		return tier;
@@ -121,6 +126,26 @@ public abstract class SpawnTemplate {
 	
 	public void hit(){
 		lasthit = System.currentTimeMillis();
+	}
+	
+	public long getRespawnDelay(){
+		return respawn;
+	}
+	
+	/**
+	 * Sets the respawn delay
+	 * @param delay time in milliseconds
+	 */
+	public void setRespawnDelay(long delay){
+		respawn = delay;
+	}
+	
+	public boolean isElite(){
+		return elite;
+	}
+	
+	public void setElite(boolean elite){
+		this.elite = elite;
 	}
 
 }

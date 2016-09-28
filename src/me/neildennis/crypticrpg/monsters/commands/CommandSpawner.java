@@ -51,7 +51,9 @@ public class CommandSpawner extends CrypticCommand{
 			} catch (NumberFormatException e){
 				sendUsage();
 			}
-		} else if (args[0].equalsIgnoreCase("hide")){
+		}
+		
+		else if (args[0].equalsIgnoreCase("hide")){
 			if (args.length < 2){
 				sendUsage();
 				return;
@@ -72,7 +74,9 @@ public class CommandSpawner extends CrypticCommand{
 			} catch (NumberFormatException e){
 				sendUsage();
 			}
-		} else if (args[0].equalsIgnoreCase("hideall")){
+		}
+		
+		else if (args[0].equalsIgnoreCase("hideall")){
 			boolean force = false;
 			if (args.length == 2){
 				if (args[1].equalsIgnoreCase("-f")) force = true;
