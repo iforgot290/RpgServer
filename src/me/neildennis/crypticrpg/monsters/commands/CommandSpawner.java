@@ -2,7 +2,6 @@ package me.neildennis.crypticrpg.monsters.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
 
 import me.neildennis.crypticrpg.CrypticCommand;
 import me.neildennis.crypticrpg.monsters.MobManager;
@@ -13,29 +12,22 @@ import me.neildennis.crypticrpg.player.CrypticPlayer;
 public class CommandSpawner extends CrypticCommand{
 
 	@Override
-	protected void sendUsage() {
-		// TODO Auto-generated method stub
-
+	protected boolean sendUsage() {
+		sender.sendMessage(new String[]{ChatColor.RED + "Usage:",
+				ChatColor.RED + "/" + label + " show <radius>",
+				ChatColor.RED + "/" + label + " hide <radius>",
+				ChatColor.RED + "/" + label + " hideall [-f]"});
+		return true;
 	}
 
 	@Override
-	public void command(CrypticPlayer pl, Command cmd, String label, String[] args) {
-		if (pl.getRank().getPriority() < Rank.ADMIN.getPriority()){
-			this.noPerms();
-			return;
-		}
-
-		if (args.length == 0){
-			sendUsage();
-			return;
-		}
+	public boolean command(CrypticPlayer pl) {
+		if (pl.getRank().getPriority() < Rank.ADMIN.getPriority()) return false;
+		if (args.length == 0) return sendUsage();
 
 		if (args[0].equalsIgnoreCase("show")){
-			if (args.length < 2){
-				sendUsage();
-				return;
-			}
-			
+			if (args.length < 2) return sendUsage();
+
 			try {
 				int radius = Integer.parseInt(args[1]);
 				Location ploc = pl.getPlayer().getLocation();
@@ -52,13 +44,10 @@ public class CommandSpawner extends CrypticCommand{
 				sendUsage();
 			}
 		}
-		
+
 		else if (args[0].equalsIgnoreCase("hide")){
-			if (args.length < 2){
-				sendUsage();
-				return;
-			}
-			
+			if (args.length < 2) return sendUsage();
+
 			try {
 				int radius = Integer.parseInt(args[1]);
 				Location ploc = pl.getPlayer().getLocation();
@@ -75,13 +64,13 @@ public class CommandSpawner extends CrypticCommand{
 				sendUsage();
 			}
 		}
-		
+
 		else if (args[0].equalsIgnoreCase("hideall")){
 			boolean force = false;
 			if (args.length == 2){
 				if (args[1].equalsIgnoreCase("-f")) force = true;
 			}
-			
+
 			int hidden = 0;
 			for (SpawnBlock blk : MobManager.getSpawnBlocks()){
 				if (!force && !blk.isBlockShown()) continue;
@@ -90,12 +79,20 @@ public class CommandSpawner extends CrypticCommand{
 			}
 			pl.sendMessage(ChatColor.GREEN + "Hid " + hidden + " spawners");
 		}
+		
+		return true;
 	}
 
 	@Override
-	public void console(Command cmd, String label, String[] args) {
-		// TODO Auto-generated method stub
-
+	public boolean console() {
+		if (args.length > 0 && args[0].equalsIgnoreCase("hideall")){
+			for (SpawnBlock blk : MobManager.getSpawnBlocks())
+				blk.setVisible(false);
+			sender.sendMessage(ChatColor.GREEN + "All spawn blocks have been hidden");
+		} else {
+			sender.sendMessage(ChatColor.RED + "Only hideall option available in console");
+		}
+		return true;
 	}
 
 }

@@ -31,9 +31,9 @@ public class CrypticPlayer {
 	private HealthData healthData;
 	private ModerationData moderationData;
 	private RankData rankData;
-	
+
 	private ZoneState zonestate;
-	
+
 	private Menu menu;
 
 	/**
@@ -46,12 +46,11 @@ public class CrypticPlayer {
 		tasks = new ArrayList<BukkitTask>();
 		buffs = new ArrayList<PlayerBuff>();
 
-		Cloud.sendStatement("INSERT IGNORE INTO player_db (player_id, rank) VALUES ('" + id.toString() + "', 'NORMAL')");
-
-		ResultSet data = Cloud.sendQuery("SELECT * FROM player_db WHERE player_id = '" + id.toString() + "'");
 		try {
+			Cloud.sendStatement("INSERT IGNORE INTO player_db (player_id, rank) VALUES ('" + id.toString() + "', 'NORMAL')");
+			ResultSet data = Cloud.sendQuery("SELECT * FROM player_db WHERE player_id = '" + id.toString() + "'");
 			data.next();
-			
+
 			healthData = new HealthData(this, data);
 			rankData = new RankData(this, data);
 			moderationData = new ModerationData(this, data);
@@ -59,7 +58,7 @@ public class CrypticPlayer {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void online(Player pl){
 		Log.debug("Attempting to initiate health");
 		healthData.online(pl);
@@ -90,7 +89,7 @@ public class CrypticPlayer {
 
 		tasks.clear();
 	}
-	
+
 	public void sendMessage(String str){
 		if (getPlayer() != null){
 			getPlayer().sendMessage(str);
@@ -100,15 +99,15 @@ public class CrypticPlayer {
 	public void cancelBuffs(){
 		buffs.clear();
 	}
-	
+
 	public Menu getCurrentMenu(){
 		return menu;
 	}
-	
+
 	public void setMenu(Menu menu){
 		this.menu = menu;
 	}
-	
+
 	public void clearMenu(){
 		this.menu = null;
 	}
@@ -140,11 +139,11 @@ public class CrypticPlayer {
 	public void addBuff(PlayerBuff buff){
 		buffs.add(buff);
 	}
-	
+
 	public ZoneState getZoneState(){
 		return zonestate;
 	}
-	
+
 	public void setZoneState(ZoneState zonestate){
 		this.zonestate = zonestate;
 	}
@@ -156,11 +155,11 @@ public class CrypticPlayer {
 	public ModerationData getModerationData(){
 		return moderationData;
 	}
-	
+
 	public RankData getRankData(){
 		return rankData;
 	}
-	
+
 	public Rank getRank(){
 		return rankData.getRank();
 	}

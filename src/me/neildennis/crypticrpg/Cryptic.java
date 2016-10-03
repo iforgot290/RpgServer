@@ -14,6 +14,7 @@ import me.neildennis.crypticrpg.moderation.ModerationManager;
 import me.neildennis.crypticrpg.monsters.MobManager;
 import me.neildennis.crypticrpg.permission.RankManager;
 import me.neildennis.crypticrpg.player.PlayerManager;
+import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.zone.ZoneManager;
 
 public class Cryptic extends JavaPlugin{
@@ -47,7 +48,12 @@ public class Cryptic extends JavaPlugin{
 		zoneManager = new ZoneManager();
 		
 		Bukkit.getPluginManager().registerEvents(new HealthListener(), getPlugin());
-		getPlugin().getCommand("item").setExecutor(new TestCommand());
+		registerCommand("item", new TestCommand());
+	}
+	
+	public static void registerCommand(String label, CrypticCommand cmd){
+		Log.debug("Registering new command: /" + label);
+		getPlugin().getCommand(label).setExecutor(cmd);
 	}
 	
 	public Cloud getCloud(){

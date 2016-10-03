@@ -14,6 +14,7 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.cloud.Cloud;
+import me.neildennis.crypticrpg.moderation.commands.CommandBan;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
 import net.md_5.bungee.api.ChatColor;
@@ -22,26 +23,28 @@ public class ModerationManager implements Listener{
 
 	public ModerationManager(){
 		Bukkit.getPluginManager().registerEvents(this, Cryptic.getPlugin());
+		
+		Cryptic.registerCommand("ban", new CommandBan());
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event){
-		ResultSet result = Cloud.sendQuery("SELECT * FROM player_db WHERE player_id = '" + event.getUniqueId().toString() + "'");
 		try {
-			if (!result.next()) return;
-			
-			if (result.getBoolean("banned")){
-				String reason = result.getString("banned_reason");
-				if (reason == null) reason = "The ban hammer has spoken!";
-				
-				event.disallow(Result.KICK_BANNED, getKickedBannedMessage(reason));
+			ResultSet result = Cloud.sendQuery("SELECT * FROM bans WHERE banned_uuid = '" + event.getUniqueId().toString() + "'");
+			while (result.next()){
+				if (result.getBoolean("banned")){
+					String reason = result.getString("reason");
+					if (reason == null) reason = "The ban hammer has spoken!";
+
+					event.disallow(Result.KICK_BANNED, getKickedBannedMessage(reason));
+				}
 			}
 		} catch (SQLException e){
 			e.printStackTrace();
 			event.disallow(Result.KICK_OTHER, ChatColor.RED + "Error contacting the database");
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerAsyncChat(AsyncPlayerChatEvent event){
 		CrypticPlayer pl = PlayerManager.getCrypticPlayer(event.getPlayer());
@@ -50,17 +53,17 @@ public class ModerationManager implements Listener{
 			event.setCancelled(true);
 		}
 	}
-	
+
 	public static String getKickedBannedMessage(String reason){
 		return "Banned: " + reason;
 	}
-	
+
 	public static String getKickedMessage(String reason){
 		return "Kicked: " + reason;
 	}
-	
+
 	public static void kickPlayer(Player player, String reason){
-		
+
 	}
 
 }

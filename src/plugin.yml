@@ -6,6 +6,8 @@ commands:
     usage: /<command>
   spawner:
     usage: /<command>
+  ban:
+    usage: /<command> <user> <reason>
   duel:
     description: Root command... for now.
     usage: /<command>

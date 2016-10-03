@@ -11,23 +11,29 @@ import me.neildennis.crypticrpg.player.PlayerManager;
 
 public abstract class CrypticCommand implements CommandExecutor{
 
-	protected abstract void sendUsage();
-	public abstract void command(CrypticPlayer pl, Command cmd, String label, String[] args);
-	public abstract void console(Command cmd, String label, String[] args);
+	protected abstract boolean sendUsage();
+	public abstract boolean command(CrypticPlayer pl);
+	public abstract boolean console();
 	
 	protected CommandSender sender;
+	protected Command cmd;
+	protected String label;
+	protected String[] args;
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 		this.sender = sender;
+		this.cmd = cmd;
+		this.label = label;
+		this.args = args;
 		
 		if (sender instanceof Player){
 			Player pl = (Player)sender;
 			CrypticPlayer cpl = PlayerManager.getCrypticPlayer(pl);
-			command(cpl, cmd, label, args);
+			if (!command(cpl)) noPerms();
 			return true;
 		}
 		
-		console(cmd, label, args);
+		console();
 		return true;
 	}
 	

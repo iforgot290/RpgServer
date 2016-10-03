@@ -3,7 +3,6 @@ package me.neildennis.crypticrpg.monsters;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -24,7 +23,6 @@ import me.neildennis.crypticrpg.utils.Utils;
 public class MobManager extends Manager{
 	
 	private static ArrayList<SpawnBlock> spawners;
-	private static Random random = new Random();
 	
 	public MobManager(){
 		spawners = new ArrayList<SpawnBlock>();
@@ -57,8 +55,8 @@ public class MobManager extends Manager{
 	}
 	
 	public void loadMobSpawns(){
-		ResultSet data = Cloud.sendQuery("SELECT * FROM monster_spawns");
 		try {
+			ResultSet data = Cloud.sendQuery("SELECT * FROM monster_spawns");
 			while (data.next()){
 				UUID id = UUID.fromString(data.getString("uuid"));
 				Location loc = Utils.getLocFromString(data.getString("location"));

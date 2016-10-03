@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.CrypticCommand;
@@ -20,25 +19,20 @@ import me.neildennis.crypticrpg.player.PlayerManager;
 import me.neildennis.crypticrpg.utils.Log;
 import net.md_5.bungee.api.ChatColor;
 
+//TODO: clean up this mess
 public class CommandSetRank extends CrypticCommand{
 
 	@Override
-	protected void sendUsage(){
+	protected boolean sendUsage(){
 		sender.sendMessage(ChatColor.RED + "/setrank <player> <rank>");
+		return true;
 	}
 
 	@Override
-	public void command(final CrypticPlayer pl, Command cmd, String label, String[] args) {
+	public boolean command(final CrypticPlayer pl) {
 
-		if (pl.getRank().getPriority() < Rank.ADMIN.getPriority()){
-			noPerms();
-			return;
-		}
-
-		if (args.length == 0){
-			sendUsage();
-			return;
-		}
+		if (pl.getRank().getPriority() < Rank.ADMIN.getPriority()) return false;
+		if (args.length == 0) return sendUsage();
 
 		final UUID id;
 		final String name;
@@ -49,14 +43,14 @@ public class CommandSetRank extends CrypticCommand{
 			toset = pl;
 			id = pl.getId();
 			name = pl.getPlayer().getName();
-			torank = Rank.valueOf(args[0]);
+			torank = Rank.valueOf(args[0].toUpperCase());
 		} else {
 			@SuppressWarnings("deprecation")
 			OfflinePlayer op = Bukkit.getOfflinePlayer(args[0]);
 			id = op.getUniqueId();
 			name = op.getName();
 			toset = PlayerManager.getCrypticPlayer(op);
-			torank = Rank.valueOf(args[1]);
+			torank = Rank.valueOf(args[1].toUpperCase());
 		}
 
 		if (toset == null){
@@ -64,10 +58,9 @@ public class CommandSetRank extends CrypticCommand{
 
 				@Override
 				public void run() {
-					ResultSet res = Cloud.sendQuery("SELECT rank, server FROM player_db WHERE player_id = '"
-							+ id.toString() + "'");
 
 					try {
+						ResultSet res = Cloud.sendQuery("SELECT rank, server FROM player_db WHERE player_id = '" + id.toString() + "'");
 						if (!res.next()){
 							ChatManager.sendSyncMessage(pl.getPlayer(), ChatColor.RED + "Player not found");
 							return;
@@ -111,11 +104,11 @@ public class CommandSetRank extends CrypticCommand{
 					pl.getRankData().setRank(torank);
 					PlayerData.savePlayerRank(pl);
 					pl.getPlayer().sendMessage(ChatColor.GREEN + "Set your own rank to " + torank.toString());
-					return;
+					return true;
 				}
 
 				pl.getPlayer().sendMessage(ChatColor.RED + "You are not allowed to promote yourself");
-				return;
+				return true;
 			}
 			
 			Rank fromrank = toset.getRankData().getRank();
@@ -139,15 +132,14 @@ public class CommandSetRank extends CrypticCommand{
 			}
 
 		}
+		
+		return true;
 
 	}
 
 	@Override
-	public void console(Command cmd, String label, String[] args) {
-		if (args.length < 2){
-			sendUsage();
-			return;
-		}
+	public boolean console() {
+		if (args.length < 2) return sendUsage();
 		
 		String name = args[0];
 		Rank rank = Rank.valueOf(args[1]);
@@ -165,6 +157,8 @@ public class CommandSetRank extends CrypticCommand{
 		}
 		
 		Log.info("Set " + pl.getName() + " to " + rank.toString());
+		
+		return true;
 	}
 
 }

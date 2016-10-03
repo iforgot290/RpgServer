@@ -2,6 +2,8 @@ package me.neildennis.crypticrpg.utils;
 
 import org.bukkit.Bukkit;
 
+import me.neildennis.crypticrpg.Cryptic;
+
 public class Log {
 	
 	private Log(){}
@@ -11,7 +13,8 @@ public class Log {
 	}
 	
 	public static void debug(Object obj){
-		Bukkit.broadcastMessage(obj.toString());
+		if (Cryptic.getPlugin().isEnabled()) Bukkit.broadcastMessage(obj.toString());
+		else System.out.println(obj);
 	}
 
 }
