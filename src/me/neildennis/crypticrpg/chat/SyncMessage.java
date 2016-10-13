@@ -1,22 +1,22 @@
 package me.neildennis.crypticrpg.chat;
 
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 public class SyncMessage {
 	
-	private Player pl;
-	private String msg;
+	private CommandSender pl;
+	private Object msg;
 	
-	public SyncMessage(Player pl, String msg){
+	public SyncMessage(CommandSender pl, Object msg){
 		this.pl = pl;
 		this.msg = msg;
 	}
 	
-	public Player getPlayer(){
+	public CommandSender getPlayer(){
 		return pl;
 	}
 	
-	public String getMessage(){
+	public Object getMessage(){
 		return msg;
 	}
 

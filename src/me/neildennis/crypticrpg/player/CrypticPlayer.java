@@ -40,7 +40,7 @@ public class CrypticPlayer {
 	 * Loads asynchronously
 	 * @param id ID of player logging on
 	 */
-	public CrypticPlayer(UUID id){
+	public CrypticPlayer(UUID id, ModerationData moddata){
 		this.id = id;
 		player = Bukkit.getOfflinePlayer(id);
 		tasks = new ArrayList<BukkitTask>();
@@ -53,7 +53,7 @@ public class CrypticPlayer {
 
 			healthData = new HealthData(this, data);
 			rankData = new RankData(this, data);
-			moderationData = new ModerationData(this, data);
+			moderationData = moddata;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

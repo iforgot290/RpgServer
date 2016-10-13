@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -36,14 +36,15 @@ public class ChatManager implements Listener{
 			public void run() {
 				while (!syncmsg.isEmpty()){
 					SyncMessage msg = syncmsg.poll();
-					msg.getPlayer().sendMessage(msg.getMessage());
+					if (msg.getMessage() instanceof String[]) msg.getPlayer().sendMessage((String[]) msg.getMessage());
+					else msg.getPlayer().sendMessage(msg.getMessage().toString());
 				}
 			}
 			
 		}, 5L, 1L));
 	}
 	
-	public static void sendSyncMessage(Player pl, String msg){
+	public static void sendSyncMessage(CommandSender pl, Object msg){
 		syncmsg.offer(new SyncMessage(pl, msg));
 	}
 	

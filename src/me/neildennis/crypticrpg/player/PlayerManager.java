@@ -6,16 +6,12 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.cloud.data.PlayerData;
-import me.neildennis.crypticrpg.permission.Rank;
 
 public class PlayerManager implements Listener{
 	
@@ -50,14 +46,6 @@ public class PlayerManager implements Listener{
 	
 	public interface PlayerSearch{
 		public boolean meetsCriteria(CrypticPlayer pl);
-	}
-	
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event){
-		if (event.getLoginResult() == Result.ALLOWED){
-			CrypticPlayer pl = new CrypticPlayer(event.getUniqueId());
-			players.add(pl);
-		}
 	}
 	
 	@EventHandler
