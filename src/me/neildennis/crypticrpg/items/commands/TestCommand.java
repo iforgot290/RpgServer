@@ -3,7 +3,7 @@ package me.neildennis.crypticrpg.items.commands;
 import org.bukkit.command.Command;
 
 import me.neildennis.crypticrpg.CrypticCommand;
-import me.neildennis.crypticrpg.items.attribs.Attribute;
+import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.attribs.Rarity;
 import me.neildennis.crypticrpg.items.attribs.Tier;
 import me.neildennis.crypticrpg.items.generator.ItemGenerator;
@@ -21,7 +21,7 @@ public class TestCommand extends CrypticCommand{
 
 	@Override
 	public boolean command(CrypticPlayer pl) {
-		CrypticItem item = new ItemGenerator(CrypticItemType.SWORD).setRarity(Rarity.COMMON).setTier(Tier.ONE).setAttribute(Attribute.DAMAGE, 100).generate();
+		CrypticItem item = new ItemGenerator(CrypticItemType.SWORD).setRarity(Rarity.COMMON).setTier(Tier.ONE).setAttribute(AttributeType.DAMAGE, 100).generate();
 		pl.getPlayer().getInventory().setItemInMainHand(item.generateItemStack());
 		return true;
 	}

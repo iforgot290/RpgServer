@@ -3,7 +3,7 @@ package me.neildennis.crypticrpg.monsters.templates;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
-import me.neildennis.crypticrpg.items.attribs.Attribute;
+import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.type.CrypticItemType;
 import me.neildennis.crypticrpg.items.type.armor.CrypticArmor;
 import me.neildennis.crypticrpg.monsters.MobType;
@@ -37,7 +37,7 @@ public abstract class LivingTemplate extends SpawnTemplate {
 			else if (gear.getType() == CrypticItemType.LEGGINGS) le.getEquipment().setLeggings(gear.generateItemStack());
 			else if (gear.getType() == CrypticItemType.BOOTS) le.getEquipment().setBoots(gear.generateItemStack());
 			
-			le.setMaxHealth(le.getMaxHealth() + gear.getAttribute(Attribute.HEALTH));
+			le.setMaxHealth(le.getMaxHealth() + gear.getAttribute(AttributeType.HEALTH));
 		}
 		le.setHealth(le.getMaxHealth());
 

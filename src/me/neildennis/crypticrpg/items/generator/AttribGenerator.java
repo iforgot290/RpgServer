@@ -2,15 +2,15 @@ package me.neildennis.crypticrpg.items.generator;
 
 import java.util.HashMap;
 
-import me.neildennis.crypticrpg.items.attribs.Attribute;
+import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.attribs.Tier;
 
 public class AttribGenerator {
 	
-	private static HashMap<Attribute, HashMap<Tier, AttribTemplate>> templates;
+	private static HashMap<AttributeType, HashMap<Tier, AttribTemplate>> templates;
 	
 	public static void load(){
-		templates = new HashMap<Attribute, HashMap<Tier, AttribTemplate>>();
+		templates = new HashMap<AttributeType, HashMap<Tier, AttribTemplate>>();
 	}
 	
 	public static void generate(ItemGenerator gen){

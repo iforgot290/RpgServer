@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 
-import me.neildennis.crypticrpg.items.attribs.Attribute;
+import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.attribs.Rarity;
 import me.neildennis.crypticrpg.items.attribs.Tier;
 import me.neildennis.crypticrpg.items.type.CrypticGear;
@@ -17,7 +17,7 @@ public class ItemGenerator {
 	private String name;
 	private List<String> lore;
 	private CrypticItemType type;
-	private HashMap<Attribute, Integer> attribs = new HashMap<Attribute, Integer>();
+	private HashMap<AttributeType, Integer> attribs = new HashMap<AttributeType, Integer>();
 	private Tier tier = Tier.ONE;
 	private Rarity rarity = Rarity.COMMON;
 	
@@ -52,16 +52,16 @@ public class ItemGenerator {
 		return rarity;
 	}
 	
-	public ItemGenerator setAttribute(Attribute attr, int value){
+	public ItemGenerator setAttribute(AttributeType attr, int value){
 		attribs.put(attr, value);
 		return this;
 	}
 	
-	public boolean hasAttribute(Attribute attr){
+	public boolean hasAttribute(AttributeType attr){
 		return attribs.containsKey(attr);
 	}
 	
-	public int getAttribute(Attribute attr){
+	public int getAttribute(AttributeType attr){
 		return attribs.get(attr);
 	}
 	

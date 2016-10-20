@@ -1,13 +1,13 @@
 package me.neildennis.crypticrpg.items.attribs;
 
-public enum Attribute {
+public enum AttributeType {
 	
 	DAMAGE("DMG: ", ""),
 	HEALTH("HEALTH: ", "");
 	
 	private String prefix, postfix;
 	
-	Attribute(String prefix, String postfix){
+	AttributeType(String prefix, String postfix){
 		this.prefix = prefix;
 		this.postfix = postfix;
 	}
@@ -20,8 +20,8 @@ public enum Attribute {
 		return postfix;
 	}
 	
-	public static Attribute fromPrefix(String str){
-		for (Attribute attr : Attribute.values())
+	public static AttributeType fromPrefix(String str){
+		for (AttributeType attr : AttributeType.values())
 			if (str.startsWith(attr.getPrefix()))
 				return attr;
 		return null;

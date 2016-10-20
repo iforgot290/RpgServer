@@ -17,7 +17,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.items.ItemManager;
-import me.neildennis.crypticrpg.items.attribs.Attribute;
+import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.type.CrypticGear;
 import me.neildennis.crypticrpg.items.type.CrypticItem;
 import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
@@ -43,7 +43,7 @@ public class MobListener implements Listener {
 		final CrypticPlayer pl = PlayerManager.getCrypticPlayer((Player)event.getEntity());
 		CrypticGear wep = temp.getWeapon();
 		
-		int damage = wep.getAttribute(Attribute.DAMAGE);
+		int damage = wep.getAttribute(AttributeType.DAMAGE);
 		pl.getHealthData().damage();
 		event.setDamage(damage);
 		Bukkit.getScheduler().runTask(Cryptic.getPlugin(), new Runnable(){
@@ -80,7 +80,7 @@ public class MobListener implements Listener {
 		
 		if (item != null && item instanceof CrypticGear){
 			CrypticGear wep = (CrypticGear) item;
-			event.setDamage(wep.getAttribute(Attribute.DAMAGE));
+			event.setDamage(wep.getAttribute(AttributeType.DAMAGE));
 		} else {
 			event.setDamage(1);
 		}

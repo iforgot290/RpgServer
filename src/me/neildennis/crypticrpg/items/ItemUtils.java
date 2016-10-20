@@ -3,7 +3,7 @@ package me.neildennis.crypticrpg.items;
 import java.util.HashMap;
 import java.util.List;
 
-import me.neildennis.crypticrpg.items.attribs.Attribute;
+import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.attribs.Rarity;
 import net.md_5.bungee.api.ChatColor;
 
@@ -16,11 +16,11 @@ public class ItemUtils {
 		return null;
 	}
 
-	public static HashMap<Attribute, Integer> getAttributes(List<String> lore){
-		HashMap<Attribute, Integer> attribs = new HashMap<Attribute, Integer>();
+	public static HashMap<AttributeType, Integer> getAttributes(List<String> lore){
+		HashMap<AttributeType, Integer> attribs = new HashMap<AttributeType, Integer>();
 
 		for (String str : lore){
-			Attribute attr = getAttrFromString(str);
+			AttributeType attr = getAttrFromString(str);
 			if (attr == null) continue;
 
 			String value = str.replaceAll(attr.getPrefix(), "").replaceAll(attr.getPostfix(), "");
@@ -30,8 +30,8 @@ public class ItemUtils {
 		return attribs;
 	}
 
-	public static Attribute getAttrFromString(String str){
-		for (Attribute attr : Attribute.values())
+	public static AttributeType getAttrFromString(String str){
+		for (AttributeType attr : AttributeType.values())
 			if (str.startsWith(attr.getPrefix()))
 				return attr;
 		return null;

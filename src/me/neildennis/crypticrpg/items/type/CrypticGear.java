@@ -11,18 +11,18 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neildennis.crypticrpg.items.ItemUtils;
-import me.neildennis.crypticrpg.items.attribs.Attribute;
+import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.attribs.Rarity;
 import me.neildennis.crypticrpg.items.attribs.Tier;
 import me.neildennis.crypticrpg.utils.StringUtils;
 
 public abstract class CrypticGear extends CrypticItem{
 
-	protected HashMap<Attribute, Integer> attribs;
+	protected HashMap<AttributeType, Integer> attribs;
 	protected Tier tier;
 	protected Rarity rarity;
 	
-	public CrypticGear(String name, List<String> lore, CrypticItemType type, HashMap<Attribute, Integer> attribs, Tier tier, Rarity rarity) {
+	public CrypticGear(String name, List<String> lore, CrypticItemType type, HashMap<AttributeType, Integer> attribs, Tier tier, Rarity rarity) {
 		super(name, lore, type);
 		this.attribs = attribs;
 		this.tier = tier;
@@ -33,15 +33,15 @@ public abstract class CrypticGear extends CrypticItem{
 		super();
 	}
 	
-	public HashMap<Attribute, Integer> getAttribs(){
+	public HashMap<AttributeType, Integer> getAttribs(){
 		return attribs;
 	}
 	
-	public int getAttribute(Attribute attr){
+	public int getAttribute(AttributeType attr){
 		return attribs.get(attr);
 	}
 	
-	public int getValue(Attribute attrib){
+	public int getValue(AttributeType attrib){
 		return attribs.get(attrib);
 	}
 	
@@ -60,7 +60,7 @@ public abstract class CrypticGear extends CrypticItem{
 	public List<String> getBukkitDisplayLore(){
 		List<String> retlore = new ArrayList<String>();
 		
-		for (Attribute attr : attribs.keySet()){
+		for (AttributeType attr : attribs.keySet()){
 			retlore.add(ChatColor.RED + attr.getPrefix() + attribs.get(attr) + attr.getPostfix());
 		}
 		

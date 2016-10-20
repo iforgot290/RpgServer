@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.Manager;
-import me.neildennis.crypticrpg.items.attribs.Attribute;
+import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.attribs.Tier;
 import me.neildennis.crypticrpg.items.generator.ItemGenerator;
 import me.neildennis.crypticrpg.items.generator.NameGenerator;
@@ -44,10 +44,10 @@ public class ItemManager extends Manager{
 	public static List<ItemGenerator> generateMobArmor(int level) {
 		List<ItemGenerator> armor = new ArrayList<ItemGenerator>();
 		
-		armor.add(new ItemGenerator(CrypticItemType.HELMET).setTier(Tier.fromLevel(level)).setAttribute(Attribute.HEALTH, 100));
-		armor.add(new ItemGenerator(CrypticItemType.CHESTPLATE).setTier(Tier.fromLevel(level)).setAttribute(Attribute.HEALTH, 100));
-		armor.add(new ItemGenerator(CrypticItemType.LEGGINGS).setTier(Tier.fromLevel(level)).setAttribute(Attribute.HEALTH, 100));
-		armor.add(new ItemGenerator(CrypticItemType.BOOTS).setTier(Tier.fromLevel(level)).setAttribute(Attribute.HEALTH, 100));
+		armor.add(new ItemGenerator(CrypticItemType.HELMET).setTier(Tier.fromLevel(level)).setAttribute(AttributeType.HEALTH, 100));
+		armor.add(new ItemGenerator(CrypticItemType.CHESTPLATE).setTier(Tier.fromLevel(level)).setAttribute(AttributeType.HEALTH, 100));
+		armor.add(new ItemGenerator(CrypticItemType.LEGGINGS).setTier(Tier.fromLevel(level)).setAttribute(AttributeType.HEALTH, 100));
+		armor.add(new ItemGenerator(CrypticItemType.BOOTS).setTier(Tier.fromLevel(level)).setAttribute(AttributeType.HEALTH, 100));
 		
 		return armor;
 	}
