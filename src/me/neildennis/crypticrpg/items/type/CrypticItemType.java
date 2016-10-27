@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Material;
 
+import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.type.armor.CrypticBoots;
 import me.neildennis.crypticrpg.items.type.armor.CrypticChestplate;
 import me.neildennis.crypticrpg.items.type.armor.CrypticHelmet;
@@ -13,8 +14,18 @@ import me.neildennis.crypticrpg.items.type.weapon.CrypticSword;
 
 public enum CrypticItemType {
 	
-	SWORD(CrypticSword.class, Material.WOOD_SWORD, Material.STONE_SWORD, Material.IRON_SWORD, Material.DIAMOND_SWORD, Material.GOLD_SWORD),
-	HELMET(CrypticHelmet.class, Material.LEATHER_HELMET, Material.CHAINMAIL_HELMET, Material.IRON_HELMET, Material.DIAMOND_HELMET, Material.GOLD_HELMET),
+	SWORD(CrypticSword.class, 	Material.WOOD_SWORD,
+								Material.STONE_SWORD,
+								Material.IRON_SWORD,
+								Material.DIAMOND_SWORD,
+								Material.GOLD_SWORD),
+	
+	HELMET(CrypticHelmet.class, Material.LEATHER_HELMET,
+								Material.CHAINMAIL_HELMET,
+								Material.IRON_HELMET,
+								Material.DIAMOND_HELMET,
+								Material.GOLD_HELMET),
+	
 	CHESTPLATE(CrypticChestplate.class, Material.LEATHER_CHESTPLATE, Material.CHAINMAIL_CHESTPLATE, Material.IRON_CHESTPLATE, Material.DIAMOND_CHESTPLATE,
 			Material.GOLD_CHESTPLATE),
 	LEGGINGS(CrypticLeggings.class, Material.LEATHER_LEGGINGS, Material.CHAINMAIL_LEGGINGS, Material.IRON_LEGGINGS, Material.DIAMOND_LEGGINGS,
@@ -24,7 +35,7 @@ public enum CrypticItemType {
 	private Class<? extends CrypticItem> c;
 	private Material[] mat;
 	
-	CrypticItemType(Class<? extends CrypticItem> c, Material... mat){
+	CrypticItemType(Class<? extends CrypticItem> c, List<AttributeType> req, List<AttributeType> possible, Material... mat){
 		this.c = c;
 		this.mat = mat;
 	}
