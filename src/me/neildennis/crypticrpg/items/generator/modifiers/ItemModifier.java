@@ -8,7 +8,7 @@ public class ItemModifier implements Comparable<ItemModifier>{
 	
 	protected HashMap<Tier, TierModifier> tiermods;
 	protected float chance;
-	protected float priority;
+	protected int priority;
 	
 	/**
 	 * Constructs a modifier for an item attribute
@@ -22,14 +22,54 @@ public class ItemModifier implements Comparable<ItemModifier>{
 		this.priority = priority;
 	}
 	
+	public void setPriority(int priority){
+		this.priority = priority;
+	}
+	
+	public int getPriority(){
+		return priority;
+	}
+	
+	public float getChance(){
+		return chance;
+	}
+	
 	@Override
 	public int compareTo(ItemModifier o) {
-		// TODO Auto-generated method stub
-		return 0;
+		if (o.getPriority() == priority) return 0;
+		return o.getPriority() < priority ? -1 : 1;
 	}
 	
 	public class TierModifier {
 		
+		private int low, high, lowHigh;
+		private ModifierType type;
+		
+		public TierModifier(ModifierType type, int low, int high){
+			this.type = type;
+			this.low = low;
+			this.high = high;
+		}
+		
+		public TierModifier(ModifierType type, int low, int high, int lowHigh){
+			this(type, low, high);
+			this.lowHigh = lowHigh;
+		}
+		
+		public int generateValue(){
+			
+			
+			if (type == ModifierType.STATIC){
+				
+			}
+			
+			return 0;
+		}
+		
+	}
+	
+	public enum ModifierType{
+		STATIC, DOUBLE, TRIPLE;
 	}
 
 }
