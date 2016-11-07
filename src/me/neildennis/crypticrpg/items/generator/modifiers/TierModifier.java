@@ -3,7 +3,6 @@ package me.neildennis.crypticrpg.items.generator.modifiers;
 import java.util.Random;
 
 import me.neildennis.crypticrpg.items.attribs.Rarity;
-import me.neildennis.crypticrpg.items.generator.modifiers.ItemModifier.ModifierType;
 import me.neildennis.crypticrpg.utils.Log;
 
 public class TierModifier {
@@ -30,12 +29,27 @@ public class TierModifier {
 		int first = (middle - low > 0 ? r.nextInt(middle - low) + low : low);
 		int second = first;
 		
-		if (type == ModifierType.DOUBLE){
-			second = r.nextInt(high - first) + first;
-		} else if (type == ModifierType.TRIPLE){
+		//generates a value that is inbetween the two values provided
+		//can use the rarity value
+		if (type == ModifierType.STATIC){
+			float rareValue;
+			
+			if (rarity == null) rareValue = r.nextFloat();
+			else rareValue = rarity.getRandomPct();
+			
+			first = (int) ((high - low) * rareValue) + low;
+			second = first;
+		}
+		
+		//generates 2 values using middle as the mid point
+		//wont use the rarity value
+		else if (type == ModifierType.TRIPLE){
 			second = r.nextInt(high - middle) + middle;
-		} else if (type == ModifierType.RANGE){
-			float rareValue = 0.0F;
+		}
+		
+		//generates a value range based on a rarity factor
+		else if (type == ModifierType.RANGE){
+			float rareValue;
 			
 			if (rarity == null) rareValue = r.nextFloat();
 			else rareValue = rarity.getRandomPct();
@@ -59,6 +73,10 @@ public class TierModifier {
 		values[1] = second;
 		
 		return values;
+	}
+	
+	public enum ModifierType{
+		STATIC, TRIPLE, RANGE;
 	}
 	
 }

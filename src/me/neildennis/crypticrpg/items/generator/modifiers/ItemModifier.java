@@ -63,9 +63,5 @@ public class ItemModifier implements Comparable<ItemModifier>{
 		if (chance == 1.0F) return 1;
 		return o.getChance() < chance ? 1 : -1;
 	}
-	
-	public enum ModifierType{
-		STATIC, DOUBLE, TRIPLE, RANGE;
-	}
 
 }
