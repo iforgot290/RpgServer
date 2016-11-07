@@ -18,6 +18,7 @@ import me.neildennis.crypticrpg.Manager;
 import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.monsters.commands.CommandSpawner;
 import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
+import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.utils.Utils;
 
 public class MobManager extends Manager{
@@ -105,9 +106,13 @@ public class MobManager extends Manager{
 	
 	public static SpawnTemplate getCrypticEntity(Entity ent){
 		for (SpawnBlock blk : spawners)
-			for (SpawnTemplate temp : blk.getSpawns())
+			for (SpawnTemplate temp : blk.getSpawns()){
+				Log.debug("test");
+				if (temp == null) return null;
+				if (temp.getEntity() == null) return null;
 				if (temp.getEntity().equals(ent))
 					return temp;
+			}
 		return null;
 	}
 

@@ -1,18 +1,18 @@
 package me.neildennis.crypticrpg.items.type.armor;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
 
-import me.neildennis.crypticrpg.items.attribs.AttributeType;
+import me.neildennis.crypticrpg.items.attribs.Attribute;
 import me.neildennis.crypticrpg.items.attribs.Rarity;
 import me.neildennis.crypticrpg.items.attribs.Tier;
 import me.neildennis.crypticrpg.items.type.CrypticItemType;
 
 public class CrypticBoots extends CrypticArmor{
 
-	public CrypticBoots(String name, List<String> lore, CrypticItemType type, HashMap<AttributeType, Integer> attribs, Tier tier, Rarity rarity) {
+	public CrypticBoots(String name, List<String> lore, CrypticItemType type, ArrayList<Attribute> attribs, Tier tier, Rarity rarity) {
 		super(name, lore, type, attribs, tier, rarity);
 	}
 	

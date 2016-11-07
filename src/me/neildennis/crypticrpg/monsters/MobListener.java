@@ -11,7 +11,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 
@@ -43,7 +42,7 @@ public class MobListener implements Listener {
 		final CrypticPlayer pl = PlayerManager.getCrypticPlayer((Player)event.getEntity());
 		CrypticGear wep = temp.getWeapon();
 		
-		int damage = wep.getAttribute(AttributeType.DAMAGE);
+		int damage = wep.getAttribute(AttributeType.DAMAGE).genValue();
 		pl.getHealthData().damage();
 		event.setDamage(damage);
 		Bukkit.getScheduler().runTask(Cryptic.getPlugin(), new Runnable(){
@@ -80,7 +79,7 @@ public class MobListener implements Listener {
 		
 		if (item != null && item instanceof CrypticGear){
 			CrypticGear wep = (CrypticGear) item;
-			event.setDamage(wep.getAttribute(AttributeType.DAMAGE));
+			event.setDamage(wep.getAttribute(AttributeType.DAMAGE).genValue());
 		} else {
 			event.setDamage(1);
 		}

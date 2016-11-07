@@ -2,9 +2,11 @@ package me.neildennis.crypticrpg.items.generator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import me.neildennis.crypticrpg.items.attribs.Attribute;
 import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.attribs.Rarity;
 import me.neildennis.crypticrpg.items.attribs.Tier;
@@ -17,12 +19,13 @@ public class ItemGenerator {
 	private String name;
 	private List<String> lore;
 	private CrypticItemType type;
-	private HashMap<AttributeType, Integer> attribs = new HashMap<AttributeType, Integer>();
+	private ArrayList<Attribute> attribs;
 	private Tier tier = Tier.ONE;
 	private Rarity rarity = Rarity.COMMON;
 	
 	public ItemGenerator(CrypticItemType type){
 		this.type = type;
+		attribs = new ArrayList<Attribute>();
 	}
 	
 	public ItemGenerator setType(CrypticItemType type){
@@ -52,21 +55,30 @@ public class ItemGenerator {
 		return rarity;
 	}
 	
-	public ItemGenerator setAttribute(AttributeType attr, int value){
-		attribs.put(attr, value);
+	public ItemGenerator setAttribute(AttributeType attr, int[] values){
+		attribs.add(new Attribute(attr, values));
 		return this;
 	}
 	
 	public boolean hasAttribute(AttributeType attr){
-		return attribs.containsKey(attr);
+		return getAttribute(attr) != null;
 	}
 	
-	public int getAttribute(AttributeType attr){
-		return attribs.get(attr);
+	public Attribute getAttribute(AttributeType attr){
+		for (Attribute attrib : attribs)
+			if (attrib.getType().equals(attr))
+				return attrib;
+		return null;
 	}
 	
 	public CrypticGear generate(){
+		Random r = new Random();
+		
 		if (name == null) name = NameGenerator.generateName(this);
+		if (tier == null) tier = Tier.ONE;
+		if (rarity == null) rarity = Rarity.getByPct(r.nextFloat());
+		
+		AttribGenerator.generate(this);
 		
 		for (Constructor<?> cons : type.getHandleClass().getDeclaredConstructors()){
 			if (cons.getParameterTypes().length == 0) continue;

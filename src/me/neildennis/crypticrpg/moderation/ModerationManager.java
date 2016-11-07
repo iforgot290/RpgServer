@@ -32,7 +32,7 @@ public class ModerationManager implements Listener{
 			ModerationData data = new ModerationData(event.getUniqueId());
 			Ban ban = data.getCurrentBan();
 			
-			if (ban.isBanned()){
+			if (ban != null && ban.isBanned()){
 				String reason = ban.getReason();
 				if (reason == null || reason.equals("")) reason = "The ban hammer has spoken!";
 				event.disallow(Result.KICK_BANNED, getKickedBannedMessage(reason));

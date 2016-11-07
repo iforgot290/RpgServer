@@ -1,7 +1,6 @@
 package me.neildennis.crypticrpg.items.type;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -11,18 +10,20 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neildennis.crypticrpg.items.ItemUtils;
+import me.neildennis.crypticrpg.items.attribs.Attribute;
 import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.attribs.Rarity;
 import me.neildennis.crypticrpg.items.attribs.Tier;
+import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.utils.StringUtils;
 
 public abstract class CrypticGear extends CrypticItem{
 
-	protected HashMap<AttributeType, Integer> attribs;
+	protected ArrayList<Attribute> attribs;
 	protected Tier tier;
 	protected Rarity rarity;
 	
-	public CrypticGear(String name, List<String> lore, CrypticItemType type, HashMap<AttributeType, Integer> attribs, Tier tier, Rarity rarity) {
+	public CrypticGear(String name, List<String> lore, CrypticItemType type, ArrayList<Attribute> attribs, Tier tier, Rarity rarity) {
 		super(name, lore, type);
 		this.attribs = attribs;
 		this.tier = tier;
@@ -33,16 +34,15 @@ public abstract class CrypticGear extends CrypticItem{
 		super();
 	}
 	
-	public HashMap<AttributeType, Integer> getAttribs(){
+	public ArrayList<Attribute> getAttribs(){
 		return attribs;
 	}
 	
-	public int getAttribute(AttributeType attr){
-		return attribs.get(attr);
-	}
-	
-	public int getValue(AttributeType attrib){
-		return attribs.get(attrib);
+	public Attribute getAttribute(AttributeType attr){
+		for (Attribute attrib : attribs)
+			if (attrib.getType() == attr)
+				return attrib;
+		return null;
 	}
 	
 	public Tier getTier(){
@@ -60,8 +60,8 @@ public abstract class CrypticGear extends CrypticItem{
 	public List<String> getBukkitDisplayLore(){
 		List<String> retlore = new ArrayList<String>();
 		
-		for (AttributeType attr : attribs.keySet()){
-			retlore.add(ChatColor.RED + attr.getPrefix() + attribs.get(attr) + attr.getPostfix());
+		for (Attribute attr : attribs){
+			retlore.add(ChatColor.RED + attr.getType().getPrefix() + attr.format() + attr.getType().getPostfix());
 		}
 		
 		retlore.add("");
@@ -111,7 +111,10 @@ public abstract class CrypticGear extends CrypticItem{
 
 	@Override
 	public ItemStack generateItemStack() {
-		ItemStack is = new ItemStack(getMatFromTier());
+		Log.debug("generating item stack");
+		Material mat = getMatFromTier();
+		Log.debug(mat.name());
+		ItemStack is = new ItemStack(mat);
 		
 		ItemMeta meta = is.getItemMeta();
 		meta.setDisplayName(tier.getColor() + name);

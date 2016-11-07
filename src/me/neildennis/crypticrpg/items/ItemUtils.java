@@ -1,8 +1,9 @@
 package me.neildennis.crypticrpg.items;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
+import me.neildennis.crypticrpg.items.attribs.Attribute;
 import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.attribs.Rarity;
 import net.md_5.bungee.api.ChatColor;
@@ -16,15 +17,22 @@ public class ItemUtils {
 		return null;
 	}
 
-	public static HashMap<AttributeType, Integer> getAttributes(List<String> lore){
-		HashMap<AttributeType, Integer> attribs = new HashMap<AttributeType, Integer>();
+	public static ArrayList<Attribute> getAttributes(List<String> lore){
+		ArrayList<Attribute> attribs = new ArrayList<Attribute>();
 
 		for (String str : lore){
 			AttributeType attr = getAttrFromString(str);
 			if (attr == null) continue;
 
 			String value = str.replaceAll(attr.getPrefix(), "").replaceAll(attr.getPostfix(), "");
-			attribs.put(attr, Integer.valueOf(value));
+			
+			if (value.contains(" - ")){
+				String[] strvalues = value.split(" - ");
+				int[] values = {Integer.valueOf(strvalues[0]), Integer.valueOf(strvalues[1])};
+				attribs.add(new Attribute(attr, values));
+			} else {
+				attribs.add(new Attribute(attr, Integer.valueOf(value)));
+			}
 		}
 
 		return attribs;

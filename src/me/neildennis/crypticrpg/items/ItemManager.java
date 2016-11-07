@@ -13,10 +13,13 @@ import me.neildennis.crypticrpg.items.attribs.Tier;
 import me.neildennis.crypticrpg.items.generator.ItemGenerator;
 import me.neildennis.crypticrpg.items.generator.NameGenerator;
 import me.neildennis.crypticrpg.items.generator.modifiers.ItemModifier;
-import me.neildennis.crypticrpg.items.generator.modifiers.ItemModifier.TierModifier;
+import me.neildennis.crypticrpg.items.generator.modifiers.ItemModifier.ModifierType;
+import me.neildennis.crypticrpg.items.generator.modifiers.TierModifier;
 import me.neildennis.crypticrpg.items.listener.ItemListener;
 import me.neildennis.crypticrpg.items.type.CrypticItem;
 import me.neildennis.crypticrpg.items.type.CrypticItemType;
+import me.neildennis.crypticrpg.items.type.armor.CrypticHelmet;
+import me.neildennis.crypticrpg.items.type.weapon.CrypticSword;
 import me.neildennis.crypticrpg.utils.Log;
 
 public class ItemManager extends Manager{
@@ -26,6 +29,7 @@ public class ItemManager extends Manager{
 	public ItemManager(){
 		NameGenerator.load();
 		Cryptic.getPlugin().getServer().getPluginManager().registerEvents(new ItemListener(), Cryptic.getPlugin());
+		loadMods();
 	}
 	
 	@Override
@@ -37,9 +41,24 @@ public class ItemManager extends Manager{
 		mods = new HashMap<AttributeType, ItemModifier>();
 		
 		HashMap<Tier, TierModifier> tiermods = new HashMap<Tier, TierModifier>();
-		ItemModifier mod = new ItemModifier(tiermods, 1.0F, 1);
+		tiermods.put(Tier.ONE, new TierModifier(ModifierType.RANGE, 100, 200, 30));
+		
+		ArrayList<Class<? extends CrypticItem>> possible = new ArrayList<Class<? extends CrypticItem>>();
+		possible.add(CrypticSword.class);
+		
+		ItemModifier mod = new ItemModifier(AttributeType.DAMAGE, tiermods, possible, 1.0F);
 		
 		mods.put(AttributeType.DAMAGE, mod);
+		
+		HashMap<Tier, TierModifier> armorMods = new HashMap<Tier, TierModifier>();
+		armorMods.put(Tier.ONE, new TierModifier(ModifierType.STATIC, 10, 20));
+		
+		ArrayList<Class<? extends CrypticItem>> possibleArmor = new ArrayList<Class<? extends CrypticItem>>();
+		possibleArmor.add(CrypticHelmet.class);
+		
+		ItemModifier modArmor = new ItemModifier(AttributeType.HEALTH, armorMods, possibleArmor, 1.0F);
+		
+		mods.put(AttributeType.HEALTH, modArmor);
 	}
 	
 	public static HashMap<AttributeType, ItemModifier> getMods(){
@@ -62,10 +81,10 @@ public class ItemManager extends Manager{
 	public static List<ItemGenerator> generateMobArmor(int level) {
 		List<ItemGenerator> armor = new ArrayList<ItemGenerator>();
 		
-		armor.add(new ItemGenerator(CrypticItemType.HELMET).setTier(Tier.fromLevel(level)).setAttribute(AttributeType.HEALTH, 100));
-		armor.add(new ItemGenerator(CrypticItemType.CHESTPLATE).setTier(Tier.fromLevel(level)).setAttribute(AttributeType.HEALTH, 100));
-		armor.add(new ItemGenerator(CrypticItemType.LEGGINGS).setTier(Tier.fromLevel(level)).setAttribute(AttributeType.HEALTH, 100));
-		armor.add(new ItemGenerator(CrypticItemType.BOOTS).setTier(Tier.fromLevel(level)).setAttribute(AttributeType.HEALTH, 100));
+		armor.add(new ItemGenerator(CrypticItemType.HELMET).setTier(Tier.fromLevel(level)));
+//		armor.add(new ItemGenerator(CrypticItemType.CHESTPLATE).setTier(Tier.fromLevel(level)));
+//		armor.add(new ItemGenerator(CrypticItemType.LEGGINGS).setTier(Tier.fromLevel(level)));
+//		armor.add(new ItemGenerator(CrypticItemType.BOOTS).setTier(Tier.fromLevel(level)));
 		
 		return armor;
 	}
