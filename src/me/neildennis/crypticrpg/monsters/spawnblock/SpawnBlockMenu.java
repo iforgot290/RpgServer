@@ -1,6 +1,7 @@
 package me.neildennis.crypticrpg.monsters.spawnblock;
 
 import org.bukkit.ChatColor;
+
 import me.neildennis.crypticrpg.menu.Menu;
 import me.neildennis.crypticrpg.monsters.MobType;
 import me.neildennis.crypticrpg.monsters.SpawnBlock;
@@ -20,7 +21,7 @@ public class SpawnBlockMenu extends Menu{
 	
 	@Override
 	public void display(){
-		pl.sendMessage("");
+		pl.getPlayer().sendMessage(new String[] {"", "", "", "", ""});
 		
 		switch (state){
 		
@@ -35,7 +36,13 @@ public class SpawnBlockMenu extends Menu{
 			
 		case ADD_MONSTER:
 			pl.sendMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "Enter monster type to add");
-			pl.sendMessage(MobType.values().toString());
+			StringBuilder sb = new StringBuilder();
+			MobType[] types = MobType.values();
+			for (int i = 0; i < types.length; i++){
+				if (i < types.length - 1) sb.append(types[i].name() + ", ");
+				else sb.append(types[i].name());
+			}
+			pl.sendMessage(sb.toString());
 			break;
 			
 		case MOD_MONSTER:
@@ -117,11 +124,17 @@ public class SpawnBlockMenu extends Menu{
 			break;
 			
 		case ADD_MONSTER:
-			MobType type = MobType.valueOf(str);
-			
-			if (type == null){
-				pl.sendMessage(ChatColor.RED + "Invalid mob type");
+			if (str.equalsIgnoreCase("exit")) {
+				state = State.MAIN;
 				break;
+			}
+			
+			MobType type;
+			try {
+				type = MobType.valueOf(str);
+			} catch (IllegalArgumentException e){
+				pl.sendMessage(ChatColor.RED + "Invalid mob type");
+				return;
 			}
 			
 			try {
