@@ -9,7 +9,6 @@ import org.bukkit.inventory.ItemStack;
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.Manager;
 import me.neildennis.crypticrpg.items.attribs.AttributeType;
-import me.neildennis.crypticrpg.items.attribs.Tier;
 import me.neildennis.crypticrpg.items.generator.ItemGenerator;
 import me.neildennis.crypticrpg.items.generator.NameGenerator;
 import me.neildennis.crypticrpg.items.generator.modifiers.ItemModifier;
@@ -18,7 +17,10 @@ import me.neildennis.crypticrpg.items.generator.modifiers.TierModifier.ModifierT
 import me.neildennis.crypticrpg.items.listener.ItemListener;
 import me.neildennis.crypticrpg.items.type.CrypticItem;
 import me.neildennis.crypticrpg.items.type.CrypticItemType;
+import me.neildennis.crypticrpg.items.type.armor.CrypticBoots;
+import me.neildennis.crypticrpg.items.type.armor.CrypticChestplate;
 import me.neildennis.crypticrpg.items.type.armor.CrypticHelmet;
+import me.neildennis.crypticrpg.items.type.armor.CrypticLeggings;
 import me.neildennis.crypticrpg.items.type.weapon.CrypticSword;
 import me.neildennis.crypticrpg.utils.Log;
 
@@ -41,7 +43,7 @@ public class ItemManager extends Manager{
 		mods = new HashMap<AttributeType, ItemModifier>();
 		
 		ArrayList<TierModifier> tiermods = new ArrayList<TierModifier>();
-		tiermods.add(new TierModifier(ModifierType.RANGE, 0, 19, 100, 200, 30));
+		tiermods.add(new TierModifier(ModifierType.RANGE, 0, 19, 15, 30, 3));
 		
 		ArrayList<Class<? extends CrypticItem>> possible = new ArrayList<Class<? extends CrypticItem>>();
 		possible.add(CrypticSword.class);
@@ -55,6 +57,9 @@ public class ItemManager extends Manager{
 		
 		ArrayList<Class<? extends CrypticItem>> possibleArmor = new ArrayList<Class<? extends CrypticItem>>();
 		possibleArmor.add(CrypticHelmet.class);
+		possibleArmor.add(CrypticChestplate.class);
+		possibleArmor.add(CrypticLeggings.class);
+		possibleArmor.add(CrypticBoots.class);
 		
 		ItemModifier modArmor = new ItemModifier(AttributeType.HEALTH, armorMods, possibleArmor, 1.0F);
 		
@@ -69,7 +74,6 @@ public class ItemManager extends Manager{
 		try {
 			CrypticItemType type = CrypticItemType.fromMaterial(is.getType());
 			if (type == null) return null;
-			
 			CrypticItem item = type.getHandleClass().newInstance();
 			return item.getItemFromItemStack(is);
 		} catch (InstantiationException | IllegalAccessException e) {
@@ -81,10 +85,10 @@ public class ItemManager extends Manager{
 	public static List<ItemGenerator> generateMobArmor(int level) {
 		List<ItemGenerator> armor = new ArrayList<ItemGenerator>();
 		
-		armor.add(new ItemGenerator(CrypticItemType.HELMET).setTier(Tier.fromLevel(level)));
-//		armor.add(new ItemGenerator(CrypticItemType.CHESTPLATE).setTier(Tier.fromLevel(level)));
-//		armor.add(new ItemGenerator(CrypticItemType.LEGGINGS).setTier(Tier.fromLevel(level)));
-//		armor.add(new ItemGenerator(CrypticItemType.BOOTS).setTier(Tier.fromLevel(level)));
+		armor.add(new ItemGenerator(CrypticItemType.HELMET).setLevel(level));
+		armor.add(new ItemGenerator(CrypticItemType.CHESTPLATE).setLevel(level));
+		armor.add(new ItemGenerator(CrypticItemType.LEGGINGS).setLevel(level));
+		armor.add(new ItemGenerator(CrypticItemType.BOOTS).setLevel(level));
 		
 		return armor;
 	}
