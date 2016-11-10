@@ -21,6 +21,7 @@ public class ItemGenerator {
 	private CrypticItemType type;
 	private ArrayList<Attribute> attribs;
 	private Tier tier = Tier.ONE;
+	private int level = 0;
 	private Rarity rarity = Rarity.COMMON;
 	
 	public ItemGenerator(CrypticItemType type){
@@ -44,6 +45,15 @@ public class ItemGenerator {
 	
 	public Tier getTier(){
 		return tier;
+	}
+	
+	public ItemGenerator setLevel(int level){
+		this.level = level;
+		return this;
+	}
+	
+	public int getLevel(){
+		return level;
 	}
 	
 	public ItemGenerator setRarity(Rarity rarity){
@@ -77,6 +87,10 @@ public class ItemGenerator {
 		if (name == null) name = NameGenerator.generateName(this);
 		if (tier == null) tier = Tier.ONE;
 		if (rarity == null) rarity = Rarity.getByPct(r.nextFloat());
+		
+		if (tier == null && level == 0) tier = Tier.ONE;
+		if (tier == null) tier = Tier.fromLevel(level);
+		if (level == 0) level = Tier.randomLevel(tier);
 		
 		AttribGenerator.generate(this);
 		

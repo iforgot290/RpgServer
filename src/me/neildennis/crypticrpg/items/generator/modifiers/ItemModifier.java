@@ -1,16 +1,15 @@
 package me.neildennis.crypticrpg.items.generator.modifiers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
 import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.attribs.Rarity;
-import me.neildennis.crypticrpg.items.attribs.Tier;
 import me.neildennis.crypticrpg.items.type.CrypticItem;
 
 public class ItemModifier implements Comparable<ItemModifier>{
 	
 	protected AttributeType type;
-	protected HashMap<Tier, TierModifier> tiermods;
+	protected ArrayList<TierModifier> tiermods;
 	protected ArrayList<Class<? extends CrypticItem>> possible;
 	protected ArrayList<Class<? extends CrypticItem>> exclude;
 	protected float chance;
@@ -22,11 +21,11 @@ public class ItemModifier implements Comparable<ItemModifier>{
 	 * @param possible possible items to apply to
 	 * @param chance chance of applying to item
 	 */
-	public ItemModifier(AttributeType type, HashMap<Tier, TierModifier> tiermods, ArrayList<Class<? extends CrypticItem>> possible, float chance){
+	public ItemModifier(AttributeType type, ArrayList<TierModifier> tiermods, ArrayList<Class<? extends CrypticItem>> possible, float chance){
 		this(type, tiermods, possible, new ArrayList<Class<? extends CrypticItem>>(), chance);
 	}
 	
-	public ItemModifier(AttributeType type, HashMap<Tier, TierModifier> tiermods, ArrayList<Class<? extends CrypticItem>> possible, ArrayList<Class<? extends CrypticItem>> exclude, float chance){
+	public ItemModifier(AttributeType type, ArrayList<TierModifier> tiermods, ArrayList<Class<? extends CrypticItem>> possible, ArrayList<Class<? extends CrypticItem>> exclude, float chance){
 		this.type = type;
 		this.tiermods = tiermods;
 		this.possible = possible;
@@ -50,10 +49,23 @@ public class ItemModifier implements Comparable<ItemModifier>{
 		return exclude.contains(cl);
 	}
 	
-	public int[] getValues(Tier tier, Rarity rare){
+	public TierModifier getTierModifier(int level){
+		for (TierModifier mod : tiermods)
+			if (mod.isInRange(level))
+				return mod;
+		return null;
+	}
+	
+	public int[] getValues(int level, Rarity rare){
+		TierModifier mod = getTierModifier(level);
+		
+		if (mod == null)
+			return new int[] { 0, 0 };
+		
 		if (type == AttributeType.DAMAGE || type == AttributeType.HEALTH)
-			return tiermods.get(tier).generateValue(rare);
-		else return tiermods.get(tier).generateValue(null);
+			return mod.generateValue(rare);
+		
+		else return mod.generateValue(null);
 	}
 	
 	@Override

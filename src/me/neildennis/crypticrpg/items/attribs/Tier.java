@@ -1,5 +1,7 @@
 package me.neildennis.crypticrpg.items.attribs;
 
+import java.util.Random;
+
 import org.bukkit.ChatColor;
 
 public enum Tier {
@@ -26,6 +28,17 @@ public enum Tier {
 		else if (lvl < 60) return Tier.THREE;
 		else if (lvl < 80) return Tier.FOUR;
 		else return Tier.FIVE;
+	}
+	
+	public static int randomLevel(Tier tier){
+		Random r = new Random();
+		int lvl = r.nextInt(20);
+		if (tier == Tier.ONE) return r.nextInt(19) + 1;
+		else if (tier == Tier.TWO) return lvl + 20;
+		else if (tier == Tier.THREE) return lvl + 40;
+		else if (tier == Tier.FOUR) return lvl + 60;
+		else if (tier == Tier.FIVE) return lvl + 80;
+		else return lvl;
 	}
 
 }

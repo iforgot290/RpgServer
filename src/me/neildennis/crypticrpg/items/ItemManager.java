@@ -40,8 +40,8 @@ public class ItemManager extends Manager{
 	public void loadMods(){
 		mods = new HashMap<AttributeType, ItemModifier>();
 		
-		HashMap<Tier, TierModifier> tiermods = new HashMap<Tier, TierModifier>();
-		tiermods.put(Tier.ONE, new TierModifier(ModifierType.RANGE, 100, 200, 30));
+		ArrayList<TierModifier> tiermods = new ArrayList<TierModifier>();
+		tiermods.add(new TierModifier(ModifierType.RANGE, 0, 19, 100, 200, 30));
 		
 		ArrayList<Class<? extends CrypticItem>> possible = new ArrayList<Class<? extends CrypticItem>>();
 		possible.add(CrypticSword.class);
@@ -50,8 +50,8 @@ public class ItemManager extends Manager{
 		
 		mods.put(AttributeType.DAMAGE, mod);
 		
-		HashMap<Tier, TierModifier> armorMods = new HashMap<Tier, TierModifier>();
-		armorMods.put(Tier.ONE, new TierModifier(ModifierType.STATIC, 10, 20));
+		ArrayList<TierModifier> armorMods = new ArrayList<TierModifier>();
+		armorMods.add(new TierModifier(ModifierType.STATIC, 0, 19, 10, 20));
 		
 		ArrayList<Class<? extends CrypticItem>> possibleArmor = new ArrayList<Class<? extends CrypticItem>>();
 		possibleArmor.add(CrypticHelmet.class);

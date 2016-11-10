@@ -7,19 +7,26 @@ import me.neildennis.crypticrpg.utils.Log;
 
 public class TierModifier {
 	
+	private int minlvl, maxlvl;
 	private int low, high, middle;
 	private ModifierType type;
 	
-	public TierModifier(ModifierType type, int low, int high){
+	public TierModifier(ModifierType type, int minlvl, int maxlvl, int low, int high){
 		this.type = type;
+		this.minlvl = minlvl;
+		this.maxlvl = maxlvl;
 		this.low = low;
 		this.high = high;
 		this.middle = high;
 	}
 	
-	public TierModifier(ModifierType type, int low, int high, int middle){
-		this(type, low, high);
+	public TierModifier(ModifierType type, int minlvl, int maxlvl, int low, int high, int middle){
+		this(type, minlvl, maxlvl, low, high);
 		this.middle = middle;
+	}
+	
+	public boolean isInRange(int level){
+		return level >= minlvl && level <= maxlvl;
 	}
 	
 	public int[] generateValue(Rarity rarity){
