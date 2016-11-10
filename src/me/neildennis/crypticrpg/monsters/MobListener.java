@@ -45,14 +45,7 @@ public class MobListener implements Listener {
 		int damage = wep.getAttribute(AttributeType.DAMAGE).genValue();
 		pl.getHealthData().damage();
 		event.setDamage(damage);
-		Bukkit.getScheduler().runTask(Cryptic.getPlugin(), new Runnable(){
-
-			@Override
-			public void run() {
-				pl.getHealthData().updateOverheadHP();
-			}
-			
-		});
+		Bukkit.getScheduler().runTask(Cryptic.getPlugin(), () -> pl.getHealthData().updateOverheadHP());
 	}
 	
 	@EventHandler
@@ -84,14 +77,7 @@ public class MobListener implements Listener {
 			event.setDamage(1);
 		}
 		
-		Bukkit.getScheduler().runTask(Cryptic.getPlugin(), new Runnable(){
-
-			@Override
-			public void run() {
-				hit.updateBar();
-			}
-			
-		});
+		Bukkit.getScheduler().runTask(Cryptic.getPlugin(), () -> hit.updateBar());
 	}
 	
 	@EventHandler

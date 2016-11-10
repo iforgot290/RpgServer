@@ -15,7 +15,6 @@ import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
-import me.neildennis.crypticrpg.utils.Log;
 
 public class SpawnPlaceListener implements Listener {
 	
