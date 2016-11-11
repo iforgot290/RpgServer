@@ -1,0 +1,31 @@
+{
+	"itemmods" : [
+	    {
+	        "attributetype" : "DAMAGE",
+	        "chance" : 1.0,
+	        "tiermods" : [
+	            {"modtype" : "RANGE", "minlvl" : 0, "maxlvl" : 25, "low" : 0, "mid" : 10, "high" : 20}
+	        ],
+	        "possible" : [
+	          "me.neildennis.crypticrpg.items.type.weapon.CrypticSword"
+	        ],
+	        "exclude" : [
+	        ]
+	    },
+	    {
+	        "attributetype" : "HEALTH",
+	        "chance" : 1,
+	        "tiermods" : [
+	            {"modtype" : "STATIC", "minlvl" : 0, "maxlvl" : 25, "low" : 0, "mid" : 10, "high" : 20}
+	        ],
+	        "possible" : [
+	          "me.neildennis.crypticrpg.items.type.armor.CrypticHelmet",
+	          "me.neildennis.crypticrpg.items.type.armor.CrypticChestplate",
+	          "me.neildennis.crypticrpg.items.type.armor.CrypticLeggings",
+	          "me.neildennis.crypticrpg.items.type.armor.CrypticBoots"
+	        ],
+	        "exclude" : [
+	        ]
+	    }
+	]
+}
