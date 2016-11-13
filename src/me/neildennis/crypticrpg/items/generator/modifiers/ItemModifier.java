@@ -42,7 +42,11 @@ public class ItemModifier implements Comparable<ItemModifier>{
 	}
 	
 	public boolean isPossible(Class<? extends CrypticItem> cl){
-		return possible.contains(cl);
+		for (Class<? extends CrypticItem> test : possible){
+			if (test == cl) return true;
+			if (cl.getSuperclass() == test) return true;
+		}
+		return false;
 	}
 	
 	public boolean isExcluded(Class<? extends CrypticItem> cl){

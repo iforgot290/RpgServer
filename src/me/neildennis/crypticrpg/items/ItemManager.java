@@ -17,16 +17,14 @@ import me.neildennis.crypticrpg.items.generator.modifiers.TierModifier.ModifierT
 import me.neildennis.crypticrpg.items.listener.ItemListener;
 import me.neildennis.crypticrpg.items.type.CrypticItem;
 import me.neildennis.crypticrpg.items.type.CrypticItemType;
-import me.neildennis.crypticrpg.items.type.armor.CrypticBoots;
-import me.neildennis.crypticrpg.items.type.armor.CrypticChestplate;
-import me.neildennis.crypticrpg.items.type.armor.CrypticHelmet;
-import me.neildennis.crypticrpg.items.type.armor.CrypticLeggings;
-import me.neildennis.crypticrpg.items.type.weapon.CrypticSword;
+import me.neildennis.crypticrpg.items.type.armor.CrypticArmor;
+import me.neildennis.crypticrpg.items.type.weapon.CrypticWeapon;
 import me.neildennis.crypticrpg.utils.Log;
 
 public class ItemManager extends Manager{
 	
 	private static HashMap<AttributeType, ItemModifier> mods;
+	private static ArrayList<AttributeType> weaponMods;
 	
 	public ItemManager(){
 		NameGenerator.load();
@@ -46,7 +44,7 @@ public class ItemManager extends Manager{
 		tiermods.add(new TierModifier(ModifierType.RANGE, 0, 19, 15, 30, 3));
 		
 		ArrayList<Class<? extends CrypticItem>> possible = new ArrayList<Class<? extends CrypticItem>>();
-		possible.add(CrypticSword.class);
+		possible.add(CrypticWeapon.class);
 		
 		ItemModifier mod = new ItemModifier(AttributeType.DAMAGE, tiermods, possible, 1.0F);
 		
@@ -56,14 +54,27 @@ public class ItemManager extends Manager{
 		armorMods.add(new TierModifier(ModifierType.STATIC, 0, 19, 10, 20));
 		
 		ArrayList<Class<? extends CrypticItem>> possibleArmor = new ArrayList<Class<? extends CrypticItem>>();
-		possibleArmor.add(CrypticHelmet.class);
-		possibleArmor.add(CrypticChestplate.class);
-		possibleArmor.add(CrypticLeggings.class);
-		possibleArmor.add(CrypticBoots.class);
+		possibleArmor.add(CrypticArmor.class);
 		
 		ItemModifier modArmor = new ItemModifier(AttributeType.HEALTH, armorMods, possibleArmor, 1.0F);
 		
 		mods.put(AttributeType.HEALTH, modArmor);
+		
+		sortWeaponMods();
+	}
+	
+	private void sortWeaponMods(){
+		weaponMods = new ArrayList<AttributeType>();
+		for (ItemModifier mod : mods.values()){
+			if (mod.isPossible(CrypticWeapon.class)){
+				Log.debug(mod.getType().name() + " is weapon mod");
+				weaponMods.add(mod.getType());
+			}
+		}
+	}
+	
+	public static boolean isWeaponMod(AttributeType type){
+		return weaponMods.contains(type);
 	}
 	
 	public static HashMap<AttributeType, ItemModifier> getMods(){
@@ -71,6 +82,7 @@ public class ItemManager extends Manager{
 	}
 	
 	public static CrypticItem getItemFromStack(ItemStack is){
+		if (is == null) return null;
 		try {
 			CrypticItemType type = CrypticItemType.fromMaterial(is.getType());
 			if (type == null) return null;

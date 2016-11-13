@@ -13,7 +13,7 @@ public class Log {
 	}
 	
 	public static void debug(Object obj){
-		if (Cryptic.getPlugin().isEnabled()) Bukkit.broadcastMessage(obj.toString());
+		if (Cryptic.rpgEnabled()) Bukkit.broadcastMessage(obj.toString());
 		else System.out.println(obj);
 	}
 

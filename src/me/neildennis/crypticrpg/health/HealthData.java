@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.neildennis.crypticrpg.Cryptic;
+import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 
 public class HealthData {
@@ -24,10 +25,8 @@ public class HealthData {
 
 	private static long combatCooldown = 10 * 1000;
 	private long lasthit = 0;
-
-	private int currentHP = 50;
-	private int maxHP = 50;
 	private int regen = 0;
+	private int lastHP = 50;
 
 	private boolean god = false;
 
@@ -35,7 +34,7 @@ public class HealthData {
 		this.cp = cp;
 
 		try {
-			currentHP = data.getInt("current_health");
+			lastHP = data.getInt("current_health");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -43,9 +42,7 @@ public class HealthData {
 
 	public void online(Player pl){
 		p = pl;
-		p.setMaxHealth(maxHP);
-		p.setHealthScale(20);
-		p.setHealth(currentHP);
+		p.setHealth(lastHP);
 		updateOverheadHP();
 		registerTasks();
 	}
@@ -106,6 +103,10 @@ public class HealthData {
 
 	public void setGodMode(boolean god){
 		this.god = god;
+	}
+	
+	public void updateHealth(){
+		p.setMaxHealth(cp.getAttribute(AttributeType.HEALTH).genValue());
 	}
 
 	public void updateOverheadHP(){

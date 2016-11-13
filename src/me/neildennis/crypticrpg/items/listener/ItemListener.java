@@ -27,7 +27,6 @@ public class ItemListener implements Listener{
 		if (event.getWhoClicked().getType() != EntityType.PLAYER) return;
 		
 		CrypticPlayer pl = PlayerManager.getCrypticPlayer((Player) event.getWhoClicked());
-		//Player pl = (Player) event.getWhoClicked();
 		
 		ItemStack on = event.getCursor();
 		ItemStack off = event.getCurrentItem();

@@ -8,16 +8,19 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.cloud.Cloud;
+import me.neildennis.crypticrpg.health.CachedStats;
 import me.neildennis.crypticrpg.health.HealthData;
+import me.neildennis.crypticrpg.items.attribs.Attribute;
+import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.menu.Menu;
 import me.neildennis.crypticrpg.moderation.ModerationData;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.permission.RankData;
-import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.zone.ZoneManager.ZoneState;
 
 public class CrypticPlayer {
@@ -31,6 +34,7 @@ public class CrypticPlayer {
 	private HealthData healthData;
 	private ModerationData moderationData;
 	private RankData rankData;
+	private CachedStats stats;
 
 	private ZoneState zonestate;
 
@@ -52,6 +56,7 @@ public class CrypticPlayer {
 			data.next();
 
 			healthData = new HealthData(this, data);
+			stats = new CachedStats(this);
 			rankData = new RankData(this, data);
 			moderationData = moddata;
 		} catch (SQLException e) {
@@ -60,9 +65,8 @@ public class CrypticPlayer {
 	}
 
 	public void online(Player pl){
-		Log.debug("Attempting to initiate health");
+		stats.online();
 		healthData.online(pl);
-		Log.debug("Initiated");
 		registerTasks();
 	}
 
@@ -88,6 +92,18 @@ public class CrypticPlayer {
 		}
 
 		tasks.clear();
+	}
+	
+	public void addMaxHealth(double health){
+		getPlayer().setMaxHealth(getPlayer().getMaxHealth() - health);
+	}
+	
+	public void subtractMaxHealth(double health){
+		getPlayer().setMaxHealth(getPlayer().getMaxHealth() - health);
+	}
+	
+	public ItemStack getHand(){
+		return getPlayer().getInventory().getItemInMainHand();
 	}
 
 	public void sendMessage(String str){
@@ -162,6 +178,14 @@ public class CrypticPlayer {
 
 	public Rank getRank(){
 		return rankData.getRank();
+	}
+	
+	public CachedStats getStats(){
+		return stats;
+	}
+	
+	public Attribute getAttribute(AttributeType type){
+		return stats.getAttribute(type);
 	}
 
 }

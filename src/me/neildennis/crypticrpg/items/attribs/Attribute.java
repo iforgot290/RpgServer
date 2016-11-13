@@ -7,22 +7,22 @@ public class Attribute {
 	private AttributeType type;
 	private int high, low;
 	
+	public Attribute(AttributeType type){
+		this(type, 0, 0);
+	}
+	
 	public Attribute(AttributeType type, int[] values){
-		this.type = type;
-		this.high = values[1];
-		this.low = values[0];
+		this(type, values[0], values[1]);
+	}
+	
+	public Attribute(AttributeType type, int value){
+		this(type, value, value);
 	}
 	
 	public Attribute(AttributeType type, int low, int high){
 		this.type = type;
-		this.high = high;
 		this.low = low;
-	}
-	
-	public Attribute(AttributeType type, int value){
-		this.type = type;
-		this.high = value;
-		this.low = value;
+		this.high = high;
 	}
 	
 	public String format(){
@@ -44,8 +44,16 @@ public class Attribute {
 		return low;
 	}
 	
+	public void setLow(int low){
+		this.low = low;
+	}
+	
 	public int getHigh(){
 		return high;
+	}
+	
+	public void setHigh(int high){
+		this.high = high;
 	}
 	
 }

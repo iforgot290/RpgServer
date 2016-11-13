@@ -32,6 +32,7 @@ public class Cryptic extends JavaPlugin{
 	private ZoneManager zoneManager;
 	
 	private static World mainworld;
+	private static boolean enabled = false;
 	
 	public void onEnable(){
 		instance = this;
@@ -49,11 +50,21 @@ public class Cryptic extends JavaPlugin{
 		
 		Bukkit.getPluginManager().registerEvents(new HealthListener(), getPlugin());
 		registerCommand("item", new TestCommand());
+		
+		enabled = true;
+	}
+	
+	public void onDisable(){
+		enabled = false;
 	}
 	
 	public static void registerCommand(String label, CrypticCommand cmd){
 		Log.debug("Registering new command: /" + label);
 		getPlugin().getCommand(label).setExecutor(cmd);
+	}
+	
+	public static boolean rpgEnabled(){
+		return enabled;
 	}
 	
 	public Cloud getCloud(){
