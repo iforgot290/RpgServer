@@ -1,17 +1,20 @@
 package me.neildennis.crypticrpg.items;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import java.io.FileReader;
+import org.bukkit.inventory.ItemStack;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import org.bukkit.inventory.ItemStack;
+import com.google.gson.JsonSyntaxException;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.Manager;
@@ -24,7 +27,6 @@ import me.neildennis.crypticrpg.items.generator.modifiers.TierModifier.ModifierT
 import me.neildennis.crypticrpg.items.listener.ItemListener;
 import me.neildennis.crypticrpg.items.type.CrypticItem;
 import me.neildennis.crypticrpg.items.type.CrypticItemType;
-import me.neildennis.crypticrpg.items.type.armor.CrypticArmor;
 import me.neildennis.crypticrpg.items.type.weapon.CrypticWeapon;
 import me.neildennis.crypticrpg.utils.Log;
 
@@ -44,28 +46,21 @@ public class ItemManager extends Manager{
 		
 	}
 	
+	// loads mods from file, will make it load from mysql or something later
 	public void loadMods(){
 		mods = new HashMap<AttributeType, ItemModifier>();
 		
-		ArrayList<TierModifier> tiermods = new ArrayList<TierModifier>();
-		tiermods.add(new TierModifier(ModifierType.RANGE, 0, 19, 15, 30, 3));
-		
-		ArrayList<Class<? extends CrypticItem>> possible = new ArrayList<Class<? extends CrypticItem>>();
-		possible.add(CrypticWeapon.class);
-		
-		ItemModifier mod = new ItemModifier(AttributeType.DAMAGE, tiermods, possible, 1.0F);
-		
-		mods.put(AttributeType.DAMAGE, mod);
-		
-		ArrayList<TierModifier> armorMods = new ArrayList<TierModifier>();
-		armorMods.add(new TierModifier(ModifierType.STATIC, 0, 19, 10, 20));
-		
-		ArrayList<Class<? extends CrypticItem>> possibleArmor = new ArrayList<Class<? extends CrypticItem>>();
-		possibleArmor.add(CrypticArmor.class);
-		
-		ItemModifier modArmor = new ItemModifier(AttributeType.HEALTH, armorMods, possibleArmor, 1.0F);
-		
-		mods.put(AttributeType.HEALTH, modArmor);
+		try {
+			for (JsonElement ele : loadJsonFile(new File(Cryptic.getPlugin().getDataFolder() + "/itemmods.json"))){
+				try {
+					parseJsonObject(ele.getAsJsonObject());
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		sortWeaponMods();
 	}
@@ -74,7 +69,6 @@ public class ItemManager extends Manager{
 		weaponMods = new ArrayList<AttributeType>();
 		for (ItemModifier mod : mods.values()){
 			if (mod.isPossible(CrypticWeapon.class)){
-				Log.debug(mod.getType().name() + " is weapon mod");
 				weaponMods.add(mod.getType());
 			}
 		}
@@ -84,45 +78,42 @@ public class ItemManager extends Manager{
 		return weaponMods.contains(type);
 	}
 	
-	/** Load the mods map from a json file using gson library */
-	@SuppressWarnings("unchecked")
-	public void loadFromJSON(String fileName) throws Exception {
+	private JsonArray loadJsonFile(File file) throws JsonIOException, JsonSyntaxException, FileNotFoundException{
 		JsonParser parse = new JsonParser();
-		JsonObject root = parse.parse(new FileReader(fileName)).getAsJsonObject();
-		JsonArray itemmods = root.getAsJsonArray("itemmods");
-		
-	    for(JsonElement ele : itemmods) {
-	    	JsonObject itemmod = ele.getAsJsonObject();
+		JsonObject root = parse.parse(new FileReader(file)).getAsJsonObject();
+		return root.getAsJsonArray("itemmods");
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void parseJsonObject(JsonObject itemmod) throws ClassNotFoundException{
+		// load tier mods
+    	JsonArray jsontiermods = itemmod.getAsJsonArray("tiermods");
+    	ArrayList<TierModifier> tiermods = new ArrayList<TierModifier>();
+    	for(JsonElement modele : jsontiermods){
+    		JsonObject mod = modele.getAsJsonObject();
+    		ModifierType type = ModifierType.valueOf(mod.get("modtype").getAsString());
+    		tiermods.add(new TierModifier(type, mod.get("minlvl").getAsInt(), mod.get("maxlvl").getAsInt(),
+    				mod.get("low").getAsInt(), mod.get("high").getAsInt(), mod.get("mid").getAsInt()));
+    	}
 
-	    	// load tier mods
-	    	JsonArray jsontiermods = itemmod.getAsJsonArray("tiermods");
-	    	ArrayList<TierModifier> tiermods = new ArrayList<TierModifier>();
-	    	for(JsonElement modele : jsontiermods){
-	    		JsonObject mod = modele.getAsJsonObject();
-	    		ModifierType type = ModifierType.valueOf(mod.get("modtype").getAsString());
-	    		tiermods.add(new TierModifier(type, mod.get("minlvl").getAsInt(), mod.get("maxlvl").getAsInt(),
-	    				mod.get("low").getAsInt(), mod.get("high").getAsInt(), mod.get("mid").getAsInt()));
-	    	}
+    	// load possible items
+    	JsonArray jsonpossible = itemmod.getAsJsonArray("possible");
+    	ArrayList<Class<? extends CrypticItem>> possible = new ArrayList<Class<? extends CrypticItem>>();
+    	for(JsonElement pos : jsonpossible){
+    		possible.add((Class<? extends CrypticItem>) Class.forName(pos.getAsString()));
+    	}
 
-	    	// load possible items
-	    	JsonArray jsonpossible = itemmod.getAsJsonArray("possible");
-	    	ArrayList<Class<? extends CrypticItem>> possible = new ArrayList<Class<? extends CrypticItem>>();
-	    	for(JsonElement pos : jsonpossible){
-	    		possible.add((Class<? extends CrypticItem>) Class.forName(pos.getAsString()));
-	    	}
+    	// load exclude items
+    	JsonArray jsonexclude = itemmod.getAsJsonArray("exclude");
+    	ArrayList<Class<? extends CrypticItem>> exclude = new ArrayList<Class<? extends CrypticItem>>();
+    	for(JsonElement exc : jsonexclude){
+    		exclude.add((Class<? extends CrypticItem>) Class.forName(exc.getAsString()));
+    	}
 
-	    	// load exclude items
-	    	JsonArray jsonexclude = itemmod.getAsJsonArray("exclude");
-	    	ArrayList<Class<? extends CrypticItem>> exclude = new ArrayList<Class<? extends CrypticItem>>();
-	    	for(JsonElement exc : jsonexclude){
-	    		exclude.add((Class<? extends CrypticItem>) Class.forName(exc.getAsString()));
-	    	}
-
-	    	// create the item mod and map it
-	    	AttributeType type = AttributeType.valueOf(itemmod.get("attributetype").getAsString());
-	    	ItemModifier mod = new ItemModifier(type, tiermods, possible, exclude, itemmod.get("chance").getAsFloat());
-	    	mods.put(type, mod);
-	    }
+    	// create the item mod and map it
+    	AttributeType type = AttributeType.valueOf(itemmod.get("attributetype").getAsString());
+    	ItemModifier mod = new ItemModifier(type, tiermods, possible, exclude, itemmod.get("chance").getAsFloat());
+    	mods.put(type, mod);
 	}
 	
 	public static HashMap<AttributeType, ItemModifier> getMods(){
