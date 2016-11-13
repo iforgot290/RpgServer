@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import java.io.FileReader;
+import org.json.JSONTokener;
+import org.json.JSONObject;
+import org.json.JSONArray;
+
 import org.bukkit.inventory.ItemStack;
 
 import me.neildennis.crypticrpg.Cryptic;
@@ -75,6 +80,43 @@ public class ItemManager extends Manager{
 	
 	public static boolean isWeaponMod(AttributeType type){
 		return weaponMods.contains(type);
+	}
+	
+	/** Load the mods map from a json file using json.org library */
+	public void loadFromJSON(String fileName) throws Exception {
+	    JSONTokener tokener = new JSONTokener(new FileReader(fileName));
+	    JSONObject root = new JSONObject(tokener);
+	    JSONArray itemmods = root.get("itemmods");
+	    for(Object obj : itemmods) {
+	    	JSONObject itemmod = (JSONObject) itemmod;
+
+	    	// load tier mods
+	    	JSONArray jsontiermods = itemmod.get("tiermods");
+	    	ArrayList<TierModifier> tiermods = new ArrayList<TierModifier>();
+	    	for(JSONObject mod : jsontiermods){
+	    		ModifierType type = ModifierType.valueOf(mod.getString("modtype"));
+	    		tiermods.add(new TierModifier(type, mod.getInt("minlvl"), mod.getInt("maxlvl"), mod.getInt("low"), mod.getInt("high"), mod.getInt("mid")));
+	    	}
+
+	    	// load possible items
+	    	JSONArray jsonpossible = itemmod.get("possible");
+	    	ArrayList<Class<? extends CrypticItem>> possible = new ArrayList<Class<? extends CrypticItem>>();
+	    	for(Object pos : jsonpossible){
+	    		possible.add(Class.forName((String) pos));
+	    	}
+
+	    	// load exclude items
+	    	JSONArray jsonexclude = itemmod.get("exclude");
+	    	ArrayList<Class<? extends CrypticItem>> exclude = new ArrayList<Class<? extends CrypticItem>>();
+	    	for(Object exc : jsonexclude){
+	    		exclude.add(Class.forName((String) exc));
+	    	}
+
+	    	// create the item mod and map it
+	    	AttributeType type = AttributeType.valueOf(itemmod.getString("attributetype"));
+	    	ItemModifier mod = new ItemModifier(type, tiermods, possible, exclude, (float) itemmod.getDouble("chance"));
+	    	mods.put(type, mod);
+	    }
 	}
 	
 	public static HashMap<AttributeType, ItemModifier> getMods(){
