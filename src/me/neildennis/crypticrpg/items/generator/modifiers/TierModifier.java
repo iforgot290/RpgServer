@@ -33,8 +33,7 @@ public class TierModifier {
 		int[] values = new int[2];
 		Random r = new Random();
 		
-		int first = (middle - low > 0 ? r.nextInt(middle - low) + low : low);
-		int second = first;
+		int first = 0, second = 0;
 		
 		//generates a value that is inbetween the two values provided
 		//can use the rarity value
@@ -51,6 +50,7 @@ public class TierModifier {
 		//generates 2 values using middle as the mid point
 		//wont use the rarity value
 		else if (type == ModifierType.TRIPLE){
+			first = (middle - low > 0 ? r.nextInt(middle - low) + low : low);
 			second = r.nextInt(high - middle) + middle;
 		}
 		

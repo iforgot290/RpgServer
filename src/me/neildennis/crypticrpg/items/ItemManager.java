@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import java.io.FileReader;
-import org.json.JSONTokener;
-import org.json.JSONObject;
-import org.json.JSONArray;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -82,39 +84,43 @@ public class ItemManager extends Manager{
 		return weaponMods.contains(type);
 	}
 	
-	/** Load the mods map from a json file using json.org library */
+	/** Load the mods map from a json file using gson library */
+	@SuppressWarnings("unchecked")
 	public void loadFromJSON(String fileName) throws Exception {
-	    JSONTokener tokener = new JSONTokener(new FileReader(fileName));
-	    JSONObject root = new JSONObject(tokener);
-	    JSONArray itemmods = root.get("itemmods");
-	    for(Object obj : itemmods) {
-	    	JSONObject itemmod = (JSONObject) itemmod;
+		JsonParser parse = new JsonParser();
+		JsonObject root = parse.parse(new FileReader(fileName)).getAsJsonObject();
+		JsonArray itemmods = root.getAsJsonArray("itemmods");
+		
+	    for(JsonElement ele : itemmods) {
+	    	JsonObject itemmod = ele.getAsJsonObject();
 
 	    	// load tier mods
-	    	JSONArray jsontiermods = itemmod.get("tiermods");
+	    	JsonArray jsontiermods = itemmod.getAsJsonArray("tiermods");
 	    	ArrayList<TierModifier> tiermods = new ArrayList<TierModifier>();
-	    	for(JSONObject mod : jsontiermods){
-	    		ModifierType type = ModifierType.valueOf(mod.getString("modtype"));
-	    		tiermods.add(new TierModifier(type, mod.getInt("minlvl"), mod.getInt("maxlvl"), mod.getInt("low"), mod.getInt("high"), mod.getInt("mid")));
+	    	for(JsonElement modele : jsontiermods){
+	    		JsonObject mod = modele.getAsJsonObject();
+	    		ModifierType type = ModifierType.valueOf(mod.get("modtype").getAsString());
+	    		tiermods.add(new TierModifier(type, mod.get("minlvl").getAsInt(), mod.get("maxlvl").getAsInt(),
+	    				mod.get("low").getAsInt(), mod.get("high").getAsInt(), mod.get("mid").getAsInt()));
 	    	}
 
 	    	// load possible items
-	    	JSONArray jsonpossible = itemmod.get("possible");
+	    	JsonArray jsonpossible = itemmod.getAsJsonArray("possible");
 	    	ArrayList<Class<? extends CrypticItem>> possible = new ArrayList<Class<? extends CrypticItem>>();
-	    	for(Object pos : jsonpossible){
-	    		possible.add(Class.forName((String) pos));
+	    	for(JsonElement pos : jsonpossible){
+	    		possible.add((Class<? extends CrypticItem>) Class.forName(pos.getAsString()));
 	    	}
 
 	    	// load exclude items
-	    	JSONArray jsonexclude = itemmod.get("exclude");
+	    	JsonArray jsonexclude = itemmod.getAsJsonArray("exclude");
 	    	ArrayList<Class<? extends CrypticItem>> exclude = new ArrayList<Class<? extends CrypticItem>>();
-	    	for(Object exc : jsonexclude){
-	    		exclude.add(Class.forName((String) exc));
+	    	for(JsonElement exc : jsonexclude){
+	    		exclude.add((Class<? extends CrypticItem>) Class.forName(exc.getAsString()));
 	    	}
 
 	    	// create the item mod and map it
-	    	AttributeType type = AttributeType.valueOf(itemmod.getString("attributetype"));
-	    	ItemModifier mod = new ItemModifier(type, tiermods, possible, exclude, (float) itemmod.getDouble("chance"));
+	    	AttributeType type = AttributeType.valueOf(itemmod.get("attributetype").getAsString());
+	    	ItemModifier mod = new ItemModifier(type, tiermods, possible, exclude, itemmod.get("chance").getAsFloat());
 	    	mods.put(type, mod);
 	    }
 	}
