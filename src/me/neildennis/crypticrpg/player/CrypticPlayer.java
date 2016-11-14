@@ -21,6 +21,8 @@ import me.neildennis.crypticrpg.menu.Menu;
 import me.neildennis.crypticrpg.moderation.ModerationData;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.permission.RankData;
+import me.neildennis.crypticrpg.zone.Region;
+import me.neildennis.crypticrpg.zone.ZoneManager;
 import me.neildennis.crypticrpg.zone.ZoneManager.ZoneState;
 
 public class CrypticPlayer {
@@ -37,6 +39,7 @@ public class CrypticPlayer {
 	private CachedStats stats;
 
 	private ZoneState zonestate;
+	private Region region;
 
 	private Menu menu;
 
@@ -67,6 +70,7 @@ public class CrypticPlayer {
 	public void online(Player pl){
 		stats.online();
 		healthData.online(pl);
+		ZoneManager.checkZone(this, pl.getLocation());
 		registerTasks();
 	}
 
@@ -114,6 +118,14 @@ public class CrypticPlayer {
 
 	public void cancelBuffs(){
 		buffs.clear();
+	}
+	
+	public void setTown(Region region){
+		this.region = region;
+	}
+	
+	public Region getTown(){
+		return region;
 	}
 
 	public Menu getCurrentMenu(){
