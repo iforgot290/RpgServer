@@ -131,7 +131,7 @@ public class SpawnBlockMenu extends Menu{
 			
 			MobType type;
 			try {
-				type = MobType.valueOf(str);
+				type = MobType.valueOf(str.toUpperCase());
 			} catch (IllegalArgumentException e){
 				pl.sendMessage(ChatColor.RED + "Invalid mob type");
 				return;
@@ -148,7 +148,7 @@ public class SpawnBlockMenu extends Menu{
 			break;
 			
 		case MOD_MONSTER:
-			if (str.equalsIgnoreCase("exit")){
+			if (str.equalsIgnoreCase("exit") || str.equalsIgnoreCase("done")){
 				if (mob != null) blk.getSpawns().add(mob);
 				state = State.MAIN;
 				break;

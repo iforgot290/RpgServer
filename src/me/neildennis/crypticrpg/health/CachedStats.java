@@ -11,7 +11,6 @@ import me.neildennis.crypticrpg.items.type.CrypticGear;
 import me.neildennis.crypticrpg.items.type.CrypticItem;
 import me.neildennis.crypticrpg.items.type.armor.CrypticArmor;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
-import me.neildennis.crypticrpg.utils.Log;
 
 public class CachedStats{
 
@@ -57,8 +56,6 @@ public class CachedStats{
 				tochange.setHigh(tochange.getHigh() + (add ? attr.getHigh() : -attr.getHigh()));
 				tochange.setLow(tochange.getLow() + (add ? attr.getLow() : -attr.getLow()));
 			}
-			
-			Log.debug(tochange.getType() + " changed: high " + tochange.getHigh() + " low " + tochange.getLow());
 
 			map.put(tochange.getType(), tochange);
 		}
@@ -97,8 +94,6 @@ public class CachedStats{
 
 	public Attribute getAttribute(AttributeType type, int slot){
 		if (ItemManager.isWeaponMod(type)){
-			Log.debug(slot);
-			Log.debug(lastSlot);
 			if (slot != lastSlot || weaponUpdate) updateWeapon();
 		}
 
@@ -116,8 +111,6 @@ public class CachedStats{
 			low += weapon.getLow();
 			high += weapon.getHigh();
 		}
-		
-		Log.debug(type.name() + ": high " + high + " low " + low);
 
 		return new Attribute(type, low, high);
 	}
