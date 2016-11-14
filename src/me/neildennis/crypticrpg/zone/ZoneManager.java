@@ -2,6 +2,7 @@ package me.neildennis.crypticrpg.zone;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -80,6 +81,10 @@ public class ZoneManager extends Manager implements Listener{
 		if (moved == null) return;
 		
 		checkZone(moved, event.getTo());
+	}
+	
+	public static Collection<Region> getRegions(){
+		return regions.values();
 	}
 	
 	public static Region getRegion(String id){

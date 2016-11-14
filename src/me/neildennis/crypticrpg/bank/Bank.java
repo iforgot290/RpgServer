@@ -15,7 +15,7 @@ public class Bank {
 	private int money;
 	private int level;
 	
-	public Bank(CrypticPlayer cp){
+	public Bank(CrypticPlayer cp, ResultSet set){
 		this.cp = cp;
 		load();
 	}
