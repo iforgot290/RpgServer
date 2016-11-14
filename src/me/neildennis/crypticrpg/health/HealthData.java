@@ -42,8 +42,7 @@ public class HealthData {
 
 	public void online(Player pl){
 		p = pl;
-		p.setHealth(lastHP);
-		updateOverheadHP();
+		updateHealth(lastHP);
 		registerTasks();
 	}
 
@@ -104,9 +103,16 @@ public class HealthData {
 	public void setGodMode(boolean god){
 		this.god = god;
 	}
-	
+
 	public void updateHealth(){
-		p.setMaxHealth(cp.getAttribute(AttributeType.HEALTH).genValue());
+		p.setMaxHealth(cp.getAttribute(AttributeType.HEALTH).genValue() + 50);
+		updateOverheadHP();
+	}
+
+	public void updateHealth(int current){
+		p.setMaxHealth(cp.getAttribute(AttributeType.HEALTH).genValue() + 50);
+		p.setHealth(current);
+		updateOverheadHP();
 	}
 
 	public void updateOverheadHP(){

@@ -7,7 +7,6 @@ import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.type.CrypticItemType;
 import me.neildennis.crypticrpg.items.type.armor.CrypticArmor;
 import me.neildennis.crypticrpg.monsters.MobType;
-import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 
@@ -39,7 +38,6 @@ public abstract class LivingTemplate extends SpawnTemplate {
 			else if (gear.getType() == CrypticItemType.BOOTS) le.getEquipment().setBoots(gear.generateItemStack());
 			
 			int value = gear.getAttribute(AttributeType.HEALTH).genValue();
-			Log.debug(value);
 			le.setMaxHealth(le.getMaxHealth() + value);
 		}
 		le.setHealth(le.getMaxHealth());

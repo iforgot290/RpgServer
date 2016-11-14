@@ -11,6 +11,7 @@ import me.neildennis.crypticrpg.items.type.CrypticGear;
 import me.neildennis.crypticrpg.items.type.CrypticItem;
 import me.neildennis.crypticrpg.items.type.armor.CrypticArmor;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
+import me.neildennis.crypticrpg.utils.Log;
 
 public class CachedStats{
 
@@ -25,16 +26,17 @@ public class CachedStats{
 	public CachedStats(CrypticPlayer pl){
 		this.pl = pl;
 		this.attribs = new HashMap<AttributeType, Attribute>();
+		this.weapon = new HashMap<AttributeType, Attribute>();
 	}
 
 	public void online(){
 		this.inv = pl.getPlayer().getInventory();
 
-		for (int i = 5; i <= 8; i++){
+		for (int i = 37; i <= 40; i++){
 			CrypticItem item = ItemManager.getItemFromStack(inv.getItem(i));
 
 			if (item == null || !(item instanceof CrypticArmor)) continue;
-
+			
 			CrypticArmor armor = (CrypticArmor) item;
 			addArmor(armor);
 		}
@@ -55,6 +57,8 @@ public class CachedStats{
 				tochange.setHigh(tochange.getHigh() + (add ? attr.getHigh() : -attr.getHigh()));
 				tochange.setLow(tochange.getLow() + (add ? attr.getLow() : -attr.getLow()));
 			}
+			
+			Log.debug(tochange.getType() + " changed: high " + tochange.getHigh() + " low " + tochange.getLow());
 
 			map.put(tochange.getType(), tochange);
 		}
@@ -65,7 +69,10 @@ public class CachedStats{
 		lastSlot = inv.getHeldItemSlot();
 		CrypticItem item = ItemManager.getItemFromStack(inv.getItem(lastSlot));
 
-		if (item == null) return;
+		if (item == null) {
+			weapon.put(AttributeType.DAMAGE, new Attribute(AttributeType.DAMAGE, 1));
+			return;
+		}
 
 		CrypticGear gear = (CrypticGear) item;
 		item(gear, true, weapon);
@@ -89,13 +96,16 @@ public class CachedStats{
 	}
 
 	public Attribute getAttribute(AttributeType type, int slot){
-		if (ItemManager.isWeaponMod(type))
+		if (ItemManager.isWeaponMod(type)){
+			Log.debug(slot);
+			Log.debug(lastSlot);
 			if (slot != lastSlot || weaponUpdate) updateWeapon();
+		}
 
 		int low = 0;
 		int high = 0;
 		Attribute normal = attribs.get(type);
-		Attribute weapon = attribs.get(type);
+		Attribute weapon = this.weapon.get(type);
 
 		if (normal != null){
 			low += normal.getLow();
@@ -106,6 +116,8 @@ public class CachedStats{
 			low += weapon.getLow();
 			high += weapon.getHigh();
 		}
+		
+		Log.debug(type.name() + ": high " + high + " low " + low);
 
 		return new Attribute(type, low, high);
 	}

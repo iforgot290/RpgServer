@@ -15,10 +15,8 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import me.neildennis.crypticrpg.Cryptic;
-import me.neildennis.crypticrpg.items.ItemManager;
 import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.type.CrypticGear;
-import me.neildennis.crypticrpg.items.type.CrypticItem;
 import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
@@ -65,17 +63,8 @@ public class MobListener implements Listener {
 		final SpawnTemplate hit = MobManager.getCrypticEntity(event.getEntity());
 		if (hit == null) return;
 		
-		//CrypticPlayer damager = PlayerManager.getCrypticPlayer((Player)event.getDamager());
-		//TODO calc damage
-		Player damager = (Player) event.getDamager();
-		CrypticItem item = ItemManager.getItemFromStack(damager.getInventory().getItemInMainHand());
-		
-		if (item != null && item instanceof CrypticGear){
-			CrypticGear wep = (CrypticGear) item;
-			event.setDamage(wep.getAttribute(AttributeType.DAMAGE).genValue());
-		} else {
-			event.setDamage(1);
-		}
+		CrypticPlayer damager = PlayerManager.getCrypticPlayer((Player)event.getDamager());
+		event.setDamage(damager.getStats().getAttribute(AttributeType.DAMAGE).genValue());
 		
 		Bukkit.getScheduler().runTask(Cryptic.getPlugin(), () -> hit.updateBar());
 	}

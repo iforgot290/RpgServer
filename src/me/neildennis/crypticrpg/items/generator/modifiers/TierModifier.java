@@ -3,7 +3,6 @@ package me.neildennis.crypticrpg.items.generator.modifiers;
 import java.util.Random;
 
 import me.neildennis.crypticrpg.items.attribs.Rarity;
-import me.neildennis.crypticrpg.utils.Log;
 
 public class TierModifier {
 	
@@ -64,11 +63,6 @@ public class TierModifier {
 			int range = high - low;
 			int x = (int) (range * rareValue);
 			int dps = low + x;
-			
-			Log.debug("Rare value: " + rareValue);
-			Log.debug("Range: " + range);
-			Log.debug("X: " + x);
-			Log.debug("DPS: " + dps);
 			
 			float spreadRarity = r.nextFloat();
 			int spread = (int) (middle * spreadRarity);

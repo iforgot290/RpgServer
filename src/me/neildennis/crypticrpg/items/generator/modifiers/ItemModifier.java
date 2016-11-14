@@ -45,6 +45,7 @@ public class ItemModifier implements Comparable<ItemModifier>{
 		for (Class<? extends CrypticItem> test : possible){
 			if (test == cl) return true;
 			if (cl.getSuperclass() == test) return true;
+			if (test.getSuperclass() == cl) return true;
 		}
 		return false;
 	}

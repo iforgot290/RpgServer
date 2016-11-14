@@ -14,7 +14,6 @@ import me.neildennis.crypticrpg.items.attribs.Attribute;
 import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.attribs.Rarity;
 import me.neildennis.crypticrpg.items.attribs.Tier;
-import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.utils.StringUtils;
 
 public abstract class CrypticGear extends CrypticItem{
@@ -111,9 +110,7 @@ public abstract class CrypticGear extends CrypticItem{
 
 	@Override
 	public ItemStack generateItemStack() {
-		Log.debug("generating item stack");
 		Material mat = getMatFromTier();
-		Log.debug(mat.name());
 		ItemStack is = new ItemStack(mat);
 		
 		ItemMeta meta = is.getItemMeta();
