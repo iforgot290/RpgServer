@@ -2,17 +2,19 @@ package me.neildennis.crypticrpg.monsters.spawnblock;
 
 import org.bukkit.ChatColor;
 
+import me.neildennis.crypticrpg.items.attribs.Rarity;
+import me.neildennis.crypticrpg.items.type.CrypticItemType;
 import me.neildennis.crypticrpg.menu.Menu;
 import me.neildennis.crypticrpg.monsters.MobType;
-import me.neildennis.crypticrpg.monsters.SpawnBlock;
-import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
+import me.neildennis.crypticrpg.monsters.generator.MonsterGenerator;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 
 public class SpawnBlockMenu extends Menu{
 
 	private State state = State.MAIN;
 	private SpawnBlock blk;
-	private SpawnTemplate mob;
+	private SpawnBlockMonster mob;
+	private MonsterGenerator gen;
 	
 	public SpawnBlockMenu(CrypticPlayer pl, SpawnBlock blk) {
 		super(pl);
@@ -28,9 +30,11 @@ public class SpawnBlockMenu extends Menu{
 		case LIST_MONSTER:
 			pl.sendMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "Enter monster number");
 			for (int i = 0; i < blk.getSpawns().size(); i++){
-				SpawnTemplate spawn = blk.getSpawns().get(i);
-				pl.sendMessage(ChatColor.GRAY + "(" + i + ") " + spawn.getType().name()
-						+ " {elite=" + spawn.isElite() + "},{respawn=" + spawn.getRespawnDelay() + "}");
+				SpawnBlockMonster spawn = blk.getSpawns().get(i);
+				MonsterGenerator gen = spawn.getMonsterGen();
+				pl.sendMessage(ChatColor.GRAY + "(" + i + ") " + gen.getType().name()
+						+ " {elite=" + gen.isElite() + "},{respawn=" + spawn.getRespawnDelay() + "},{minlvl="
+						+ gen.getMinLvl() + "},{maxlvl=" + gen.getMaxLvl() + "}");
 			}
 			break;
 			
@@ -46,27 +50,28 @@ public class SpawnBlockMenu extends Menu{
 			break;
 			
 		case MOD_MONSTER:
-			pl.sendMessage(ChatColor.YELLOW + "Editing monster: " + mob.getType().name());
+			pl.sendMessage(ChatColor.YELLOW + "Editing monster: " + gen.getType().name());
 			pl.sendMessage("");
-			pl.sendMessage(ChatColor.GRAY + "elite=" + mob.isElite());
+			pl.sendMessage(ChatColor.GRAY + "elite=" + gen.isElite());
 			pl.sendMessage(ChatColor.GRAY + "respawn=" + mob.getRespawnDelay());
-			pl.sendMessage(ChatColor.GRAY + "name=" + mob.getName());
+			pl.sendMessage(ChatColor.GRAY + "name=" + gen.getName());
+			pl.sendMessage(ChatColor.GRAY + "minlvl=" + gen.getMinLvl());
+			pl.sendMessage(ChatColor.GRAY + "maxlvl=" + gen.getMaxLvl());
+			pl.sendMessage(ChatColor.GRAY + "weapon=" + gen.getWeaponType());
+			pl.sendMessage(ChatColor.GRAY + "armordrop=" + gen.getArmorDropChance(null));
+			pl.sendMessage(ChatColor.GRAY + "rarity=" + gen.getGearRarity());
 			break;
 			
 		case RANGE:
 			pl.sendMessage(ChatColor.YELLOW + "Enter new range");
 			break;
-			
-		case LEVEL:
-			pl.sendMessage(ChatColor.YELLOW + "Enter new level range");
-			break;
 		
 		default:
 			pl.sendMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "Options:");
-			pl.sendMessage(ChatColor.YELLOW + "RANGE - change spawner range");
-			pl.sendMessage(ChatColor.YELLOW + "LEVEL - change spawner level range");
-			pl.sendMessage(ChatColor.YELLOW + "MONSTER - add a monster");
+			pl.sendMessage(ChatColor.YELLOW + "ADD - add a monster");
 			pl.sendMessage(ChatColor.YELLOW + "MOD - modify a monster");
+			pl.sendMessage(ChatColor.YELLOW + "RANGE - change spawner range");
+			pl.sendMessage(ChatColor.YELLOW + "EXIT - exit this menu");
 			break;
 		
 		}
@@ -84,23 +89,6 @@ public class SpawnBlockMenu extends Menu{
 			} catch (Exception e){
 				pl.sendMessage(ChatColor.RED + "Invalid number");
 			}
-			break;
-			
-		case LEVEL:
-			String[] args = str.split("-");
-			if (args.length != 2){
-				pl.sendMessage(ChatColor.RED + "Error: format is 'xx-yy'");
-				break;
-			}
-			
-			try {
-				blk.setLevel(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
-				state = State.MAIN;
-				pl.sendMessage(ChatColor.GREEN + "Success");
-			} catch (Exception e){
-				pl.sendMessage(ChatColor.RED + "Error: format is 'xx-yy'");
-			}
-			
 			break;
 			
 		case LIST_MONSTER:
@@ -136,15 +124,11 @@ public class SpawnBlockMenu extends Menu{
 				pl.sendMessage(ChatColor.RED + "Invalid mob type");
 				return;
 			}
-			
-			try {
-				mob = type.getHandleClass().newInstance();
-				state = State.MOD_MONSTER;
-			} catch (InstantiationException | IllegalAccessException e) {
-				pl.sendMessage(ChatColor.RED + "Error getting class instance");
-				e.printStackTrace();
-			}
-			
+
+			mob = new SpawnBlockMonster(new MonsterGenerator(type), 1000L);
+			gen = mob.getMonsterGen();
+			state = State.MOD_MONSTER;
+
 			break;
 			
 		case MOD_MONSTER:
@@ -154,13 +138,25 @@ public class SpawnBlockMenu extends Menu{
 				break;
 			} else if (str.equalsIgnoreCase("delete")){
 				mob = null;
+				gen = null;
 				state = State.MAIN;
 				break;
 			}
 			
-			if (str.startsWith("name=")) mob.setName(str.split("=")[1]);
-			else if (str.startsWith("elite=")) mob.setElite(Boolean.getBoolean(str.split("=")[1]));
-			else if (str.startsWith("respawn=")) mob.setRespawnDelay(Long.valueOf(str.split("=")[1]));
+			String option = null;
+			if (!str.contains("=")) return;
+			option = str.split("=")[1];
+			if (option == "\"\"") option = null;
+			
+			if (str.startsWith("name=")) gen.setName(option);
+			else if (str.startsWith("elite=")) gen.setElite(Boolean.getBoolean(option));
+			else if (str.startsWith("respawn=")) mob.setRespawnDelay(Long.valueOf(option));
+			else if (str.startsWith("minlvl=")) gen.setLvlRange(Integer.parseInt(option), gen.getMaxLvl());
+			else if (str.startsWith("maxlvl=")) gen.setLvlRange(gen.getMinLvl(), Integer.parseInt(option));
+			else if (str.startsWith("weapon=")) gen.setWeaponType(CrypticItemType.valueOf(option.toUpperCase()));
+			else if (str.startsWith("armordrop=")) gen.setArmorDropChance(Float.valueOf(option));
+			else if (str.startsWith("rarity=")) gen.setGearRarity(Rarity.valueOf(option.toUpperCase()));
+			else return;
 			
 			break;
 		
@@ -170,10 +166,7 @@ public class SpawnBlockMenu extends Menu{
 			case "range":
 				state = State.RANGE;
 				break;
-			case "level":
-				state = State.LEVEL;
-				break;
-			case "monster":
+			case "add":
 				state = State.ADD_MONSTER;
 				break;
 			case "mod":
@@ -200,7 +193,7 @@ public class SpawnBlockMenu extends Menu{
 	}
 	
 	private enum State{
-		MAIN, ADD_MONSTER, MOD_MONSTER, LIST_MONSTER, RANGE, LEVEL;
+		MAIN, ADD_MONSTER, MOD_MONSTER, LIST_MONSTER, RANGE;
 	}
 
 }

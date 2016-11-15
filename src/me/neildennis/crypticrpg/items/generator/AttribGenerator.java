@@ -48,7 +48,7 @@ public class AttribGenerator {
 		Collections.sort(applicants);
 		
 		for (ItemModifier mod : applicants){
-			gen.setAttribute(mod.getType(), mod.getValues(gen.getLevel(), gen.getRarity()));
+			gen.setAttribute(mod.getType(), mod.getValues(gen.getLevel(), gen.getRarityPct()));
 		}
 		
 		

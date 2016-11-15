@@ -5,7 +5,7 @@ import org.bukkit.Location;
 
 import me.neildennis.crypticrpg.CrypticCommand;
 import me.neildennis.crypticrpg.monsters.MobManager;
-import me.neildennis.crypticrpg.monsters.SpawnBlock;
+import me.neildennis.crypticrpg.monsters.spawnblock.SpawnBlock;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 

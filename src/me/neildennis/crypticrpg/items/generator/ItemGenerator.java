@@ -23,6 +23,7 @@ public class ItemGenerator {
 	private Tier tier = Tier.ONE;
 	private int level = 0;
 	private Rarity rarity = Rarity.COMMON;
+	private float rarityPct = 0.0F;
 	
 	public ItemGenerator(CrypticItemType type){
 		this.type = type;
@@ -65,6 +66,15 @@ public class ItemGenerator {
 		return rarity;
 	}
 	
+	public ItemGenerator setRarityPct(float rare){
+		this.rarityPct = rare;
+		return this;
+	}
+	
+	public float getRarityPct(){
+		return rarityPct;
+	}
+	
 	public ItemGenerator setAttribute(AttributeType attr, int[] values){
 		attribs.add(new Attribute(attr, values));
 		return this;
@@ -85,8 +95,10 @@ public class ItemGenerator {
 		Random r = new Random();
 		
 		if (name == null) name = NameGenerator.generateName(this);
-		if (tier == null) tier = Tier.ONE;
-		if (rarity == null) rarity = Rarity.getByPct(r.nextFloat());
+		
+		if (rarity == null && rarityPct == 0.0F) rarityPct = r.nextFloat();
+		if (rarity == null) rarity = Rarity.getByPct(rarityPct);
+		if (rarityPct == 0.0F) rarityPct = rarity.getRandomPct();
 		
 		if (tier == null && level == 0) tier = Tier.ONE;
 		if (tier == null) tier = Tier.fromLevel(level);

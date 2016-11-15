@@ -2,8 +2,6 @@ package me.neildennis.crypticrpg.items.generator.modifiers;
 
 import java.util.Random;
 
-import me.neildennis.crypticrpg.items.attribs.Rarity;
-
 public class TierModifier {
 	
 	private int minlvl, maxlvl;
@@ -28,7 +26,7 @@ public class TierModifier {
 		return level >= minlvl && level <= maxlvl;
 	}
 	
-	public int[] generateValue(Rarity rarity){
+	public int[] generateValue(float rarity){
 		int[] values = new int[2];
 		Random r = new Random();
 		
@@ -37,12 +35,10 @@ public class TierModifier {
 		//generates a value that is inbetween the two values provided
 		//can use the rarity value
 		if (type == ModifierType.STATIC){
-			float rareValue;
 			
-			if (rarity == null) rareValue = r.nextFloat();
-			else rareValue = rarity.getRandomPct();
+			if (rarity == 0.0F) rarity = r.nextFloat();
 			
-			first = (int) ((high - low) * rareValue) + low;
+			first = (int) ((high - low) * rarity) + low;
 			second = first;
 		}
 		
@@ -55,13 +51,11 @@ public class TierModifier {
 		
 		//generates a value range based on a rarity factor
 		else if (type == ModifierType.RANGE){
-			float rareValue;
 			
-			if (rarity == null) rareValue = r.nextFloat();
-			else rareValue = rarity.getRandomPct();
+			if (rarity == 0.0F) rarity = r.nextFloat();
 		
 			int range = high - low;
-			int x = (int) (range * rareValue);
+			int x = (int) (range * rarity);
 			int dps = low + x;
 			
 			float spreadRarity = r.nextFloat();

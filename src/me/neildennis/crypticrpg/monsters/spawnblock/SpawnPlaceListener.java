@@ -1,4 +1,4 @@
-package me.neildennis.crypticrpg.monsters;
+package me.neildennis.crypticrpg.monsters.spawnblock;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -10,8 +10,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
-import me.neildennis.crypticrpg.monsters.spawnblock.SpawnBlockMenu;
-import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
+import me.neildennis.crypticrpg.monsters.MobManager;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
@@ -28,11 +27,11 @@ public class SpawnPlaceListener implements Listener {
 			event.setCancelled(true);
 		}
 		
-		SpawnBlock blk = MobManager.createNewSpawnBlock(event.getBlock().getLocation(), 5, 1, 10);
+		SpawnBlock blk = MobManager.createNewSpawnBlock(event.getBlock().getLocation(), 5);
 		
 		pl.sendMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "You have registered a new spawn block");
 		pl.sendMessage(ChatColor.YELLOW + blk.getLocation().toString());
-		pl.sendMessage(ChatColor.YELLOW + "Range: " + blk.getRange() + "   LVL " + blk.getMinLvl() + "-" + blk.getMaxLvl());
+		pl.sendMessage(ChatColor.YELLOW + "Range: " + blk.getRange());
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
@@ -49,10 +48,11 @@ public class SpawnPlaceListener implements Listener {
 		event.setCancelled(true);
 		
 		pl.sendMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "Spawn Block " + ChatColor.YELLOW + "@ " + blk.getLocation().toString());
-		pl.sendMessage(ChatColor.YELLOW + "Range: " + blk.getRange() + "   LVL " + blk.getMinLvl() + "-" + blk.getMaxLvl());
+		pl.sendMessage(ChatColor.YELLOW + "Range: " + blk.getRange());
 		pl.sendMessage(ChatColor.YELLOW + "Mobs:" + (blk.getSpawns().size() == 0 ? " None" : ""));
-		for (SpawnTemplate spawn : blk.getSpawns())
-			pl.sendMessage(ChatColor.GRAY.toString() + spawn.getTier() + " " + spawn.getType().name() + " (" + spawn.getRespawnDelay() + "ms)");
+		for (SpawnBlockMonster spawn : blk.getSpawns())
+			pl.sendMessage(ChatColor.GRAY.toString() + spawn.getMonsterGen().getMinLvl() + "-" + spawn.getMonsterGen().getMaxLvl()
+					+ " " + spawn.getMonsterGen().getType().name() + " (" + spawn.getRespawnDelay() + "ms)");
 		
 		if (pl.getPlayer().isSneaking()){
 			SpawnBlockMenu menu = new SpawnBlockMenu(pl, blk);

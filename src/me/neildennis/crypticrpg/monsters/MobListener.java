@@ -16,8 +16,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.items.attribs.AttributeType;
-import me.neildennis.crypticrpg.items.type.CrypticGear;
-import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
+import me.neildennis.crypticrpg.monsters.type.CrypticMonster;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
 
@@ -34,15 +33,13 @@ public class MobListener implements Listener {
 		if (event.getDamager().getType() == EntityType.PLAYER) return;
 		if (event.getEntity().getType() != EntityType.PLAYER) return;
 		
-		SpawnTemplate temp = MobManager.getCrypticEntity(event.getDamager());
-		if (temp == null) return;
+		CrypticMonster monster = MobManager.getMonster(event.getDamager());
+		if (monster == null) return;
 		
 		final CrypticPlayer pl = PlayerManager.getCrypticPlayer((Player)event.getEntity());
-		CrypticGear wep = temp.getWeapon();
 		
-		int damage = wep.getAttribute(AttributeType.DAMAGE).genValue();
 		pl.getHealthData().damage();
-		event.setDamage(damage);
+		event.setDamage(monster.getStats().getAttribute(AttributeType.DAMAGE).genValue());
 		Bukkit.getScheduler().runTask(Cryptic.getPlugin(), () -> pl.getHealthData().updateOverheadHP());
 	}
 	
@@ -60,13 +57,13 @@ public class MobListener implements Listener {
 		if (event.getEntityType() == EntityType.PLAYER) return;
 		if (event.getDamager().getType() != EntityType.PLAYER) return;
 		
-		final SpawnTemplate hit = MobManager.getCrypticEntity(event.getEntity());
+		final CrypticMonster hit = MobManager.getMonster(event.getEntity());
 		if (hit == null) return;
 		
 		CrypticPlayer damager = PlayerManager.getCrypticPlayer((Player)event.getDamager());
 		event.setDamage(damager.getStats().getAttribute(AttributeType.DAMAGE).genValue());
 		
-		Bukkit.getScheduler().runTask(Cryptic.getPlugin(), () -> hit.updateBar());
+		Bukkit.getScheduler().runTask(Cryptic.getPlugin(), () -> hit.updateNameplate());
 	}
 	
 	@EventHandler
@@ -74,10 +71,11 @@ public class MobListener implements Listener {
 		if (event.getEntityType() == EntityType.PLAYER) return;
 		if (!(event.getEntity() instanceof LivingEntity)) return;
 		
-		SpawnTemplate dead = MobManager.getCrypticEntity(event.getEntity());
+		CrypticMonster dead = MobManager.getMonster(event.getEntity());
 		if (dead == null) return;
 		
-		dead.setLastDeath();
+		MobManager.getSpawnBlockMonster(dead).setLastDeath();
+		MobManager.unregisterMonster(dead);
 	}
 
 }

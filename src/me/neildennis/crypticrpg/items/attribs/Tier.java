@@ -6,20 +6,26 @@ import org.bukkit.ChatColor;
 
 public enum Tier {
 	
-	ONE(ChatColor.WHITE),
-	TWO(ChatColor.GREEN),
-	THREE(ChatColor.AQUA),
-	FOUR(ChatColor.LIGHT_PURPLE),
-	FIVE(ChatColor.GOLD);
+	ONE(ChatColor.WHITE, 0.75F),
+	TWO(ChatColor.GREEN, 0.6F),
+	THREE(ChatColor.AQUA, 0.5F),
+	FOUR(ChatColor.LIGHT_PURPLE, 0.4F),
+	FIVE(ChatColor.GOLD, 0.3F);
 	
 	private ChatColor color;
+	private float chance;
 	
-	Tier(ChatColor color){
+	Tier(ChatColor color, float chance){
 		this.color = color;
+		this.chance = chance;
 	}
 	
 	public ChatColor getColor(){
 		return color;
+	}
+	
+	public float getDefaultDropPct(){
+		return chance;
 	}
 	
 	public static Tier fromLevel(int lvl){

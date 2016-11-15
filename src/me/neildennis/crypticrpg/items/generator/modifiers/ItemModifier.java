@@ -3,7 +3,6 @@ package me.neildennis.crypticrpg.items.generator.modifiers;
 import java.util.ArrayList;
 
 import me.neildennis.crypticrpg.items.attribs.AttributeType;
-import me.neildennis.crypticrpg.items.attribs.Rarity;
 import me.neildennis.crypticrpg.items.type.CrypticItem;
 
 public class ItemModifier implements Comparable<ItemModifier>{
@@ -61,7 +60,7 @@ public class ItemModifier implements Comparable<ItemModifier>{
 		return null;
 	}
 	
-	public int[] getValues(int level, Rarity rare){
+	public int[] getValues(int level, float rare){
 		TierModifier mod = getTierModifier(level);
 		
 		if (mod == null)
@@ -70,7 +69,7 @@ public class ItemModifier implements Comparable<ItemModifier>{
 		if (type == AttributeType.DAMAGE || type == AttributeType.HEALTH)
 			return mod.generateValue(rare);
 		
-		else return mod.generateValue(null);
+		else return mod.generateValue(0.0F);
 	}
 	
 	@Override
