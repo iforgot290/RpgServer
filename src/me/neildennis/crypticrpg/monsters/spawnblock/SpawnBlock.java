@@ -18,6 +18,7 @@ import me.neildennis.crypticrpg.items.type.CrypticItemType;
 import me.neildennis.crypticrpg.monsters.MobManager;
 import me.neildennis.crypticrpg.monsters.MobType;
 import me.neildennis.crypticrpg.monsters.generator.MonsterGenerator;
+import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.utils.Utils;
 
 public class SpawnBlock {
@@ -79,6 +80,7 @@ public class SpawnBlock {
 		for (SpawnBlockMonster spawn : spawns){
 			if (!spawn.shouldSpawn()) continue;
 			spawn.spawn(getRandomLocation(random));
+			Log.debug("spawn success");
 			MobManager.registerMonster(spawn.getMonster());
 		}
 	}

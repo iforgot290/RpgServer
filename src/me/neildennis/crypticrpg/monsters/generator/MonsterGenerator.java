@@ -54,7 +54,7 @@ public class MonsterGenerator {
 		CrypticMonster mob = type.getHandleClass().newInstance();
 
 		mob.setElite(elite);
-		mob.setLevel(r.nextInt(maxlvl - minlvl) + minlvl);
+		mob.setLevel(r.nextInt(getMaxLvl() - getMinLvl()) + getMinLvl());
 		mob.setName(name);
 		mob.setWillDrop(getArmorDropChance(mob.getTier()) > r.nextFloat());
 		

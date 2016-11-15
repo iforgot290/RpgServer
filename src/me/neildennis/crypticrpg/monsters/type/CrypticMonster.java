@@ -2,10 +2,12 @@ package me.neildennis.crypticrpg.monsters.type;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
+import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.items.attribs.Tier;
 import me.neildennis.crypticrpg.items.type.CrypticItem;
@@ -17,6 +19,7 @@ import me.neildennis.crypticrpg.items.type.weapon.CrypticWeapon;
 import me.neildennis.crypticrpg.monsters.MobType;
 import me.neildennis.crypticrpg.monsters.MonsterCachedStats;
 import me.neildennis.crypticrpg.monsters.SpawnType;
+import me.neildennis.crypticrpg.utils.Log;
 
 public abstract class CrypticMonster {
 	
@@ -57,7 +60,7 @@ public abstract class CrypticMonster {
 		maxhealth = stats.getAttribute(AttributeType.HEALTH).genValue();
 		health = maxhealth;
 		
-		updateNameplate();
+		Bukkit.getScheduler().runTask(Cryptic.getPlugin(), () -> updateNameplate());
 		entity.setCustomNameVisible(true);
 		
 		return entity;
@@ -68,6 +71,7 @@ public abstract class CrypticMonster {
 	}
 	
 	public void updateNameplate(){
+		if (getEntity() == null) Log.debug("entity null");
 		getEntity().setCustomName(ChatColor.GREEN + "[" + level + "] [" + (int) getHealth() + "/" + (int) getMaxHealth() + "] " + tier.getColor() + name);
 	}
 	

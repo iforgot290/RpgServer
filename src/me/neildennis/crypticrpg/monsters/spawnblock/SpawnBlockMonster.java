@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import me.neildennis.crypticrpg.monsters.SpawnType;
 import me.neildennis.crypticrpg.monsters.generator.MonsterGenerator;
 import me.neildennis.crypticrpg.monsters.type.CrypticMonster;
+import me.neildennis.crypticrpg.utils.Log;
 
 public class SpawnBlockMonster {
 	

@@ -60,7 +60,7 @@ public class MobManager extends Manager{
 	}
 	
 	public void loadMobSpawns(){
-		try {
+		/*try {
 			ResultSet data = Cloud.sendQuery("SELECT * FROM monster_spawns");
 			while (data.next()){
 				UUID id = UUID.fromString(data.getString("uuid"));
@@ -71,7 +71,7 @@ public class MobManager extends Manager{
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 	
 	public static ArrayList<SpawnBlock> getSpawnBlocks(){

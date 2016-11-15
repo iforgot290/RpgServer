@@ -1,13 +1,9 @@
 package me.neildennis.crypticrpg.zone;
 
-import java.util.HashMap;
-
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-
-import me.neildennis.crypticrpg.monsters.templates.SpawnTemplate;
 
 public class Region {
 	
@@ -50,7 +46,7 @@ public class Region {
 	
 	public class RegionSpawn{
 		
-		private SpawnTemplate template;
+		
 		private float pct;
 		
 		public RegionSpawn(){
