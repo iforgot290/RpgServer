@@ -46,12 +46,12 @@ public class PlayerData {
 	
 	public static void banPlayer(UUID toban, String tobanName, UUID banner, String bannerName, String reason) throws SQLException{
 		
-		Cloud.sendStatement("INSERT INTO bans (banned_uuid, banned_name, banned_by_uuid, banned_by_name, reason) VALUES ('" + toban.toString() + "', '"
+		Cloud.sendStatement("INSERT INTO bans (player_uuid, player_name, enforcer_uuid, enforcer_name, reason) VALUES ('" + toban.toString() + "', '"
 				+ tobanName + "', '" + (banner == null ? "" : banner.toString()) + "', '" + bannerName + "', '" + reason + "')");
 	}
 	
 	public static ResultSet getBans(UUID banned) throws SQLException{
-		return Cloud.sendQuery("SELECT * FROM bans WHERE banned_uuid = '" + banned.toString() + "'");
+		return Cloud.sendQuery("SELECT * FROM bans WHERE player_uuid = '" + banned.toString() + "'");
 	}
 
 	private static String getInventoryString(CrypticPlayer pl){

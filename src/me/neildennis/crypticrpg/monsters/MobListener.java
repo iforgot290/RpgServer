@@ -1,6 +1,7 @@
 package me.neildennis.crypticrpg.monsters;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -13,6 +14,7 @@ import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
 import me.neildennis.crypticrpg.Cryptic;
@@ -26,6 +28,7 @@ public class MobListener implements Listener {
 
 	@EventHandler
 	public void onMobSpawn(CreatureSpawnEvent event){
+		if (event.getSpawnReason() == SpawnReason.CHUNK_GEN) Log.debug("chunk gen");
 		if (event.getSpawnReason() != SpawnReason.CUSTOM) event.setCancelled(true);
 	}
 
@@ -84,7 +87,16 @@ public class MobListener implements Listener {
 	public void onChunkUnload(ChunkUnloadEvent event){
 		if (event.getWorld() == Cryptic.getMainWorld())
 			if (event.getChunk().getEntities().length > 0)
-				Log.debug(event.getChunk().getEntities().length);
+				for (Entity ent : event.getChunk().getEntities())
+					Log.debug(ent.getType() + " unloaded in a chunk");
+	}
+	
+	@EventHandler
+	public void onChunkLoad(ChunkLoadEvent event){
+		if (event.getWorld() == Cryptic.getMainWorld())
+			if (event.getChunk().getEntities().length > 0)
+				for (Entity ent : event.getChunk().getEntities())
+					Log.debug(ent.getType() + " loaded in a chunk");
 	}
 
 }
