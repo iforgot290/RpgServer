@@ -2,12 +2,17 @@ package me.neildennis.crypticrpg.zone;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.YamlConfiguration;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
+import me.neildennis.crypticrpg.items.attribs.Rarity;
+import me.neildennis.crypticrpg.items.type.CrypticItemType;
 import me.neildennis.crypticrpg.moderation.MonsterSpawner;
+import me.neildennis.crypticrpg.monsters.MobType;
 import me.neildennis.crypticrpg.monsters.MonsterContainer;
 import me.neildennis.crypticrpg.monsters.SpawnType;
 import me.neildennis.crypticrpg.monsters.generator.MonsterGenerator;
@@ -15,21 +20,50 @@ import me.neildennis.crypticrpg.monsters.generator.MonsterGenerator;
 public class Region extends MonsterSpawner{
 	
 	private ProtectedPolygonalRegion region;
-	private YamlConfiguration config;
 	
-	private boolean town;
+	private boolean town = false;
 	private String announce;
 	private String subtitle;
 	
-	public Region(YamlConfiguration config, ProtectedRegion region){
-		this.config = config;
+	public Region(ProtectedRegion region, JsonArray array){
 		this.region = (ProtectedPolygonalRegion) region;
 		
-		announce = config.getString("announce");
-		subtitle = config.getString("subtitle");
-		town = announce != null;
+		for (JsonElement ele : array){
+			if (!ele.isJsonObject()) continue;
+			JsonObject obj = (JsonObject) ele;
+			
+			int amount = obj.get("amount").getAsInt();
+			long delay = obj.get("delay").getAsLong();
+			MobType type = MobType.valueOf(obj.get("type").getAsString());
+			MonsterGenerator gen = new MonsterGenerator(type);
+			
+			if (obj.has("elite"))
+				gen.setElite(obj.get("elite").getAsBoolean());
+			if (obj.has("armordrop"))
+				gen.setArmorDropChance(obj.get("armordrop").getAsFloat());
+			if (obj.has("rarity"))
+				gen.setGearRarity(Rarity.valueOf(obj.get("rarity").getAsString()));
+			if (obj.has("weapontype"))
+				gen.setWeaponType(CrypticItemType.valueOf(obj.get("weapontype").getAsString()));
+			if (obj.has("name"))
+				gen.setName(obj.get("name").getAsString());
+			
+			gen.setLvlRange(obj.get("minlvl").getAsInt(), obj.get("maxlvl").getAsInt());
+			
+			for (int i = 0; i < amount; i++){
+				dead.add(new RegionSpawn(gen, delay, this));
+			}
+		}
+	}
+	
+	public Region(ProtectedRegion region, JsonArray array, String announce, String subtitle){
+		this(region, array);
 		
-		if (town)
+		this.town = true;
+		this.announce = announce;
+		this.subtitle = subtitle;
+		
+		if (announce != null)
 			announce = ChatColor.translateAlternateColorCodes('&', announce);
 		if (subtitle != null)
 			subtitle = ChatColor.translateAlternateColorCodes('&', subtitle);
