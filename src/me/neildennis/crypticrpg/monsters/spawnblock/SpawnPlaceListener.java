@@ -1,5 +1,7 @@
 package me.neildennis.crypticrpg.monsters.spawnblock;
 
+import java.util.ArrayList;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -11,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import me.neildennis.crypticrpg.monsters.MobManager;
+import me.neildennis.crypticrpg.monsters.MonsterContainer;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
@@ -49,8 +52,9 @@ public class SpawnPlaceListener implements Listener {
 		
 		pl.sendMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "Spawn Block " + ChatColor.YELLOW + "@ " + blk.getLocation().toString());
 		pl.sendMessage(ChatColor.YELLOW + "Range: " + blk.getRange());
-		pl.sendMessage(ChatColor.YELLOW + "Mobs:" + (blk.getSpawns().size() == 0 ? " None" : ""));
-		for (SpawnBlockMonster spawn : blk.getSpawns())
+		ArrayList<MonsterContainer> mobs = blk.getAllSpawns();
+		pl.sendMessage(ChatColor.YELLOW + "Mobs:" + (mobs.size() == 0 ? " None" : ""));
+		for (MonsterContainer spawn : mobs)
 			pl.sendMessage(ChatColor.GRAY.toString() + spawn.getMonsterGen().getMinLvl() + "-" + spawn.getMonsterGen().getMaxLvl()
 					+ " " + spawn.getMonsterGen().getType().name() + " (" + spawn.getRespawnDelay() + "ms)");
 		

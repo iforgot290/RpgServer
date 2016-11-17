@@ -25,5 +25,6 @@ public abstract class Menu {
 	public void updateMenu(){};
 	public abstract void input(String str);
 	public abstract void display();
+	public abstract void exit();
 	
 }

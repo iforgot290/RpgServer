@@ -76,10 +76,10 @@ public class MobListener implements Listener {
 		if (event.getEntityType() == EntityType.PLAYER) return;
 		if (!(event.getEntity() instanceof LivingEntity)) return;
 
-		CrypticMonster dead = MobManager.getMonster(event.getEntity());
+		MonsterContainer dead = MobManager.getMonsterContainer(event.getEntity());
 		if (dead == null) return;
-
-		MobManager.getSpawnBlockMonster(dead).setLastDeath();
+		
+		dead.setDeath();
 		MobManager.unregisterMonster(dead);
 	}
 

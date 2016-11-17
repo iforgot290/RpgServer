@@ -15,25 +15,26 @@ import com.google.gson.JsonObject;
 
 import me.neildennis.crypticrpg.items.attribs.Rarity;
 import me.neildennis.crypticrpg.items.type.CrypticItemType;
+import me.neildennis.crypticrpg.moderation.MonsterSpawner;
 import me.neildennis.crypticrpg.monsters.MobManager;
 import me.neildennis.crypticrpg.monsters.MobType;
+import me.neildennis.crypticrpg.monsters.MonsterContainer;
+import me.neildennis.crypticrpg.monsters.SpawnType;
 import me.neildennis.crypticrpg.monsters.generator.MonsterGenerator;
 import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.utils.Utils;
 
-public class SpawnBlock {
+public class SpawnBlock extends MonsterSpawner{
 
 	private Location loc;
 	private UUID id;
 	private int range;
-	private ArrayList<SpawnBlockMonster> spawns;
 	private boolean shown = false;
 
 	public SpawnBlock(UUID id, Location loc, int range){
 		this.id = id;
 		this.loc = loc;
 		this.range = range;
-		spawns = new ArrayList<SpawnBlockMonster>();
 
 		if (loc.getBlock().getType() == Material.MOB_SPAWNER) shown = true;
 		else loc.getBlock().setType(Material.AIR);
@@ -62,30 +63,40 @@ public class SpawnBlock {
 			
 			gen.setLvlRange(obj.get("minlvl").getAsInt(), obj.get("maxlvl").getAsInt());
 			
-			spawns.add(new SpawnBlockMonster(gen, obj.get("delay").getAsLong()));
+			dead.add(new MonsterContainer(gen, obj.get("delay").getAsLong(), SpawnType.SPAWNBLOCK, this));
 		}
 	}
 
 	public SpawnBlock(UUID id, Location loc, int range, ArrayList<SpawnBlockMonster> spawns){
 		this(id, loc, range);
 
-		this.spawns = spawns;
+		this.dead.addAll(spawns);
 	}
 
 	public void tickSpawns(){
+		if (!enabled) return;
 		if (!loc.getChunk().isLoaded()) return;
 		if (!Utils.isPlayerNear(loc)) return;
-		Random random = new Random();
 
-		for (SpawnBlockMonster spawn : spawns){
+		for (MonsterContainer spawn : dead){
 			if (!spawn.shouldSpawn()) continue;
-			spawn.spawn(getRandomLocation(random));
+			spawn.spawn(generateLocation());
 			Log.debug("spawn success");
-			MobManager.registerMonster(spawn.getMonster());
+			MobManager.registerMonster(spawn);
+			spawned.add(spawn);
 		}
+		
+		for (MonsterContainer spawn : spawned){
+			alive.add(spawn);
+			dead.remove(spawn);
+		}
+		
+		spawned.clear();
 	}
 
-	protected Location getRandomLocation(Random random){
+	public Location generateLocation(){
+		Random random = new Random();
+		
 		int x = random.nextInt((range * 2) + 1) - range;
 		int z = random.nextInt((range * 2) + 1) - range;
 
@@ -99,11 +110,7 @@ public class SpawnBlock {
 				return spawnloc.add(0, 1, 0);
 		}
 
-		return getRandomLocation(random);
-	}
-
-	public void addMob(SpawnBlockMonster monster){
-		spawns.add(monster);
+		return generateLocation();
 	}
 
 	public Location getLocation(){
@@ -120,10 +127,6 @@ public class SpawnBlock {
 	
 	public void setRange(int range){
 		this.range = range;
-	}
-
-	public ArrayList<SpawnBlockMonster> getSpawns(){
-		return spawns;
 	}
 
 	public boolean isBlockShown(){

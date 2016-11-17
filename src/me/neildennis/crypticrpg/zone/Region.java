@@ -1,14 +1,18 @@
 package me.neildennis.crypticrpg.zone;
 
-import java.util.List;
-
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-public class Region {
+import me.neildennis.crypticrpg.moderation.MonsterSpawner;
+import me.neildennis.crypticrpg.monsters.MonsterContainer;
+import me.neildennis.crypticrpg.monsters.SpawnType;
+import me.neildennis.crypticrpg.monsters.generator.MonsterGenerator;
+
+public class Region extends MonsterSpawner{
 	
 	private ProtectedPolygonalRegion region;
 	private YamlConfiguration config;
@@ -16,10 +20,6 @@ public class Region {
 	private boolean town;
 	private String announce;
 	private String subtitle;
-	
-	private List<RegionSpawn> alive;
-	private List<RegionSpawn> dead;
-	private List<RegionSpawn> spawned;
 	
 	public Region(YamlConfiguration config, ProtectedRegion region){
 		this.config = config;
@@ -35,20 +35,26 @@ public class Region {
 			subtitle = ChatColor.translateAlternateColorCodes('&', subtitle);
 	}
 	
+	@Override
 	public void tickSpawns(){
-		for (RegionSpawn spawn : dead){
+		for (MonsterContainer spawn : dead){
 			if (spawn.shouldSpawn()){
-				spawn.spawn();
+				spawn.spawn(generateLocation());
 				spawned.add(spawn);
 			}
 		}
 		
-		for (RegionSpawn spawn : spawned){
+		for (MonsterContainer spawn : spawned){
 			dead.remove(spawn);
 			alive.add(spawn);
 		}
 		
 		spawned.clear();
+	}
+	
+	@Override
+	public Location generateLocation(){
+		return null;
 	}
 	
 	public ProtectedRegion getRegion(){
@@ -67,21 +73,10 @@ public class Region {
 		return town;
 	}
 	
-	public class RegionSpawn{
+	public class RegionSpawn extends MonsterContainer{
 		
-		
-		private float pct;
-		
-		public RegionSpawn(){
-			
-		}
-		
-		public boolean shouldSpawn(){
-			return false;
-		}
-		
-		public void spawn(){
-			
+		public RegionSpawn(MonsterGenerator gen, long respawnDelay, Region spawner) {
+			super(gen, respawnDelay, SpawnType.REGION, spawner);
 		}
 		
 	}

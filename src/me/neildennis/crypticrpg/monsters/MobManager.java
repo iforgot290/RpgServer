@@ -26,11 +26,11 @@ import me.neildennis.crypticrpg.utils.Utils;
 public class MobManager extends Manager{
 	
 	private static ArrayList<SpawnBlock> spawners;
-	private static ArrayList<CrypticMonster> monsters;
+	private static ArrayList<MonsterContainer> monsters;
 	
 	public MobManager(){
 		spawners = new ArrayList<SpawnBlock>();
-		monsters = new ArrayList<CrypticMonster>();
+		monsters = new ArrayList<MonsterContainer>();
 		
 		Bukkit.getPluginManager().registerEvents(new SpawnPlaceListener(), Cryptic.getPlugin());
 		Bukkit.getPluginManager().registerEvents(new MobListener(), Cryptic.getPlugin());
@@ -106,38 +106,32 @@ public class MobManager extends Manager{
 		spawners.add(spawner);
 	}
 	
-	public static void registerMonster(CrypticMonster monster){
+	public static void registerMonster(MonsterContainer monster){
 		monsters.add(monster);
 	}
 	
-	public static void unregisterMonster(CrypticMonster monster){
+	public static void unregisterMonster(MonsterContainer monster){
 		monsters.remove(monster);
 	}
 	
 	public static CrypticMonster getMonster(Entity ent){
-		for (CrypticMonster monster : monsters)
-			if (monster.getEntity() == ent)
-				return monster;
+		for (MonsterContainer container : monsters)
+			if (container.getMonster().getEntity() == ent)
+				return container.getMonster();
 		return null;
 	}
 	
-	public static SpawnBlockMonster getSpawnBlockMonster(CrypticMonster monster){
-		if (monster.getSpawnType() != SpawnType.SPAWNBLOCK) return null;
-		
-		for (SpawnBlock blk : spawners)
-			for (SpawnBlockMonster spawnmob : blk.getSpawns())
-				if (spawnmob.getMonster() == monster)
-					return spawnmob;
+	public static MonsterContainer getMonsterContainer(Entity ent){
+		for (MonsterContainer container : monsters)
+			if (container.getMonster().getEntity() == ent)
+				return container;
 		return null;
 	}
 	
-	public static SpawnBlock getSpawnBlock(CrypticMonster monster){
-		if (monster.getSpawnType() != SpawnType.SPAWNBLOCK) return null;
-		
-		for (SpawnBlock blk : spawners)
-			for (SpawnBlockMonster spawnmob : blk.getSpawns())
-				if (spawnmob.getMonster() == monster)
-					return blk;
+	public static MonsterContainer getMonsterContainer(CrypticMonster monster){
+		for (MonsterContainer container : monsters)
+			if (container.getMonster() == monster)
+				return container;
 		return null;
 	}
 

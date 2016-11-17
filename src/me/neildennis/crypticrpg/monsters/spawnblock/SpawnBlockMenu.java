@@ -1,11 +1,14 @@
 package me.neildennis.crypticrpg.monsters.spawnblock;
 
+import java.util.ArrayList;
+
 import org.bukkit.ChatColor;
 
 import me.neildennis.crypticrpg.items.attribs.Rarity;
 import me.neildennis.crypticrpg.items.type.CrypticItemType;
 import me.neildennis.crypticrpg.menu.Menu;
 import me.neildennis.crypticrpg.monsters.MobType;
+import me.neildennis.crypticrpg.monsters.MonsterContainer;
 import me.neildennis.crypticrpg.monsters.generator.MonsterGenerator;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 
@@ -13,12 +16,25 @@ public class SpawnBlockMenu extends Menu{
 
 	private State state = State.MAIN;
 	private SpawnBlock blk;
-	private SpawnBlockMonster mob;
+	private MonsterContainer mob;
 	private MonsterGenerator gen;
 	
 	public SpawnBlockMenu(CrypticPlayer pl, SpawnBlock blk) {
 		super(pl);
 		this.blk = blk;
+		blk.setEnabled(false);
+		
+		for (MonsterContainer mob : blk.getAliveSpawns()){
+			mob.getMonster().getEntity().remove();
+			mob.setDeath();
+		}
+	}
+	
+	@Override
+	public void exit(){
+		pl.sendMessage(ChatColor.GREEN + "Exiting...");
+		pl.clearMenu();
+		blk.setEnabled(true);
 	}
 	
 	@Override
@@ -29,8 +45,9 @@ public class SpawnBlockMenu extends Menu{
 		
 		case LIST_MONSTER:
 			pl.sendMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "Enter monster number");
-			for (int i = 0; i < blk.getSpawns().size(); i++){
-				SpawnBlockMonster spawn = blk.getSpawns().get(i);
+			ArrayList<MonsterContainer> spawns = blk.getDeadSpawns();
+			for (int i = 0; i < spawns.size(); i++){
+				MonsterContainer spawn = spawns.get(i);
 				MonsterGenerator gen = spawn.getMonsterGen();
 				pl.sendMessage(ChatColor.GRAY + "(" + i + ") " + gen.getType().name()
 						+ " {elite=" + gen.isElite() + "},{respawn=" + spawn.getRespawnDelay() + "},{minlvl="
@@ -98,12 +115,12 @@ public class SpawnBlockMenu extends Menu{
 			}
 			try {
 				int i = Integer.parseInt(str);
-				mob = blk.getSpawns().get(i);
+				mob = blk.getDeadSpawns().get(i);
 				
 				if (mob == null){
 					pl.sendMessage(ChatColor.RED + "Invalid mob");
 				} else {
-					blk.getSpawns().remove(i);
+					blk.getDeadSpawns().remove(i);
 					state = State.MOD_MONSTER;
 				}
 			} catch (Exception e){
@@ -125,7 +142,7 @@ public class SpawnBlockMenu extends Menu{
 				return;
 			}
 
-			mob = new SpawnBlockMonster(new MonsterGenerator(type), 1000L);
+			mob = new SpawnBlockMonster(new MonsterGenerator(type), 1000L, blk);
 			gen = mob.getMonsterGen();
 			state = State.MOD_MONSTER;
 
@@ -133,7 +150,7 @@ public class SpawnBlockMenu extends Menu{
 			
 		case MOD_MONSTER:
 			if (str.equalsIgnoreCase("exit") || str.equalsIgnoreCase("done")){
-				if (mob != null) blk.getSpawns().add(mob);
+				if (mob != null) blk.getDeadSpawns().add(mob);
 				state = State.MAIN;
 				break;
 			} else if (str.equalsIgnoreCase("delete")){
@@ -173,8 +190,7 @@ public class SpawnBlockMenu extends Menu{
 				state = State.LIST_MONSTER;
 				break;
 			case "exit":
-				pl.sendMessage(ChatColor.GREEN + "Exiting...");
-				pl.clearMenu();
+				exit();
 				return;
 			case "save":
 				pl.sendMessage("not implemented");
