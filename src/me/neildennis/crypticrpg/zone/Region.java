@@ -6,27 +6,29 @@ import org.bukkit.Location;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
+import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.items.attribs.Rarity;
 import me.neildennis.crypticrpg.items.type.CrypticItemType;
 import me.neildennis.crypticrpg.moderation.MonsterSpawner;
+import me.neildennis.crypticrpg.monsters.MobManager;
 import me.neildennis.crypticrpg.monsters.MobType;
 import me.neildennis.crypticrpg.monsters.MonsterContainer;
 import me.neildennis.crypticrpg.monsters.SpawnType;
 import me.neildennis.crypticrpg.monsters.generator.MonsterGenerator;
+import me.neildennis.crypticrpg.utils.Utils;
 
 public class Region extends MonsterSpawner{
 	
-	private ProtectedPolygonalRegion region;
+	private ProtectedRegion region;
 	
 	private boolean town = false;
 	private String announce;
 	private String subtitle;
 	
 	public Region(ProtectedRegion region, JsonArray array){
-		this.region = (ProtectedPolygonalRegion) region;
+		this.region = region;
 		
 		for (JsonElement ele : array){
 			if (!ele.isJsonObject()) continue;
@@ -71,10 +73,13 @@ public class Region extends MonsterSpawner{
 	
 	@Override
 	public void tickSpawns(){
+		if (!Utils.isPlayerNear(generateLocation())) return;
+		
 		for (MonsterContainer spawn : dead){
 			if (spawn.shouldSpawn()){
 				spawn.spawn(generateLocation());
 				spawned.add(spawn);
+				MobManager.registerMonster(spawn);
 			}
 		}
 		
@@ -88,7 +93,7 @@ public class Region extends MonsterSpawner{
 	
 	@Override
 	public Location generateLocation(){
-		return null;
+		return new Location(Cryptic.getMainWorld(), -14, 71, 420);
 	}
 	
 	public ProtectedRegion getRegion(){

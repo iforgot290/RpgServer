@@ -16,5 +16,9 @@ public class Log {
 		if (Cryptic.rpgEnabled()) Bukkit.broadcastMessage(obj.toString());
 		else System.out.println(obj);
 	}
+	
+	public static void warning(Object obj){
+		Bukkit.getLogger().warning(obj.toString());
+	}
 
 }

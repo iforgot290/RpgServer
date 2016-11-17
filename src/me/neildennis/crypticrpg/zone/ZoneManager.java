@@ -1,15 +1,13 @@
 package me.neildennis.crypticrpg.zone;
 
-import java.io.File;
-import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -17,6 +15,8 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import com.connorlinfoot.titleapi.TitleAPI;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -26,6 +26,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.Manager;
+import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
 import me.neildennis.crypticrpg.utils.Log;
@@ -38,33 +39,42 @@ public class ZoneManager extends Manager implements Listener{
 		loadRegions();
 		Bukkit.getPluginManager().registerEvents(this, Cryptic.getPlugin());
 		Cryptic.registerCommand("zone", new ZoneCommand());
+		registerTasks();
 	}
 	
 	private void loadRegions(){
-		File folder = new File(Cryptic.getPlugin().getDataFolder() + "/regions/");
-		folder.mkdirs();
-		
-		for (File file : folder.listFiles()){
-			if (!file.getName().endsWith(".yml")) continue;
-			String name = file.getName().replaceAll(".yml", "");
-			
-			ProtectedRegion region = WGBukkit.getRegionManager(Cryptic.getMainWorld()).getRegion(name);
-			if (region == null) continue;
-			
-			YamlConfiguration config = new YamlConfiguration();
-			try {
-				config.load(file);
-				regions.put(name, new Region(config, region));
-				Log.debug("Loaded region \"" + name + "\"");
-			} catch (IOException | InvalidConfigurationException e) {
-				e.printStackTrace();
+		try {
+			ResultSet data = Cloud.sendQuery("SELECT * FROM regions");
+			RegionManager manager = WGBukkit.getRegionManager(Cryptic.getMainWorld());
+			while (data.next()){
+				String id = data.getString("region_id");
+				ProtectedRegion region = manager.getRegion(id);
+				
+				if (region == null){
+					Log.warning("Error loading region \"" + id + "\" from database: No such region exists");
+					continue;
+				}
+				
+				String title = data.getString("title");
+				String subtitle = data.getString("subtitle");
+				JsonArray monsters = (JsonArray) new JsonParser().parse(data.getString("monsters"));
+				
+				if (title == null)
+					regions.put(id, new Region(region, monsters));
+				else
+					regions.put(id, new Region(region, monsters, title, subtitle));
+				
+				Log.info("Loaded region: " + id);
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void registerTasks() {
-		
+		tasks.add(Bukkit.getScheduler().runTaskTimer(Cryptic.getPlugin(),
+				() -> {for (Region region : regions.values()) region.tickSpawns();}, 20L, 20L));
 	}
 
 	@EventHandler
