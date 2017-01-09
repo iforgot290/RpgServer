@@ -32,12 +32,16 @@ public class MobListener implements Listener {
 		if (event.getSpawnReason() != SpawnReason.CUSTOM) event.setCancelled(true);
 	}
 
+	/**
+	 * When a monster hits a player
+	 * @param event damage event
+	 */
 	@EventHandler
 	public void onMonsterHit(EntityDamageByEntityEvent event){
 		if (event.getCause() != DamageCause.ENTITY_ATTACK) return;
 		if (event.getDamager().getType() == EntityType.PLAYER) return;
 		if (event.getEntity().getType() != EntityType.PLAYER) return;
-
+		
 		CrypticMonster monster = MobManager.getMonster(event.getDamager());
 		if (monster == null) return;
 

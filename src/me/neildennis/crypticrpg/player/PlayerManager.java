@@ -3,7 +3,6 @@ package me.neildennis.crypticrpg.player;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,7 +18,8 @@ public class PlayerManager implements Listener{
 
 	public PlayerManager(){
 		players = new ArrayList<CrypticPlayer>();
-		Bukkit.getPluginManager().registerEvents(this, Cryptic.getPlugin());
+		Cryptic.registerEvents(this);
+		Cryptic.registerEvents(new DebugListener());
 	}
 	
 	public static ArrayList<CrypticPlayer> getPlayers(){

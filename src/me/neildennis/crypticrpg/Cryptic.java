@@ -2,6 +2,7 @@ package me.neildennis.crypticrpg;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.neildennis.crypticrpg.chat.ChatManager;
@@ -48,7 +49,7 @@ public class Cryptic extends JavaPlugin{
 		rankManager = new RankManager();
 		zoneManager = new ZoneManager();
 		
-		Bukkit.getPluginManager().registerEvents(new HealthListener(), getPlugin());
+		registerEvents(new HealthListener());
 		registerCommand("item", new TestCommand());
 		
 		enabled = true;
@@ -61,6 +62,11 @@ public class Cryptic extends JavaPlugin{
 	public static void registerCommand(String label, CrypticCommand cmd){
 		Log.debug("Registering new command: /" + label);
 		getPlugin().getCommand(label).setExecutor(cmd);
+	}
+	
+	public static void registerEvents(Listener listener){
+		Log.debug("Registering events: " + listener.getClass().getCanonicalName());
+		Bukkit.getPluginManager().registerEvents(listener, getPlugin());
 	}
 	
 	public static boolean rpgEnabled(){

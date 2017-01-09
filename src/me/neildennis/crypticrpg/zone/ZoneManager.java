@@ -14,7 +14,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
-import com.connorlinfoot.titleapi.TitleAPI;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.sk89q.worldguard.bukkit.WGBukkit;
@@ -129,7 +128,7 @@ public class ZoneManager extends Manager implements Listener{
 		}
 		
 		if ((current == null && toregion != null) || current != toregion){
-			TitleAPI.sendTitle(pl.getPlayer(), 10, 40, 10, toregion.getAnnounce(), toregion.getSubtitle());
+			pl.getPlayer().sendTitle(toregion.getAnnounce(), toregion.getSubtitle(), 10, 40, 10);
 			pl.setTown(toregion);
 		}
 	}

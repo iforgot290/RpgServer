@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -42,6 +43,7 @@ public class HealthData {
 
 	public void online(Player pl){
 		p = pl;
+		pl.setHealthScale(20);
 		updateHealth(lastHP);
 		registerTasks();
 	}
@@ -55,7 +57,7 @@ public class HealthData {
 				if (isStarving()) return;
 
 				if (!isInCombat()){
-					double max = p.getMaxHealth();
+					double max = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 					double current = p.getHealth();
 					int toheal = 5 + getRegenAmount();
 
@@ -105,12 +107,17 @@ public class HealthData {
 	}
 
 	public void updateHealth(){
-		p.setMaxHealth(cp.getAttribute(AttributeType.HEALTH).genValue() + 50);
-		updateOverheadHP();
+		updateHealth((int) p.getHealth());
 	}
 
 	public void updateHealth(int current){
-		p.setMaxHealth(cp.getAttribute(AttributeType.HEALTH).genValue() + 50);
+		int maxhealth = cp.getAttribute(AttributeType.HEALTH).genValue() + 50;
+		
+		if (current > maxhealth) {
+			current = maxhealth;
+		}
+		
+		p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxhealth);
 		p.setHealth(current);
 		updateOverheadHP();
 	}
@@ -123,21 +130,33 @@ public class HealthData {
 			bar.addPlayer(cp.getPlayer());
 		}
 
-		double percent = (p.getHealth() / p.getMaxHealth());
+		double percent = (p.getHealth() / p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 		if (percent > 1.0){
 			percent = 1.0;
 		}
 
-		bar.setTitle(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "Health " + ChatColor.LIGHT_PURPLE
+		BarColor barcolor = BarColor.GREEN;
+		ChatColor chatcolor = ChatColor.DARK_GREEN;
+		
+		if (percent < 0.35){
+			barcolor = BarColor.RED;
+			chatcolor = ChatColor.DARK_RED;
+		} else if (percent < 0.7){
+			barcolor = BarColor.YELLOW;
+			chatcolor = ChatColor.GOLD;
+		}
+		
+		bar.setColor(barcolor);
+		bar.setTitle(chatcolor.toString() + ChatColor.BOLD.toString() + "Health " + chatcolor
 				+ (int) p.getHealth() + ChatColor.BOLD.toString() + " / "
-				+ ChatColor.LIGHT_PURPLE.toString() + (int) p.getMaxHealth());
+				+ chatcolor.toString() + (int) p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 		bar.setProgress(percent);
 	}
 
 	public String getPipeHealthBar(){
 		int max_bar = 30;
 		double current = p.getHealth();
-		double max = p.getMaxHealth();
+		double max = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 
 		ChatColor cc = null;
 
