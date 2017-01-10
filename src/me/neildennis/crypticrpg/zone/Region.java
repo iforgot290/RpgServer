@@ -1,11 +1,15 @@
 package me.neildennis.crypticrpg.zone;
 
+import java.util.Random;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import me.neildennis.crypticrpg.Cryptic;
@@ -93,7 +97,28 @@ public class Region extends MonsterSpawner{
 	
 	@Override
 	public Location generateLocation(){
-		return new Location(Cryptic.getMainWorld(), -14, 71, 420);
+		BlockVector min = region.getMinimumPoint();
+		BlockVector max = region.getMaximumPoint();
+		Random rand = new Random();
+		return generateLocation(rand, min, max, 0);
+	}
+	
+	private Location generateLocation(Random rand, BlockVector min, BlockVector max, int attempt){
+		if (attempt > 5) return null;
+		
+		int x = rand.nextInt(max.getBlockX() - min.getBlockX()) + min.getBlockX();
+		int z = rand.nextInt(max.getBlockZ() - min.getBlockZ()) + min.getBlockZ();
+		
+		if (!region.contains(x, min.getBlockY(), z))
+			return generateLocation(rand, min, max, attempt++);
+		
+		for (int y = min.getBlockY(); y < max.getBlockY(); y++){
+			if (Cryptic.getMainWorld().getBlockAt(x, y, z).getType() == Material.AIR){
+				return new Location(Cryptic.getMainWorld(), x, y, z);
+			}
+		}
+		
+		return generateLocation(rand, min, max, attempt++);
 	}
 	
 	public ProtectedRegion getRegion(){

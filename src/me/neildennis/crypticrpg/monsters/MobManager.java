@@ -122,9 +122,11 @@ public class MobManager extends Manager{
 	}
 	
 	public static MonsterContainer getMonsterContainer(Entity ent){
-		for (MonsterContainer container : monsters)
+		for (MonsterContainer container : monsters){
+			if (container.getMonster() == null) continue;
 			if (container.getMonster().getEntity() == ent)
 				return container;
+		}
 		return null;
 	}
 	

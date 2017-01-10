@@ -91,8 +91,13 @@ public class MobListener implements Listener {
 	public void onChunkUnload(ChunkUnloadEvent event){
 		if (event.getWorld() == Cryptic.getMainWorld())
 			if (event.getChunk().getEntities().length > 0)
-				for (Entity ent : event.getChunk().getEntities())
-					Log.debug(ent.getType() + " unloaded in a chunk");
+				for (Entity ent : event.getChunk().getEntities()){
+					MonsterContainer monster = MobManager.getMonsterContainer(ent);
+					if (monster == null) continue;
+					monster.setDeath();
+					ent.remove();
+					Log.debug("Removed monster");
+				}
 	}
 	
 	@EventHandler
