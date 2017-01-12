@@ -1,6 +1,9 @@
 package me.neildennis.crypticrpg.zone;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -21,6 +24,8 @@ import me.neildennis.crypticrpg.monsters.MobType;
 import me.neildennis.crypticrpg.monsters.MonsterContainer;
 import me.neildennis.crypticrpg.monsters.SpawnType;
 import me.neildennis.crypticrpg.monsters.generator.MonsterGenerator;
+import me.neildennis.crypticrpg.professions.OreCluster;
+import me.neildennis.crypticrpg.utils.CustomFlags;
 import me.neildennis.crypticrpg.utils.Utils;
 
 public class Region extends MonsterSpawner{
@@ -31,8 +36,16 @@ public class Region extends MonsterSpawner{
 	private String announce;
 	private String subtitle;
 	
+	//Mining stuff
+	private ArrayList<OreCluster> spawnedOre;
+	private ArrayList<OreCluster> waitingOre;
+	private ConcurrentLinkedQueue<Long> oreRespawn;
+	
 	public Region(ProtectedRegion region, JsonArray array){
 		this.region = region;
+		this.spawnedOre = new ArrayList<OreCluster>();
+		this.waitingOre = new ArrayList<OreCluster>();
+		this.oreRespawn = new ConcurrentLinkedQueue<Long>();
 		
 		for (JsonElement ele : array){
 			if (!ele.isJsonObject()) continue;
@@ -73,6 +86,22 @@ public class Region extends MonsterSpawner{
 			announce = ChatColor.translateAlternateColorCodes('&', announce);
 		if (subtitle != null)
 			subtitle = ChatColor.translateAlternateColorCodes('&', subtitle);
+	}
+	
+	public ArrayList<OreCluster> getSpawnedOre(){
+		return spawnedOre;
+	}
+	
+	public ArrayList<OreCluster> getWaitingOre(){
+		return waitingOre;
+	}
+	
+	public ConcurrentLinkedQueue<Long> getOreQueue(){
+		return oreRespawn;
+	}
+	
+	public int getMaxOreSpawns(){
+		return region.getFlag(CustomFlags.MINING);
 	}
 	
 	@Override

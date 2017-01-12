@@ -192,6 +192,10 @@ public class CrypticPlayer {
 		return rankData.getRank();
 	}
 	
+	public boolean hasPermission(Rank rank){
+		return getRank().getPriority() >= rank.getPriority();
+	}
+	
 	public CachedStats getStats(){
 		return stats;
 	}

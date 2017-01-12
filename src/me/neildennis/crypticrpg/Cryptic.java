@@ -15,6 +15,8 @@ import me.neildennis.crypticrpg.moderation.ModerationManager;
 import me.neildennis.crypticrpg.monsters.MobManager;
 import me.neildennis.crypticrpg.permission.RankManager;
 import me.neildennis.crypticrpg.player.PlayerManager;
+import me.neildennis.crypticrpg.professions.ProfessionManager;
+import me.neildennis.crypticrpg.utils.CustomFlags;
 import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.zone.ZoneManager;
 
@@ -31,9 +33,14 @@ public class Cryptic extends JavaPlugin{
 	private MenuManager menuManager;
 	public static RankManager rankManager;
 	private ZoneManager zoneManager;
+	private ProfessionManager professionManager;
 	
 	private static World mainworld;
 	private static boolean enabled = false;
+	
+	public void onLoad(){
+		CustomFlags.loadFlags();
+	}
 	
 	public void onEnable(){
 		instance = this;
@@ -48,6 +55,7 @@ public class Cryptic extends JavaPlugin{
 		menuManager = new MenuManager();
 		rankManager = new RankManager();
 		zoneManager = new ZoneManager();
+		professionManager = new ProfessionManager();
 		
 		registerEvents(new HealthListener());
 		registerCommand("item", new TestCommand());
@@ -103,6 +111,10 @@ public class Cryptic extends JavaPlugin{
 	
 	public ZoneManager getZoneManager(){
 		return zoneManager;
+	}
+	
+	public ProfessionManager getProfessionManager(){
+		return professionManager;
 	}
 
 	public static World getMainWorld() {

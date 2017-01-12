@@ -13,3 +13,5 @@ commands:
     usage: /<command>
   setrank:
     usage: /<command>
+  ore:
+    usage: /<command>
