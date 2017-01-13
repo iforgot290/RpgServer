@@ -97,6 +97,7 @@ public class ProfessionManager extends Manager{
 			if (region.getOreQueue().isEmpty()){
 				int needs = region.getMaxOreSpawns() - region.getSpawnedOre().size();
 				for (int i = 0; i < needs; i++){
+					if (region.getWaitingOre().size() < 1) continue;
 					OreCluster cluster = region.getWaitingOre().get(rand.nextInt(region.getWaitingOre().size()));
 					cluster.spawn();
 					region.getSpawnedOre().add(cluster);

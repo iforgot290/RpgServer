@@ -27,6 +27,7 @@ public class ChatManager implements Listener{
 		syncmsg = new ConcurrentLinkedQueue<SyncMessage>();
 		tasks = new ArrayList<BukkitTask>();
 		Bukkit.getPluginManager().registerEvents(new ChatListener(), Cryptic.getPlugin());
+		registerTasks();
 	}
 	
 	public void registerTasks(){

@@ -46,8 +46,8 @@ public class PlayerData {
 	
 	public static void banPlayer(UUID toban, String tobanName, UUID banner, String bannerName, String reason) throws SQLException{
 		
-		Cloud.sendStatement("INSERT INTO bans (player_uuid, player_name, enforcer_uuid, enforcer_name, reason) VALUES ('" + toban.toString() + "', '"
-				+ tobanName + "', '" + (banner == null ? "" : banner.toString()) + "', '" + bannerName + "', '" + reason + "')");
+		Cloud.sendStatement("INSERT INTO bans (player_uuid, player_name, ban_time, enforcer_uuid, enforcer_name, reason) VALUES ('" + toban.toString() + "', '"
+				+ tobanName + "', '" + System.currentTimeMillis() + "', '" + (banner == null ? "" : banner.toString()) + "', '" + bannerName + "', '" + reason + "')");
 	}
 	
 	public static ResultSet getBans(UUID banned) throws SQLException{

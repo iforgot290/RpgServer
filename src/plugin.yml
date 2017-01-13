@@ -15,3 +15,5 @@ commands:
     usage: /<command>
   ore:
     usage: /<command>
+  baninfo:
+    usage: /<command>

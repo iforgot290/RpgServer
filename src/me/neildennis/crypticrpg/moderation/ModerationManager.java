@@ -15,6 +15,7 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.moderation.ModerationData.Ban;
 import me.neildennis.crypticrpg.moderation.commands.CommandBan;
+import me.neildennis.crypticrpg.moderation.commands.CommandBanInfo;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
 
@@ -24,6 +25,7 @@ public class ModerationManager implements Listener{
 		Bukkit.getPluginManager().registerEvents(this, Cryptic.getPlugin());
 		
 		Cryptic.registerCommand("ban", new CommandBan());
+		Cryptic.registerCommand("baninfo", new CommandBanInfo());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

@@ -70,12 +70,12 @@ public class CommandBanInfo extends CrypticCommand {
 		ArrayList<String> info = new ArrayList<String>();
 		Ban ban = data.getCurrentBan();
 		
-		info.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + "Player info: " + ChatColor.GREEN + name);
-		info.add(ChatColor.YELLOW + "Banned: " + (ban == null ? ChatColor.GREEN + "false" : ChatColor.RED + "true"));
+		info.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + "Player info: " + ChatColor.GREEN + ChatColor.BOLD.toString() + name);
+		info.add(ChatColor.YELLOW + "Banned: " + (ban == null ? ChatColor.RED + "false" : ChatColor.GREEN + "true"));
 		info.add(ChatColor.YELLOW + "Bans on record: " + ChatColor.GRAY + data.getBans().size());
-		info.add("");
 		
 		if (ban != null){
+			info.add("");
 			info.add(ChatColor.YELLOW + "Enforcer: " + ChatColor.GRAY + ban.getBannerName());
 			info.add(ChatColor.YELLOW + "Reason: " + ChatColor.GRAY + ban.getReason());
 			Date date = new Date(ban.getBanTime());
