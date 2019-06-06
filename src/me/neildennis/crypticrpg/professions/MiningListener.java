@@ -10,10 +10,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.permission.Rank;
@@ -26,15 +27,15 @@ import me.neildennis.crypticrpg.zone.Region;
 
 public class MiningListener implements Listener{
 	
-	RegionManager regions;
+	RegionContainer regions;
 	
 	public MiningListener(){
-		regions = WorldGuardPlugin.inst().getRegionContainer().get(Cryptic.getMainWorld());
+		regions = WorldGuard.getInstance().getPlatform().getRegionContainer();
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event){
-		ApplicableRegionSet set = regions.getApplicableRegions(event.getBlock().getLocation());
+		ApplicableRegionSet set = regions.createQuery().getApplicableRegions(BukkitAdapter.adapt(event.getBlock().getLocation()));
 		
 		for (ProtectedRegion wgregion : set){
 			Region region = ProfessionManager.getMiningRegion(wgregion.getId());

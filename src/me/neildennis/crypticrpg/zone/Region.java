@@ -12,7 +12,7 @@ import org.bukkit.Material;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.sk89q.worldedit.BlockVector;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import me.neildennis.crypticrpg.Cryptic;
@@ -126,13 +126,13 @@ public class Region extends MonsterSpawner{
 	
 	@Override
 	public Location generateLocation(){
-		BlockVector min = region.getMinimumPoint();
-		BlockVector max = region.getMaximumPoint();
+		BlockVector3 min = region.getMinimumPoint();
+		BlockVector3 max = region.getMaximumPoint();
 		Random rand = new Random();
 		return generateLocation(rand, min, max, 0);
 	}
 	
-	private Location generateLocation(Random rand, BlockVector min, BlockVector max, int attempt){
+	private Location generateLocation(Random rand, BlockVector3 min, BlockVector3 max, int attempt){
 		if (attempt > 5) return null;
 		
 		int x = rand.nextInt(max.getBlockX() - min.getBlockX()) + min.getBlockX();

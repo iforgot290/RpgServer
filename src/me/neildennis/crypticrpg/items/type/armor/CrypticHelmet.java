@@ -27,7 +27,7 @@ public class CrypticHelmet extends CrypticArmor{
 			case TWO: return Material.CHAINMAIL_HELMET;
 			case THREE: return Material.IRON_HELMET;
 			case FOUR: return Material.DIAMOND_HELMET;
-			case FIVE: return Material.GOLD_HELMET;
+			case FIVE: return Material.GOLDEN_HELMET;
 			default: return Material.LEATHER_HELMET;
 		}
 	}
@@ -39,7 +39,7 @@ public class CrypticHelmet extends CrypticArmor{
 			case CHAINMAIL_HELMET: return Tier.TWO;
 			case IRON_HELMET: return Tier.THREE;
 			case DIAMOND_HELMET: return Tier.FOUR;
-			case GOLD_HELMET: return Tier.FIVE;
+			case GOLDEN_HELMET: return Tier.FIVE;
 			default: return Tier.ONE;
 		}
 	}

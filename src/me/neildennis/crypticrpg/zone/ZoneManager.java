@@ -13,22 +13,25 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import com.connorlinfoot.actionbarapi.ActionBarAPI;
+//import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
-import com.sk89q.worldguard.bukkit.WGBukkit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.Manager;
 import me.neildennis.crypticrpg.cloud.Cloud;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
 import me.neildennis.crypticrpg.utils.Log;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class ZoneManager extends Manager implements Listener{
 	
@@ -44,7 +47,8 @@ public class ZoneManager extends Manager implements Listener{
 	private void loadRegions(){
 		try {
 			ResultSet data = Cloud.sendQuery("SELECT * FROM regions");
-			RegionManager manager = WGBukkit.getRegionManager(Cryptic.getMainWorld());
+			RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+			RegionManager manager = container.get(BukkitAdapter.adapt(Cryptic.getMainWorld()));
 			while (data.next()){
 				String id = data.getString("region_id");
 				ProtectedRegion region = manager.getRegion(id);
@@ -101,19 +105,21 @@ public class ZoneManager extends Manager implements Listener{
 	}
 
 	public static void checkZone(CrypticPlayer pl, Location to){
-		RegionManager manager = WGBukkit.getRegionManager(to.getWorld());
-		ZoneState tostate = getZoneState(manager.getApplicableRegions(to));
+		RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+		ApplicableRegionSet regionset = container.createQuery().getApplicableRegions(BukkitAdapter.adapt(to));
+		ZoneState tostate = getZoneState(regionset);
 
 		if (pl.getZoneState() != tostate){
 			Log.debug(pl.getPlayer().getName() + " has changed zone states");
 			pl.setZoneState(tostate);
-			ActionBarAPI.sendActionBar(pl.getPlayer(), tostate.getDisplay());
+			pl.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(tostate.getDisplay()));
+			//ActionBarAPI.sendActionBar(pl.getPlayer(), tostate.getDisplay());
 		}
 		
 		Region current = pl.getTown();
 		Region toregion = null;
 		
-		for (ProtectedRegion region : manager.getApplicableRegions(to)){
+		for (ProtectedRegion region : regionset){
 			Region check = regions.get(region.getId());
 			if (check != null && check.isTown()){
 				toregion = check;
@@ -135,8 +141,8 @@ public class ZoneManager extends Manager implements Listener{
 
 	public static ZoneState getZoneState(ApplicableRegionSet regionset){
 
-		if (regionset.queryState(null, DefaultFlag.PVP) == State.ALLOW) return ZoneState.PVP;
-		if (regionset.queryState(null, DefaultFlag.MOB_DAMAGE) == State.ALLOW) return ZoneState.MONSTERS;
+		if (regionset.queryState(null, Flags.PVP) == State.ALLOW) return ZoneState.PVP;
+		if (regionset.queryState(null, Flags.MOB_DAMAGE) == State.ALLOW) return ZoneState.MONSTERS;
 
 		return ZoneState.PEACEFUL;
 	}

@@ -13,23 +13,23 @@ import me.neildennis.crypticrpg.items.type.weapon.CrypticSword;
 
 public enum CrypticItemType {
 	
-	SWORD(CrypticSword.class, 	Material.WOOD_SWORD,
+	SWORD(CrypticSword.class, 	Material.WOODEN_SWORD,
 								Material.STONE_SWORD,
 								Material.IRON_SWORD,
 								Material.DIAMOND_SWORD,
-								Material.GOLD_SWORD),
+								Material.GOLDEN_SWORD),
 	
 	HELMET(CrypticHelmet.class, Material.LEATHER_HELMET,
 								Material.CHAINMAIL_HELMET,
 								Material.IRON_HELMET,
 								Material.DIAMOND_HELMET,
-								Material.GOLD_HELMET),
+								Material.GOLDEN_HELMET),
 	
 	CHESTPLATE(CrypticChestplate.class, Material.LEATHER_CHESTPLATE, Material.CHAINMAIL_CHESTPLATE, Material.IRON_CHESTPLATE, Material.DIAMOND_CHESTPLATE,
-			Material.GOLD_CHESTPLATE),
+			Material.GOLDEN_CHESTPLATE),
 	LEGGINGS(CrypticLeggings.class, Material.LEATHER_LEGGINGS, Material.CHAINMAIL_LEGGINGS, Material.IRON_LEGGINGS, Material.DIAMOND_LEGGINGS,
-			Material.GOLD_LEGGINGS),
-	BOOTS(CrypticBoots.class, Material.LEATHER_BOOTS, Material.CHAINMAIL_BOOTS, Material.IRON_BOOTS, Material.DIAMOND_BOOTS, Material.GOLD_BOOTS);
+			Material.GOLDEN_LEGGINGS),
+	BOOTS(CrypticBoots.class, Material.LEATHER_BOOTS, Material.CHAINMAIL_BOOTS, Material.IRON_BOOTS, Material.DIAMOND_BOOTS, Material.GOLDEN_BOOTS);
 	
 	private Class<? extends CrypticItem> c;
 	private Material[] mat;

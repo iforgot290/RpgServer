@@ -27,7 +27,7 @@ public class CrypticChestplate extends CrypticArmor{
 			case TWO: return Material.CHAINMAIL_CHESTPLATE;
 			case THREE: return Material.IRON_CHESTPLATE;
 			case FOUR: return Material.DIAMOND_CHESTPLATE;
-			case FIVE: return Material.GOLD_CHESTPLATE;
+			case FIVE: return Material.GOLDEN_CHESTPLATE;
 			default: return Material.LEATHER_CHESTPLATE;
 		}
 	}
@@ -39,7 +39,7 @@ public class CrypticChestplate extends CrypticArmor{
 			case CHAINMAIL_CHESTPLATE: return Tier.TWO;
 			case IRON_CHESTPLATE: return Tier.THREE;
 			case DIAMOND_CHESTPLATE: return Tier.FOUR;
-			case GOLD_CHESTPLATE: return Tier.FIVE;
+			case GOLDEN_CHESTPLATE: return Tier.FIVE;
 			default: return Tier.ONE;
 		}
 	}

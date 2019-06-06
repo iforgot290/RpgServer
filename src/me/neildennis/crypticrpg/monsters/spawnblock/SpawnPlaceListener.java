@@ -22,7 +22,7 @@ public class SpawnPlaceListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void onBlockPlace(BlockPlaceEvent event){
-		if (event.getBlock().getType() != Material.MOB_SPAWNER) return;
+		if (event.getBlock().getType() != Material.SPAWNER) return;
 		
 		CrypticPlayer pl = PlayerManager.getCrypticPlayer(event.getPlayer());
 		
@@ -41,7 +41,7 @@ public class SpawnPlaceListener implements Listener {
 	public void onBlockInteract(PlayerInteractEvent event){
 		if (event.getHand() != EquipmentSlot.HAND) return;
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-		if (event.getClickedBlock().getType() != Material.MOB_SPAWNER) return;
+		if (event.getClickedBlock().getType() != Material.SPAWNER) return;
 		CrypticPlayer pl = PlayerManager.getCrypticPlayer(event.getPlayer());
 		if (pl.getRank().getPriority() < Rank.ADMIN.getPriority()) return;
 		

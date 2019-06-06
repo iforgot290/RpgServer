@@ -23,23 +23,23 @@ public class CrypticSword extends CrypticWeapon{
 	@Override
 	protected Material getMatFromTier() {
 		switch (tier){
-			case ONE: return Material.WOOD_SWORD;
+			case ONE: return Material.WOODEN_SWORD;
 			case TWO: return Material.STONE_SWORD;
 			case THREE: return Material.IRON_SWORD;
 			case FOUR: return Material.DIAMOND_SWORD;
-			case FIVE: return Material.GOLD_SWORD;
-			default: return Material.WOOD_SWORD;
+			case FIVE: return Material.GOLDEN_SWORD;
+			default: return Material.WOODEN_SWORD;
 		}
 	}
 
 	@Override
 	protected Tier getTierFromMat(Material mat) {
 		switch (mat){
-			case WOOD_SWORD: return Tier.ONE;
+			case WOODEN_SWORD: return Tier.ONE;
 			case STONE_SWORD: return Tier.TWO;
 			case IRON_SWORD: return Tier.THREE;
 			case DIAMOND_SWORD: return Tier.FOUR;
-			case GOLD_SWORD: return Tier.FIVE;
+			case GOLDEN_SWORD: return Tier.FIVE;
 			default: return Tier.ONE;
 		}
 	}

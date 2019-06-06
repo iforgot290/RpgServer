@@ -36,7 +36,7 @@ public class SpawnBlock extends MonsterSpawner{
 		this.loc = loc;
 		this.range = range;
 
-		if (loc.getBlock().getType() == Material.MOB_SPAWNER) shown = true;
+		if (loc.getBlock().getType() == Material.SPAWNER) shown = true; 
 		else loc.getBlock().setType(Material.AIR);
 	}
 
@@ -135,7 +135,7 @@ public class SpawnBlock extends MonsterSpawner{
 
 	public void setVisible(boolean show){
 		Block blk = loc.getBlock();
-		if (show) blk.setType(Material.MOB_SPAWNER);
+		if (show) blk.setType(Material.SPAWNER);
 		else blk.setType(Material.AIR);
 		shown = show;
 	}

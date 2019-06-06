@@ -27,7 +27,7 @@ public class CrypticLeggings extends CrypticArmor{
 			case TWO: return Material.CHAINMAIL_LEGGINGS;
 			case THREE: return Material.IRON_LEGGINGS;
 			case FOUR: return Material.DIAMOND_LEGGINGS;
-			case FIVE: return Material.GOLD_LEGGINGS;
+			case FIVE: return Material.GOLDEN_LEGGINGS;
 			default: return Material.LEATHER_LEGGINGS;
 		}
 	}
@@ -39,7 +39,7 @@ public class CrypticLeggings extends CrypticArmor{
 			case CHAINMAIL_LEGGINGS: return Tier.TWO;
 			case IRON_LEGGINGS: return Tier.THREE;
 			case DIAMOND_LEGGINGS: return Tier.FOUR;
-			case GOLD_LEGGINGS: return Tier.FIVE;
+			case GOLDEN_LEGGINGS: return Tier.FIVE;
 			default: return Tier.ONE;
 		}
 	}

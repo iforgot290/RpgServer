@@ -27,7 +27,7 @@ public class CrypticBoots extends CrypticArmor{
 			case TWO: return Material.CHAINMAIL_BOOTS;
 			case THREE: return Material.IRON_BOOTS;
 			case FOUR: return Material.DIAMOND_BOOTS;
-			case FIVE: return Material.GOLD_BOOTS;
+			case FIVE: return Material.GOLDEN_BOOTS;
 			default: return Material.LEATHER_BOOTS;
 		}
 	}
@@ -39,7 +39,7 @@ public class CrypticBoots extends CrypticArmor{
 			case CHAINMAIL_BOOTS: return Tier.TWO;
 			case IRON_BOOTS: return Tier.THREE;
 			case DIAMOND_BOOTS: return Tier.FOUR;
-			case GOLD_BOOTS: return Tier.FIVE;
+			case GOLDEN_BOOTS: return Tier.FIVE;
 			default: return Tier.ONE;
 		}
 	}
