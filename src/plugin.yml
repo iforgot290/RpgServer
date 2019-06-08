@@ -2,6 +2,7 @@ name: CrypticRPG
 main: me.neildennis.crypticrpg.Cryptic
 version: 1.0
 depend: [WorldGuard,WorldEdit]
+api-version: 1.13
 commands:
   item:
     usage: /<command>
