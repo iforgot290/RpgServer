@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.google.gson.JsonObject;
 
-import me.neildennis.crypticrpg.cloud.Cloud;
+import me.neildennis.crypticrpg.cloud.CloudManager;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 
@@ -21,23 +21,23 @@ public class PlayerData {
 
 		String query = "UPDATE player_db SET current_health = '" + hp + "', inventory = '" + getInventoryString(pl)
 			+ "' WHERE player_id = '" + pl.getId().toString() + "'";
-		Cloud.sendStatementAsync(query);
+		CloudManager.sendStatementAsync(query);
 	}
 	
 	@Deprecated
 	public static void savePlayerRank(CrypticPlayer pl){
 		String query = "UPDATE player_db SET rank = '" + pl.getRankData().getRank().name() + "' WHERE player_id = '"
 				+ pl.getId().toString() + "'";
-		Cloud.sendStatementAsync(query);
+		CloudManager.sendStatementAsync(query);
 	}
 	
 	public static void setRank(UUID pl, Rank rank) throws SQLException{
-		Cloud.sendStatement("INSERT INTO player_db (player_id, rank) VALUES ('" + pl.toString() + "', '" + rank.name()
+		CloudManager.sendStatement("INSERT INTO player_db (player_id, rank) VALUES ('" + pl.toString() + "', '" + rank.name()
 									+ "') ON DUPLICATE KEY UPDATE rank = '" + rank.name() + "'");
 	}
 	
 	public static Rank getRank(UUID pl) throws SQLException{
-		ResultSet result = Cloud.sendQuery("SELECT rank FROM player_db WHERE player_id = '" + pl.toString() + "'");
+		ResultSet result = CloudManager.sendQuery("SELECT rank FROM player_db WHERE player_id = '" + pl.toString() + "'");
 		
 		if (!result.next()) return Rank.NORMAL;
 		
@@ -46,12 +46,12 @@ public class PlayerData {
 	
 	public static void banPlayer(UUID toban, String tobanName, UUID banner, String bannerName, String reason) throws SQLException{
 		
-		Cloud.sendStatement("INSERT INTO bans (player_uuid, player_name, ban_time, enforcer_uuid, enforcer_name, reason) VALUES ('" + toban.toString() + "', '"
+		CloudManager.sendStatement("INSERT INTO bans (player_uuid, player_name, ban_time, enforcer_uuid, enforcer_name, reason) VALUES ('" + toban.toString() + "', '"
 				+ tobanName + "', '" + System.currentTimeMillis() + "', '" + (banner == null ? "" : banner.toString()) + "', '" + bannerName + "', '" + reason + "')");
 	}
 	
 	public static ResultSet getBans(UUID banned) throws SQLException{
-		return Cloud.sendQuery("SELECT * FROM bans WHERE player_uuid = '" + banned.toString() + "'");
+		return CloudManager.sendQuery("SELECT * FROM bans WHERE player_uuid = '" + banned.toString() + "'");
 	}
 
 	private static String getInventoryString(CrypticPlayer pl){

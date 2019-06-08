@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import org.bukkit.inventory.Inventory;
 
-import me.neildennis.crypticrpg.cloud.Cloud;
+import me.neildennis.crypticrpg.cloud.CloudManager;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 
 public class Bank {
@@ -26,7 +26,7 @@ public class Bank {
 	
 	public void load(){
 		try {
-			ResultSet data = Cloud.sendQuery("SELECT * FROM banks WHERE player_id = '" + cp.getOfflinePlayer().getUniqueId() + "'");
+			ResultSet data = CloudManager.sendQuery("SELECT * FROM banks WHERE player_id = '" + cp.getOfflinePlayer().getUniqueId() + "'");
 			if (!data.next()) return;
 		} catch (SQLException e) {
 			e.printStackTrace();

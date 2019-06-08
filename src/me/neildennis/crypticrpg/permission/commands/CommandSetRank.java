@@ -10,7 +10,7 @@ import org.bukkit.OfflinePlayer;
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.CrypticCommand;
 import me.neildennis.crypticrpg.chat.ChatManager;
-import me.neildennis.crypticrpg.cloud.Cloud;
+import me.neildennis.crypticrpg.cloud.CloudManager;
 import me.neildennis.crypticrpg.cloud.data.PlayerData;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.permission.RankManager;
@@ -60,7 +60,7 @@ public class CommandSetRank extends CrypticCommand{
 				public void run() {
 
 					try {
-						ResultSet res = Cloud.sendQuery("SELECT rank, server FROM player_db WHERE player_id = '" + id.toString() + "'");
+						ResultSet res = CloudManager.sendQuery("SELECT rank, server FROM player_db WHERE player_id = '" + id.toString() + "'");
 						if (!res.next()){
 							ChatManager.sendSyncMessage(pl.getPlayer(), ChatColor.RED + "Player not found");
 							return;
@@ -77,12 +77,12 @@ public class CommandSetRank extends CrypticCommand{
 						}
 
 						if (cont){
-							Cloud.sendStatementAsync("UPDATE player_db SET rank = '" + torank.name()
+							CloudManager.sendStatementAsync("UPDATE player_db SET rank = '" + torank.name()
 							+ "' WHERE player_id = '" + id.toString() + "'");
 
 							int server = res.getInt("server");
 							if (server >= 0){
-								Cloud.sendCrossServer(server, "rank " + id.toString() + " " + torank.name());
+								CloudManager.sendCrossServer(server, "rank " + id.toString() + " " + torank.name());
 							}
 
 							ChatManager.sendSyncMessage(pl.getPlayer(), ChatColor.GREEN + "Set " + name + "'s rank to "
@@ -152,7 +152,7 @@ public class CommandSetRank extends CrypticCommand{
 			cp.getRankData().setRank(rank);
 			PlayerData.savePlayerRank(cp);
 		} else {
-			Cloud.sendStatementAsync("UPDATE player_db SET rank = '" + rank.name()
+			CloudManager.sendStatementAsync("UPDATE player_db SET rank = '" + rank.name()
 			+ "' WHERE player_id = '" + pl.getUniqueId().toString() + "'");
 		}
 		

@@ -14,7 +14,7 @@ import com.google.gson.JsonParser;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.Manager;
-import me.neildennis.crypticrpg.cloud.Cloud;
+import me.neildennis.crypticrpg.cloud.CloudManager;
 import me.neildennis.crypticrpg.items.attribs.Tier;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.professions.commands.CommandOre;
@@ -64,7 +64,7 @@ public class ProfessionManager extends Manager{
 	}
 
 	public void loadOres() throws SQLException{
-		ResultSet data = Cloud.sendQuery("SELECT * FROM ore_spawns");
+		ResultSet data = CloudManager.sendQuery("SELECT * FROM ore_spawns");
 		int loaded = 0;
 
 		while (data.next()){

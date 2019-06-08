@@ -26,7 +26,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.Manager;
-import me.neildennis.crypticrpg.cloud.Cloud;
+import me.neildennis.crypticrpg.cloud.CloudManager;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
 import me.neildennis.crypticrpg.utils.Log;
@@ -52,7 +52,7 @@ public class ZoneManager extends Manager implements Listener{
 	
 	private void loadRegions(){
 		try {
-			ResultSet data = Cloud.sendQuery("SELECT * FROM regions");
+			ResultSet data = CloudManager.sendQuery("SELECT * FROM regions");
 			RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
 			RegionManager manager = container.get(BukkitAdapter.adapt(Cryptic.getMainWorld()));
 			while (data.next()){

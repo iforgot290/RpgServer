@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.neildennis.crypticrpg.chat.ChatManager;
-import me.neildennis.crypticrpg.cloud.Cloud;
+import me.neildennis.crypticrpg.cloud.CloudManager;
 import me.neildennis.crypticrpg.health.HealthListener;
 import me.neildennis.crypticrpg.items.ItemManager;
 import me.neildennis.crypticrpg.items.commands.TestCommand;
@@ -22,13 +22,13 @@ import me.neildennis.crypticrpg.utils.CustomFlags;
 import me.neildennis.crypticrpg.utils.Log;
 import me.neildennis.crypticrpg.zone.ZoneManager;
 
-public class Cryptic extends JavaPlugin{
+public class Cryptic extends JavaPlugin {
 	
 	private static Cryptic instance;
 	
 	private ArrayList<Manager> managers;
 	
-	private Cloud cloud;
+	private CloudManager cloud;
 	private PlayerManager playerManager;
 	private ItemManager itemManager;
 	private ModerationManager modManager;
@@ -51,7 +51,7 @@ public class Cryptic extends JavaPlugin{
 		managers = new ArrayList<Manager>();
 		mainworld = Bukkit.getWorld("Dungeonrealms");
 		
-		cloud = new Cloud();
+		managers.add(cloud = new CloudManager());
 		managers.add(playerManager = new PlayerManager());
 		managers.add(itemManager = new ItemManager());
 		managers.add(modManager = new ModerationManager());
@@ -98,7 +98,7 @@ public class Cryptic extends JavaPlugin{
 		return enabled;
 	}
 	
-	public Cloud getCloud(){
+	public CloudManager getCloud(){
 		return cloud;
 	}
 	

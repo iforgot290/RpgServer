@@ -15,7 +15,7 @@ import com.google.gson.JsonParser;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.Manager;
-import me.neildennis.crypticrpg.cloud.Cloud;
+import me.neildennis.crypticrpg.cloud.CloudManager;
 import me.neildennis.crypticrpg.monsters.commands.CommandSpawner;
 import me.neildennis.crypticrpg.monsters.spawnblock.SpawnBlock;
 import me.neildennis.crypticrpg.monsters.spawnblock.SpawnBlockMonster;
@@ -67,7 +67,7 @@ public class MobManager extends Manager{
 	
 	public void loadMobSpawns(){
 		try {
-			ResultSet data = Cloud.sendQuery("SELECT * FROM monster_spawns");
+			ResultSet data = CloudManager.sendQuery("SELECT * FROM monster_spawns");
 			while (data.next()){
 				UUID id = UUID.fromString(data.getString("uuid"));
 				Location loc = Utils.getLocFromString(data.getString("location"));

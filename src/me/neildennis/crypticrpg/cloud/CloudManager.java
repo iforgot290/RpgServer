@@ -10,8 +10,9 @@ import org.bukkit.scheduler.BukkitTask;
 
 import io.netty.util.internal.ConcurrentSet;
 import me.neildennis.crypticrpg.Cryptic;
+import me.neildennis.crypticrpg.Manager;
 
-public class Cloud {
+public class CloudManager extends Manager {
 
 	private ConcurrentSet<BukkitTask> tasks;
 	private static QueryThread querythread;
@@ -19,7 +20,8 @@ public class Cloud {
 	private static CrossServerReceive receive;
 	private static CrossServerSend send;
 
-	public Cloud(){
+	@Override
+	public void onEnable() {
 		tasks = new ConcurrentSet<BukkitTask>();
 
 		querythread = new QueryThread();
@@ -40,8 +42,14 @@ public class Cloud {
 
 		registerTasks();
 	}
+	
+	@Override
+	public void onDisable() {
+		
+	}
 
-	public void registerTasks(){
+	@Override
+	public void registerTasks() {
 		tasks.add(Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), querythread));
 		//tasks.add(Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), receive));
 		//tasks.add(Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), send));

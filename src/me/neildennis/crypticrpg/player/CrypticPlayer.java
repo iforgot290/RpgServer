@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.neildennis.crypticrpg.Cryptic;
-import me.neildennis.crypticrpg.cloud.Cloud;
+import me.neildennis.crypticrpg.cloud.CloudManager;
 import me.neildennis.crypticrpg.health.CachedStats;
 import me.neildennis.crypticrpg.health.HealthData;
 import me.neildennis.crypticrpg.items.attribs.Attribute;
@@ -54,8 +54,8 @@ public class CrypticPlayer {
 		buffs = new ArrayList<PlayerBuff>();
 
 		try {
-			Cloud.sendStatement("INSERT IGNORE INTO player_db (player_id, rank) VALUES ('" + id.toString() + "', 'NORMAL')");
-			ResultSet data = Cloud.sendQuery("SELECT * FROM player_db WHERE player_id = '" + id.toString() + "'");
+			CloudManager.sendStatement("INSERT IGNORE INTO player_db (player_id, rank) VALUES ('" + id.toString() + "', 'NORMAL')");
+			ResultSet data = CloudManager.sendQuery("SELECT * FROM player_db WHERE player_id = '" + id.toString() + "'");
 			data.next();
 
 			healthData = new HealthData(this, data);
