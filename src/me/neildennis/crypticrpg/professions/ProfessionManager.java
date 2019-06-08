@@ -29,7 +29,8 @@ public class ProfessionManager extends Manager{
 	private static ArrayList<Region> miningzones;
 	private static CommandOre oreCmd;
 
-	public ProfessionManager(){
+	@Override
+	public void onEnable() {
 		miningzones = new ArrayList<Region>();
 
 		for (Region region : ZoneManager.getRegions()){
@@ -49,6 +50,11 @@ public class ProfessionManager extends Manager{
 		
 		Cryptic.registerEvents(new MiningListener());
 		Cryptic.registerCommand("ore", (oreCmd = new CommandOre()));
+	}
+	
+	@Override
+	public void onDisable() {
+		
 	}
 
 	@Override

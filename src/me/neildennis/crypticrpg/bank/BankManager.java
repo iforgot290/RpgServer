@@ -4,12 +4,19 @@ import me.neildennis.crypticrpg.Manager;
 
 public class BankManager extends Manager{
 
-	public BankManager(){
-		
-	}
 	
 	@Override
 	public void registerTasks() {
+		
+	}
+
+	@Override
+	public void onEnable() {
+		
+	}
+
+	@Override
+	public void onDisable() {
 		
 	}
 

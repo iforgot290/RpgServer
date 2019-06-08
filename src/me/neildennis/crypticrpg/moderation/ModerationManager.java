@@ -2,7 +2,6 @@ package me.neildennis.crypticrpg.moderation;
 
 import java.sql.SQLException;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,19 +12,31 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 
 import me.neildennis.crypticrpg.Cryptic;
+import me.neildennis.crypticrpg.Manager;
 import me.neildennis.crypticrpg.moderation.ModerationData.Ban;
 import me.neildennis.crypticrpg.moderation.commands.CommandBan;
 import me.neildennis.crypticrpg.moderation.commands.CommandBanInfo;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
 
-public class ModerationManager implements Listener{
+public class ModerationManager extends Manager implements Listener{
 
-	public ModerationManager(){
-		Bukkit.getPluginManager().registerEvents(this, Cryptic.getPlugin());
+	@Override
+	public void onEnable() {
+		Cryptic.registerEvents(this);
 		
 		Cryptic.registerCommand("ban", new CommandBan());
 		Cryptic.registerCommand("baninfo", new CommandBanInfo());
+	}
+	
+	@Override
+	public void onDisable() {
+		
+	}
+	
+	@Override
+	public void registerTasks() {
+		
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

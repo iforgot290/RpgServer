@@ -11,11 +11,17 @@ import me.neildennis.crypticrpg.Manager;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
 
-public class MenuManager extends Manager implements Listener{
-
-	public MenuManager(){
-		Cryptic.getPlugin().getServer().getPluginManager().registerEvents(this, Cryptic.getPlugin());
+public class MenuManager extends Manager implements Listener {
+	
+	@Override
+	public void onEnable() {
+		Cryptic.registerEvents(this);
 		registerTasks();
+	}
+	
+	@Override
+	public void onDisable() {
+		
 	}
 
 	@EventHandler(priority = EventPriority.LOW)

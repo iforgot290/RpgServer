@@ -1,5 +1,7 @@
 package me.neildennis.crypticrpg;
 
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.Listener;
@@ -24,6 +26,8 @@ public class Cryptic extends JavaPlugin{
 	
 	private static Cryptic instance;
 	
+	private ArrayList<Manager> managers;
+	
 	private Cloud cloud;
 	private PlayerManager playerManager;
 	private ItemManager itemManager;
@@ -44,18 +48,23 @@ public class Cryptic extends JavaPlugin{
 	
 	public void onEnable(){
 		instance = this;
+		managers = new ArrayList<Manager>();
 		mainworld = Bukkit.getWorld("Dungeonrealms");
 		
 		cloud = new Cloud();
-		playerManager = new PlayerManager();
-		itemManager = new ItemManager();
-		modManager = new ModerationManager();
-		chatManager = new ChatManager();
-		mobManager = new MobManager();
-		menuManager = new MenuManager();
-		rankManager = new RankManager();
-		zoneManager = new ZoneManager();
-		professionManager = new ProfessionManager();
+		managers.add(playerManager = new PlayerManager());
+		managers.add(itemManager = new ItemManager());
+		managers.add(modManager = new ModerationManager());
+		managers.add(chatManager = new ChatManager());
+		managers.add(mobManager = new MobManager());
+		managers.add(menuManager = new MenuManager());
+		managers.add(rankManager = new RankManager());
+		managers.add(zoneManager = new ZoneManager());
+		managers.add(professionManager = new ProfessionManager());
+		
+		for (Manager manager : managers) {
+			manager.onEnable();
+		}
 		
 		registerEvents(new HealthListener());
 		registerCommand("item", new TestCommand());
@@ -64,6 +73,14 @@ public class Cryptic extends JavaPlugin{
 	}
 	
 	public void onDisable(){
+		
+		for (Manager manager : managers) {
+			manager.onDisable();
+		}
+		
+		managers.clear();
+		managers = null;
+		
 		enabled = false;
 	}
 	

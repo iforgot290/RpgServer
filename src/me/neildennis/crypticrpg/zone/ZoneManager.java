@@ -37,11 +37,17 @@ public class ZoneManager extends Manager implements Listener{
 	
 	private static HashMap<String, Region> regions = new HashMap<String, Region>();
 	
-	public ZoneManager(){
+	@Override
+	public void onEnable(){
 		loadRegions();
-		Bukkit.getPluginManager().registerEvents(this, Cryptic.getPlugin());
+		Cryptic.registerEvents(this);
 		Cryptic.registerCommand("zone", new ZoneCommand());
 		registerTasks();
+	}
+	
+	@Override
+	public void onDisable()	{
+		
 	}
 	
 	private void loadRegions(){

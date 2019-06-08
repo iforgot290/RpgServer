@@ -10,6 +10,9 @@ public abstract class Manager {
 	
 	public abstract void registerTasks();
 	
+	public abstract void onEnable();
+	public abstract void onDisable();
+	
 	public void cancelTasks(){
 		for (BukkitTask task : tasks) task.cancel();
 		tasks.clear();

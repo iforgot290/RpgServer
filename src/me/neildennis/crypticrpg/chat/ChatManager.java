@@ -11,11 +11,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.neildennis.crypticrpg.Cryptic;
+import me.neildennis.crypticrpg.Manager;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
 
-public class ChatManager implements Listener{
+public class ChatManager extends Manager implements Listener{
 	
 	private static ConcurrentLinkedQueue<SyncMessage> syncmsg;
 	private List<BukkitTask> tasks;
@@ -23,13 +24,20 @@ public class ChatManager implements Listener{
 	private static String globalPrefix = ChatColor.AQUA + "<G> ";
 	private static String adminPrefix = ChatColor.RED + "<A> ";
 	
-	public ChatManager(){
+	@Override
+	public void onEnable() {
 		syncmsg = new ConcurrentLinkedQueue<SyncMessage>();
 		tasks = new ArrayList<BukkitTask>();
-		Bukkit.getPluginManager().registerEvents(new ChatListener(), Cryptic.getPlugin());
+		Cryptic.registerEvents(new ChatListener());
 		registerTasks();
 	}
 	
+	@Override
+	public void onDisable() {
+		
+	}
+	
+	@Override
 	public void registerTasks(){
 		tasks.add(Bukkit.getScheduler().runTaskTimer(Cryptic.getPlugin(), new Runnable(){
 

@@ -35,10 +35,16 @@ public class ItemManager extends Manager{
 	private static HashMap<AttributeType, ItemModifier> mods;
 	private static ArrayList<AttributeType> weaponMods;
 	
-	public ItemManager(){
+	@Override
+	public void onEnable() {
 		NameGenerator.load();
-		Cryptic.getPlugin().getServer().getPluginManager().registerEvents(new ItemListener(), Cryptic.getPlugin());
+		Cryptic.registerEvents(new ItemListener());
 		loadMods();
+	}
+
+	@Override
+	public void onDisable() {
+		
 	}
 	
 	@Override
@@ -143,7 +149,6 @@ public class ItemManager extends Manager{
 		
 		return armor;
 	}
-	
 	
 
 }

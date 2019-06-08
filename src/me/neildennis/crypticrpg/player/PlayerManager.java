@@ -10,16 +10,28 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.neildennis.crypticrpg.Cryptic;
+import me.neildennis.crypticrpg.Manager;
 import me.neildennis.crypticrpg.cloud.data.PlayerData;
 
-public class PlayerManager implements Listener{
+public class PlayerManager extends Manager implements Listener{
 	
 	private static ArrayList<CrypticPlayer> players;
 
-	public PlayerManager(){
+	@Override
+	public void onEnable() {
 		players = new ArrayList<CrypticPlayer>();
 		Cryptic.registerEvents(this);
 		Cryptic.registerEvents(new DebugListener());
+	}
+	
+	@Override
+	public void onDisable() {
+		
+	}
+	
+	@Override
+	public void registerTasks() {
+		
 	}
 	
 	public static ArrayList<CrypticPlayer> getPlayers(){

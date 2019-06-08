@@ -28,14 +28,15 @@ public class MobManager extends Manager{
 	private static ArrayList<SpawnBlock> spawners;
 	private static ArrayList<MonsterContainer> monsters;
 	
-	public MobManager(){
+	@Override
+	public void onEnable() {
 		spawners = new ArrayList<SpawnBlock>();
 		monsters = new ArrayList<MonsterContainer>();
 		
-		Bukkit.getPluginManager().registerEvents(new SpawnPlaceListener(), Cryptic.getPlugin());
-		Bukkit.getPluginManager().registerEvents(new MobListener(), Cryptic.getPlugin());
+		Cryptic.registerEvents(new SpawnPlaceListener());
+		Cryptic.registerEvents(new MobListener());
 		
-		Cryptic.getPlugin().getCommand("spawner").setExecutor(new CommandSpawner());
+		Cryptic.registerCommand("spawner", new CommandSpawner());
 		
 		loadMobSpawns();
 		registerTasks();
@@ -43,6 +44,11 @@ public class MobManager extends Manager{
 		//clear all mobs
 		for (Entity ent : Cryptic.getMainWorld().getEntities())
 			if (ent instanceof Monster) ent.remove();
+	}
+	
+	@Override
+	public void onDisable()	{
+		
 	}
 	
 	@Override
