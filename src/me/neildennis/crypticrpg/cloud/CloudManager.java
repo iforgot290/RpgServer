@@ -23,6 +23,8 @@ public class CloudManager extends Manager {
 	@Override
 	public void onEnable() {
 		tasks = new ConcurrentSet<BukkitTask>();
+		
+		Cryptic.registerEvents(new CloudEventListener());
 
 		querythread = new QueryThread();
 		//receive = new CrossServerReceive();
