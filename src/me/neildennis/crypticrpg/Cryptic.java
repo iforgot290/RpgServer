@@ -63,7 +63,11 @@ public class Cryptic extends JavaPlugin {
 		managers.add(professionManager = new ProfessionManager());
 		
 		for (Manager manager : managers) {
-			manager.onEnable();
+			try {
+				manager.onEnable();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 		registerEvents(new HealthListener());
