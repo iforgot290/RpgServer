@@ -7,20 +7,22 @@ import org.bukkit.Material;
 
 public enum Tier {
 	
-	ONE(ChatColor.WHITE, 0.75F, Material.COAL_ORE),
-	TWO(ChatColor.GREEN, 0.6F, Material.EMERALD_ORE),
-	THREE(ChatColor.AQUA, 0.5F, Material.IRON_ORE),
-	FOUR(ChatColor.LIGHT_PURPLE, 0.4F, Material.DIAMOND_ORE),
-	FIVE(ChatColor.GOLD, 0.3F, Material.GOLD_ORE);
+	ONE(ChatColor.WHITE, 0.75F, Material.COAL_ORE, 1),
+	TWO(ChatColor.GREEN, 0.6F, Material.EMERALD_ORE, 2),
+	THREE(ChatColor.AQUA, 0.5F, Material.IRON_ORE, 3),
+	FOUR(ChatColor.LIGHT_PURPLE, 0.4F, Material.DIAMOND_ORE, 4),
+	FIVE(ChatColor.GOLD, 0.3F, Material.GOLD_ORE, 5);
 	
 	private ChatColor color;
 	private float chance;
 	private Material oretype;
+	private int rawInt;
 	
-	Tier(ChatColor color, float chance, Material oretype){
+	Tier(ChatColor color, float chance, Material oretype, int rawInt){
 		this.color = color;
 		this.chance = chance;
 		this.oretype = oretype;
+		this.rawInt = rawInt;
 	}
 	
 	public ChatColor getColor(){
@@ -60,6 +62,10 @@ public enum Tier {
 	
 	public Material getOreType(){
 		return oretype;
+	}
+	
+	public int getRawInteger() {
+		return rawInt;
 	}
 
 }

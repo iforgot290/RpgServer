@@ -8,9 +8,6 @@ import me.neildennis.crypticrpg.CrypticCommand;
 import me.neildennis.crypticrpg.items.attribs.Tier;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
-import me.neildennis.crypticrpg.professions.OreCluster;
-import me.neildennis.crypticrpg.professions.ProfessionManager;
-import me.neildennis.crypticrpg.zone.Region;
 
 public class CommandOre extends CrypticCommand{
 
@@ -22,23 +19,45 @@ public class CommandOre extends CrypticCommand{
 	
 	@Override
 	protected boolean sendUsage() {
-		sender.sendMessage(ChatColor.RED + "Usage: /" + label + " new <region> <tier>");
-		sender.sendMessage(ChatColor.RED + "Usage: /" + label + " edit");
-		sender.sendMessage(ChatColor.RED + "Usage: /" + label + " save");
+		sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <tier>");
+		sender.sendMessage(ChatColor.RED + "Usage: /" + label + " remove");
+		sender.sendMessage(ChatColor.RED + "Usage: /" + label + " off");
 		return true;
 	}
 
 	@Override
 	public boolean command(CrypticPlayer pl) {
-		if (args.length < 1) return sendUsage();
 		if (!pl.hasPermission(Rank.ADMIN)) return true;
+		if (args.length != 1) return sendUsage();
 		
-		if (args[0].equalsIgnoreCase("new")){
-			newOre(pl);
+		if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("delete")) {
+			//TODO implement this
+			pl.sendMessage(ChatColor.RED + "Not yet implemented.");
+			return true;
 		}
 		
-		else if (args[0].equalsIgnoreCase("save")){
-			saveOre(pl);
+		if (args[0].equalsIgnoreCase("off")) {
+			
+			for (OreSession session : sessions) {
+				if (session.getPlayer() == pl) {
+					sessions.remove(session);
+					pl.sendMessage(ChatColor.GREEN + "No longer placing ore.");
+					return true;
+				}
+			}
+			
+			pl.sendMessage(ChatColor.RED + "You weren't placing ore.");
+			return true;
+		}
+		
+		try {
+			removeOreSession(pl);
+			Tier tier = Tier.fromInt(Integer.parseInt(args[0]));
+			OreSession session = new OreSession(pl, tier);
+			sessions.add(session);
+			pl.sendMessage(ChatColor.GREEN + "Now placing Tier " + ChatColor.BLUE + tier.toString() + ChatColor.GREEN + " ore.");
+		} catch (Exception e) {
+			return sendUsage();
 		}
 		
 		return true;
@@ -53,6 +72,17 @@ public class CommandOre extends CrypticCommand{
 		return sessions;
 	}
 	
+	private boolean removeOreSession(CrypticPlayer pl) {
+		for (OreSession session : sessions) {
+			if (session.getPlayer() == pl) {
+				sessions.remove(session);
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	public OreSession getOreSession(CrypticPlayer pl){
 		for (OreSession session : sessions)
 			if (session.getPlayer() == pl)
@@ -60,75 +90,26 @@ public class CommandOre extends CrypticCommand{
 		return null;
 	}
 	
-	private boolean newOre(CrypticPlayer pl){
-		if (args.length < 3) return sendUsage();
-		if (getOreSession(pl) != null){
-			pl.sendMessage(ChatColor.RED + "Error: You are already editing another ore cluster");
-			return true;
-		}
-		
-		Region region = ProfessionManager.getMiningRegion(args[1]);
-		if (region == null){
-			pl.sendMessage(ChatColor.RED + "Error: Region \"" + args[1] + "\" not found");
-			return true;
-		}
-		
-		int rawtier = Integer.parseInt(args[2]);
-		if (rawtier < 1 || rawtier > 5){
-			pl.sendMessage(ChatColor.RED + "Error: Invalid tier");
-			return true;
-		}
-		
-		Tier tier = Tier.fromInt(Integer.parseInt(args[2]));
-		
-		pl.sendMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "Creating a new T" + rawtier + " Ore Cluster");
-		pl.sendMessage(ChatColor.GRAY + "Place stone brick to add to the cluster or break blocks to remove.");
-		
-		OreCluster cluster = new OreCluster();
-		cluster.setTier(tier);
-		cluster.setRegion(region);
-		
-		OreSession session = new OreSession(pl);
-		session.setOreCluster(cluster);
-		
-		sessions.add(session);
-		
-		return true;
-	}
-	
-	private boolean saveOre(CrypticPlayer pl){
-		OreSession session = getOreSession(pl);
-		if (session == null) {
-			pl.sendMessage(ChatColor.RED + "You are not currently editing an ore cluster");
-			return true;
-		}
-		
-		sessions.remove(session);
-		session.getOreCluster().getRegion().getWaitingOre().add(session.getOreCluster());
-		//TODO actually save it
-		pl.sendMessage(ChatColor.GREEN + "Saved your current ore cluster");
-		return true;
-	}
-	
 	public class OreSession{
 		
 		private CrypticPlayer pl;
-		private OreCluster ore;
+		private Tier tier;
 		
-		public OreSession(CrypticPlayer pl){
+		public OreSession(CrypticPlayer pl, Tier tier){
 			this.pl = pl;
+			this.tier = tier;
 		}
 		
 		public CrypticPlayer getPlayer(){
 			return pl;
 		}
 		
-		public void setOreCluster(OreCluster ore){
-			this.ore = ore;
+		public void setTier(Tier tier) {
+			this.tier = tier;
 		}
 		
-		public OreCluster getOreCluster(){
-			return ore;
+		public Tier getTier() {
+			return tier;
 		}
 		
 	}

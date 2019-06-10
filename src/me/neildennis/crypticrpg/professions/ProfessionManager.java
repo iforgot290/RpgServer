@@ -3,14 +3,14 @@ package me.neildennis.crypticrpg.professions;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.HashMap;
+import java.util.PriorityQueue;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.Manager;
@@ -20,35 +20,30 @@ import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.professions.commands.CommandOre;
 import me.neildennis.crypticrpg.professions.commands.CommandOre.OreSession;
 import me.neildennis.crypticrpg.utils.Log;
-import me.neildennis.crypticrpg.utils.Utils;
-import me.neildennis.crypticrpg.zone.Region;
-import me.neildennis.crypticrpg.zone.ZoneManager;
 
 public class ProfessionManager extends Manager{
 
-	private static ArrayList<Region> miningzones;
 	private static CommandOre oreCmd;
+	
+	private HashMap<Location, OreCluster> oreLocs;
+	private PriorityQueue<OreCluster> oreRespawn;
 
 	@Override
 	public void onEnable() {
-		miningzones = new ArrayList<Region>();
-
-		for (Region region : ZoneManager.getRegions()){
-			if (region.getMaxOreSpawns() > 0){
-				miningzones.add(region);
-			}
-		}
+		
+		oreLocs = new HashMap<Location, OreCluster>();
+		int oreAmt = 11;
 		
 		try {
-			loadOres();
+			oreAmt = loadOres();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		tickOres();
+		oreRespawn = new PriorityQueue<OreCluster>(oreAmt, (OreCluster c1, OreCluster c2) -> {return (int) (c1.getRespawnTime() - c2.getRespawnTime());});
 		registerTasks();
 		
-		Cryptic.registerEvents(new MiningListener());
+		Cryptic.registerEvents(new MiningListener(this));
 		Cryptic.registerCommand("ore", (oreCmd = new CommandOre()));
 	}
 	
@@ -62,82 +57,73 @@ public class ProfessionManager extends Manager{
 		tasks.add(Bukkit.getScheduler().runTaskTimer(Cryptic.getPlugin(), 
 				() -> tickOres(), 25, 20));
 	}
+	
+	public HashMap<Location, OreCluster> getOreLocations() {
+		return oreLocs;
+	}
 
-	public void loadOres() throws SQLException{
-		ResultSet data = CloudManager.sendQuery("SELECT * FROM ore_spawns");
+	public int loadOres() throws SQLException{
+		ResultSet data = CloudManager.sendQuery("SELECT * FROM ore_locations");
+		
 		int loaded = 0;
+		int total = data.getFetchSize();
 
+		
 		while (data.next()){
-			Region region = getMiningRegion(data.getString("region"));
-			if (region == null) continue;
 
-			UUID id = UUID.fromString(data.getString("uuid"));
-			Tier tier = Tier.fromLevel((data.getInt("tier") * 20) - 1);
-			JsonArray locations = (JsonArray) new JsonParser().parse(data.getString("locations"));
+			UUID id = UUID.fromString(data.getString("loc_uuid"));
+			Tier tier = Tier.fromInt(data.getInt("tier"));
+			Location loc = new Location(Bukkit.getWorld(data.getString("world")), data.getInt("x"), data.getInt("y"), data.getInt("z"));
+			Material destroyed = Material.valueOf(data.getString("destroyed"));
 
-			OreCluster cluster = new OreCluster();
-			cluster.setUUID(id);
-			cluster.setTier(tier);
-			cluster.setRegion(region);
+			OreCluster cluster = new OreCluster(id, tier, loc, destroyed);
 
-			for (JsonElement loc : locations){
-				cluster.addLocation(Utils.getLocFromString(loc.getAsString()));
-			}
-
-			region.getWaitingOre().add(cluster);
+			cluster.spawn();
+			oreLocs.put(loc, cluster);
+			
 			loaded++;
 		}
 
-		Log.info("Loaded " + loaded + " ore clusters");
+		Log.info("Loaded " + loaded + "/" + total + " ore clusters");
+		return loaded > 1 ? loaded : 1;
 	}
 
 	public void tickOres(){
-		for (Region region : miningzones){
-			if (region.getSpawnedOre().size() >= region.getMaxOreSpawns()){
-				if (!region.getOreQueue().isEmpty()) region.getOreQueue().clear();
-				continue;
-			}
-
-			Random rand = new Random();
-
-			if (region.getOreQueue().isEmpty()){
-				int needs = region.getMaxOreSpawns() - region.getSpawnedOre().size();
-				for (int i = 0; i < needs; i++){
-					if (region.getWaitingOre().size() < 1) continue;
-					OreCluster cluster = region.getWaitingOre().get(rand.nextInt(region.getWaitingOre().size()));
-					cluster.spawn();
-					region.getSpawnedOre().add(cluster);
-					region.getWaitingOre().remove(cluster);
-				}
-			} else {
-				long nextspawn = region.getOreQueue().peek();
-				
-				if (nextspawn <= System.currentTimeMillis()){
-					nextspawn = region.getOreQueue().poll();
-					
-					OreCluster cluster = region.getWaitingOre().get(rand.nextInt(region.getWaitingOre().size()));
-					cluster.spawn();
-					region.getSpawnedOre().add(cluster);
-					region.getWaitingOre().remove(cluster);
-				}
-			}
-
+		while (oreRespawn.peek() != null && oreRespawn.peek().getRespawnTime() < System.currentTimeMillis()) {
+			OreCluster ore = oreRespawn.poll();
+			ore.spawn();
 		}
 	}
 	
-	public static ArrayList<OreSession> getOreSessions(){
+	public ArrayList<OreSession> getOreSessions(){
 		return oreCmd.getOreSessions();
 	}
 	
-	public static OreSession getOreSession(CrypticPlayer pl){
+	public OreSession getOreSession(CrypticPlayer pl){
 		return oreCmd.getOreSession(pl);
 	}
-
-	public static Region getMiningRegion(String name){
-		for (Region region : miningzones)
-			if (region.getRegion().getId().equalsIgnoreCase(name))
-				return region;
-		return null;
+	
+	public void addOreRespawn(OreCluster ore) {
+		ore.despawn();
+		ore.setRespawnTime(System.currentTimeMillis() + 10000);
+		oreRespawn.add(ore);
+	}
+	
+	public void unregisterOre(OreCluster ore) {
+		oreRespawn.remove(ore);
+		oreLocs.remove(ore.getLocation());
+		
+		CloudManager.sendStatementAsync("DELETE FROM `ore_locations` WHERE `loc_uuid` = '" + ore.getUUID().toString() + "'");
+	}
+	
+	public void registerOre(Block block, OreSession session) {
+		OreCluster cluster = new OreCluster(UUID.randomUUID(), session.getTier(), block.getLocation(), block.getType());
+		oreLocs.put(block.getLocation(), cluster);
+		
+		CloudManager.sendStatementAsync("INSERT INTO `ore_locations` (`loc_uuid`, `tier`, `destroyed`, `world`, `x`, `y`, `z`) "
+				+ "VALUES ('" + cluster.getUUID().toString() + "', '" + session.getTier().getRawInteger()
+				+ "', '" + cluster.getDestroyedType().toString() + "', '" + block.getLocation().getWorld().getName()
+				+ "', '" + block.getLocation().getBlockX() + "', '" + block.getLocation().getBlockY() + "', '" + block.getLocation().getBlockZ() + "')");
 	}
 
 }

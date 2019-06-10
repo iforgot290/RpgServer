@@ -1,90 +1,70 @@
 package me.neildennis.crypticrpg.professions;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 
 import me.neildennis.crypticrpg.items.attribs.Tier;
-import me.neildennis.crypticrpg.zone.Region;
 
 public class OreCluster {
 	
-	private ArrayList<Location> locs;
 	private Tier tier;
-	private Region region;
 	private UUID id;
+	private Location loc;
+	private Material destroyed;
 	
-	public OreCluster(){
-		locs = new ArrayList<Location>();
-		tier = Tier.ONE;
-		this.id = null;
+	private long respawn = 0;
+	
+	public OreCluster(UUID id, Tier tier, Location loc, Material destroyed) {
+		this.id = id;
+		this.tier = tier;
+		this.loc = loc;
+		this.destroyed = destroyed;
 	}
 	
-	public void spawn(){
-		for (Location loc : locs) loc.getBlock().setType(tier.getOreType());
+	public void spawn() {
+		loc.getBlock().setType(tier.getOreType());
 	}
 	
-	public void despawn(){
-		for (Location loc : locs) loc.getBlock().setType(Material.AIR);
+	public void despawn() {
+		loc.getBlock().setType(destroyed);
 	}
 	
-	public boolean isSpawned(){
-		for (Location loc : locs)
-			if (loc.getBlock().getType() != Material.AIR)
-				return true;
-		return false;
+	public boolean isSpawned() {
+		return loc.getBlock().getType() != destroyed;
 	}
 	
-	public UUID getUUID(){
+	public UUID getUUID() {
 		return id;
 	}
 	
-	public void setUUID(UUID id){
-		this.id = id;
+	public Location getLocation() {
+		return loc;
 	}
 	
-	public void addLocation(Location loc){
-		locs.add(loc);
-	}
-	
-	public boolean containsLocation(Location loc){
-		return locs.contains(loc);
-	}
-	
-	public void removeLocation(Location loc){
-		locs.remove(loc);
-	}
-	
-	public Location getLocation(){
-		if (locs == null || locs.size() == 0) return null;
-		
-		return locs.get(0);
-	}
-	
-	public ArrayList<Location> getLocations(){
-		return locs;
-	}
-	
-	public Tier getTier(){
+	public Tier getTier() {
 		return tier;
 	}
 	
-	public void setTier(Tier tier){
+	public void setTier(Tier tier) {
 		this.tier = tier;
 	}
 	
-	public Material getOreType(){
+	public Material getOreType() {
 		return tier.getOreType();
 	}
 	
-	public Region getRegion(){
-		return region;
+	public Material getDestroyedType() {
+		return destroyed;
 	}
 	
-	public void setRegion(Region region){
-		this.region = region;
+	public void setRespawnTime(long respawn) {
+		this.respawn = respawn;
+	}
+	
+	public long getRespawnTime() {
+		return respawn;
 	}
 
 }
