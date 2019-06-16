@@ -31,8 +31,11 @@ public class CommandOre extends CrypticCommand{
 		if (args.length != 1) return sendUsage();
 		
 		if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("delete")) {
-			//TODO implement this
-			pl.sendMessage(ChatColor.RED + "Not yet implemented.");
+			removeOreSession(pl);
+			Tier tier = Tier.ONE;
+			OreSession session = new OreSession(pl, tier);
+			sessions.add(session);
+			pl.sendMessage(ChatColor.GREEN + "Now removing ore");
 			return true;
 		}
 		
@@ -41,12 +44,12 @@ public class CommandOre extends CrypticCommand{
 			for (OreSession session : sessions) {
 				if (session.getPlayer() == pl) {
 					sessions.remove(session);
-					pl.sendMessage(ChatColor.GREEN + "No longer placing ore.");
+					pl.sendMessage(ChatColor.GREEN + "No longer placing/removing ore");
 					return true;
 				}
 			}
 			
-			pl.sendMessage(ChatColor.RED + "You weren't placing ore.");
+			pl.sendMessage(ChatColor.RED + "You weren't placing ore");
 			return true;
 		}
 		
@@ -55,7 +58,7 @@ public class CommandOre extends CrypticCommand{
 			Tier tier = Tier.fromInt(Integer.parseInt(args[0]));
 			OreSession session = new OreSession(pl, tier);
 			sessions.add(session);
-			pl.sendMessage(ChatColor.GREEN + "Now placing Tier " + ChatColor.BLUE + tier.toString() + ChatColor.GREEN + " ore.");
+			pl.sendMessage(ChatColor.GREEN + "Now placing Tier " + ChatColor.BLUE + tier.toString() + ChatColor.GREEN + " ore");
 		} catch (Exception e) {
 			return sendUsage();
 		}
