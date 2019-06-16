@@ -12,7 +12,71 @@ import me.neildennis.crypticrpg.cloud.CloudManager;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 
-public class PlayerData {
+public class PlayerData implements CloudData {
+	
+	private CrypticPlayer pl;
+	
+	private Rank rank = Rank.NORMAL;
+	private double health = 50.0D;
+	
+	private boolean firstJoin = false;
+	
+	public PlayerData(CrypticPlayer pl) {
+		this.pl = pl;
+	}
+	
+	/**
+	 * Loads player data from the SQL server<br><br>
+	 * This method is blocking
+	 */
+	public void load() throws SQLException {
+		ResultSet result = CloudManager.sendQuery("SELECT * FROM player_db WHERE player_id = '" + pl.getId().toString() + "'");
+		
+		// If player isn't found then save default data to database
+		if (!result.next()) {
+			firstJoin = true;
+			save();
+			return;
+		}
+		
+		String strRank = result.getString("rank");
+		if (strRank == null || strRank.equalsIgnoreCase("")) rank = Rank.NORMAL;
+		else rank = Rank.valueOf(strRank);
+		
+		health = result.getDouble("current_health");
+	}
+	
+	public void update() {
+		rank = pl.getRank();
+	}
+	
+	public void save() throws SQLException {
+		CloudManager.sendQuery("");
+	}
+	
+	/**
+	 * Gets the saved rank of a player as loaded from the SQL server. This value is only valid upon player logging in.
+	 * @return Saved player rank
+	 */
+	public Rank getRank() {
+		return rank;
+	}
+	
+	/**
+	 * Gets the saved health of a player as loaded from the SQL server. This value is only valid upon player logging in.
+	 * @return Saved player health
+	 */
+	public double getHealth() {
+		return health;
+	}
+	
+	/**
+	 * Returns whether or not this player is joining for the first time or not.
+	 * @return true if this is the player's first join, false otherwise
+	 */
+	public boolean isFirstJoin() {
+		return firstJoin;
+	}
 
 	public static void savePlayerData(CrypticPlayer pl){
 		double hp = pl.getPlayer().getHealth();
