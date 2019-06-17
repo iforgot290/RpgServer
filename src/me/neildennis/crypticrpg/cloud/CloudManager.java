@@ -4,17 +4,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
-import io.netty.util.internal.ConcurrentSet;
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.Manager;
 
 public class CloudManager extends Manager {
 
-	private ConcurrentSet<BukkitTask> tasks;
+	//TODO fix concurrency
+	private ArrayList<BukkitTask> tasks;
 	private static QueryThread querythread;
 
 	private static CrossServerReceive receive;
@@ -22,7 +23,7 @@ public class CloudManager extends Manager {
 
 	@Override
 	public void onEnable() {
-		tasks = new ConcurrentSet<BukkitTask>();
+		tasks = new ArrayList<BukkitTask>();
 		
 		Cryptic.registerEvents(new CloudEventListener());
 
