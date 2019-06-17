@@ -8,7 +8,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import me.neildennis.crypticrpg.player.PlayerManager;
+import me.neildennis.crypticrpg.Cryptic;
 
 public class HealthListener implements Listener{
 	
@@ -20,7 +20,7 @@ public class HealthListener implements Listener{
 	
 	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event){
-		PlayerManager.getCrypticPlayer(event.getPlayer()).getHealthData().setLastHit(0);
+		Cryptic.getCrypticPlayer(event.getPlayer()).getHealthData().setLastHit(0);
 	}
 	
 	@EventHandler

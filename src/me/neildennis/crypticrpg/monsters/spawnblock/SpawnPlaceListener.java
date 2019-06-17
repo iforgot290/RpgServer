@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.monsters.MobManager;
 import me.neildennis.crypticrpg.monsters.MonsterContainer;
 import me.neildennis.crypticrpg.permission.Rank;
@@ -24,7 +25,7 @@ public class SpawnPlaceListener implements Listener {
 	public void onBlockPlace(BlockPlaceEvent event){
 		if (event.getBlock().getType() != Material.SPAWNER) return;
 		
-		CrypticPlayer pl = PlayerManager.getCrypticPlayer(event.getPlayer());
+		CrypticPlayer pl = Cryptic.getCrypticPlayer(event.getPlayer());
 		
 		if (pl.getRank().getPriority() < Rank.ADMIN.getPriority()){
 			event.setCancelled(true);
@@ -42,7 +43,7 @@ public class SpawnPlaceListener implements Listener {
 		if (event.getHand() != EquipmentSlot.HAND) return;
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 		if (event.getClickedBlock().getType() != Material.SPAWNER) return;
-		CrypticPlayer pl = PlayerManager.getCrypticPlayer(event.getPlayer());
+		CrypticPlayer pl = Cryptic.getCrypticPlayer(event.getPlayer());
 		if (pl.getRank().getPriority() < Rank.ADMIN.getPriority()) return;
 		
 		SpawnBlock blk = MobManager.getSpawnBlock(event.getClickedBlock().getLocation());

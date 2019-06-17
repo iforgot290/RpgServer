@@ -22,7 +22,7 @@ public class ModerationManager extends Manager {
 	public void onEnable() {
 		Cryptic.registerEvents(new ModerationListener(this));
 		
-		Cryptic.registerCommand("ban", new CommandBan());
+		Cryptic.registerCommand("ban", new CommandBan(this));
 		Cryptic.registerCommand("baninfo", new CommandBanInfo());
 	}
 	

@@ -10,6 +10,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 
+import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.moderation.ModerationData.Ban;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
@@ -44,7 +45,7 @@ public class ModerationListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerAsyncChat(AsyncPlayerChatEvent event){
-		CrypticPlayer pl = PlayerManager.getCrypticPlayer(event.getPlayer());
+		CrypticPlayer pl = Cryptic.getCrypticPlayer(event.getPlayer());
 		if (pl.getModerationData().isMuted()){
 			pl.sendMessage(ChatColor.RED + "You are muted.");
 			event.setCancelled(true);

@@ -1,8 +1,10 @@
 package me.neildennis.crypticrpg;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -101,6 +103,14 @@ public class Cryptic extends JavaPlugin {
 	}
 	
 	public static CrypticPlayer getCrypticPlayer(Player pl) {
+		return getPlugin().getPlayerManager().getCrypticPlayer(pl);
+	}
+	
+	public static CrypticPlayer getCrypticPlayer(UUID id) {
+		return getPlugin().getPlayerManager().getCrypticPlayer(id);
+	}
+	
+	public static CrypticPlayer getCrypticPlayer(OfflinePlayer pl) {
 		return getPlugin().getPlayerManager().getCrypticPlayer(pl);
 	}
 	

@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.items.ItemManager;
 import me.neildennis.crypticrpg.items.type.CrypticItem;
 import me.neildennis.crypticrpg.items.type.armor.CrypticArmor;
@@ -19,7 +20,6 @@ import me.neildennis.crypticrpg.items.type.armor.CrypticChestplate;
 import me.neildennis.crypticrpg.items.type.armor.CrypticHelmet;
 import me.neildennis.crypticrpg.items.type.armor.CrypticLeggings;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
-import me.neildennis.crypticrpg.player.PlayerManager;
 
 public class ItemListener implements Listener{
 
@@ -29,7 +29,7 @@ public class ItemListener implements Listener{
 		if (event.getClickedInventory().getType() != InventoryType.PLAYER) return;
 		if (event.getWhoClicked().getType() != EntityType.PLAYER) return;
 
-		CrypticPlayer pl = PlayerManager.getCrypticPlayer((Player) event.getWhoClicked());
+		CrypticPlayer pl = Cryptic.getCrypticPlayer((Player) event.getWhoClicked());
 		PlayerInventory pinv = (PlayerInventory) event.getClickedInventory();
 		pl.getStats().setNeedsUpdate();
 

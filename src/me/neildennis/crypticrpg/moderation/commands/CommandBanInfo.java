@@ -60,7 +60,7 @@ public class CommandBanInfo extends CrypticCommand {
 	}
 	
 	private ModerationData getData(UUID id) throws SQLException{
-		CrypticPlayer pl = PlayerManager.getCrypticPlayer(id);
+		CrypticPlayer pl = Cryptic.getCrypticPlayer(id);
 		
 		if (pl == null) return new ModerationData(id);
 		else return pl.getModerationData();

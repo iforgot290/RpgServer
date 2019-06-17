@@ -45,7 +45,7 @@ public class MobListener implements Listener {
 		CrypticMonster monster = MobManager.getMonster(event.getDamager());
 		if (monster == null) return;
 
-		final CrypticPlayer pl = PlayerManager.getCrypticPlayer((Player)event.getEntity());
+		final CrypticPlayer pl = Cryptic.getCrypticPlayer((Player)event.getEntity());
 
 		pl.getHealthData().damage();
 		event.setDamage(monster.getStats().getAttribute(AttributeType.DAMAGE).genValue());
@@ -69,7 +69,7 @@ public class MobListener implements Listener {
 		final CrypticMonster hit = MobManager.getMonster(event.getEntity());
 		if (hit == null) return;
 
-		CrypticPlayer damager = PlayerManager.getCrypticPlayer((Player)event.getDamager());
+		CrypticPlayer damager = Cryptic.getCrypticPlayer((Player)event.getDamager());
 		event.setDamage(damager.getStats().getAttribute(AttributeType.DAMAGE).genValue());
 
 		Bukkit.getScheduler().runTask(Cryptic.getPlugin(), () -> hit.updateNameplate());

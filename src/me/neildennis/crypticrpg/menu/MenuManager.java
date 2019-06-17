@@ -26,7 +26,7 @@ public class MenuManager extends Manager implements Listener {
 
 	@EventHandler(priority = EventPriority.LOW)
 	public void onChat(AsyncPlayerChatEvent event){
-		CrypticPlayer player = PlayerManager.getCrypticPlayer(event.getPlayer());
+		CrypticPlayer player = Cryptic.getCrypticPlayer(event.getPlayer());
 		if (player.getCurrentMenu() != null){
 			event.setCancelled(true);
 			player.getCurrentMenu().input(event.getMessage());

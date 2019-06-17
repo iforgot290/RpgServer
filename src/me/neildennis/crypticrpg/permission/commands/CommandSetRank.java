@@ -49,7 +49,7 @@ public class CommandSetRank extends CrypticCommand{
 			OfflinePlayer op = Bukkit.getOfflinePlayer(args[0]);
 			id = op.getUniqueId();
 			name = op.getName();
-			toset = PlayerManager.getCrypticPlayer(op);
+			toset = Cryptic.getCrypticPlayer(op);
 			torank = Rank.valueOf(args[1].toUpperCase());
 		}
 
@@ -148,7 +148,7 @@ public class CommandSetRank extends CrypticCommand{
 		OfflinePlayer pl = Bukkit.getOfflinePlayer(name);
 		
 		if (pl.isOnline()){
-			CrypticPlayer cp = PlayerManager.getCrypticPlayer(pl);
+			CrypticPlayer cp = Cryptic.getCrypticPlayer(pl);
 			cp.getRankData().setRank(rank);
 			PlayerData.savePlayerRank(cp);
 		} else {
