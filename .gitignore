@@ -3,16 +3,6 @@
 /.classpath
 /.project
 /.settings
-/penislibs
-/craftbukkit.jar
-/latest.log
-/Lobby-27.jar
-/minecraft_server.jar
-/origspig.jar
-/spigot.jar
-/bukkit-1.7.5-R0.1-20140329.215701-4.jar
-/src/minecade/dungeonrealms/config/Config.java
-/src/me/neildennis/crypticrpg/cloud/ConnectionPool.java
 
 #JRebel
 /src/rebel.xml
