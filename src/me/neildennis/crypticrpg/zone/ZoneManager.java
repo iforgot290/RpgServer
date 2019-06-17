@@ -119,7 +119,6 @@ public class ZoneManager extends Manager implements Listener{
 			Log.debug(pl.getPlayer().getName() + " has changed zone states");
 			pl.setZoneState(tostate);
 			pl.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(tostate.getDisplay()));
-			//ActionBarAPI.sendActionBar(pl.getPlayer(), tostate.getDisplay());
 		}
 		
 		Region current = pl.getTown();
@@ -154,9 +153,9 @@ public class ZoneManager extends Manager implements Listener{
 	}
 
 	public enum ZoneState{
-		PEACEFUL(ChatColor.GREEN + "** Entering " + ChatColor.BOLD + "PEACEFUL" + ChatColor.GREEN + " zone **"),
-		MONSTERS(ChatColor.YELLOW + "** Entering " + ChatColor.BOLD + "NEUTRAL" + ChatColor.YELLOW + " zone **"),
-		PVP(ChatColor.RED + "** Entering " + ChatColor.BOLD + "CHAOTIC" + ChatColor.RED + " zone **");
+		PEACEFUL(ChatColor.GREEN + "** Entering " + ChatColor.BOLD + "SAFE" + ChatColor.GREEN + " zone **"),
+		MONSTERS(ChatColor.YELLOW + "** Entering " + ChatColor.BOLD + "WILDERNESS" + ChatColor.YELLOW + " zone **"),
+		PVP(ChatColor.RED + "** Entering " + ChatColor.BOLD + "PVP" + ChatColor.RED + " zone **");
 
 		private String display;
 
