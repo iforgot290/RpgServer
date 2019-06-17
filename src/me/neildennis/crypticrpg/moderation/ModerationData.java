@@ -52,7 +52,7 @@ public class ModerationData {
 		return System.currentTimeMillis() <= unmuteTime;
 	}
 	
-	public class Ban{
+	public static class Ban{
 		
 		private OfflinePlayer banner;
 		private UUID bannerid;

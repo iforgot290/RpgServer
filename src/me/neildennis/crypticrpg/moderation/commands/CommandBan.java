@@ -1,7 +1,6 @@
 package me.neildennis.crypticrpg.moderation.commands;
 
 import java.sql.SQLException;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -10,16 +9,20 @@ import org.bukkit.entity.Player;
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.CrypticCommand;
 import me.neildennis.crypticrpg.chat.ChatManager;
-import me.neildennis.crypticrpg.cloud.data.PlayerData;
 import me.neildennis.crypticrpg.moderation.ModerationManager;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
-import me.neildennis.crypticrpg.player.PlayerManager;
 import me.neildennis.crypticrpg.utils.Log;
 import net.md_5.bungee.api.ChatColor;
 
-public class CommandBan extends CrypticCommand{
+public class CommandBan extends CrypticCommand {
 
+	private ModerationManager manager;
+	
+	public CommandBan(ModerationManager manager) {
+		this.manager = manager;
+	}
+	
 	@Override
 	protected boolean sendUsage() {
 		sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <player> <reason>");
@@ -36,7 +39,7 @@ public class CommandBan extends CrypticCommand{
 		if (pl.getRank().getPriority() < Rank.ADMIN.getPriority()) return false;
 		if (args.length == 0) return sendUsage();
 		
-		OfflinePlayer toban = Bukkit.getOfflinePlayer(args[0]);
+		OfflinePlayer toBan = Bukkit.getOfflinePlayer(args[0]);
 		String reason = "The ban hammer has spoken!";
 		
 		if (args.length > 1){
@@ -46,7 +49,7 @@ public class CommandBan extends CrypticCommand{
 			}
 		}
 		
-		if (toban.isOnline()){
+		if (toBan.isOnline()){
 			CrypticPlayer cptoban = Cryptic.getCrypticPlayer(toBan.getPlayer());
 			
 			if (cptoban.getRank().getPriority() >= pl.getRank().getPriority()){
@@ -54,33 +57,22 @@ public class CommandBan extends CrypticCommand{
 				return true;
 			}
 			
-			toban.getPlayer().kickPlayer(ModerationManager.getKickedBannedMessage(reason));
+			cptoban.getPlayer().kickPlayer(manager.getKickedBannedMessage(reason));
 		}
 		
-		final UUID tobanid = toban.getUniqueId();
-		final String tobanName = toban.getName();
-		final UUID banner = pl.getId();
-		final String bannerName = pl.getPlayer().getName();
+		final OfflinePlayer finalToBan = toBan;
 		final String finalReason = reason;
-		final Player returnto = pl.getPlayer();
-		final Rank rank = pl.getRank();
+		final Player enforcer = pl.getPlayer();
 		
 		Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), new Runnable(){
 
 			@Override
 			public void run() {
 				try {
-					Rank tobanrank = PlayerData.getRank(tobanid);
-					
-					if (tobanrank.getPriority() >= rank.getPriority()){
-						ChatManager.sendSyncMessage(returnto, ChatColor.RED + "You cannot ban this person");
-						return;
-					}
-					
-					PlayerData.banPlayer(tobanid, tobanName, banner, bannerName, finalReason);
-					ChatManager.sendSyncMessage(returnto, ChatColor.GREEN + tobanName + " was banned");
+					manager.banPlayer(finalToBan, finalReason, enforcer);
+					ChatManager.sendSyncMessage(enforcer, ChatColor.GREEN + finalToBan.getName() + " was banned");
 				} catch (SQLException e) {
-					ChatManager.sendSyncMessage(returnto, ChatColor.RED + "Error putting ban in database");
+					ChatManager.sendSyncMessage(enforcer, ChatColor.RED + "Error putting ban in database");
 					e.printStackTrace();
 				}
 			}
@@ -105,21 +97,21 @@ public class CommandBan extends CrypticCommand{
 			}
 		}
 		
-		if (player.isOnline()) player.getPlayer().kickPlayer(ModerationManager.getKickedBannedMessage(reason));
+		if (player.isOnline()) player.getPlayer().kickPlayer(manager.getKickedBannedMessage(reason));
 		
-		final UUID tobanid = player.getUniqueId();
-		final String name = player.getName();
+		final OfflinePlayer toBan = player;
 		final String finalReason = reason;
+		final OfflinePlayer enforcer = Bukkit.getOfflinePlayer("CONSOLE");
 		
 		Bukkit.getScheduler().runTaskAsynchronously(Cryptic.getPlugin(), new Runnable(){
 
 			@Override
 			public void run() {
 				try {
-					PlayerData.banPlayer(tobanid, name, null, "CONSOLE", finalReason);
-					Log.info(name + " was banned");
+					manager.banPlayer(toBan, finalReason, enforcer);
+					Log.info(toBan.getName() + " was banned");
 				} catch (SQLException e) {
-					Log.info("Error banning player!");
+					Log.info("Error banning player: " + toBan.getName());
 					e.printStackTrace();
 				}
 			}
