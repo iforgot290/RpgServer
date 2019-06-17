@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.metadata.MetadataValue;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.Manager;
@@ -45,11 +47,30 @@ public class PlayerManager extends Manager implements Listener{
 		return toreturn;
 	}
 	
-	public static CrypticPlayer getCrypticPlayer(OfflinePlayer pl){
+	/**
+	 * Gets the CrypticPlayer object associated with the given player using metadata values
+	 * @param pl Player to get CrypticPlayer object for
+	 * @return CrypticPlayer object
+	 */
+	public CrypticPlayer getCrypticPlayer(Player pl) {
+		CrypticPlayerContainer container = null;
+		
+		for (MetadataValue val : pl.getMetadata("crypticplayer")) {
+			if (val instanceof CrypticPlayerContainer) {
+				container = (CrypticPlayerContainer) val;
+				break;
+			}
+		}
+		
+		if (container == null) return getCrypticPlayer(pl.getUniqueId());
+		else return (CrypticPlayer) container.value();
+	}
+	
+	public CrypticPlayer getCrypticPlayer(OfflinePlayer pl){
 		return getCrypticPlayer(pl.getUniqueId());
 	}
 	
-	public static CrypticPlayer getCrypticPlayer(UUID id){
+	public CrypticPlayer getCrypticPlayer(UUID id){
 		for (CrypticPlayer cp : players)
 			if (cp.getOfflinePlayer().getUniqueId().equals(id))
 				return cp;

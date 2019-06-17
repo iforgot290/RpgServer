@@ -47,7 +47,7 @@ public class CommandBan extends CrypticCommand{
 		}
 		
 		if (toban.isOnline()){
-			CrypticPlayer cptoban = PlayerManager.getCrypticPlayer(toban);
+			CrypticPlayer cptoban = Cryptic.getCrypticPlayer(toBan.getPlayer());
 			
 			if (cptoban.getRank().getPriority() >= pl.getRank().getPriority()){
 				pl.sendMessage(ChatColor.RED + "You cannot ban this person");

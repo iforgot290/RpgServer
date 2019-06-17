@@ -88,7 +88,7 @@ public class ZoneManager extends Manager implements Listener{
 
 	@EventHandler
 	public void onMove(PlayerMoveEvent event){
-		CrypticPlayer moved = PlayerManager.getCrypticPlayer(event.getPlayer());
+		CrypticPlayer moved = Cryptic.getCrypticPlayer(event.getPlayer());
 		if (moved == null) return;
 
 		checkZone(moved, event.getTo());
@@ -96,7 +96,7 @@ public class ZoneManager extends Manager implements Listener{
 
 	@EventHandler
 	public void onTeleport(PlayerTeleportEvent event){
-		CrypticPlayer moved = PlayerManager.getCrypticPlayer(event.getPlayer());
+		CrypticPlayer moved = Cryptic.getCrypticPlayer(event.getPlayer());
 		if (moved == null) return;
 		
 		checkZone(moved, event.getTo());

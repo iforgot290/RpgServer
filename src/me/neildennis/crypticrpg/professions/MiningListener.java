@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.items.attribs.Tier;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
@@ -53,7 +54,7 @@ public class MiningListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void onOreRemove(BlockBreakEvent event){
-		CrypticPlayer pl = PlayerManager.getCrypticPlayer(event.getPlayer());
+		CrypticPlayer pl = Cryptic.getCrypticPlayer(event.getPlayer());
 		if (!pl.hasPermission(Rank.ADMIN)) return;
 		
 		OreSession session = profession.getOreSession(pl);
@@ -73,7 +74,7 @@ public class MiningListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void onOrePlace(BlockPlaceEvent event){
-		CrypticPlayer pl = PlayerManager.getCrypticPlayer(event.getPlayer());
+		CrypticPlayer pl = Cryptic.getCrypticPlayer(event.getPlayer());
 		if (!pl.hasPermission(Rank.ADMIN)) return;
 		
 		OreSession session = profession.getOreSession(pl);

@@ -28,7 +28,7 @@ public abstract class CrypticCommand implements CommandExecutor{
 		
 		if (sender instanceof Player){
 			Player pl = (Player)sender;
-			CrypticPlayer cpl = PlayerManager.getCrypticPlayer(pl);
+			CrypticPlayer cpl = Cryptic.getCrypticPlayer(pl);
 			if (!command(cpl)) noPerms();
 			return true;
 		}

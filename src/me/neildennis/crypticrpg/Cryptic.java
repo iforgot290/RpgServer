@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,6 +17,7 @@ import me.neildennis.crypticrpg.menu.MenuManager;
 import me.neildennis.crypticrpg.moderation.ModerationManager;
 import me.neildennis.crypticrpg.monsters.MobManager;
 import me.neildennis.crypticrpg.permission.RankManager;
+import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
 import me.neildennis.crypticrpg.professions.ProfessionManager;
 import me.neildennis.crypticrpg.utils.CustomFlags;
@@ -96,6 +98,10 @@ public class Cryptic extends JavaPlugin {
 	public static void registerEvents(Listener listener){
 		Log.debug("Registering events: " + listener.getClass().getCanonicalName());
 		Bukkit.getPluginManager().registerEvents(listener, getPlugin());
+	}
+	
+	public static CrypticPlayer getCrypticPlayer(Player pl) {
+		return getPlugin().getPlayerManager().getCrypticPlayer(pl);
 	}
 	
 	public static boolean rpgEnabled(){

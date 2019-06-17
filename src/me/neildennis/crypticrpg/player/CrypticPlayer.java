@@ -47,12 +47,12 @@ public class CrypticPlayer {
 	 * Loads asynchronously
 	 * @param id ID of player logging on
 	 */
-	public CrypticPlayer(UUID id, ModerationData moddata){
+	public CrypticPlayer(UUID id){
 		this.id = id;
 		player = Bukkit.getOfflinePlayer(id);
 		tasks = new ArrayList<BukkitTask>();
 		buffs = new ArrayList<PlayerBuff>();
-
+		
 		try {
 			CloudManager.sendStatement("INSERT IGNORE INTO player_db (player_id, rank) VALUES ('" + id.toString() + "', 'NORMAL')");
 			ResultSet data = CloudManager.sendQuery("SELECT * FROM player_db WHERE player_id = '" + id.toString() + "'");
@@ -61,13 +61,15 @@ public class CrypticPlayer {
 			healthData = new HealthData(this, data);
 			stats = new CachedStats(this);
 			rankData = new RankData(this, data);
-			moderationData = moddata;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void online(Player pl){
+		
+		player.getPlayer().setMetadata("crypticplayer", new CrypticPlayerContainer(this));
+		
 		stats.online();
 		healthData.online(pl);
 		ZoneManager.checkZone(this, pl.getLocation());

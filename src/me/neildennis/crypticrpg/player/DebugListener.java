@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
+import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.monsters.MobManager;
 import me.neildennis.crypticrpg.monsters.type.CrypticMonster;
 
@@ -26,7 +27,7 @@ public class DebugListener implements Listener{
 		CrypticMonster monster = MobManager.getMonster(event.getDamager());
 		if (monster == null) return;
 
-		CrypticPlayer pl = PlayerManager.getCrypticPlayer((Player)event.getEntity());
+		CrypticPlayer pl = Cryptic.getCrypticPlayer((Player)event.getEntity());
 
 		int damage = (int) event.getDamage();
 		int health = (int) pl.getPlayer().getHealth();
