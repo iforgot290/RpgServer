@@ -3,6 +3,7 @@ package me.neildennis.crypticrpg.items;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -131,9 +132,9 @@ public class ItemManager extends Manager{
 		try {
 			CrypticItemType type = CrypticItemType.fromMaterial(is.getType());
 			if (type == null) return null;
-			CrypticItem item = type.getHandleClass().newInstance();
-			return item.getItemFromItemStack(is);
-		} catch (InstantiationException | IllegalAccessException e) {
+			CrypticItem item = type.getHandleClass().getDeclaredConstructor(CrypticItemType.class, ItemStack.class).newInstance(type, is);
+			return item;
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			Log.debug("Object wasn't made");
 			return null;
 		}

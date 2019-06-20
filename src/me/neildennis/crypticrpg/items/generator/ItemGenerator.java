@@ -107,7 +107,7 @@ public class ItemGenerator {
 		AttribGenerator.generate(this);
 		
 		for (Constructor<?> cons : type.getHandleClass().getDeclaredConstructors()){
-			if (cons.getParameterTypes().length == 0) continue;
+			if (cons.getParameterTypes().length < 5) continue;
 			
 			try {
 				return (CrypticGear) cons.newInstance(name, lore, type, attribs, tier, rarity);
@@ -115,11 +115,11 @@ public class ItemGenerator {
 					| InvocationTargetException e) {
 				//TODO: take this out of production
 				e.printStackTrace();
-				return new CrypticSword("Invalid generator", null, CrypticItemType.SWORD, null, Tier.ONE, Rarity.COMMON);
+				return new CrypticSword(CrypticItemType.SWORD, "Invalid generator", null, null, Tier.ONE, Rarity.COMMON);
 			}
 		}
 		
-		return new CrypticSword("Invalid constructor", null, CrypticItemType.SWORD, null, Tier.ONE, Rarity.COMMON);
+		return new CrypticSword(CrypticItemType.SWORD, "Invalid constructor", null, null, Tier.ONE, Rarity.COMMON);
 	}
 
 }

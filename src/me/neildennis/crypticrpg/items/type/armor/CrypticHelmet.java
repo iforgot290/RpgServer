@@ -4,20 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import me.neildennis.crypticrpg.items.attribs.Attribute;
 import me.neildennis.crypticrpg.items.attribs.Rarity;
 import me.neildennis.crypticrpg.items.attribs.Tier;
 import me.neildennis.crypticrpg.items.type.CrypticItemType;
 
-public class CrypticHelmet extends CrypticArmor{
+public class CrypticHelmet extends CrypticArmor {
 
-	public CrypticHelmet(String name, List<String> lore, CrypticItemType type, ArrayList<Attribute> attribs, Tier tier, Rarity rarity) {
-		super(name, lore, type, attribs, tier, rarity);
+	public CrypticHelmet(CrypticItemType type, String name, List<String> lore, ArrayList<Attribute> attribs, Tier tier, Rarity rarity) {
+		super(type, name, lore, attribs, tier, rarity);
 	}
 	
-	public CrypticHelmet(){
-		super();
+	public CrypticHelmet(CrypticItemType type, ItemStack stack) {
+		super(type, stack);
 	}
 	
 	@Override
