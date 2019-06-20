@@ -118,6 +118,10 @@ public class Cryptic extends JavaPlugin {
 		return enabled;
 	}
 	
+	public static boolean isDebug() {
+		return Boolean.valueOf(System.getProperty("crypticrpg.debug"));
+	}
+	
 	public CloudManager getCloud(){
 		return cloud;
 	}
