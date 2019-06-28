@@ -22,7 +22,6 @@ import me.neildennis.crypticrpg.monsters.MonsterContainer;
 import me.neildennis.crypticrpg.monsters.SpawnType;
 import me.neildennis.crypticrpg.monsters.generator.MonsterGenerator;
 import me.neildennis.crypticrpg.utils.Log;
-import me.neildennis.crypticrpg.utils.Utils;
 
 public class SpawnBlock extends MonsterSpawner{
 
@@ -30,10 +29,13 @@ public class SpawnBlock extends MonsterSpawner{
 	private UUID id;
 	private int range;
 	private boolean shown = false;
+	
+	private Chunk chunk;
 
 	public SpawnBlock(UUID id, Location loc, int range){
 		this.id = id;
 		this.loc = loc;
+		this.chunk = this.loc.getChunk();
 		this.range = range;
 
 		if (loc.getBlock().getType() == Material.SPAWNER) shown = true; 
@@ -75,8 +77,7 @@ public class SpawnBlock extends MonsterSpawner{
 
 	public void tickSpawns(){
 		if (!enabled) return;
-		if (!loc.getChunk().isLoaded()) return;
-		if (!Utils.isPlayerNear(loc)) return;
+		if (!chunk.isLoaded()) return;
 
 		for (MonsterContainer spawn : dead){
 			if (!spawn.shouldSpawn()) continue;
