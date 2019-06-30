@@ -21,14 +21,12 @@ import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.items.attribs.AttributeType;
 import me.neildennis.crypticrpg.monsters.type.CrypticMonster;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
-import me.neildennis.crypticrpg.player.PlayerManager;
 import me.neildennis.crypticrpg.utils.Log;
 
 public class MobListener implements Listener {
 
 	@EventHandler
 	public void onMobSpawn(CreatureSpawnEvent event){
-		if (event.getSpawnReason() == SpawnReason.CHUNK_GEN) Log.debug("chunk gen");
 		if (event.getSpawnReason() != SpawnReason.CUSTOM) event.setCancelled(true);
 	}
 
