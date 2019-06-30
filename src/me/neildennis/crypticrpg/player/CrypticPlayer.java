@@ -17,6 +17,7 @@ import me.neildennis.crypticrpg.health.CachedStats;
 import me.neildennis.crypticrpg.health.HealthData;
 import me.neildennis.crypticrpg.items.attribs.Attribute;
 import me.neildennis.crypticrpg.items.attribs.AttributeType;
+import me.neildennis.crypticrpg.menu.ItemMenu;
 import me.neildennis.crypticrpg.menu.Menu;
 import me.neildennis.crypticrpg.moderation.ModerationData;
 import me.neildennis.crypticrpg.permission.Rank;
@@ -41,6 +42,7 @@ public class CrypticPlayer {
 	private ZoneState zonestate;
 	private Region region;
 
+	private ItemMenu itemMenu;
 	private Menu menu;
 
 	/**
@@ -128,6 +130,14 @@ public class CrypticPlayer {
 	
 	public Region getTown(){
 		return region;
+	}
+	
+	public ItemMenu getCurrentItemMenu() {
+		return itemMenu;
+	}
+	
+	public void setItemMenu(ItemMenu itemMenu) {
+		this.itemMenu = itemMenu;
 	}
 
 	public Menu getCurrentMenu(){

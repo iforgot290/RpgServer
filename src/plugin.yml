@@ -18,3 +18,5 @@ commands:
     usage: /<command>
   baninfo:
     usage: /<command>
+  menu:
+    usage: /<command>
