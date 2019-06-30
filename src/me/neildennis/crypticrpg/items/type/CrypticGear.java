@@ -69,6 +69,8 @@ public abstract class CrypticGear extends CrypticItem{
 
 		retlore.add(rarity.getDisplay());
 		
+		if (attribs == null) return this.lore;
+		
 		for (Attribute attr : attribs){
 			retlore.add(ChatColor.RED + attr.getType().getPrefix() + attr.format() + attr.getType().getPostfix());
 		}
@@ -101,7 +103,7 @@ public abstract class CrypticGear extends CrypticItem{
 
 		ItemMeta meta = is.getItemMeta();
 		meta.setDisplayName(tier.getColor() + name);
-		meta.setLore(getBukkitDisplayLore());
+		meta.setLore(generateBukkitLore());
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		is.setItemMeta(meta);

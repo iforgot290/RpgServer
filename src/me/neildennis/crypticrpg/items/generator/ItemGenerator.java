@@ -110,7 +110,7 @@ public class ItemGenerator {
 			if (cons.getParameterTypes().length < 5) continue;
 			
 			try {
-				return (CrypticGear) cons.newInstance(name, lore, type, attribs, tier, rarity);
+				return (CrypticGear) cons.newInstance(type, name, lore, attribs, tier, rarity);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException e) {
 				//TODO: take this out of production

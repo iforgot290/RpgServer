@@ -17,14 +17,14 @@ public class ItemUtils {
 		return null;
 	}
 
-	public static ArrayList<Attribute> getAttributes(List<String> lore){
+	public static ArrayList<Attribute> getAttributes(List<String> lore, int start){
 		ArrayList<Attribute> attribs = new ArrayList<Attribute>();
 
-		for (String str : lore){
-			AttributeType attr = getAttrFromString(str);
+		for (int i = start; i < lore.size(); i++) {
+			AttributeType attr = getAttrFromString(lore.get(i));
 			if (attr == null) continue;
 
-			String value = str.replaceAll(attr.getPrefix(), "").replaceAll(attr.getPostfix(), "");
+			String value = lore.get(i).replaceAll(attr.getPrefix(), "").replaceAll(attr.getPostfix(), "");
 			
 			if (value.contains(" - ")){
 				String[] strvalues = value.split(" - ");
