@@ -1,9 +1,7 @@
 package me.neildennis.crypticrpg.menu.options;
 
-public class MenuOption {
+public interface MenuOption {
 	
-	public void activate() {
-		
-	}
+	public abstract void activate();
 
 }
