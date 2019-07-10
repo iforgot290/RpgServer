@@ -60,13 +60,15 @@ public class SpawnPlaceListener implements Listener {
 					+ " " + spawn.getMonsterGen().getType().name() + " (" + spawn.getRespawnDelay() + "ms)");
 		
 		if (pl.getPlayer().isSneaking()){
-			SpawnBlockMenu menu = new SpawnBlockMenu(pl, blk);
+			/*SpawnBlockMenu menu = new SpawnBlockMenu(pl, blk);
 			
 			pl.sendMessage("");
 			pl.sendMessage(ChatColor.YELLOW + "Entering spawn-block menu");
 			
 			pl.setMenu(menu);
-			menu.display();
+			menu.display();*/
+			SpawnBlockItemMenu menu = new SpawnBlockItemMenu(blk);
+			pl.setItemMenu(menu);
 		} else {
 			pl.sendMessage("");
 			pl.sendMessage(ChatColor.YELLOW + "Shift right-click to enter editing mode");
