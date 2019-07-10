@@ -22,23 +22,27 @@ public class ItemMenu {
 	private ArrayList<Inventory> pages = new ArrayList<Inventory>();
 	private ArrayList<MenuOption> options = new ArrayList<MenuOption>();
 	private ArrayList<MenuOption> permanent = new ArrayList<MenuOption>();
+	
+	private int currentPage = 0;
 
 	public ArrayList<Inventory> generateMenu() {
 
-		if ((vertPad * 2) + 1 >= (slots / 9)) vertPad = 0;
+		if ((vertPad * 2) >= (slots / 9)) vertPad = 0;
+		//Log.debug("Vertical padding: " + vertPad);
 		if (horizPad > 4) horizPad = 4;
+		//Log.debug("Horizontal padding: " + horizPad);
 		if (slots < 9) slots = 9;
 		if (slots > 45) slots = 45;
 		if (slots % 9 != 0) slots += slots % 9;
 
 		int rows = slots / 9;
-		Log.debug("Total rows: " + rows);
+		//Log.debug("Total rows: " + rows);
 		int availSpots = 9 - (horizPad * 2);
-		Log.debug("Available spots to put stuff: " + availSpots);
+		//Log.debug("Available spots to put stuff: " + availSpots);
 		int itemPerPage = availSpots * (rows - (vertPad * 2));
-		Log.debug("Items per page: " + itemPerPage);
+		//Log.debug("Items per page: " + itemPerPage);
 		int numPages = (options.size() / itemPerPage) + 1;
-		Log.debug("Total number of pages: " + numPages);
+		//Log.debug("Total number of pages: " + numPages);
 
 		for (int i = 0; i < numPages; i++) { // Loop for creating pages
 			pages.add(generatePage(i, numPages, rows, itemPerPage, availSpots));
@@ -49,21 +53,21 @@ public class ItemMenu {
 
 	public Inventory generatePage(int pageNum) {
 		if ((vertPad * 2) >= (slots / 9)) vertPad = 0;
-		Log.debug("Vertical padding: " + vertPad);
+		//Log.debug("Vertical padding: " + vertPad);
 		if (horizPad > 4) horizPad = 4;
-		Log.debug("Horizontal padding: " + horizPad);
+		//Log.debug("Horizontal padding: " + horizPad);
 		if (slots < 9) slots = 9;
 		if (slots > 45) slots = 45;
 		if (slots % 9 != 0) slots += slots % 9;
 
 		int rows = slots / 9;
-		Log.debug("Total rows: " + rows);
+		//Log.debug("Total rows: " + rows);
 		int availSpots = 9 - (horizPad * 2);
-		Log.debug("Available spots to put stuff: " + availSpots);
+		//Log.debug("Available spots to put stuff: " + availSpots);
 		int itemPerPage = availSpots * (rows - (vertPad * 2));
-		Log.debug("Items per page: " + itemPerPage);
+		//Log.debug("Items per page: " + itemPerPage);
 		int numPages = (options.size() / itemPerPage) + 1;
-		Log.debug("Total number of pages: " + numPages);
+		//Log.debug("Total number of pages: " + numPages);
 
 		return generatePage(pageNum, numPages, rows, itemPerPage, availSpots);
 	}
@@ -82,15 +86,15 @@ public class ItemMenu {
 
 		for (int r = vertPad; r < totalRow - vertPad; r++) { // Loops thru rows with menu options
 
-			Log.debug("Menu option size: " + options.size());
+			//Log.debug("Menu option size: " + options.size());
 			
 			int needPad = options.size() - place >= availSpots ? horizPad : 9 - (options.size() - place);
-			Log.debug("Need padding: " + needPad);
+			//Log.debug("Need padding: " + needPad);
 
 			int rightPad = needPad / 2;
-			Log.debug("Right padding: " + rightPad);
+			//Log.debug("Right padding: " + rightPad);
 			int leftPad = needPad - rightPad;
-			Log.debug("Left padding: " + leftPad);
+			//Log.debug("Left padding: " + leftPad);
 
 			for (int spot = 0; spot < 9; spot++) { // Spots in those rows
 
@@ -101,7 +105,14 @@ public class ItemMenu {
 					continue;
 				}
 
-				inv.setItem(spotIndex, new ItemStack(Material.GRASS_BLOCK));
+				MenuOption option = options.get(place++);
+				option.setPage(pageNum);
+				option.setSlot(spotIndex);
+				
+				Log.debug("Setting page: " + pageNum);
+				Log.debug("Setting spot index: " + spotIndex);
+				
+				inv.setItem(spotIndex, option.getItem());
 			}
 		}
 
@@ -122,12 +133,12 @@ public class ItemMenu {
 			inv.setItem(((totalRow + 1) * 9) - 1, fill.clone());
 		
 		int needPad = permanent.size() - place >= availSpots ? 0 : 9 - (permanent.size() - place);
-		Log.debug("Need padding: " + needPad);
+		//Log.debug("Need padding: " + needPad);
 
 		int rightPad = needPad / 2;
-		Log.debug("Right padding: " + rightPad);
+		//Log.debug("Right padding: " + rightPad);
 		int leftPad = needPad - rightPad;
-		Log.debug("Left padding: " + leftPad);
+		//Log.debug("Left padding: " + leftPad);
 		
 		for (int spot = 1; spot < 8; spot++) {
 			int spotIndex = spot + (totalRow * 9);
@@ -184,6 +195,18 @@ public class ItemMenu {
 
 	public int getHorizontalPadding() {
 		return horizPad;
+	}
+	
+	public Inventory getPage(int page) {
+		return pages.get(page);
+	}
+	
+	public int getCurrentPage() {
+		return currentPage;
+	}
+	
+	public void setCurrentPage(int currentPage) {
+		this.currentPage = currentPage;
 	}
 
 }

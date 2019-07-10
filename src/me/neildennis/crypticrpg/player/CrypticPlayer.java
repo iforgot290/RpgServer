@@ -137,7 +137,15 @@ public class CrypticPlayer {
 	}
 	
 	public void setItemMenu(ItemMenu itemMenu) {
+		
+		if (itemMenu == null) {
+			this.itemMenu = null;
+			return;
+		}
+		
 		this.itemMenu = itemMenu;
+		this.itemMenu.generateMenu();
+		this.getPlayer().openInventory(this.itemMenu.getPage(0));
 	}
 
 	public Menu getCurrentMenu(){

@@ -16,6 +16,7 @@ public class MenuManager extends Manager implements Listener {
 	@Override
 	public void onEnable() {
 		Cryptic.registerEvents(this);
+		Cryptic.registerEvents(new MenuListener());
 		Cryptic.registerCommand("menu", new MenuCommand());
 		registerTasks();
 	}
