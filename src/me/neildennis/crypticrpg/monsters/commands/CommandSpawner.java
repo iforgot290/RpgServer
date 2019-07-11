@@ -71,12 +71,7 @@ public class CommandSpawner extends CrypticCommand{
 				if (args[1].equalsIgnoreCase("-f")) force = true;
 			}
 
-			int hidden = 0;
-			for (SpawnBlock blk : MobManager.getSpawnBlocks()){
-				if (!force && !blk.isBlockShown()) continue;
-				blk.setVisible(false);
-				hidden++;
-			}
+			int hidden = hideAll(force);
 			pl.sendMessage(ChatColor.GREEN + "Hid " + hidden + " spawners");
 		}
 		
@@ -86,13 +81,28 @@ public class CommandSpawner extends CrypticCommand{
 	@Override
 	public boolean console() {
 		if (args.length > 0 && args[0].equalsIgnoreCase("hideall")){
-			for (SpawnBlock blk : MobManager.getSpawnBlocks())
-				blk.setVisible(false);
-			sender.sendMessage(ChatColor.GREEN + "All spawn blocks have been hidden");
+			int hidden = hideAll(true);
+			sender.sendMessage(ChatColor.GREEN + "Hid " + hidden + " spawners");
 		} else {
 			sender.sendMessage(ChatColor.RED + "Only hideall option available in console");
 		}
 		return true;
+	}
+	
+	private void setMonster(CrypticPlayer pl, String[] input) {
+		
+	}
+	
+	private int hideAll(boolean force) {
+		int hidden = 0;
+		
+		for (SpawnBlock blk : MobManager.getSpawnBlocks()) {
+			if (!force && !blk.isBlockShown()) continue;
+			blk.setVisible(false);
+			hidden++;
+		}
+		
+		return hidden;
 	}
 
 }
