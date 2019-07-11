@@ -6,7 +6,7 @@ import org.bukkit.entity.Zombie;
 import me.neildennis.crypticrpg.monsters.MobType;
 import me.neildennis.crypticrpg.monsters.SpawnType;
 
-public class CrypticZombie extends LivingMonster{
+public class CrypticZombie extends LivingMonster {
 	
 	private Zombie zombie;
 	
