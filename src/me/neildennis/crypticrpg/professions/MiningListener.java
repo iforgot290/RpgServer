@@ -13,6 +13,7 @@ import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.player.PlayerManager;
 import me.neildennis.crypticrpg.professions.commands.CommandOre.OreSession;
+import me.neildennis.crypticrpg.professions.events.OreMinedEvent;
 import me.neildennis.crypticrpg.utils.Log;
 import net.md_5.bungee.api.ChatColor;
 
@@ -48,8 +49,16 @@ public class MiningListener implements Listener{
 		if (ore == null) return;
 		
 		event.setCancelled(true);
-		profession.addOreRespawn(ore);
-		Log.debug("Mined an ore.");
+		
+		OreMinedEvent oreEvent = new OreMinedEvent(Cryptic.getCrypticPlayer(event.getPlayer()), ore, event.getBlock().getLocation());
+		Cryptic.fireEvent(oreEvent);
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onOreMined(OreMinedEvent event) {
+		if (!event.isCancelled()) {
+			profession.addOreRespawn(event.getOre());
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)

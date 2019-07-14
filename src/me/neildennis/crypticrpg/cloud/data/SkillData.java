@@ -9,32 +9,31 @@ import me.neildennis.crypticrpg.professions.skill.Skill.SkillType;
 public class SkillData implements CloudData {
 
 	private CrypticPlayer pl;
-	private ResultSet result;
 	
-	public SkillData(CrypticPlayer pl) {
+	private long experience;
+	
+	public SkillData(CrypticPlayer pl) throws SQLException {
 		this.pl = pl;
+		load();
 	}
 	
 	@Override
 	public void save() throws SQLException {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void load() throws SQLException {
-		// TODO Auto-generated method stub
-
+		
 	}
 	
 	public long getExperience(SkillType type) throws SQLException {
-		return result.getLong(type.toString().toLowerCase());
+		return experience;
 	}
 
 }
