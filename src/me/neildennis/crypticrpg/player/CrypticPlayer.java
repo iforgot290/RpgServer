@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import me.neildennis.crypticrpg.Cryptic;
 import me.neildennis.crypticrpg.cloud.CloudManager;
+import me.neildennis.crypticrpg.cloud.data.SkillData;
 import me.neildennis.crypticrpg.health.CachedStats;
 import me.neildennis.crypticrpg.health.HealthData;
 import me.neildennis.crypticrpg.items.attribs.Attribute;
@@ -22,6 +23,7 @@ import me.neildennis.crypticrpg.menu.Menu;
 import me.neildennis.crypticrpg.moderation.ModerationData;
 import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.permission.RankData;
+import me.neildennis.crypticrpg.player.experience.Experience;
 import me.neildennis.crypticrpg.zone.Region;
 import me.neildennis.crypticrpg.zone.ZoneManager;
 import me.neildennis.crypticrpg.zone.ZoneManager.ZoneState;
@@ -38,12 +40,15 @@ public class CrypticPlayer {
 	private ModerationData moderationData;
 	private RankData rankData;
 	private CachedStats stats;
+	private SkillData skillData;
 
 	private ZoneState zonestate;
 	private Region region;
 
 	private ItemMenu itemMenu;
 	private Menu menu;
+	
+	private Experience experience;
 
 	/**
 	 * Loads asynchronously
@@ -63,6 +68,9 @@ public class CrypticPlayer {
 			healthData = new HealthData(this, data);
 			stats = new CachedStats(this);
 			rankData = new RankData(this, data);
+			skillData = new SkillData(this);
+			
+			this.experience = new Experience(this, skillData);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -100,6 +108,10 @@ public class CrypticPlayer {
 		}
 
 		tasks.clear();
+	}
+	
+	public Experience getExperience() {
+		return experience;
 	}
 	
 	public void addMaxHealth(double health){
