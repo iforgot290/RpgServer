@@ -11,12 +11,16 @@ public class MiningSkill extends Skill {
 
 	@Override
 	public int getLevel() {
-		return (int) (this.experience / 100);
+		return (int) (this.experience / 1000);
 	}
 
 	@Override
 	public long getExpToNextLevel() {
-		return this.experience % 100L;
+		return this.experience % 1000L;
+	}
+	
+	public long getExpRequired(int level) {
+		return level * 100;
 	}
 
 }

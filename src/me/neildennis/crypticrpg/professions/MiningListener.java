@@ -13,6 +13,9 @@ import me.neildennis.crypticrpg.permission.Rank;
 import me.neildennis.crypticrpg.player.CrypticPlayer;
 import me.neildennis.crypticrpg.professions.commands.CommandOre.OreSession;
 import me.neildennis.crypticrpg.professions.events.OreMinedEvent;
+import me.neildennis.crypticrpg.professions.events.ProfessionLevelEvent;
+import me.neildennis.crypticrpg.professions.skill.Skill.SkillType;
+import me.neildennis.crypticrpg.utils.Log;
 import net.md_5.bungee.api.ChatColor;
 
 public class MiningListener implements Listener{
@@ -48,12 +51,24 @@ public class MiningListener implements Listener{
 		
 		event.setCancelled(true);
 		
-		OreMinedEvent oreEvent = new OreMinedEvent(Cryptic.getCrypticPlayer(event.getPlayer()), ore, event.getBlock().getLocation());
+		OreMinedEvent oreEvent = new OreMinedEvent(Cryptic.getCrypticPlayer(event.getPlayer()), ore, event.getBlock().getLocation(), 100);
 		Cryptic.fireEvent(oreEvent);
 		
-		if (!event.isCancelled()) {
+		if (!oreEvent.isCancelled()) {
 			profession.addOreRespawn(ore);
-			oreEvent.getCrypticPlayer().getExperience().getMiningSkill().addExperience(100);
+			
+			CrypticPlayer pl = oreEvent.getCrypticPlayer();
+			int oldLevel = pl.getExperience().getMiningSkill().getLevel();
+			oreEvent.getCrypticPlayer().getExperience().getMiningSkill().addExperience(oreEvent.getExpGained());
+			int newLevel = pl.getExperience().getMiningSkill().getLevel();
+			
+			if (oldLevel != newLevel) {
+				ProfessionLevelEvent levelEvent = new ProfessionLevelEvent(pl, SkillType.MINING, newLevel);
+				Cryptic.fireEvent(levelEvent);
+			}
+			
+			long total = oreEvent.getCrypticPlayer().getExperience().getMiningSkill().getExperience();
+			Log.debug(oreEvent.getCrypticPlayer().getPlayer().getName() + " has mined " + ore.getOreType().toString() + " for 100xp (Total: " + total + ")");
 		}
 	}
 	

@@ -44,6 +44,7 @@ public class ProfessionManager extends Manager{
 		registerTasks();
 		
 		Cryptic.registerEvents(new MiningListener(this));
+		Cryptic.registerEvents(new ProfessionListener());
 		Cryptic.registerCommand("ore", (oreCmd = new CommandOre()));
 	}
 	
